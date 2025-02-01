@@ -1,8 +1,21 @@
+import { BrowserRouter, Route, Routes } from "react-router"
+import Stepper from "./components/Stepper"
+import BasicDetails from "./pages/BasicDetails"
+import Header from "./components/Header"
+import AssetDetails from "./pages/AssetDetails"
+
 function App() {
   return (
-    <div className='container bg-red-400'>
-      <h1>Vite + React</h1>
-    </div>
+    <>
+      <Header />
+      <BrowserRouter>
+        <Stepper />
+        <Routes>
+          <Route path="/" element={<BasicDetails />} />
+          <Route path="/asset-details" element={<AssetDetails />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   )
 }
 
