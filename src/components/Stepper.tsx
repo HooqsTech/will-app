@@ -8,7 +8,7 @@ interface IStepperItem {
 }
 
 const Stepper = () => {
-    const [stepperState, _] = useRecoilState(currentStepper);
+    const [stepperState, setStepperState] = useRecoilState(currentStepper);
     const navigate = useNavigate();
     const stepperItems: IStepperItem[] = [
         {
@@ -26,8 +26,9 @@ const Stepper = () => {
                 {
                     stepperItems.map(item => (
                         <button key={item.title} onClick={() => {
+                            setStepperState(item.title)
                             navigate(`/${item.route}`)
-                        }} className={`flex items-center ${item.title === stepperState && "text-blue-600"} `}>
+                        }} className={`flex items-center cursor-pointer ${item.title === stepperState && "text-blue-600"} `}>
                             <span className={`flex items-center justify-center w-5 h-5 me-2 text-xs border ${item.title === stepperState ? "border-blue-600" : "border-gray-500"}  rounded-full shrink-0 `}>
                                 1
                             </span>

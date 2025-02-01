@@ -1,9 +1,12 @@
 import { useNavigate } from "react-router";
 import CustomTextBox from "../components/CustomTextBox";
 import CustomButton from "../components/CustomButton";
+import { useRecoilState } from "recoil";
+import { currentStepper } from "../atoms/StepperState";
 
 const BasicDetails = () => {
     let navigate = useNavigate();
+    const [_, setStepperState] = useRecoilState(currentStepper);
 
     return (
         <div className="px-10 ">
@@ -14,6 +17,7 @@ const BasicDetails = () => {
             </div>
             <CustomButton 
                 onClick={() => {
+                    setStepperState("Asset Details")
                     navigate("/asset-details")
                 }}
                 label="Next Step: Asset Details"
