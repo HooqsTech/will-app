@@ -1,17 +1,18 @@
 import { BrowserRouter, Route, Routes } from "react-router"
-import Stepper from "./components/Stepper"
 import BasicDetails from "./pages/BasicDetails"
 import Header from "./components/Header"
 import AssetDetails from "./pages/AssetDetails"
+import YourWill from "./pages/YourWill"
+
 
 function App() {
   return (
     <>
       <Header />
       <BrowserRouter>
-        <Stepper />
         <Routes>
-          <Route path="/" element={<BasicDetails />} />
+          <Route path="/basic-details" element={<BasicDetails />} />
+          <Route path="/" element={<YourWill />} />
           <Route path="/asset-details" element={<AssetDetails />} />
         </Routes>
       </BrowserRouter>
