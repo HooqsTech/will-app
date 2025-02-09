@@ -3,7 +3,7 @@ import CustomButton from "../components/CustomButton";
 import { currentStepper } from "../atoms/StepperState";
 import { useRecoilState } from "recoil";
 import CustomAccordion from "../components/CustomAccordion";
-import ImmovableAssets from "../components/ImmovableAssets";
+import ImmovableAssets from "./ImmovableAssets";
 import CustomTabs from "../components/CustomTabs";
 
 const AssetDetails = () => {

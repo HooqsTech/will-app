@@ -7,7 +7,7 @@ import AssetDetails from './AssetDetails';
 import PersonalDetails from './PersonalDetails';
 import AddressDetails from './AddressDetails';
 import Sidebar2 from '../components/Sidebar2';
-import ImmovableAssets from '../components/ImmovableAssets';
+import ImmovableAssets from './ImmovableAssets';
 
 
 const YourWill: React.FC = () => {

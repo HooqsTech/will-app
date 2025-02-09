@@ -19,7 +19,7 @@ const ImmovableAssetForm: React.FC<IImmovableAssetFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Immovable Asset">
+        <CustomFormContainer hideBorder>
             <div>
                 <CustomSelect
                     label="Property Type"
