@@ -6,6 +6,7 @@ import BasicDetails from './PersonalDetails';
 import AssetDetails from './AssetDetails';
 import PersonalDetails from './PersonalDetails';
 import AddressDetails from './AddressDetails';
+import Sidebar2 from '../components/Sidebar2';
 
 
 const YourWill: React.FC = () => {
@@ -14,7 +15,7 @@ const YourWill: React.FC = () => {
             <Grid2 container sx={{ height: "100vh" }}>
                 <Grid2 size={3}>
                     <Box sx={{ height: '100%', padding: '5%', bgcolor: "lightblue" }}>
-                        <Sidebar />
+                        <Sidebar2 />
                     </Box>
                 </Grid2>
                 <Grid2 size={9}>
