@@ -9,13 +9,7 @@ function App() {
   return (
     <>
       <Header />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/basic-details" element={<BasicDetails />} />
-          <Route path="/" element={<YourWill />} />
-          <Route path="/asset-details" element={<AssetDetails />} />
-        </Routes>
-      </BrowserRouter>
+      <YourWill />
     </>
   )
 }
