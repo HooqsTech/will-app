@@ -30,7 +30,7 @@ const MutualFundAsset = () => {
                     formState.map((_, index) => (
                         <CustomAccordion expanded={currentItem === index}
                             onChange={() => setCurrentItem((prevItem) => prevItem === index ? -1 : index)}
-                            label={`Bank Accounts ${index + 1}`}
+                            label={`Mutual Fund ${index + 1}`}
                             subTitle={
                                 currentItem !== index ? getSubTitle(index) : ""
                             }

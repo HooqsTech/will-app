@@ -18,7 +18,7 @@ const FixedDepositForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Fixed Deposit">
+        <CustomFormContainer hideBorder>
             <CustomTextBox
                 value={item.noOfHolders}
                 onChange={(e) => handleChange(index, "noOfHolders", e)}
