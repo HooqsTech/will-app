@@ -3,75 +3,78 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import { TreeViewBaseItem } from '@mui/x-tree-view/models';
+import { useNavigate } from "react-router";
 
-const MUI_X_PRODUCTS: TreeViewBaseItem[] = [
+const NavItems: TreeViewBaseItem[] = [
   {
-    id: 'aboutYou',
+    id: 'about_you',
     label: 'About You',
+    children: [
+        {id: 'personal_details', label: 'Personal Details'},
+        {id: 'address_details', label: 'Address Details'}
+    ]
   },
   {
-    id: 'Asset&liabilities',
-    label: 'Asset & Liabilities',
+    id: 'assets_details',
+    label: 'Asset',
     children: [
-      { id: 'Asset', label: 'Asset', 
-        children : [
-            {id: 'Properties', label: 'Properties'},
-            {id: 'BankAccounts', label: 'Bank Accounts'},
-            {id: 'providentfunds', label: 'Provident Funds'},
-            {id: 'Bonds', label: 'Bonds'},
-            {id: 'Debentures', label: 'Debentures'},
-            {id: 'Vehicles', label: 'Vehicles'}
-      ] },
-      { id: 'Liabilities', label: 'Liabilities',
-        children: [
-            {id: 'Homeloans', label: 'Home Loans'},
-            {id: 'Personalloans', label: 'Personal Loans'},
-            {id: 'Vehicleloans', label: 'vehicle Loans'},
-            {id: 'Educationloans', label: 'Education Loans'},
-            {id: 'Otherliabilities', label:'Other Liabilities'}
+        { id: 'immovable_assets', label: 'Immovable Assets' },
+        { id: 'financial_assets', label: 'Financial Assets',
+            children: [
+            {id: 'bank_accounts', label: 'Bank Accounts'},
+            {id: 'fixed_deposits', label: 'Fixed Deposits'},
+            {id: 'insurance_policies', label: 'insurance Policies'},
+            {id: 'safe_deposit_boxes', label: 'Safe Deposit Boxes'},
+            {id: 'demat_accounts', label:'Demat Accounts'},
+            {id: 'mutual_funds', label: 'Mutual Funds'},
+            {id: 'provident_fund', label: 'Provident Fund'},
+            {id: 'pension_accounts', label:'Pension Accounts'}
         ]
        },
+       { id: 'business_assets', label: 'Business Assets',
+            children: [
+                {id: 'business', label: 'Business'},
+                {id: 'bonds', label: 'Bonds'},
+                {id: 'debentures', label: 'Debentures'},
+                {id: 'esops', label: 'Esops'}
+            ]
+        },
+        { id: 'other_investments', label: 'Other Investments',
+            children: [
+                {id: 'vehicles', label: 'vechicles'},
+                {id: 'jewelry', label: 'Jewlery'},
+                {id: 'digital_assets', label: 'Digital Assets'},
+                {id: 'intellectual_property', label: 'Intellectual'},
+                {id: 'custom_assets', label: 'Custom Assets'}
+            ]
+        }
     ],
   },
   {
-    id: 'Beneficiaries&pets',
-    label: 'Beneficiaries & Pets',
+    id: 'liabilities',
+    label: 'Liabilities',
     children: [
-        { id: 'Beneficiaries', label: 'Beneficiaries' },
-        { id: 'Pets', label: 'Pets' }
+        { id: 'home_loans', label: 'Home Loans' },
+        { id: 'personal_loans', label: 'Personal Loans' },
+        { id: 'vehicle_loans', label: 'Vechicle Loans' },
+        { id: 'education_loans', label: 'Education Loans' },
+        { id: 'other_liabilities', label: 'Other Liabilities' }
     ],
-  },
-  {
-    id: 'assetdistribution',
-    label: 'Asset Distribution'
-  },
-  {
-    id: 'Guardians',
-    label: 'Guardians'
-  },
-  {
-    id: 'excludedpersons',
-    label: 'Excluded Persons'
   }
 ];
 
 export default function Sidebar() {
-  const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
+  
+    let navigate = useNavigate();
+    const handleSelectedItemChange = (event: React.SyntheticEvent, itemId: string) => {
+        navigate("/"+itemId);
+    };
 
-  const handleSelectedItemsChange = (event: React.SyntheticEvent, ids: string[]) => {
-    setSelectedItems(ids);
-  };
-
-  return (
-    <Stack spacing={2}>
-      <Box sx={{ minHeight: 352, minWidth: 250 }}>
-        <RichTreeView
-          items={MUI_X_PRODUCTS}
-          selectedItems={selectedItems}
-          onSelectedItemsChange={handleSelectedItemsChange}
-          multiSelect
-        />
-      </Box>
-    </Stack>
-  );
+    return (
+        <Stack spacing={2}>
+            <Box sx={{ minHeight: 352, minWidth: 250 }}>
+                <RichTreeView items={NavItems} onItemClick={handleSelectedItemChange}/>
+            </Box>
+        </Stack>
+    );
 }
