@@ -7,6 +7,7 @@ import AssetDetails from './AssetDetails';
 import PersonalDetails from './PersonalDetails';
 import AddressDetails from './AddressDetails';
 import Sidebar2 from '../components/Sidebar2';
+import ImmovableAssets from '../components/ImmovableAssets';
 
 
 const YourWill: React.FC = () => {
@@ -23,6 +24,7 @@ const YourWill: React.FC = () => {
                         <Routes>
                             <Route path="/personal_details" element={<PersonalDetails />} />
                             <Route path="/address_details" element={<AddressDetails />} />
+                            <Route path="/immovable_assets" element={<ImmovableAssets />} />
                         </Routes>
                     </Box>
                 </Grid2>
