@@ -19,18 +19,16 @@ const DematAccountForm: React.FC<IDematAccountFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer formLabel="Demat Account">
-            <div>
-                <CustomTextBox
-                    value={item.brokerName}
-                    onChange={(e) => handleChange(index, "brokerName", e)}
-                    label="Broker Name"
-                    type="text" />
-                <CustomTextBox
-                    value={item.accountNumber}
-                    onChange={(e) => handleChange(index, "accountNumber", e)}
-                    label="Account Number"
-                    type="text" />
-            </div>
+            <CustomTextBox
+                value={item.brokerName}
+                onChange={(e) => handleChange(index, "brokerName", e)}
+                label="Broker Name"
+                type="text" />
+            <CustomTextBox
+                value={item.accountNumber}
+                onChange={(e) => handleChange(index, "accountNumber", e)}
+                label="Account Number"
+                type="text" />
         </CustomFormContainer>
     )
 }

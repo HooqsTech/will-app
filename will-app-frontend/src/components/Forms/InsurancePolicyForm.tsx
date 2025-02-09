@@ -20,23 +20,21 @@ const InsurancePolicyForm: React.FC<IInsurancePolicyFormProps> = ({ index }) => 
 
     return (
         <CustomFormContainer formLabel="Insurance Policy">
-            <div>
-                <CustomSelect
-                    label="Insurance Type"
-                    options={["Life", "Health"]}
-                    value={item.insuranceType}
-                    onChange={(e) => handleChange(index, "insuranceType", e)} />
-                <CustomTextBox
-                    value={item.insuranceProvider}
-                    onChange={(e) => handleChange(index, "insuranceProvider", e)}
-                    label="Insurance Provider"
-                    type="text" />
-                <CustomTextBox
-                    value={item.policyNumber}
-                    onChange={(e) => handleChange(index, "policyNumber", e)}
-                    label="Policy Number"
-                    type="text" />
-            </div>
+            <CustomSelect
+                label="Insurance Type"
+                options={["Life", "Health"]}
+                value={item.insuranceType}
+                onChange={(e) => handleChange(index, "insuranceType", e)} />
+            <CustomTextBox
+                value={item.insuranceProvider}
+                onChange={(e) => handleChange(index, "insuranceProvider", e)}
+                label="Insurance Provider"
+                type="text" />
+            <CustomTextBox
+                value={item.policyNumber}
+                onChange={(e) => handleChange(index, "policyNumber", e)}
+                label="Policy Number"
+                type="text" />
         </CustomFormContainer>
     )
 }

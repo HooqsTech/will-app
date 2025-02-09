@@ -20,33 +20,31 @@ const ImmovableAssetForm: React.FC<IImmovableAssetFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer hideBorder>
-            <div>
-                <CustomSelect
-                    label="Property Type"
-                    options={["Apartment", "House / Plot", "Commercial / Land"]}
-                    value={item.propertyType}
-                    onChange={(e) => handleChange(index, "propertyType", e)} />
-                <CustomSelect
-                    label="Ownership Type"
-                    options={["Single", "Joint"]}
-                    value={item.ownershipType}
-                    onChange={(e) => handleChange(index, "ownershipType", e)} />
-                <CustomTextBox
-                    value={item.address}
-                    onChange={(e) => handleChange(index, "address", e)}
-                    label="Address"
-                    type="text" />
-                <CustomTextBox
-                    value={item.pincode}
-                    onChange={(e) => handleChange(index, "pincode", e)}
-                    label="Pincode"
-                    type="text" />
-                <CustomTextBox
-                    value={item.city}
-                    onChange={(e) => handleChange(index, "city", e)}
-                    label="City"
-                    type="text" />
-            </div>
+            <CustomSelect
+                label="Property Type"
+                options={["Apartment", "House / Plot", "Commercial / Land"]}
+                value={item.propertyType}
+                onChange={(e) => handleChange(index, "propertyType", e)} />
+            <CustomSelect
+                label="Ownership Type"
+                options={["Single", "Joint"]}
+                value={item.ownershipType}
+                onChange={(e) => handleChange(index, "ownershipType", e)} />
+            <CustomTextBox
+                value={item.address}
+                onChange={(e) => handleChange(index, "address", e)}
+                label="Address"
+                type="text" />
+            <CustomTextBox
+                value={item.pincode}
+                onChange={(e) => handleChange(index, "pincode", e)}
+                label="Pincode"
+                type="text" />
+            <CustomTextBox
+                value={item.city}
+                onChange={(e) => handleChange(index, "city", e)}
+                label="City"
+                type="text" />
         </CustomFormContainer>
     )
 }

@@ -20,26 +20,24 @@ const DigitalAssetForm: React.FC<IBankAccountFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer hideBorder>
-            <div>
-                <CustomSelect
-                    label="Type"
-                    options={["Crypto", "NFT", "Digital Land Banks", "Virtual / Digital Gold"]}
-                    value={item.type}
-                    onChange={(e) => handleChange(index, "type", e)} />
+            <CustomSelect
+                label="Type"
+                options={["Crypto", "NFT", "Digital Land Banks", "Virtual / Digital Gold"]}
+                value={item.type}
+                onChange={(e) => handleChange(index, "type", e)} />
+            <CustomTextBox
+                value={item.walletAddress}
+                onChange={(e) => handleChange(index, "walletAddress", e)}
+                label="Wallet Address"
+                type="text" />
+            {
+                item.type === "Virtual / Digital Gold" &&
                 <CustomTextBox
-                    value={item.walletAddress}
-                    onChange={(e) => handleChange(index, "walletAddress", e)}
-                    label="Wallet Address"
+                    value={item.investmentTool}
+                    onChange={(e) => handleChange(index, "investmentTool", e)}
+                    label="Investment Tool"
                     type="text" />
-                {
-                    item.type === "Virtual / Digital Gold" &&
-                    <CustomTextBox
-                        value={item.investmentTool}
-                        onChange={(e) => handleChange(index, "investmentTool", e)}
-                        label="Investment Tool"
-                        type="text" />
-                }
-            </div>
+            }
         </CustomFormContainer>
     )
 }

@@ -20,23 +20,21 @@ const BondForm: React.FC<IBondFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer formLabel="Bond">
-            <div>
-                <CustomSelect
-                    label="Bond Type"
-                    options={["Single", "Joint"]}
-                    value={item.type}
-                    onChange={(e) => handleChange(index, "type", e)} />
-                <CustomTextBox
-                    value={item.financialServiceProviderName}
-                    onChange={(e) => handleChange(index, "financialServiceProviderName", e)}
-                    label="Bank / Financial Service Provider Name"
-                    type="text" />
-                <CustomTextBox
-                    value={item.certificateNumber}
-                    onChange={(e) => handleChange(index, "certificateNumber", e)}
-                    label="Certificate / Folio Number"
-                    type="text" />
-            </div>
+            <CustomSelect
+                label="Bond Type"
+                options={["Single", "Joint"]}
+                value={item.type}
+                onChange={(e) => handleChange(index, "type", e)} />
+            <CustomTextBox
+                value={item.financialServiceProviderName}
+                onChange={(e) => handleChange(index, "financialServiceProviderName", e)}
+                label="Bank / Financial Service Provider Name"
+                type="text" />
+            <CustomTextBox
+                value={item.certificateNumber}
+                onChange={(e) => handleChange(index, "certificateNumber", e)}
+                label="Certificate / Folio Number"
+                type="text" />
         </CustomFormContainer>
     )
 }

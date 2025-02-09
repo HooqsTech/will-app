@@ -20,59 +20,57 @@ const BankAccountForm: React.FC<IBankAccountFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer formLabel="Business">
-            <div>
+            <CustomSelect
+                label="Business Type"
+                options={["Proprietorship", "LLP/Partnership", "Private Limited"]}
+                value={item.type}
+                onChange={(e) => handleChange(index, "type", e)} />
+            <CustomTextBox
+                value={item.companyName}
+                onChange={(e) => handleChange(index, "companyName", e)}
+                label="Company Name"
+                type="text" />
+            <CustomTextBox
+                value={item.address}
+                onChange={(e) => handleChange(index, "address", e)}
+                label="Address"
+                type="text" />
+            {
+                item.type == "Private Limited" &&
                 <CustomSelect
-                    label="Business Type"
-                    options={["Proprietorship", "LLP/Partnership", "Private Limited"]}
-                    value={item.type}
-                    onChange={(e) => handleChange(index, "type", e)} />
-                <CustomTextBox
-                    value={item.companyName}
-                    onChange={(e) => handleChange(index, "companyName", e)}
-                    label="Company Name"
-                    type="text" />
-                <CustomTextBox
-                    value={item.address}
-                    onChange={(e) => handleChange(index, "address", e)}
-                    label="Address"
-                    type="text" />
-                {
-                    item.type == "Private Limited" &&
-                    <CustomSelect
-                        label="Nature of Holding"
-                        options={["Holding Percentage", "No of Securities"]}
-                        value={item.natureOfHolding}
-                        onChange={(e) => handleChange(index, "natureOfHolding", e)} />
-                }
+                    label="Nature of Holding"
+                    options={["Holding Percentage", "No of Securities"]}
+                    value={item.natureOfHolding}
+                    onChange={(e) => handleChange(index, "natureOfHolding", e)} />
+            }
 
+            <CustomTextBox
+                value={item.holdingPercentage}
+                onChange={(e) => handleChange(index, "holdingPercentage", e)}
+                label={item.natureOfHolding == "No of Securities" ? "Number of Securities" : "Holding Percentage"}
+                type="text" />
+            {
+                item.type == "LLP/Partnership" &&
                 <CustomTextBox
-                    value={item.holdingPercentage}
-                    onChange={(e) => handleChange(index, "holdingPercentage", e)}
-                    label={item.natureOfHolding == "No of Securities" ? "Number of Securities" : "Holding Percentage"}
+                    value={item.partnership}
+                    onChange={(e) => handleChange(index, "partnership", e)}
+                    label="Partnership"
                     type="text" />
-                {
-                    item.type == "LLP/Partnership" &&
-                    <CustomTextBox
-                        value={item.partnership}
-                        onChange={(e) => handleChange(index, "partnership", e)}
-                        label="Partnership"
-                        type="text" />
-                }
+            }
 
-                {
-                    item.type == "Private Limited" &&
-                    <CustomSelect
-                        label="Type of Security"
-                        options={["Equity Shares", "Percentage Shares", "Debentures"]}
-                        value={item.natureOfHolding}
-                        onChange={(e) => handleChange(index, "typeOfSecurity", e)} />
-                }
-                <CustomTextBox
-                    value={item.pan}
-                    onChange={(e) => handleChange(index, "pan", e)}
-                    label="PAN"
-                    type="text" />
-            </div>
+            {
+                item.type == "Private Limited" &&
+                <CustomSelect
+                    label="Type of Security"
+                    options={["Equity Shares", "Percentage Shares", "Debentures"]}
+                    value={item.natureOfHolding}
+                    onChange={(e) => handleChange(index, "typeOfSecurity", e)} />
+            }
+            <CustomTextBox
+                value={item.pan}
+                onChange={(e) => handleChange(index, "pan", e)}
+                label="PAN"
+                type="text" />
         </CustomFormContainer>
     )
 }

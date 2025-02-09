@@ -19,13 +19,11 @@ const CustomAssetForm: React.FC<ICustomAssetFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer hideBorder>
-            <div>
-                <CustomTextBox
-                    value={item.description}
-                    onChange={(e) => handleChange(index, "description", e)}
-                    label="Description"
-                    type="text" />
-            </div>
+            <CustomTextBox
+                value={item.description}
+                onChange={(e) => handleChange(index, "description", e)}
+                label="Description"
+                type="text" />
         </CustomFormContainer>
     )
 }

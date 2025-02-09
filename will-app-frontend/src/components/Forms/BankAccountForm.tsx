@@ -20,33 +20,31 @@ const BankAccountForm: React.FC<IBankAccountFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer formLabel="Bank Account">
-            <div>
-                <CustomSelect
-                    label="Account Type"
-                    options={["Single", "Joint"]}
-                    value={item.accountType}
-                    onChange={(e) => handleChange(index, "accountType", e)} />
-                <CustomTextBox
-                    value={item.bankName}
-                    onChange={(e) => handleChange(index, "bankName", e)}
-                    label="Bank Name"
-                    type="text" />
-                <CustomTextBox
-                    value={item.accountNumber}
-                    onChange={(e) => handleChange(index, "accountNumber", e)}
-                    label="Account Number"
-                    type="text" />
-                <CustomTextBox
-                    value={item.branch}
-                    onChange={(e) => handleChange(index, "branch", e)}
-                    label="Branch"
-                    type="text" />
-                <CustomTextBox
-                    value={item.city}
-                    onChange={(e) => handleChange(index, "city", e)}
-                    label="City"
-                    type="text" />
-            </div>
+            <CustomSelect
+                label="Account Type"
+                options={["Single", "Joint"]}
+                value={item.accountType}
+                onChange={(e) => handleChange(index, "accountType", e)} />
+            <CustomTextBox
+                value={item.bankName}
+                onChange={(e) => handleChange(index, "bankName", e)}
+                label="Bank Name"
+                type="text" />
+            <CustomTextBox
+                value={item.accountNumber}
+                onChange={(e) => handleChange(index, "accountNumber", e)}
+                label="Account Number"
+                type="text" />
+            <CustomTextBox
+                value={item.branch}
+                onChange={(e) => handleChange(index, "branch", e)}
+                label="Branch"
+                type="text" />
+            <CustomTextBox
+                value={item.city}
+                onChange={(e) => handleChange(index, "city", e)}
+                label="City"
+                type="text" />
         </CustomFormContainer>
     )
 }

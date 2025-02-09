@@ -13,7 +13,7 @@ const CustomFormContainer: React.FC<ICustomFormContainerProps> = ({ children, fo
         formLabel !== "" &&
         <h3 className="mb-4 text-lg font-medium leading-none text-gray-900 ">{formLabel}</h3>
       }
-      <div className="grid gap-4 mb-4 sm:grid-cols-1">
+      <div className="flex flex-col space-y-3">
         {
           children
         }

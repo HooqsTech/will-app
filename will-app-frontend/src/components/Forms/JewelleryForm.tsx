@@ -20,23 +20,21 @@ const JewelleryForm: React.FC<IJewelleryFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer hideBorder>
-            <div>
-                <CustomSelect
-                    label="Jewellery Type"
-                    options={["Gold", "Silver", "Others"]}
-                    value={item.type}
-                    onChange={(e) => handleChange(index, "type", e)} />
-                <CustomTextBox
-                    value={item.description}
-                    onChange={(e) => handleChange(index, "description", e)}
-                    label="Description"
-                    type="text" />
-                <CustomTextBox
-                    value={item.preciousMetalInWeight}
-                    onChange={(e) => handleChange(index, "preciousMetalInWeight", e)}
-                    label="Precious Metal Weight in Grams"
-                    type="text" />
-            </div>
+            <CustomSelect
+                label="Jewellery Type"
+                options={["Gold", "Silver", "Others"]}
+                value={item.type}
+                onChange={(e) => handleChange(index, "type", e)} />
+            <CustomTextBox
+                value={item.description}
+                onChange={(e) => handleChange(index, "description", e)}
+                label="Description"
+                type="text" />
+            <CustomTextBox
+                value={item.preciousMetalInWeight}
+                onChange={(e) => handleChange(index, "preciousMetalInWeight", e)}
+                label="Precious Metal Weight in Grams"
+                type="text" />
         </CustomFormContainer>
     )
 }

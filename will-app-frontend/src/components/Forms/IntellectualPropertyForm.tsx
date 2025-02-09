@@ -20,23 +20,21 @@ const IntellectualPropertyForm: React.FC<IIntellectualPropertyFormProps> = ({ in
 
     return (
         <CustomFormContainer hideBorder>
-            <div>
-                <CustomSelect
-                    label="Account Type"
-                    options={["Brand Name", "Exclusive Product", "Invention", "Software", "Website", "Content", "Secret Formula"]}
-                    value={item.type}
-                    onChange={(e) => handleChange(index, "type", e)} />
-                <CustomTextBox
-                    value={item.identificationNumber}
-                    onChange={(e) => handleChange(index, "identificationNumber", e)}
-                    label="Identification Number"
-                    type="text" />
-                <CustomTextBox
-                    value={item.description}
-                    onChange={(e) => handleChange(index, "description", e)}
-                    label="Description"
-                    type="text" />
-            </div>
+            <CustomSelect
+                label="Account Type"
+                options={["Brand Name", "Exclusive Product", "Invention", "Software", "Website", "Content", "Secret Formula"]}
+                value={item.type}
+                onChange={(e) => handleChange(index, "type", e)} />
+            <CustomTextBox
+                value={item.identificationNumber}
+                onChange={(e) => handleChange(index, "identificationNumber", e)}
+                label="Identification Number"
+                type="text" />
+            <CustomTextBox
+                value={item.description}
+                onChange={(e) => handleChange(index, "description", e)}
+                label="Description"
+                type="text" />
         </CustomFormContainer>
     )
 }
