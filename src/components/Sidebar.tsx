@@ -74,12 +74,10 @@ export default function Sidebar() {
     };
 
     return (
-        <div className='sticky top-[100px]'>
-            <Stack spacing={2}>
-                <Box sx={{ minHeight: 352, minWidth: 250 }}>
-                    <RichTreeView items={NavItems} onItemClick={handleSelectedItemChange} />
-                </Box>
-            </Stack>
-        </div>
+        <Stack spacing={2}>
+            <Box sx={{ minHeight: 352, minWidth: 250 }}>
+                <RichTreeView items={NavItems} onItemClick={handleSelectedItemChange} />
+            </Box>
+        </Stack>
     );
 }
