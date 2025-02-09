@@ -8,6 +8,11 @@ import PersonalDetails from './PersonalDetails';
 import AddressDetails from './AddressDetails';
 import Sidebar2 from '../components/Sidebar2';
 import ImmovableAssets from './ImmovableAssets';
+import CustomAssets from './CustomAssets';
+import IntellectualProperties from './IntellectualProperties';
+import DigitalAssets from './DigitalAssets';
+import Jewelleries from './Jewelleries';
+import Vehicles from './Vehicles';
 
 
 const YourWill: React.FC = () => {
@@ -25,6 +30,11 @@ const YourWill: React.FC = () => {
                             <Route path="/personal_details" element={<PersonalDetails />} />
                             <Route path="/address_details" element={<AddressDetails />} />
                             <Route path="/immovable_assets" element={<ImmovableAssets />} />
+                            <Route path="/custom_assets" element={<CustomAssets />} />
+                            <Route path="/intellectual_property" element={<IntellectualProperties />} />
+                            <Route path="/digital_assets" element={<DigitalAssets />} />
+                            <Route path="/jewelry" element={<Jewelleries />} />
+                            <Route path="/vehicles" element={<Vehicles />} />
                         </Routes>
                     </Box>
                 </Grid2>

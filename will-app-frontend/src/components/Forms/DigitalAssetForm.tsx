@@ -19,7 +19,7 @@ const DigitalAssetForm: React.FC<IBankAccountFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Bank Account">
+        <CustomFormContainer hideBorder>
             <div>
                 <CustomSelect
                     label="Type"

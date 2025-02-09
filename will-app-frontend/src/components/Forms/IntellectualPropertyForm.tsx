@@ -19,7 +19,7 @@ const IntellectualPropertyForm: React.FC<IIntellectualPropertyFormProps> = ({ in
     };
 
     return (
-        <CustomFormContainer formLabel="Intellectual Property">
+        <CustomFormContainer hideBorder>
             <div>
                 <CustomSelect
                     label="Account Type"

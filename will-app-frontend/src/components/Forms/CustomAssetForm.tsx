@@ -18,7 +18,7 @@ const CustomAssetForm: React.FC<ICustomAssetFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Custom Asset">
+        <CustomFormContainer hideBorder>
             <div>
                 <CustomTextBox
                     value={item.description}

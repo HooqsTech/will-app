@@ -19,7 +19,7 @@ const JewelleryForm: React.FC<IJewelleryFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Bank Account">
+        <CustomFormContainer hideBorder>
             <div>
                 <CustomSelect
                     label="Jewellery Type"

@@ -18,7 +18,7 @@ const VehicleForm: React.FC<IVehicleFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Vehicle">
+        <CustomFormContainer hideBorder>
             <div>
                 <CustomTextBox
                     value={item.brandOrModel}
