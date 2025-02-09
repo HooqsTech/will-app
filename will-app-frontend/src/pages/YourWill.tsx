@@ -17,6 +17,14 @@ import Escops from './Escops';
 import Debentures from './Debentures';
 import Bonds from './Bonds';
 import Businesses from './Businesses';
+import BankAccountAsset from './BankAccountAsset';
+import FixedDepositAsset from './FixedDepositAsset';
+import InsurancePolicyAsset from './InsurancePolicyAsset';
+import SafetyDepositAsset from './SafetyDepositAsset';
+import DematAccountAsset from './DematAccountAsset';
+import MutualFundAsset from './MutualFundAsset';
+import ProvidentFundAsset from './ProvidentFundAsset';
+import PensionAccountAsset from './PensionAccountAsset';
 
 
 const YourWill: React.FC = () => {
@@ -34,6 +42,14 @@ const YourWill: React.FC = () => {
                             <Route path="/personal_details" element={<PersonalDetails />} />
                             <Route path="/address_details" element={<AddressDetails />} />
                             <Route path="/immovable_assets" element={<ImmovableAssets />} />
+                            <Route path="/bank_accounts" element={<BankAccountAsset />} />
+                            <Route path="/fixed_deposits" element={<FixedDepositAsset />} />
+                            <Route path="/insurance_policies" element={<InsurancePolicyAsset />} />
+                            <Route path="/safe_deposit_boxes" element={<SafetyDepositAsset />} />
+                            <Route path="/demat_accounts" element={<DematAccountAsset />} />
+                            <Route path="/mutual_funds" element={<MutualFundAsset />} />
+                            <Route path="/provident_fund" element={<ProvidentFundAsset />} />
+                            <Route path="/pension_accounts" element={<PensionAccountAsset />} />
                             <Route path="/custom_assets" element={<CustomAssets />} />
                             <Route path="/intellectual_property" element={<IntellectualProperties />} />
                             <Route path="/digital_assets" element={<DigitalAssets />} />
