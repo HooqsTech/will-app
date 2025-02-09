@@ -2,8 +2,10 @@ import { Box, Grid2 } from '@mui/material';
 import * as React from 'react';
 import Sidebar from '../components/Sidebar';
 import { BrowserRouter, Route, Routes } from 'react-router';
-import BasicDetails from './BasicDetails';
+import BasicDetails from './PersonalDetails';
 import AssetDetails from './AssetDetails';
+import PersonalDetails from './PersonalDetails';
+import AddressDetails from './AddressDetails';
 
 
 const YourWill: React.FC = () => {
@@ -18,8 +20,8 @@ const YourWill: React.FC = () => {
                 <Grid2 size={9}>
                     <Box sx={{ height: '100%', padding: '5%', bgcolor: "white" }}>
                         <Routes>
-                            <Route path="/personal_details" element={<BasicDetails />} />
-                            <Route path="/asset-details" element={<AssetDetails />} />
+                            <Route path="/personal_details" element={<PersonalDetails />} />
+                            <Route path="/address_details" element={<AddressDetails />} />
                         </Routes>
                     </Box>
                 </Grid2>
