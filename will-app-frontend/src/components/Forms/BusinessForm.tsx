@@ -8,7 +8,7 @@ interface IBankAccountFormProps {
     index: number
 }
 
-const BankAccountForm: React.FC<IBankAccountFormProps> = ({ index }) => {
+const BusinessForm: React.FC<IBankAccountFormProps> = ({ index }) => {
     const [formState, setFormState] = useRecoilState<IBusinessState[]>(businessesState);
     const item = formState[index];
 
@@ -19,7 +19,7 @@ const BankAccountForm: React.FC<IBankAccountFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Business">
+        <CustomFormContainer hideBorder>
             <CustomSelect
                 label="Business Type"
                 options={["Proprietorship", "LLP/Partnership", "Private Limited"]}
@@ -75,4 +75,4 @@ const BankAccountForm: React.FC<IBankAccountFormProps> = ({ index }) => {
     )
 }
 
-export default BankAccountForm
+export default BusinessForm

@@ -19,7 +19,7 @@ const DebentureForm: React.FC<IDebentureFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Debenture">
+        <CustomFormContainer hideBorder>
             <CustomSelect
                 label="Debenture Type"
                 options={["Single", "Joint"]}

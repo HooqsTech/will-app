@@ -9,13 +9,13 @@ interface ICustomSelectProps {
 
 const CustomSelect: React.FC<ICustomSelectProps> = ({ label, options, onChange, value }) => {
     return (
-        <FormControl className='space-y-1' fullWidth>
+        <div className='space-y-1 w-full'>
             <p className='text-slate-600'>{label}</p>
             <Select
                 required
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className='bg-gray-50'
+                className='bg-gray-50 w-full'
                 size='small'
             >
                 {
@@ -25,7 +25,7 @@ const CustomSelect: React.FC<ICustomSelectProps> = ({ label, options, onChange, 
                 }
 
             </Select>
-        </FormControl>
+        </div>
     )
 }
 

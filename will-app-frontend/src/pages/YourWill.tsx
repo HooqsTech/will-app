@@ -13,6 +13,10 @@ import IntellectualProperties from './IntellectualProperties';
 import DigitalAssets from './DigitalAssets';
 import Jewelleries from './Jewelleries';
 import Vehicles from './Vehicles';
+import Escops from './Escops';
+import Debentures from './Debentures';
+import Bonds from './Bonds';
+import Businesses from './Businesses';
 
 
 const YourWill: React.FC = () => {
@@ -35,6 +39,10 @@ const YourWill: React.FC = () => {
                             <Route path="/digital_assets" element={<DigitalAssets />} />
                             <Route path="/jewelry" element={<Jewelleries />} />
                             <Route path="/vehicles" element={<Vehicles />} />
+                            <Route path="/esops" element={<Escops />} />
+                            <Route path="/debentures" element={<Debentures />} />
+                            <Route path="/bonds" element={<Bonds />} />
+                            <Route path="/business" element={<Businesses />} />
                         </Routes>
                     </Box>
                 </Grid2>

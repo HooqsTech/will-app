@@ -19,7 +19,7 @@ const BondForm: React.FC<IBondFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Bond">
+        <CustomFormContainer hideBorder>
             <CustomSelect
                 label="Bond Type"
                 options={["Single", "Joint"]}

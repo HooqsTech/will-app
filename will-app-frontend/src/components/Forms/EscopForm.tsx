@@ -18,7 +18,7 @@ const EscopForm: React.FC<IEscopFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="ESCOP">
+        <CustomFormContainer hideBorder>
             <CustomTextBox
                 value={item.companyName}
                 onChange={(e) => handleChange(index, "companyName", e)}
