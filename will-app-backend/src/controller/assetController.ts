@@ -3,28 +3,6 @@ import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
-// Create Asset
-export const createAsset = async (req: Request, res: Response) => {
-    try {
-        const { user_id, type, subtype, data } = req.body;
-
-        const asset = await prisma.assets.create({
-            data: {
-                user_id,
-                type,
-                subtype,
-                data,
-            },
-        });
-
-        res.status(201).json(asset);
-    } catch (error) {
-        console.error("Error creating asset:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-};
-
-// Get Asset by ID
 export const getAssetById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -44,7 +22,6 @@ export const getAssetById = async (req: Request, res: Response) => {
     }
 };
 
-// Update Asset by ID
 export const updateAssetById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -132,25 +109,32 @@ export const upsertAsset = async (req: Request, res: Response) => {
     }
 };
 
-
 export const getAssets = async (req: Request, res: Response) => {
     try {
         const { user_id, type, subtype } = req.query;
 
+        // Constructing the query
         const whereClause: any = {};
 
         if (user_id) {
-            whereClause.user_id = parseInt(user_id as string);
+            const parsedUserId = parseInt(user_id as string, 10);
+            if (isNaN(parsedUserId)) {
+                return res.status(400).json({ error: "Invalid user_id" });
+            }
+            whereClause.user_id = parsedUserId;
         }
 
         if (type) {
+            console.log(type);
             whereClause.type = type as string;
         }
 
         if (subtype) {
+            console.log(type);
             whereClause.subtype = subtype as string;
         }
 
+        // Fetching assets based on conditions
         const assets = await prisma.assets.findMany({
             where: whereClause,
         });
@@ -182,6 +166,44 @@ export const getAssetsByUserId = async (req: Request, res: Response) => {
         res.status(200).json(assets);
     } catch (error) {
         console.error("Error fetching assets by user_id:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const updateAssetByUserId = async (req: Request, res: Response) => {
+    try {
+        const { user_id, type, subtype, data } = req.body;
+
+        if (!user_id || !type || !subtype) {
+            return res.status(400).json({ error: "user_id, type, and subtype are required" });
+        }
+
+        // Check if the asset exists
+        const existingAsset = await prisma.assets.findFirst({
+            where: {
+                user_id,
+                type,
+                subtype
+            }
+        });
+
+        if (!existingAsset) {
+            return res.status(404).json({ error: "Asset not found" });
+        }
+
+        // Update the asset
+        const updatedAsset = await prisma.assets.update({
+            where: { id: existingAsset.id }, // Use the found asset's ID
+            data: {
+                data, // Update the asset data
+                updated_at: new Date() // Update timestamp
+            }
+        });
+
+        // Return the updated asset
+        res.status(200).json(updatedAsset);
+    } catch (error) {
+        console.error("Error updating asset:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };
