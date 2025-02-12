@@ -5,7 +5,7 @@ interface ICustomTextBoxProps {
     label: string;
     type: HTMLInputTypeAttribute;
     onChange: (text: string) => void
-    value: string
+    value: unknown
 }
 
 const CustomTextBox: React.FC<ICustomTextBoxProps> = ({ label, type, onChange, value }) => {
