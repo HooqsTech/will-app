@@ -102,9 +102,9 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                     {
                         item.organization === "Other" &&
                         <CustomTextBox
-                            value={item.phone}
-                            onChange={(e) => handleChange(index, "phone", e)}
-                            label="Phone"
+                            value={item.otherOrganization}
+                            onChange={(e) => handleChange(index, "otherOrganization", e)}
+                            label="Other Organization"
                             type="text" />
                     }
                     <CustomTextBox
