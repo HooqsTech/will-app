@@ -18,7 +18,7 @@ const PensionAccountForm: React.FC<IPensionAccountFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Pension Account">
+        <CustomFormContainer hideBorder>
             <CustomTextBox
                 value={item.schemeName}
                 onChange={(e) => handleChange(index, "schemeName", e)}

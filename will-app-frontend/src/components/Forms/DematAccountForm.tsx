@@ -18,7 +18,7 @@ const DematAccountForm: React.FC<IDematAccountFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Demat Account">
+        <CustomFormContainer hideBorder>
             <CustomTextBox
                 value={item.brokerName}
                 onChange={(e) => handleChange(index, "brokerName", e)}

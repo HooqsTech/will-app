@@ -19,7 +19,7 @@ const SafetyDepositBoxForm: React.FC<ISafetyDepositBoxFormProps> = ({ index }) =
     };
 
     return (
-        <CustomFormContainer formLabel="Safety Deposit Box / Locker">
+        <CustomFormContainer hideBorder>
             <CustomSelect
                 label="Type"
                 options={["Single", "Joint"]}

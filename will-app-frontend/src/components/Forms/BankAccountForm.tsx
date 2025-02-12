@@ -19,7 +19,7 @@ const BankAccountForm: React.FC<IBankAccountFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Bank Account">
+        <CustomFormContainer hideBorder>
             <CustomSelect
                 label="Account Type"
                 options={["Single", "Joint"]}

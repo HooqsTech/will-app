@@ -18,7 +18,7 @@ const MutualFundForm: React.FC<IMutualFundFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Mutual Fund">
+        <CustomFormContainer hideBorder>
             <CustomTextBox
                 value={item.noOfHolders}
                 onChange={(e) => handleChange(index, "noOfHolders", e)}

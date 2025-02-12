@@ -19,7 +19,7 @@ const ProvidentFundForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
     };
 
     return (
-        <CustomFormContainer formLabel="Provident Fund">
+        <CustomFormContainer hideBorder>
             <CustomSelect
                 label="Type"
                 options={["EPF", "GPF", "PPF"]}

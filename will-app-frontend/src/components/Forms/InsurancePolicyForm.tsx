@@ -19,7 +19,7 @@ const InsurancePolicyForm: React.FC<IInsurancePolicyFormProps> = ({ index }) => 
     };
 
     return (
-        <CustomFormContainer formLabel="Insurance Policy">
+        <CustomFormContainer hideBorder>
             <CustomSelect
                 label="Insurance Type"
                 options={["Life", "Health"]}
