@@ -1,6 +1,5 @@
-import { AddressDetails } from '../models/userResponseModel'; // Import the updated AddressDetails interface
+import { AddressDetails } from '../models/userResponseModel';
 
-// Upsert address details (Create or Update based on id)
 export const upsertAddressDetails = async (addressData: AddressDetails): Promise<AddressDetails> => {
   const { city, email, state, address, pincode, address_1, address_2, phone_number } = addressData;
 

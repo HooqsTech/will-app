@@ -285,4 +285,3 @@ export interface PersonalDetails {
     pets: PetDetails | null;
     excluded_persons: ExcludedPerson[] | null;
   }
-  

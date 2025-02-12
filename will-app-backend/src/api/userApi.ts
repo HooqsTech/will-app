@@ -59,4 +59,3 @@ export const getUserDetailsByPhone = async (phoneNumber: string): Promise<any> =
     const userDetails: JSONResponse = await response.json();
     return userDetails;
 };
-

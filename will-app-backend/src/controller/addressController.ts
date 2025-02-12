@@ -46,10 +46,10 @@ export const getAddressDetails = async (req: Request, res: Response): Promise<Re
 export const deleteAddressDetails = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const address = await prisma.address_details.delete({
-            where: { id: parseInt(id) },
-        });
-        res.status(200).json({ message: "Address deleted successfully", address });
+        
+        await prisma.address_details.delete({  where: { id: parseInt(id) }});
+
+        res.status(200).json({ message: "Address deleted successfully"});
     } catch (error) {
         console.error("Error deleting address details:", error);
         res.status(500).json({ error: "Internal server error" });

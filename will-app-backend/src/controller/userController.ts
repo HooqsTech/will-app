@@ -70,11 +70,9 @@ export const deleteUserByPhone = async (req: Request, res: Response) => {
     try {
         const { phone_number } = req.params;
 
-        const user = await prisma.users.delete({
-            where: { phone_number }, 
-        });
+        await prisma.users.delete({ where: { phone_number }});
 
-        res.status(200).json({ message: "User deleted successfully", user });
+        res.status(200).json({ message: "User deleted successfully" });
     } catch (error) {
         console.error("Error deleting user:", error);
         res.status(500).json({ error: "Internal server error" });
