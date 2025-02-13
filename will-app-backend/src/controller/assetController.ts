@@ -25,16 +25,16 @@ export const getAssetById = async (req: Request, res: Response) => {
 export const updateAssetById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { user_id, type, subtype, data } = req.body;
+        const { userid, type, subtype, data } = req.body;
 
         const asset = await prisma.assets.update({
             where: { id: parseInt(id) },
             data: {
-                user_id,
+                userid,
                 type,
                 subtype,
                 data,
-                updated_at: new Date(),
+                updatedat: new Date(),
             },
         });
 
@@ -63,12 +63,12 @@ export const deleteAssetById = async (req: Request, res: Response) => {
 
 export const upsertAsset = async (req: Request, res: Response) => {
     try {
-        const { id, user_id, type, subtype, data } = req.body;
+        const { id, userid, type, subtype, data } = req.body;
 
         // Check if the combination of user_id, type, and subtype exists
         const existingAsset = await prisma.assets.findFirst({
             where: {
-                user_id: user_id,  // Check by user_id
+                userid: userid,  // Check by user_id
                 type: type,        // Check by type
                 subtype: subtype   // Check by subtype
             }
@@ -80,23 +80,23 @@ export const upsertAsset = async (req: Request, res: Response) => {
             asset = await prisma.assets.update({
                 where: { id: existingAsset.id }, // Update by the id of the existing asset
                 data: {
-                    user_id,
+                    userid,
                     type,
                     subtype,
                     data,
-                    updated_at: new Date(), // Update timestamp
+                    updatedat: new Date(), // Update timestamp
                 },
             });
         } else {
             // If it doesn't exist, create a new asset
             asset = await prisma.assets.create({
                 data: {
-                    user_id,
+                    userid,
                     type,
                     subtype,
                     data,
-                    created_at: new Date(), // Ensure created_at is set
-                    updated_at: new Date(), // Ensure updated_at is set
+                    createdat: new Date(), // Ensure created_at is set
+                    updatedat: new Date(), // Ensure updated_at is set
                 },
             });
         }
@@ -158,7 +158,7 @@ export const getAssetsByUserId = async (req: Request, res: Response) => {
         // Fetch the assets by user_id
         const assets = await prisma.assets.findMany({
             where: {
-                user_id: parseInt(user_id as string), // Ensure the user_id is an integer
+                userid: parseInt(user_id as string), // Ensure the user_id is an integer
             },
         });
 
@@ -172,16 +172,16 @@ export const getAssetsByUserId = async (req: Request, res: Response) => {
 
 export const updateAssetByUserId = async (req: Request, res: Response) => {
     try {
-        const { user_id, type, subtype, data } = req.body;
+        const { userid, type, subtype, data } = req.body;
 
-        if (!user_id || !type || !subtype) {
+        if (!userid || !type || !subtype) {
             return res.status(400).json({ error: "user_id, type, and subtype are required" });
         }
 
         // Check if the asset exists
         const existingAsset = await prisma.assets.findFirst({
             where: {
-                user_id,
+                userid,
                 type,
                 subtype
             }
@@ -196,7 +196,7 @@ export const updateAssetByUserId = async (req: Request, res: Response) => {
             where: { id: existingAsset.id }, // Use the found asset's ID
             data: {
                 data, // Update the asset data
-                updated_at: new Date() // Update timestamp
+                updatedat: new Date() // Update timestamp
             }
         });
 

@@ -34,7 +34,7 @@ export const getBeneficiariesByUserId = async (req: Request, res: Response) => {
 
         const beneficiaries = await prisma.beneficiaries.findMany({
             where: {
-                user_id: parseInt(user_id as string),
+                userid: parseInt(user_id as string),
             },
         });
 
@@ -48,27 +48,27 @@ export const getBeneficiariesByUserId = async (req: Request, res: Response) => {
 // Create or update a beneficiary (Upsert)
 export const upsertBeneficiary = async (req: Request, res: Response) => {
     try {
-        const { id, user_id, type, data } = req.body;
+        const { id, userid, type, data } = req.body;
 
         let beneficiary;
         if (id) {
             beneficiary = await prisma.beneficiaries.update({
                 where: { id },
                 data: {
-                    user_id,
+                    userid,
                     type,
                     data,
-                    updated_at: new Date(),
+                    updatedat: new Date(),
                 },
             });
         } else {
             beneficiary = await prisma.beneficiaries.create({
                 data: {
-                    user_id,
+                    userid,
                     type,
                     data,
-                    created_at: new Date(),
-                    updated_at: new Date(),
+                    createdat: new Date(),
+                    updatedat: new Date(),
                 },
             });
         }
@@ -84,15 +84,15 @@ export const upsertBeneficiary = async (req: Request, res: Response) => {
 export const updateBeneficiaryById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { user_id, type, data } = req.body;
+        const { userid, type, data } = req.body;
 
         const beneficiary = await prisma.beneficiaries.update({
             where: { id: parseInt(id) },
             data: {
-                user_id,
+                userid,
                 type,
                 data,
-                updated_at: new Date(),
+                updatedat: new Date(),
             },
         });
 

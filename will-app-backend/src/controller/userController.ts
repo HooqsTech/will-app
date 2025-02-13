@@ -1,34 +1,46 @@
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
-import { User, ExcludedPerson,  Pet, Beneficiary,Liability, Asset } from '../models/formatUserModel';
+import { User, ExcludedPerson, Pet, Beneficiary, Liability, Asset } from '../models/formatUserModel';
 
 const prisma = new PrismaClient();
 
 export const createUser = async (req: Request, res: Response) => {
     try {
         const {
-            full_name,
-            father_name,
-            phone_number,
-            user_name,
+            fullName,
+            fatherName,
+            phoneNumber,
+            userName,
             password,
             gender,
             dob,
             religion,
-            aadhaar_number,
+            aadhaarNumber,
+            addressDetails,
         } = req.body;
 
+        // Check if the phone number already exists
+        const existingUser = await prisma.users.findUnique({
+            where: { phonenumber: phoneNumber },
+        });
+
+        if (existingUser) {
+            return res.status(400).json({ error: "Phone number already exists" });
+        }
+
+        // Create the user if phone number is not already in use
         const user = await prisma.users.create({
             data: {
-                full_name,
-                father_name,
-                phone_number,
-                user_name,
+                fullname: fullName,
+                fathername: fatherName,
+                phonenumber: phoneNumber,
+                username: userName,
                 password,
                 gender,
                 dob: dob ? new Date(dob) : null,
                 religion,
-                aadhaar_number,
+                aadhaarnumber: aadhaarNumber,
+                addressdetails: addressDetails,
             },
         });
 
@@ -39,24 +51,95 @@ export const createUser = async (req: Request, res: Response) => {
     }
 };
 
+// export const upsertUser = async (req: Request, res: Response) => {
+//     try {
+//         const {
+//             full_name,
+//             father_name,
+//             phone_number,
+//             user_name,
+//             password,
+//             gender,
+//             dob,
+//             religion,
+//             aadhaar_number,
+//             addressdetails
+//         } = req.body;
+
+//         const user = await prisma.users.upsert({
+//             where: { phonenumber: phone_number },
+//             update: {
+//                 fullname: full_name,
+//                 fathername: father_name,
+//                 username: user_name,
+//                 password,
+//                 gender,
+//                 dob: dob ? new Date(dob) : null,
+//                 religion,
+//                 aadhaarnumber: aadhaar_number,
+//                 addressdetails, 
+//             },
+//             create: {
+//                 fullname: full_name,
+//                 fathername: father_name,
+//                 phonenumber: phone_number,
+//                 username: user_name,
+//                 password,
+//                 gender,
+//                 dob: dob ? new Date(dob) : null,
+//                 religion,
+//                 aadhaarnumber: aadhaar_number,
+//                 addressdetails,
+//             },
+//         });
+
+//         res.status(200).json(user);
+//     } catch (error) {
+//         console.error("Error upserting user:", error);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// };
+
 export const upsertUser = async (req: Request, res: Response) => {
     try {
         const {
-            full_name,
-            father_name,
-            phone_number,
-            user_name,
+            fullName,
+            fatherName,
+            phoneNumber,
+            userName,
             password,
             gender,
             dob,
             religion,
-            aadhaar_number,
+            aadhaarNumber,
+            addressDetails,
         } = req.body;
 
         const user = await prisma.users.upsert({
-            where: { phone_number },
-            update: { full_name, father_name, user_name, password, gender, dob: dob ? new Date(dob) : null, religion, aadhaar_number },
-            create: { full_name, father_name, phone_number, user_name, password, gender, dob: dob ? new Date(dob) : null, religion, aadhaar_number },
+            where: { phonenumber: phoneNumber },
+            update: {
+                fullname: fullName,
+                fathername: fatherName,
+                username: userName,
+                password,
+                gender,
+                dob: dob ? new Date(dob) : null,
+                religion,
+                aadhaarnumber: aadhaarNumber,
+                addressdetails: addressDetails,
+            },
+            create: {
+                fullname: fullName,
+                fathername: fatherName,
+                phonenumber: phoneNumber,
+                username: userName,
+                password,
+                gender,
+                dob: dob ? new Date(dob) : null,
+                religion,
+                aadhaarnumber: aadhaarNumber,
+                addressdetails: addressDetails,
+            },
         });
 
         res.status(200).json(user);
@@ -68,23 +151,32 @@ export const upsertUser = async (req: Request, res: Response) => {
 
 export const deleteUserByPhone = async (req: Request, res: Response) => {
     try {
-        const { phone_number } = req.params;
+        const { phoneNumber } = req.params;  // Get phoneNumber from params
 
-        await prisma.users.delete({ where: { phone_number }});
+        // Validate if phoneNumber is provided
+        if (!phoneNumber) {
+            return res.status(400).json({ error: "Phone number is required" });
+        }
 
-        res.status(200).json({ message: "User deleted successfully" });
+        // Delete the user by phoneNumber
+        const user = await prisma.users.delete({
+            where: {
+                phonenumber: phoneNumber,  // Make sure phoneNumber is provided correctly
+            },
+        });
+
+        res.status(200).json({ message: "User deleted successfully", user });
     } catch (error) {
-        console.error("Error deleting user:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };
 
 export const getUserByPhone = async (req: Request, res: Response): Promise<void> => {
     try {
-        const phoneNumber = req.params.phone_number;
+        const phoneNumber = req.params.phoneNumber;  // Updated to camelCase
 
         const user = await prisma.users.findUnique({
-            where: { phone_number: phoneNumber },
+            where: { phonenumber: phoneNumber },  // Updated to camelCase
         });
 
         if (!user) {
@@ -101,15 +193,14 @@ export const getUserByPhone = async (req: Request, res: Response): Promise<void>
 
 export const getUserDetailsByPhone = async (req: Request, res: Response): Promise<void> => {
     try {
-        const phoneNumber = req.params.phone_number;
+        const phoneNumber = req.params.phoneNumber;  // Updated to camelCase
 
         const user = await prisma.users.findUnique({
-            where: { phone_number: phoneNumber },
+            where: { phonenumber: phoneNumber },  // Updated to camelCase
             include: {
-                address_details: true,
                 assets: true,
                 beneficiaries: true,
-                excluded_persons: true,
+                excludedpersons: true,
                 liabilities: true,
                 pets: true,
             },
@@ -131,118 +222,100 @@ export const getUserDetailsByPhone = async (req: Request, res: Response): Promis
 };
 
 export const formatUserResponse = (user: User | any) => {
+    console.log(user.liabilities); 
     return {
-        personal_details: {
-            full_name: user.full_name,
-            father_name: user.father_name,
+        personalDetails: {
+            fullName: user.fullname,
+            fatherName: user.fathername,
             gender: user.gender,
-            dob: user.dob.toISOString().split("T")[0], // Convert to YYYY-MM-DD
+            dob: user.dob?.toISOString().split("T")[0], 
             religion: user.religion,
-            aadhaar_number: user.aadhaar_number,
-            username: user.user_name,
-            phone_number: user.phone_number,
+            aadhaarNumber: user.aadhaarnumber,
+            username: user.username,
+            phoneNumber: user.phonenumber,
         },
-        address_details: user.address_details.length > 0 ? user.address_details[0].data : {},
-        assets_details: {
-            immovable_assets: user.assets
-                .filter((asset: Asset) => asset.type === "immovable_assets")
+        addressDetails: user.addressdetails || {}, 
+        assetsDetails: {
+            immovableAssets: user.assets
+                .filter((asset: Asset) => asset.type === "immovableAssets")
                 .map((asset: Asset) => asset.data),
-            financial_assets: {
-                bank_accounts: user.assets
-                    .filter((asset: Asset) => asset.type === "financial_assets" && asset.subtype === "bank_accounts")
+            financialAssets: {
+                bankAccounts: user.assets
+                    .filter((asset: Asset) => asset.type === "financialAssets" && asset.subtype === "bankAccounts")
                     .flatMap((asset: Asset) => asset.data),
-                fixed_deposits: user.assets
-                    .filter((asset: Asset) => asset.type === "financial_assets" && asset.subtype === "fixed_deposits")
+                fixedDeposits: user.assets
+                    .filter((asset: Asset) => asset.type === "financialAssets" && asset.subtype === "fixedDeposits")
                     .flatMap((asset: Asset) => asset.data),
-                insurance_policies: user.assets
-                    .filter((asset: Asset) => asset.type === "financial_assets" && asset.subtype === "insurance_policies")
+                insurancePolicies: user.assets
+                    .filter((asset: Asset) => asset.type === "financialAssets" && asset.subtype === "insurancePolicies")
                     .flatMap((asset: Asset) => asset.data),
-                safe_deposit_boxes: user.assets
-                    .filter((asset: Asset) => asset.type === "financial_assets" && asset.subtype === "safe_deposit_boxes")
+                safeDepositBoxes: user.assets
+                    .filter((asset: Asset) => asset.type === "financialAssets" && asset.subtype === "safeDepositBoxes")
                     .flatMap((asset: Asset) => asset.data),
-                demat_accounts: user.assets
-                    .filter((asset: Asset) => asset.type === "financial_assets" && asset.subtype === "demat_accounts")
+                dematAccounts: user.assets
+                    .filter((asset: Asset) => asset.type === "financialAssets" && asset.subtype === "dematAccounts")
                     .flatMap((asset: Asset) => asset.data),
-                mutual_funds: user.assets
-                    .filter((asset: Asset) => asset.type === "financial_assets" && asset.subtype === "mutual_funds")
+                mutualFunds: user.assets
+                    .filter((asset: Asset) => asset.type === "financialAssets" && asset.subtype === "mutualFunds")
                     .flatMap((asset: Asset) => asset.data),
-                provident_fund: user.assets
-                    .filter((asset: Asset) => asset.type === "financial_assets" && asset.subtype === "provident_fund")
+                providentFund: user.assets
+                    .filter((asset: Asset) => asset.type === "financialAssets" && asset.subtype === "providentFund")
                     .flatMap((asset: Asset) => asset.data),
-                pension_accounts: user.assets
-                    .filter((asset: Asset) => asset.type === "financial_assets" && asset.subtype === "pension_accounts")
+                pensionAccounts: user.assets
+                    .filter((asset: Asset) => asset.type === "financialAssets" && asset.subtype === "pensionAccounts")
                     .flatMap((asset: Asset) => asset.data),
             },
-            business_assets: {
+            businessAssets: {
                 business: user.assets
-                    .filter((asset: Asset) => asset.type === "business_assets" && asset.subtype === "business")
+                    .filter((asset: Asset) => asset.type === "businessAssets" && asset.subtype === "business")
                     .flatMap((asset: Asset) => asset.data),
                 bonds: user.assets
-                    .filter((asset: Asset) =>  asset.type === "business_assets" && asset.subtype === "bonds")
+                    .filter((asset: Asset) => asset.type === "businessAssets" && asset.subtype === "bonds")
                     .flatMap((asset: Asset) => asset.data),
                 debentures: user.assets
-                    .filter((asset: Asset) => asset.type === "business_assets" && asset.subtype === "debentures")
+                    .filter((asset: Asset) => asset.type === "businessAssets" && asset.subtype === "debentures")
                     .flatMap((asset: Asset) => asset.data),
                 esops: user.assets
-                    .filter((asset: Asset) =>  asset.type === "business_assets" && asset.subtype === "esops")
+                    .filter((asset: Asset) => asset.type === "businessAssets" && asset.subtype === "esops")
+                    .flatMap((asset: Asset) => asset.data),
+                proprietorship: user.assets
+                    .filter((asset: Asset) => asset.type === "businessAssets" && asset.subtype === "proprietorship")
                     .flatMap((asset: Asset) => asset.data),
             },
-            other_investments: {
+            otherInvestments: {
                 vehicles: user.assets
-                    .filter((asset: Asset) =>  asset.type === "other_investments" && asset.subtype === "vehicles")
+                    .filter((asset: Asset) => asset.type === "otherInvestments" && asset.subtype === "vehicles")
                     .flatMap((asset: Asset) => asset.data),
                 jewelry: user.assets
-                    .filter((asset: Asset) =>  asset.type === "other_investments" && asset.subtype === "jewelry")
+                    .filter((asset: Asset) => asset.type === "otherInvestments" && asset.subtype === "jewelry")
                     .flatMap((asset: Asset) => asset.data),
-                digital_assets: user.assets
-                    .filter((asset: Asset) =>  asset.type === "other_investments" && asset.subtype === "digital_assets")
+                digitalAssets: user.assets
+                    .filter((asset: Asset) => asset.type === "otherInvestments" && asset.subtype === "digitalAssets")
                     .flatMap((asset: Asset) => asset.data),
-                intellectual_property: user.assets
-                    .filter((asset: Asset) =>  asset.type === "other_investments" && asset.subtype === "intellectual_property")
+                intellectualProperty: user.assets
+                    .filter((asset: Asset) => asset.type === "otherInvestments" && asset.subtype === "intellectualProperty")
                     .flatMap((asset: Asset) => asset.data),
-                custom_assets: user.assets
-                    .filter((asset: Asset) =>  asset.type === "other_investments" && asset.subtype === "custom_assets")
+                customAssets: user.assets
+                    .filter((asset: Asset) => asset.type === "otherInvestments" && asset.subtype === "customAssets")
                     .flatMap((asset: Asset) => asset.data),
-            }
+            },
         },
         liabilities: {
-            home_loans: user.liabilities
-                .filter((liability: Liability) => liability.type === "home_loans")
+            homeLoans: user.liabilities
+                .filter((liability: Liability) => liability.type === "homeLoans")
                 .map((liability: Liability) => liability.data),
-            personal_loans: user.liabilities
-                .filter((liability: Liability) => liability.type === "personal_loans")
+            personalLoans: user.liabilities
+                .filter((liability: Liability) => liability.type === "personalLoans")
                 .map((liability: Liability) => liability.data),
-            vehicle_loans: user.liabilities
-                .filter((liability: Liability) => liability.type === "vehicle_loans")
+            vehicleLoans: user.liabilities
+                .filter((liability: Liability) => liability.type === "vehicleLoans")
                 .map((liability: Liability) => liability.data),
-            education_loans: user.liabilities
-                .filter((liability: Liability) => liability.type === "education_loans")
-                .map((liability: Liability) => liability.data),
-            other_liabilities: user.liabilities
-                .filter((liability: Liability) => liability.type === "other_liabilities")
+            creditCardDebt: user.liabilities
+                .filter((liability: Liability) => liability.type === "creditCardDebt")
                 .map((liability: Liability) => liability.data),
         },
-        beneficiaries: {
-            married: user.beneficiaries.find((b: Beneficiary) => b.type === "spouse")?.data || null,
-            children: user.beneficiaries
-                .filter((b: Beneficiary) => b.type === "children")
-                .map((b: Beneficiary) => b.data),
-            additional_beneficiaries: user.beneficiaries
-                .filter((b: Beneficiary) => b.type === "additional_beneficiaries")
-                .map((b: Beneficiary) => b.data),
-        },
-        pets: {
-            has_pets: user.pets.length > 0,
-            pet_details: user.pets.map((pet: Pet) => pet.data),
-        },
-        excluded_persons: user.excluded_persons
-            .map((item: { data: Array<{ id: string, reason: string, full_name: string, relationship: string }> }) => 
-                item.data.map((excluded: { id: string,reason: string, full_name: string, relationship: string }) => ({
-                    id: excluded.id,
-                    reason: excluded.reason,
-                    full_name: excluded.full_name,
-                    relationship: excluded.relationship,
-                }))
-        ).flat(),
+        beneficiaries: user.beneficiaries?.map((beneficiary: Beneficiary) => beneficiary.data) || [],
+        excludedPeople: user.excludedpersons?.map((person: ExcludedPerson) => person.data) || [],
+        pets: user.pets?.map((pet: Pet) => pet.data) || [],
     };
 };
