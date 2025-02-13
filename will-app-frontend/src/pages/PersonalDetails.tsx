@@ -1,25 +1,15 @@
-import { useRecoilValue } from "recoil";
-import { basicDetailsState } from "../atoms/BasicDetailsState";
 import CustomButton from "../components/CustomButton";
 import PersonalDetailsForm from "../components/Forms/PersonalDetailsForm";
-import { createUser } from "../api/user";
-import { IPersonalDetails } from "../models/user";
+import { useNavigate } from "react-router";
+
 
 const PersonalDetails = () => {
-    const formState = useRecoilValue(basicDetailsState);
+    
+    const navigate = useNavigate();
 
     const addUserDetails = () => {
-        const userdata: IPersonalDetails = {
-            full_name: formState.fullName,
-            father_name: formState.fatherName,
-            gender: formState.gender,
-            dob: formState.dob?.toString() ?? "",
-            religion: formState.religion,
-            aadhaar_number: formState.aadhaarNumber,
-            username: formState.fullName,
-            phone_number: formState.phoneNumber ?? ""
-          }
-        createUser(userdata)
+       
+        navigate("/address_details");
     }
     return (
         <div className="pb-10 flex flex-col items-center">

@@ -305,7 +305,7 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
 
 export default function Sidebar2() {
 
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const handleSelectedItemChange = (event: React.SyntheticEvent, itemId: string) => {
         navigate("/" + itemId);
     };

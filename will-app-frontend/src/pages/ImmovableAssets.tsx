@@ -4,11 +4,26 @@ import CustomButton from '../components/CustomButton';
 import CustomAccordion from '../components/CustomAccordion';
 import ImmovableAssetForm from '../components/Forms/ImmovableAssetForm';
 import { useState } from 'react';
+import { IAsset } from '../models/asset';
+import { upsertAsset } from '../api/asset';
 
 const ImmovableAssets = () => {
     const [formState, setFormState] = useRecoilState<IImmovableAssetState[]>(immovableAssetsState);
     const [currentItem, setCurrentItem] = useState<number>(0);
     const addImmovableAsset = () => {
+        var data:IAsset = {
+            userid: 1,
+            type: "immovableAssets",
+            subtype: formState[currentItem].propertyType,
+            data: {
+                "assetId": 123,
+                "ownershipType": formState[currentItem].ownershipType,
+                "address": formState[currentItem].address,
+                "city": formState[currentItem].city,
+                "pincode": formState[currentItem].pincode
+            }
+        }
+        upsertAsset(data);
         setFormState((prevState) => [
             ...prevState,
             {
@@ -19,7 +34,9 @@ const ImmovableAssets = () => {
                 city: "",
             },
         ]);
-        setCurrentItem(formState.length)
+        setCurrentItem(formState.length);
+
+       // upsertAsset()
     };
 
     const getSubTitle = (index: number) => {

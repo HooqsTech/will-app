@@ -1,15 +1,16 @@
 import { useRecoilState } from "recoil";
 import CustomTextBox from "../CustomTextBox"
-import { basicDetailsState, IBasicDetailsState } from "../../atoms/BasicDetailsState";
-import { Dayjs } from "dayjs";
+import { basicDetailsState } from "../../atoms/BasicDetailsState";
+import dayjs, { Dayjs } from "dayjs";
 import CustomSelect from "../CustomSelect";
 import CustomDatePicker from "../CustomDatePicker";
 import CustomFormContainer from "../CustomFormContainer";
+import { IUserDetails } from "../../models/user";
 
 const PersonalDetailsForm = () => {
     const [formState, setFormState] = useRecoilState(basicDetailsState);
 
-    const handleChange = (key: keyof IBasicDetailsState, value: string | Dayjs | null) => {
+    const handleChange = (key: keyof IUserDetails, value: string | Dayjs | null) => {
         setFormState((prevState) => ({
             ...prevState,
             [key]: value,
@@ -30,22 +31,23 @@ const PersonalDetailsForm = () => {
             <CustomSelect
                 label="Gender"
                 options={["Male", "Female", "Others"]}
-                value={formState.gender}
+                value={formState.gender ?? "Male"}
                 onChange={(e) => handleChange("gender", e)} />
             <CustomDatePicker
                 onChange={(e) => handleChange("dob", e)}
-                value={formState.dob}
+                value={formState.dob ? dayjs(formState.dob): dayjs()}
                 label="DOB" />
             <CustomSelect
                 label="Religion"
                 options={["Hindu", "Muslim", "Christian", "Others"]}
-                value={formState.religion}
+                value={formState.religion ?? "Hindu"}
                 onChange={(e) => handleChange("religion", e)} />
             <CustomTextBox
                 value={formState.aadhaarNumber}
                 onChange={(e) => handleChange("aadhaarNumber", e)}
                 label="Aadhaar Number"
                 type="text" />
+                
         </CustomFormContainer>
     )
 }
