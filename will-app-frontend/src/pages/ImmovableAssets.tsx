@@ -11,7 +11,7 @@ const ImmovableAssets = () => {
     const [formState, setFormState] = useRecoilState<IImmovableAssetState[]>(immovableAssetsState);
     const [currentItem, setCurrentItem] = useState<number>(0);
     const addImmovableAsset = () => {
-        var data:IAsset = {
+        var data: IAsset = {
             userid: 1,
             type: "immovableAssets",
             subtype: formState[currentItem].propertyType,
@@ -35,8 +35,6 @@ const ImmovableAssets = () => {
             },
         ]);
         setCurrentItem(formState.length);
-
-       // upsertAsset()
     };
 
     const getSubTitle = (index: number) => {
@@ -44,7 +42,7 @@ const ImmovableAssets = () => {
 
         const firstLine = address?.trim() || "";
         const secondLine = [city?.trim(), pincode?.trim()].filter(Boolean).join(" - ");
-      
+
         return [firstLine, secondLine].filter(Boolean).join("\n");
     }
 

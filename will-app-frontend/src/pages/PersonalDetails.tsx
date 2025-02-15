@@ -7,16 +7,16 @@ const PersonalDetails = () => {
     
     const navigate = useNavigate();
 
-    const addUserDetails = () => {
-       
+    const addUserDetails = () => {   
         navigate("/address_details");
     }
+
     return (
         <div className="pb-10 flex flex-col items-center">
             <div className="w-lg">
                 <PersonalDetailsForm />
 
-                <CustomButton className='mt-5' onClick={addUserDetails} label="Add" />
+                <CustomButton className='mt-5' onClick={addUserDetails} label="Next" />
             </div>
         </div>
     )

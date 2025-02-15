@@ -8,17 +8,18 @@ import { useNavigate } from "react-router";
 const AddressDetails = () => {
     const formState = useRecoilValue(basicDetailsState);
     const navigate = useNavigate();
-    const addUserDetails = () => {
-           
-        createUser(formState);
-        navigate("/address_details");
-        }
+
+    const addUserDetails = async () => {
+        await createUser(formState);
+        navigate("/immovable_assets");
+    }
+
     return (
         <div className="pb-10 flex flex-col items-center">
             <div className="w-lg">
                 <AddressDetailsForm />
             </div>
-            <CustomButton className='mt-5' onClick={addUserDetails} label="Next" />
+            <CustomButton className='mt-5' onClick={addUserDetails} label="Save & Next" />
         </div>
     )
 }

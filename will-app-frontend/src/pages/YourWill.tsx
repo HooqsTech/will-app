@@ -25,6 +25,7 @@ import DematAccountAsset from './DematAccountAsset';
 import MutualFundAsset from './MutualFundAsset';
 import ProvidentFundAsset from './ProvidentFundAsset';
 import PensionAccountAsset from './PensionAccountAsset';
+import BeneficiariesPage from './BeneficiariesDetails';
 
 
 const YourWill: React.FC = () => {
@@ -59,6 +60,7 @@ const YourWill: React.FC = () => {
                             <Route path="/debentures" element={<Debentures />} />
                             <Route path="/bonds" element={<Bonds />} />
                             <Route path="/business" element={<Businesses />} />
+                            <Route path="/beneficiaries" element={<BeneficiariesPage />} />
                         </Routes>
                     </Box>
                 </Grid2>

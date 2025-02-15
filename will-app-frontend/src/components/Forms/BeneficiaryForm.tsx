@@ -48,35 +48,41 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                 options={["Person", "Charity"]}
                 value={item.type}
                 onChange={(e) => handleChange(index, "type", e)} />
-            <CustomTextBox
-                value={item.fullName}
-                onChange={(e) => handleChange(index, "fullName", e)}
-                label="Full Name"
-                type="text" />
-            <CustomSelect
-                label="Gender"
-                options={["Male", "Female", "Others"]}
-                value={item.type}
-                onChange={(e) => handleChange(index, "gender", e)} />
-            <CustomDatePicker
-                onChange={(e) => handleChange(index, "dateOfBirth", e)}
-                value={item.dateOfBirth}
-                label="DOB" />
-            <CustomTextBox
-                value={item.email}
-                onChange={(e) => handleChange(index, "email", e)}
-                label={"Email"}
-                type="text" />
-            <CustomTextBox
-                value={item.phone}
-                onChange={(e) => handleChange(index, "phone", e)}
-                label="Phone"
-                type="text" />
-            <CustomSelect
-                label="Relationship"
-                options={RELATIONSHIP}
-                value={item.relationship}
-                onChange={(e) => handleChange(index, "relationship", e)} />
+            {
+                item.type === "Person" &&
+                <>
+                    <CustomTextBox
+                        value={item.fullName}
+                        onChange={(e) => handleChange(index, "fullName", e)}
+                        label="Full Name"
+                        type="text" />
+                    <CustomSelect
+                        label="Gender"
+                        options={["Male", "Female", "Others"]}
+                        value={item.type}
+                        onChange={(e) => handleChange(index, "gender", e)} />
+                    <CustomDatePicker
+                        onChange={(e) => handleChange(index, "dateOfBirth", e)}
+                        value={item.dateOfBirth}
+                        label="DOB" />
+                    <CustomTextBox
+                        value={item.email}
+                        onChange={(e) => handleChange(index, "email", e)}
+                        label={"Email"}
+                        type="text" />
+                    <CustomTextBox
+                        value={item.phone}
+                        onChange={(e) => handleChange(index, "phone", e)}
+                        label="Phone"
+                        type="text" />
+                    <CustomSelect
+                        label="Relationship"
+                        options={RELATIONSHIP}
+                        value={item.relationship}
+                        onChange={(e) => handleChange(index, "relationship", e)} />
+                </>
+            }
+
             {/* Charity Section */}
             {
                 item.type === "Charity" &&

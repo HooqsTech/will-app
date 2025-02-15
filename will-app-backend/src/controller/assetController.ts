@@ -75,19 +75,19 @@ export const upsertAsset = async (req: Request, res: Response) => {
         });
 
         let asset;
-        if (existingAsset) {
-            // If it exists, update the asset
-            asset = await prisma.assets.update({
-                where: { id: existingAsset.id }, // Update by the id of the existing asset
-                data: {
-                    userid,
-                    type,
-                    subtype,
-                    data,
-                    updatedat: new Date(), // Update timestamp
-                },
-            });
-        } else {
+        // if (existingAsset) {
+        //     // If it exists, update the asset
+        //     asset = await prisma.assets.update({
+        //         where: { id: existingAsset.id }, // Update by the id of the existing asset
+        //         data: {
+        //             userid,
+        //             type,
+        //             subtype,
+        //             data,
+        //             updatedat: new Date(), // Update timestamp
+        //         },
+        //     });
+        // } else {
             // If it doesn't exist, create a new asset
             asset = await prisma.assets.create({
                 data: {
@@ -99,7 +99,7 @@ export const upsertAsset = async (req: Request, res: Response) => {
                     updatedat: new Date(), // Ensure updated_at is set
                 },
             });
-        }
+        // }
 
         // Return the upserted asset
         res.status(200).json(asset);
