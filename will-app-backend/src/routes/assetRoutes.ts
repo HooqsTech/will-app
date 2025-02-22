@@ -1,14 +1,11 @@
-// import express from 'express';
-// import { getAssetById, updateAssetById, deleteAssetById, upsertAsset, getAssets , getAssetsByUserId, updateAssetByUserId} from '../controller/assetController';
+import express from 'express';
+import { upsertAsset, getAssetsByUserId, deleteAssetsByUserId, deleteAssetById} from '../controller/assetController';
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.get("/assets/userDetails", getAssets);
-// router.put("/assets/update", updateAssetByUserId);
-// router.get('/assets/:id', getAssetById);
-// router.put('/assets/:id', updateAssetById);
-// router.delete('/assets/:id', deleteAssetById);
-// router.post('/assets/upsert', upsertAsset);
-// router.get("/assets", getAssetsByUserId);
+router.get("/assets/getAssetsByUserId", getAssetsByUserId);
+router.post('/assets/upsert', upsertAsset);
+router.delete('/assets/deleteAssetsByUserId', deleteAssetsByUserId);
+router.delete('/assets/deleteAssetById', deleteAssetById);
 
-// export default router;
+export default router;

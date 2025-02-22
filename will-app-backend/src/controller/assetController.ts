@@ -1,7 +1,7 @@
-// import { PrismaClient } from '@prisma/client';
-// import { Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
+import { Request, Response } from 'express';
 
-// const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 // export const getAssetById = async (req: Request, res: Response) => {
 //     try {
@@ -147,63 +147,157 @@
 // };
 
 
-// export const getAssetsByUserId = async (req: Request, res: Response) => {
-//     try {
-//         const { user_id } = req.query;
+export const getAssetsByUserId = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.query;
 
-//         if (!user_id) {
-//             return res.status(400).json({ error: "User ID is required" });
-//         }
+        // Validate user_id
+        if (!userId || typeof userId !== "string") {
+            return res.status(400).json({ error: "User ID is required and must be a valid UUID string" });
+        }
 
-//         // Fetch the assets by user_id
-//         const assets = await prisma.assets.findMany({
-//             where: {
-//                 userid: parseInt(user_id as string), // Ensure the user_id is an integer
-//             },
-//         });
+        // Check if user_id is a valid UUID format
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(userId)) {
+            return res.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
+        }
 
-//         // Return the fetched assets as the response
-//         res.status(200).json(assets);
-//     } catch (error) {
-//         console.error("Error fetching assets by user_id:", error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// };
+        // Fetch the assets by userId
+        const assets = await prisma.assets.findMany({
+            where: {
+                userid : userId,
+            },
+        });
 
-// export const updateAssetByUserId = async (req: Request, res: Response) => {
-//     try {
-//         const { userid, type, subtype, data } = req.body;
+        // Return the fetched assets as the response
+        res.status(200).json(assets);
+    } catch (error) {
+        console.error("Error fetching assets by user_id:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
 
-//         if (!userid || !type || !subtype) {
-//             return res.status(400).json({ error: "user_id, type, and subtype are required" });
-//         }
+export const upsertAsset = async (req: Request, res: Response) => {
+    try {
+        const { id, userId, type, subtype, data } = req.body;
 
-//         // Check if the asset exists
-//         const existingAsset = await prisma.assets.findFirst({
-//             where: {
-//                 userid,
-//                 type,
-//                 subtype
-//             }
-//         });
+        let existingAsset = null;
 
-//         if (!existingAsset) {
-//             return res.status(404).json({ error: "Asset not found" });
-//         }
+        if (id) {
+            // If ID is provided, check if the asset exists by ID
+            existingAsset = await prisma.assets.findUnique({
+                where: { id },
+            });
+        }
 
-//         // Update the asset
-//         const updatedAsset = await prisma.assets.update({
-//             where: { id: existingAsset.id }, // Use the found asset's ID
-//             data: {
-//                 data, // Update the asset data
-//                 updatedat: new Date() // Update timestamp
-//             }
-//         });
+        if (!existingAsset) {
+            // If no asset was found by ID, check by user_id, type, and subtype
+            existingAsset = await prisma.assets.findFirst({
+                where: {
+                    userid: userId,
+                    type: type,
+                    subtype: subtype
+                }
+            });
+        }
 
-//         // Return the updated asset
-//         res.status(200).json(updatedAsset);
-//     } catch (error) {
-//         console.error("Error updating asset:", error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// };
+        let asset;
+
+        if (existingAsset) {
+            // Update existing asset
+            asset = await prisma.assets.update({
+                where: { id: existingAsset.id },
+                data: {
+                    data,
+                    updatedat: new Date(),
+                },
+            });
+        } else {
+            // Create new asset
+            asset = await prisma.assets.create({
+                data: {
+                    userid : userId,
+                    type,
+                    subtype,
+                    data,
+                    createdat: new Date(),
+                    updatedat: new Date(),
+                },
+            });
+        }
+
+        res.status(200).json(asset);
+    } catch (error) {
+        console.error("Error upserting asset:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const deleteAssetsByUserId = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.query;
+
+        // Validate user_id
+        if (!userId || typeof userId !== "string") {
+            return res.status(400).json({ error: "User ID is required and must be a valid UUID string" });
+        }
+
+        // Check if user_id is a valid UUID format
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(userId)) {
+            return res.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
+        }
+
+        // Delete the assets by user_id
+        const deleteResult = await prisma.assets.deleteMany({
+            where: {
+                userid : userId, // Ensure user_id is a string UUID
+            },
+        });
+
+        if (deleteResult.count === 0) {
+            return res.status(404).json({ error: "No assets found for the given user ID." });
+        }
+
+        res.status(200).json({ message: "Assets deleted successfully", deletedCount: deleteResult.count });
+    } catch (error) {
+        console.error("Error deleting assets by user_id:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
+export const deleteAssetById = async (req: Request, res: Response) => {
+    try {
+        const { assetId } = req.query;
+
+        // Validate asset_id
+        if (!assetId || typeof assetId !== "string") {
+            return res.status(400).json({ error: "Asset ID is required and must be a valid UUID string" });
+        }
+
+        // Check if asset_id is a valid UUID format
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(assetId)) {
+            return res.status(400).json({ error: "Invalid Asset ID format. Must be a valid UUID." });
+        }
+
+        // Delete the asset by asset_id
+        const deletedAsset = await prisma.assets.delete({
+            where: {
+                id: assetId, // id is the primary key
+            },
+        });
+
+        res.status(200).json({ message: "Asset deleted successfully", deletedAsset });
+    } catch (error: any) {
+        console.error("Error deleting asset by asset_id:", error);
+
+        // Handle case where asset_id doesn't exist
+        if (error.code === "P2025") {
+            return res.status(404).json({ error: "Asset not found for the given ID." });
+        }
+
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
