@@ -3,6 +3,106 @@ import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
+export const addSelectesAssets = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params
+        const {
+            hasProperties,
+            hasFixedDeposits,
+            hasInsurancePolicies,
+            hasSafetyDepositBoxes,
+            hasDematAccounts,
+            hasMutualFunds,
+            hasProvidentFunds,
+            hasPensionAccounts,
+            hasBusinesses,
+            hasBonds,
+            hasDebentures,
+            hasEsops,
+            hasOtherInvestments,
+            hasVehicles,
+            hasJewellery,
+            hasDigitalAssets,
+            hasIntellectualProperties,
+            hasCustomAssets,
+            hasBankAccounts
+        } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is required" });
+        }
+
+        // Check if user exists
+        const existingUser = await prisma.users.findUnique({
+            where: { userid: userId },
+        });
+
+        if (!existingUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Upsert (Insert if not exists, Update if exists)
+        const selectedAssets = await prisma.selectedassets.upsert({
+            where: { userid: userId },
+            update: {
+                data: {
+                    hasProperties,
+                    hasFixedDeposits,
+                    hasInsurancePolicies,
+                    hasSafetyDepositBoxes,
+                    hasDematAccounts,
+                    hasMutualFunds,
+                    hasProvidentFunds,
+                    hasPensionAccounts,
+                    hasBusinesses,
+                    hasBonds,
+                    hasDebentures,
+                    hasEsops,
+                    hasOtherInvestments,
+                    hasVehicles,
+                    hasJewellery,
+                    hasDigitalAssets,
+                    hasIntellectualProperties,
+                    hasCustomAssets,
+                    hasBankAccounts
+                },
+                updatedat: new Date(),
+            },
+            create: {
+                userid: userId,
+                data: {
+                    hasProperties,
+                    hasFixedDeposits,
+                    hasInsurancePolicies,
+                    hasSafetyDepositBoxes,
+                    hasDematAccounts,
+                    hasMutualFunds,
+                    hasProvidentFunds,
+                    hasPensionAccounts,
+                    hasBusinesses,
+                    hasBonds,
+                    hasDebentures,
+                    hasEsops,
+                    hasOtherInvestments,
+                    hasVehicles,
+                    hasJewellery,
+                    hasDigitalAssets,
+                    hasIntellectualProperties,
+                    hasCustomAssets,
+                    hasBankAccounts
+                },
+                createdat: new Date(),
+                updatedat: new Date(),
+            },
+        });
+
+        res.status(201).json(selectedAssets.data);
+    } catch (error) {
+        console.error("Error adding/updating selected assets:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 // export const getAssetById = async (req: Request, res: Response) => {
 //     try {
 //         const { id } = req.params;
@@ -165,7 +265,7 @@ export const getAssetsByUserId = async (req: Request, res: Response) => {
         // Fetch the assets by userId
         const assets = await prisma.assets.findMany({
             where: {
-                userid : userId,
+                userid: userId,
             },
         });
 
@@ -216,7 +316,7 @@ export const upsertAsset = async (req: Request, res: Response) => {
             // Create new asset
             asset = await prisma.assets.create({
                 data: {
-                    userid : userId,
+                    userid: userId,
                     type,
                     subtype,
                     data,
@@ -251,7 +351,7 @@ export const deleteAssetsByUserId = async (req: Request, res: Response) => {
         // Delete the assets by user_id
         const deleteResult = await prisma.assets.deleteMany({
             where: {
-                userid : userId, // Ensure user_id is a string UUID
+                userid: userId, // Ensure user_id is a string UUID
             },
         });
 

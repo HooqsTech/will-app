@@ -8,12 +8,12 @@ interface ICustomFormContainerProps {
 
 const CustomFormContainer: React.FC<ICustomFormContainerProps> = ({ children, formLabel, hideBorder }) => {
   return (
-    <div className={`${hideBorder !== true && "border-[0.1px] border-slate-400 p-8"} rounded-lg`}>
+    <div className={`${hideBorder !== true && "shadow-md shadow-gray-400"} rounded-lg p-6`}>
       {
-        formLabel !== "" &&
-        <h3 className="mb-4 text-lg font-medium leading-none text-gray-900 ">{formLabel}</h3>
+        formLabel !== "" && formLabel !== undefined &&
+        <h1 className="mb-4 text-2xl font-medium leading-none text-gray-900 pb-4">{formLabel}</h1>
       }
-      <div className="flex flex-col space-y-3">
+      <div className="flex flex-col gap-4">
         {
           children
         }

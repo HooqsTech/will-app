@@ -1,21 +1,23 @@
-import { FormControl, MenuItem, Select } from '@mui/material'
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material'
 
 interface ICustomSelectProps {
     label: string;
     options: string[];
     onChange: (text: string) => void;
-    value: string
+    value: string;
+    required?: boolean
+    helperText?: string
 }
 
-const CustomSelect: React.FC<ICustomSelectProps> = ({ label, options, onChange, value }) => {
+const CustomSelect: React.FC<ICustomSelectProps> = ({ label, options, onChange, value, required, helperText }) => {
     return (
-        <div className='space-y-1 w-full'>
-            <p className='text-slate-600'>{label}</p>
+        <FormControl error={helperText !== undefined && helperText.length > 0} required={required} fullWidth className='bg-gray-50' size='small'>
+            <InputLabel>{label}</InputLabel>
             <Select
-                required
+                required={required}
                 value={value}
+                label={label}
                 onChange={(e) => onChange(e.target.value)}
-                className='bg-gray-50 w-full'
                 size='small'
             >
                 {
@@ -23,9 +25,9 @@ const CustomSelect: React.FC<ICustomSelectProps> = ({ label, options, onChange, 
                         <MenuItem key={opt} value={opt}>{opt}</MenuItem>
                     ))
                 }
-
             </Select>
-        </div>
+            <FormHelperText>{helperText}</FormHelperText>
+        </FormControl>
     )
 }
 

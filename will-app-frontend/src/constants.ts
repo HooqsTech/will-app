@@ -5,3 +5,7 @@ export const CHILDREN_ORGANIZATION = ['AVASAR- Opportunity Foundation Trust ', '
 export const OLDAGE_ORGANIZATION = ['Agewell Foundation', 'Other']
 
 export const SPIRITUAL_ORGANIZATION = ['Agewell Foundation', 'Other']
+
+export const COLORS: { PRIMARY_GREEN: string } = {
+    PRIMARY_GREEN: "#265e55"
+};

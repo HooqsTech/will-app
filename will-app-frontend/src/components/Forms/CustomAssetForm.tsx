@@ -1,7 +1,7 @@
 import { useRecoilState } from "recoil";
-import CustomFormContainer from "../CustomFormContainer"
-import CustomTextBox from "../CustomTextBox"
 import { customAssetsState, ICustomAssetState } from "../../atoms/CustomAssets";
+import CustomFormContainer from "../CustomFormContainer";
+import CustomTextBox from "../CustomTextBox";
 
 interface ICustomAssetFormProps {
     index: number

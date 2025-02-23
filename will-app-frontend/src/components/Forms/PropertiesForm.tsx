@@ -1,18 +1,18 @@
 import { useRecoilState } from "recoil";
-import { IImmovableAssetState, immovableAssetsState } from "../../atoms/ImmovableAssetsState";
+import { IPropertiesState, propertiesState } from "../../atoms/PropertiesState";
 import CustomFormContainer from "../CustomFormContainer"
 import CustomSelect from "../CustomSelect"
 import CustomTextBox from "../CustomTextBox"
 
-interface IImmovableAssetFormProps {
+interface IPropertiesFormProps {
     index: number;
 }
 
-const ImmovableAssetForm: React.FC<IImmovableAssetFormProps> = ({ index }) => {
-    const [formState, setFormState] = useRecoilState<IImmovableAssetState[]>(immovableAssetsState);
+const PropertiesForm: React.FC<IPropertiesFormProps> = ({ index }) => {
+    const [formState, setFormState] = useRecoilState<IPropertiesState[]>(propertiesState);
     const item = formState[index];
 
-    const handleChange = (index: number, key: keyof IImmovableAssetState, value: string) => {
+    const handleChange = (index: number, key: keyof IPropertiesState, value: string) => {
         setFormState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
         );
@@ -49,4 +49,4 @@ const ImmovableAssetForm: React.FC<IImmovableAssetFormProps> = ({ index }) => {
     )
 }
 
-export default ImmovableAssetForm
+export default PropertiesForm

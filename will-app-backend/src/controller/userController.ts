@@ -73,7 +73,8 @@ export const deleteUserByPhone = async (req: Request, res: Response) => {
 
 export const createPersonalDetails = async (req: Request, res: Response) => {
     try {
-        const { userId, fullName, fatherName, userName, password, gender, dob, religion, aadhaarNumber } = req.body;
+        const { userId } = req.params;
+        const { fullName, fatherName, userName, password, gender, dob, religion, aadhaarNumber } = req.body;
 
         if (!userId) {
             return res.status(400).json({ error: "User ID is required" });
@@ -121,7 +122,7 @@ export const createPersonalDetails = async (req: Request, res: Response) => {
             },
         });
 
-        res.status(201).json({ personalDetailsId: personalDetails.id});
+        res.status(201).json(personalDetails.details);
     } catch (error) {
         console.error("Error adding/updating personal details:", error);
         res.status(500).json({ error: "Internal server error" });
@@ -150,8 +151,8 @@ export const deletePersonalDetails = async (req: Request, res: Response) => {
             where: { userid: userId },
         });
 
-        res.status(200).json({ 
-            personalDetailsId: deletedDetails.id 
+        res.status(200).json({
+            personalDetailsId: deletedDetails.id
         });
     } catch (error) {
         console.error("Error deleting personal details:", error);
@@ -161,10 +162,11 @@ export const deletePersonalDetails = async (req: Request, res: Response) => {
 
 export const createAddressDetails = async (req: Request, res: Response) => {
     try {
-        const { userId, address } = req.body;
+        const { userId } = req.params
+        const { address1, address2, pincode, city, state, phoneNumber, email } = req.body;
 
-        if (!userId || !address) {
-            return res.status(400).json({ error: "User ID and Address are required" });
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is required" });
         }
 
         // Check if user exists
@@ -180,18 +182,34 @@ export const createAddressDetails = async (req: Request, res: Response) => {
         const addressDetails = await prisma.addressdetails.upsert({
             where: { userid: userId },
             update: {
-                address,
+                address: {
+                    address1,
+                    address2,
+                    pincode,
+                    city,
+                    state,
+                    phoneNumber,
+                    email
+                },
                 updatedat: new Date(),
             },
             create: {
                 userid: userId,
-                address,
+                address: {
+                    address1,
+                    address2,
+                    pincode,
+                    city,
+                    state,
+                    phoneNumber,
+                    email
+                },
                 createdat: new Date(),
                 updatedat: new Date(),
             },
         });
 
-        res.status(201).json({ addressDetailsId: addressDetails.id });
+        res.status(201).json(addressDetails.address);
     } catch (error) {
         console.error("Error adding/updating address details:", error);
         res.status(500).json({ error: "Internal server error" });
@@ -221,8 +239,8 @@ export const deleteAddressDetails = async (req: Request, res: Response) => {
             where: { userid: userId },
         });
 
-        res.status(200).json({ 
-            addressDetailsId: deletedDetails.id 
+        res.status(200).json({
+            addressDetailsId: deletedDetails.id
         });
     } catch (error) {
         console.error("Error deleting address details:", error);
@@ -245,6 +263,7 @@ export const getUserDetailsByPhone = async (req: Request, res: Response): Promis
                 liabilities: true,
                 personaldetails: true,
                 pets: true,
+                selectedassets: true,
             },
         });
 
@@ -268,10 +287,11 @@ export const formatUserResponse = (user: any) => {
         userId: user.userid,
         personalDetails: user.personaldetails?.details || {},
         addressDetails: user.addressdetails?.address || {},
-        assets: user.assets.map((asset: any) => ({ assetId : asset.id, type: asset.type, subtype: asset.subtype, data: asset.data })),
+        assets: user.assets.map((asset: any) => ({ assetId: asset.id, type: asset.type, subtype: asset.subtype, data: asset.data })),
         beneficiaries: user.beneficiaries.map((ben: any) => ({ id: ben.id, type: ben.type, data: ben.data })),
         excludedPersons: user.excludedpersons.map((ex: any) => ex.data),
         liabilities: user.liabilities.map((liability: any) => ({ liabilityId: liability.id, type: liability.type, data: liability.data })),
         pets: user.pets.map((pet: any) => pet.data),
+        selectedAssets: user.selectedassets?.data || {}
     };
 };
