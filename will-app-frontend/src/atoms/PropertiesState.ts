@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 
 export interface IPropertiesState {
+    id: string
     propertyType: string;
     ownershipType: string;
     address: string;
@@ -11,6 +12,7 @@ export interface IPropertiesState {
 export const propertiesState = atom<IPropertiesState[]>({
     key: 'propertiesState',
     default: [{
+        id: "",
         propertyType: "",
         ownershipType: "",
         address: "",

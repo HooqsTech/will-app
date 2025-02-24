@@ -16,15 +16,13 @@ const CustomAccordion: React.FC<ICustomAccordionProps> = ({ label, children, sub
         <div className='py-2'>
             <Accordion expanded={expanded} defaultExpanded={defaultExpanded} className="bg-red-50" onChange={onChange}>
                 <AccordionSummary
-                    sx={{
-                    }}
                     expandIcon={<ArrowDropDownIcon />}
                 >
-                    <>
+                    <div className='flex flex-col items-start'>
                         <Typography>{label}</Typography>
                         {
                             subTitle !== "" &&
-                            <p>
+                            <p className='text-xs pt-2'>
                                 {subTitle?.split("\n").map((line, index) => (
                                     <React.Fragment key={index}>
                                         {line}
@@ -33,7 +31,7 @@ const CustomAccordion: React.FC<ICustomAccordionProps> = ({ label, children, sub
                                 ))}
                             </p>
                         }
-                    </>
+                    </div>
                 </AccordionSummary>
                 <AccordionDetails>
                     {children}

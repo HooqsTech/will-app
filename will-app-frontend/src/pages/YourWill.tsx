@@ -17,7 +17,7 @@ import FixedDepositAsset from './FixedDepositAsset';
 import InsurancePolicyAsset from './InsurancePolicyAsset';
 import SafetyDepositAsset from './SafetyDepositAsset';
 import DematAccountAsset from './DematAccountAsset';
-import MutualFundAsset from './MutualFundAsset';
+import MutualFundsPage from './MutualFundsPage';
 import ProvidentFundAsset from './ProvidentFundAsset';
 import PensionAccountAsset from './PensionAccountAsset';
 import BeneficiariesPage from './BeneficiariesDetails';
@@ -46,7 +46,7 @@ const YourWill: React.FC = () => {
                         <Route path="/insurance_policies" element={<InsurancePolicyAsset />} />
                         <Route path="/safe_deposit_boxes" element={<SafetyDepositAsset />} />
                         <Route path="/demat_accounts" element={<DematAccountAsset />} />
-                        <Route path="/mutual_funds" element={<MutualFundAsset />} />
+                        <Route path="/mutual_funds" element={<MutualFundsPage />} />
                         <Route path="/provident_fund" element={<ProvidentFundAsset />} />
                         <Route path="/pension_accounts" element={<PensionAccountAsset />} />
                         <Route path="/custom_assets" element={<CustomAssets />} />

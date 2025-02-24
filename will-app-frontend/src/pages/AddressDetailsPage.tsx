@@ -1,5 +1,4 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import CustomButton from "../components/CustomButton";
 import { useNavigate } from "react-router";
 import { addressDetailsState } from "../atoms/AddressDetailsState";
 import AddressDetailsForm from "../components/Forms/AddressDetailsForm";
@@ -76,7 +75,7 @@ const AddressDetailsPage = () => {
 
         // NAVIGATE TO IMMOVABLE ASSETS
         if (result.address1 === addressDetails.address1) {
-            navigate("/immovable_assets");
+            navigate("/assets");
         }
     }
 

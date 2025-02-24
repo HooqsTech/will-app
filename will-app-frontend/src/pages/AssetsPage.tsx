@@ -37,36 +37,36 @@ const AssetsPage = () => {
         <div className="w-xl h-full">
             <div>
                 <CustomAccordion defaultExpanded label="Immovable Assets">
-                    <CheckboxContainer checked={selectedAssets?.hasProperties} label="Properties" onChange={() => handleChange("hasProperties")} />
+                    <CheckboxContainer checked={selectedAssets?.properties} label="Properties" onChange={() => handleChange("properties")} />
                 </CustomAccordion>
                 <CustomAccordion defaultExpanded label="Financial Assets">
                     <div className="flex flex-col gap-2">
-                        <CheckboxContainer checked={selectedAssets?.hasBankAccounts} label="Bank Accounts" onChange={() => handleChange("hasBankAccounts")} />
-                        <CheckboxContainer checked={selectedAssets?.hasFixedDeposits} label="Fixed Deposits" onChange={() => handleChange("hasFixedDeposits")} />
-                        <CheckboxContainer checked={selectedAssets?.hasInsurancePolicies} label="Insurance Policies" onChange={() => handleChange("hasInsurancePolicies")} />
-                        <CheckboxContainer checked={selectedAssets?.hasSafetyDepositBoxes} label="Safety Deposit Boxes/Lockers" onChange={() => handleChange("hasSafetyDepositBoxes")} />
-                        <CheckboxContainer checked={selectedAssets?.hasDematAccounts} label="DEMAT accounts" onChange={() => handleChange("hasDematAccounts")} />
-                        <CheckboxContainer checked={selectedAssets?.hasMutualFunds} label="Mutual Funds" onChange={() => handleChange("hasMutualFunds")} />
-                        <CheckboxContainer checked={selectedAssets?.hasProvidentFunds} label="Provident Funds" onChange={() => handleChange("hasProvidentFunds")} />
-                        <CheckboxContainer checked={selectedAssets?.hasPensionAccounts} label="Pension Accounts" onChange={() => handleChange("hasPensionAccounts")} />
+                        <CheckboxContainer checked={selectedAssets?.bankAccounts} label="Bank Accounts" onChange={() => handleChange("bankAccounts")} />
+                        <CheckboxContainer checked={selectedAssets?.fixedDeposits} label="Fixed Deposits" onChange={() => handleChange("fixedDeposits")} />
+                        <CheckboxContainer checked={selectedAssets?.insurancePolicies} label="Insurance Policies" onChange={() => handleChange("insurancePolicies")} />
+                        <CheckboxContainer checked={selectedAssets?.safetyDepositBoxes} label="Safety Deposit Boxes/Lockers" onChange={() => handleChange("safetyDepositBoxes")} />
+                        <CheckboxContainer checked={selectedAssets?.dematAccounts} label="DEMAT accounts" onChange={() => handleChange("dematAccounts")} />
+                        <CheckboxContainer checked={selectedAssets?.mutualFunds} label="Mutual Funds" onChange={() => handleChange("mutualFunds")} />
+                        <CheckboxContainer checked={selectedAssets?.providentFunds} label="Provident Funds" onChange={() => handleChange("providentFunds")} />
+                        <CheckboxContainer checked={selectedAssets?.pensionAccounts} label="Pension Accounts" onChange={() => handleChange("pensionAccounts")} />
                     </div>
                 </CustomAccordion>
                 <CustomAccordion defaultExpanded label="Business Assets">
                     <div className="flex flex-col gap-2">
-                        <CheckboxContainer checked={selectedAssets?.hasBusinesses} label="Businesses" onChange={() => handleChange("hasBusinesses")} />
-                        <CheckboxContainer checked={selectedAssets?.hasBonds} label="Bonds" onChange={() => handleChange("hasBonds")} />
-                        <CheckboxContainer checked={selectedAssets?.hasDebentures} label="Debentures" onChange={() => handleChange("hasDebentures")} />
-                        <CheckboxContainer checked={selectedAssets?.hasEsops} label="ESOPs" onChange={() => handleChange("hasEsops")} />
-                        <CheckboxContainer checked={selectedAssets?.hasOtherInvestments} label="Other investments" onChange={() => handleChange("hasOtherInvestments")} />
+                        <CheckboxContainer checked={selectedAssets?.businesses} label="Businesses" onChange={() => handleChange("businesses")} />
+                        <CheckboxContainer checked={selectedAssets?.bonds} label="Bonds" onChange={() => handleChange("bonds")} />
+                        <CheckboxContainer checked={selectedAssets?.debentures} label="Debentures" onChange={() => handleChange("debentures")} />
+                        <CheckboxContainer checked={selectedAssets?.esops} label="ESOPs" onChange={() => handleChange("esops")} />
+                        <CheckboxContainer checked={selectedAssets?.otherInvestments} label="Other investments" onChange={() => handleChange("otherInvestments")} />
                     </div>
                 </CustomAccordion>
                 <CustomAccordion defaultExpanded label="Other Assets">
                     <div className="flex flex-col gap-2">
-                        <CheckboxContainer checked={selectedAssets?.hasVehicles} label="vehicles" onChange={() => handleChange("hasVehicles")} />
-                        <CheckboxContainer checked={selectedAssets?.hasJewellery} label="Jewellery" onChange={() => handleChange("hasJewellery")} />
-                        <CheckboxContainer checked={selectedAssets?.hasDigitalAssets} label="Digital Assets" onChange={() => handleChange("hasDigitalAssets")} />
-                        <CheckboxContainer checked={selectedAssets?.hasIntellectualProperties} label="Intellectual Properties" onChange={() => handleChange("hasIntellectualProperties")} />
-                        <CheckboxContainer checked={selectedAssets?.hasCustomAssets} label="Custom Assets" onChange={() => handleChange("hasCustomAssets")} />
+                        <CheckboxContainer checked={selectedAssets?.vehicles} label="vehicles" onChange={() => handleChange("vehicles")} />
+                        <CheckboxContainer checked={selectedAssets?.jewellery} label="Jewellery" onChange={() => handleChange("jewellery")} />
+                        <CheckboxContainer checked={selectedAssets?.digitalAssets} label="Digital Assets" onChange={() => handleChange("digitalAssets")} />
+                        <CheckboxContainer checked={selectedAssets?.intellectualProperties} label="Intellectual Properties" onChange={() => handleChange("intellectualProperties")} />
+                        <CheckboxContainer checked={selectedAssets?.customAssets} label="Custom Assets" onChange={() => handleChange("customAssets")} />
                     </div>
                 </CustomAccordion>
             </div>

@@ -63,6 +63,8 @@ const AddressDetailsForm = () => {
                 type="email" />
             <CustomTextBox
                 value={formState.phoneNumber}
+                restrictAlphabets
+                maxLength={10}
                 helperText={validationState.phoneNumber}
                 onChange={(e) => handleChange("phoneNumber", e)}
                 label="Phone Number"

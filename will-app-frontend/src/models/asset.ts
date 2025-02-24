@@ -1,28 +1,29 @@
 export interface IAsset {
-    userid: number,
+    id: string
+    userId: string
     type: string,
     subtype: string,
     data: any
 }
 
 export interface ISelectedAssets {
-    hasProperties: boolean;
-    hasFixedDeposits: boolean
-    hasInsurancePolicies: boolean
-    hasSafetyDepositBoxes: boolean
-    hasDematAccounts: boolean
-    hasMutualFunds: boolean
-    hasProvidentFunds: boolean
-    hasPensionAccounts: boolean
-    hasBusinesses: boolean
-    hasBonds: boolean
-    hasDebentures: boolean
-    hasEsops: boolean
-    hasOtherInvestments: boolean
-    hasVehicles: boolean
-    hasJewellery: boolean
-    hasDigitalAssets: boolean
-    hasIntellectualProperties: boolean
-    hasCustomAssets: boolean
-    hasBankAccounts: boolean
+    properties: boolean;
+    bankAccounts: boolean
+    fixedDeposits: boolean
+    insurancePolicies: boolean
+    safetyDepositBoxes: boolean
+    dematAccounts: boolean
+    mutualFunds: boolean
+    providentFunds: boolean
+    pensionAccounts: boolean
+    businesses: boolean
+    bonds: boolean
+    debentures: boolean
+    esops: boolean
+    otherInvestments: boolean
+    vehicles: boolean
+    jewellery: boolean
+    digitalAssets: boolean
+    intellectualProperties: boolean
+    customAssets: boolean
 }

@@ -7,25 +7,25 @@ export const addSelectesAssets = async (req: Request, res: Response) => {
     try {
         const { userId } = req.params
         const {
-            hasProperties,
-            hasFixedDeposits,
-            hasInsurancePolicies,
-            hasSafetyDepositBoxes,
-            hasDematAccounts,
-            hasMutualFunds,
-            hasProvidentFunds,
-            hasPensionAccounts,
-            hasBusinesses,
-            hasBonds,
-            hasDebentures,
-            hasEsops,
-            hasOtherInvestments,
-            hasVehicles,
-            hasJewellery,
-            hasDigitalAssets,
-            hasIntellectualProperties,
-            hasCustomAssets,
-            hasBankAccounts
+            properties,
+            bankAccounts,
+            fixedDeposits,
+            insurancePolicies,
+            safetyDepositBoxes,
+            dematAccounts,
+            mutualFunds,
+            providentFunds,
+            pensionAccounts,
+            businesses,
+            bonds,
+            debentures,
+            esops,
+            otherInvestments,
+            vehicles,
+            jewellery,
+            digitalAssets,
+            intellectualProperties,
+            customAssets,
         } = req.body;
 
         if (!userId) {
@@ -46,50 +46,50 @@ export const addSelectesAssets = async (req: Request, res: Response) => {
             where: { userid: userId },
             update: {
                 data: {
-                    hasProperties,
-                    hasFixedDeposits,
-                    hasInsurancePolicies,
-                    hasSafetyDepositBoxes,
-                    hasDematAccounts,
-                    hasMutualFunds,
-                    hasProvidentFunds,
-                    hasPensionAccounts,
-                    hasBusinesses,
-                    hasBonds,
-                    hasDebentures,
-                    hasEsops,
-                    hasOtherInvestments,
-                    hasVehicles,
-                    hasJewellery,
-                    hasDigitalAssets,
-                    hasIntellectualProperties,
-                    hasCustomAssets,
-                    hasBankAccounts
+                    properties,
+                    bankAccounts,
+                    fixedDeposits,
+                    insurancePolicies,
+                    safetyDepositBoxes,
+                    dematAccounts,
+                    mutualFunds,
+                    providentFunds,
+                    pensionAccounts,
+                    businesses,
+                    bonds,
+                    debentures,
+                    esops,
+                    otherInvestments,
+                    vehicles,
+                    jewellery,
+                    digitalAssets,
+                    intellectualProperties,
+                    customAssets,
                 },
                 updatedat: new Date(),
             },
             create: {
                 userid: userId,
                 data: {
-                    hasProperties,
-                    hasFixedDeposits,
-                    hasInsurancePolicies,
-                    hasSafetyDepositBoxes,
-                    hasDematAccounts,
-                    hasMutualFunds,
-                    hasProvidentFunds,
-                    hasPensionAccounts,
-                    hasBusinesses,
-                    hasBonds,
-                    hasDebentures,
-                    hasEsops,
-                    hasOtherInvestments,
-                    hasVehicles,
-                    hasJewellery,
-                    hasDigitalAssets,
-                    hasIntellectualProperties,
-                    hasCustomAssets,
-                    hasBankAccounts
+                    properties,
+                    bankAccounts,
+                    fixedDeposits,
+                    insurancePolicies,
+                    safetyDepositBoxes,
+                    dematAccounts,
+                    mutualFunds,
+                    providentFunds,
+                    pensionAccounts,
+                    businesses,
+                    bonds,
+                    debentures,
+                    esops,
+                    otherInvestments,
+                    vehicles,
+                    jewellery,
+                    digitalAssets,
+                    intellectualProperties,
+                    customAssets,
                 },
                 createdat: new Date(),
                 updatedat: new Date(),
@@ -157,54 +157,6 @@ export const addSelectesAssets = async (req: Request, res: Response) => {
 //         res.status(200).json({ message: "Asset deleted successfully", asset });
 //     } catch (error) {
 //         console.error("Error deleting asset:", error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// };
-
-// export const upsertAsset = async (req: Request, res: Response) => {
-//     try {
-//         const { id, userid, type, subtype, data } = req.body;
-
-//         // Check if the combination of user_id, type, and subtype exists
-//         const existingAsset = await prisma.assets.findFirst({
-//             where: {
-//                 userid: userid,  // Check by user_id
-//                 type: type,        // Check by type
-//                 subtype: subtype   // Check by subtype
-//             }
-//         });
-
-//         let asset;
-//         // if (existingAsset) {
-//         //     // If it exists, update the asset
-//         //     asset = await prisma.assets.update({
-//         //         where: { id: existingAsset.id }, // Update by the id of the existing asset
-//         //         data: {
-//         //             userid,
-//         //             type,
-//         //             subtype,
-//         //             data,
-//         //             updatedat: new Date(), // Update timestamp
-//         //         },
-//         //     });
-//         // } else {
-//             // If it doesn't exist, create a new asset
-//             asset = await prisma.assets.create({
-//                 data: {
-//                     userid,
-//                     type,
-//                     subtype,
-//                     data,
-//                     createdat: new Date(), // Ensure created_at is set
-//                     updatedat: new Date(), // Ensure updated_at is set
-//                 },
-//             });
-//         // }
-
-//         // Return the upserted asset
-//         res.status(200).json(asset);
-//     } catch (error) {
-//         console.error("Error upserting asset:", error);
 //         res.status(500).json({ error: "Internal server error" });
 //     }
 // };
@@ -290,17 +242,6 @@ export const upsertAsset = async (req: Request, res: Response) => {
             });
         }
 
-        if (!existingAsset) {
-            // If no asset was found by ID, check by user_id, type, and subtype
-            existingAsset = await prisma.assets.findFirst({
-                where: {
-                    userid: userId,
-                    type: type,
-                    subtype: subtype
-                }
-            });
-        }
-
         let asset;
 
         if (existingAsset) {
@@ -365,7 +306,6 @@ export const deleteAssetsByUserId = async (req: Request, res: Response) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
-
 
 export const deleteAssetById = async (req: Request, res: Response) => {
     try {

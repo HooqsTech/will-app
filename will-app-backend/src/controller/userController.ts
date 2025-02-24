@@ -287,10 +287,10 @@ export const formatUserResponse = (user: any) => {
         userId: user.userid,
         personalDetails: user.personaldetails?.details || {},
         addressDetails: user.addressdetails?.address || {},
-        assets: user.assets.map((asset: any) => ({ assetId: asset.id, type: asset.type, subtype: asset.subtype, data: asset.data })),
+        assets: user.assets.map((asset: any) => ({ id: asset.id, type: asset.type, subtype: asset.subtype, data: asset.data })),
         beneficiaries: user.beneficiaries.map((ben: any) => ({ id: ben.id, type: ben.type, data: ben.data })),
         excludedPersons: user.excludedpersons.map((ex: any) => ex.data),
-        liabilities: user.liabilities.map((liability: any) => ({ liabilityId: liability.id, type: liability.type, data: liability.data })),
+        liabilities: user.liabilities.map((liability: any) => ({ id: liability.id, type: liability.type, data: liability.data })),
         pets: user.pets.map((pet: any) => pet.data),
         selectedAssets: user.selectedassets?.data || {}
     };

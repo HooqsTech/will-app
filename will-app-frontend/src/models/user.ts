@@ -20,15 +20,10 @@ export interface IUserDetails {
 }
 
 export interface IAssetDetails {
-  assetId: string,
+  id: string,
   type: string,
   subtype: string,
-  data: {
-    size: string,
-    location: string,
-    ownershipType: string
-  }
-
+  data: any
 }
 
 export interface IAddressDetails {
