@@ -1,34 +1,37 @@
+import { ISelectedAssets } from "./asset"
+
 export interface IPersonalDetails {
-    full_name: string | null;
-    father_name: string | null;
-    gender: string | null;
-    dob: string | null;
-    religion: string | null;
-    aadhaar_number: string | null;
-    username: string | null;
-    phone_number: string | null;
-  }
+  fullName: string,
+  fatherName: string,
+  userName: string,
+  password: string,
+  gender: string,
+  dob: string,
+  religion: string,
+  aadhaarNumber: string
+}
 
 export interface IUserDetails {
-    fullName : string | null, 
-    fatherName : string | null, 
-    phoneNumber : string | null, 
-    userName : string | null, 
-    password : string | null, 
-    gender : string | null, 
-    dob : string | null, 
-    religion : string | null, 
-    aadhaarNumber : string | null, 
-    addressDetails : IAddressDetails
+  userId: string,
+  personalDetails: IPersonalDetails,
+  addressDetails: IAddressDetails,
+  selectedAssets: ISelectedAssets,
+  assets: IAssetDetails[]
+}
+
+export interface IAssetDetails {
+  id: string,
+  type: string,
+  subtype: string,
+  data: any
 }
 
 export interface IAddressDetails {
-  address: string | null,
-  email: string | null,
-  phoneNumber: string | null,
-  address_1: string | null,
-  address_2: string | null,
-  pincode: string | null,
-  city: string | null,
-  state: string | null
+  address1: string,
+  address2: string,
+  pincode: string,
+  city: string,
+  state: string,
+  phoneNumber: string,
+  email: string
 }

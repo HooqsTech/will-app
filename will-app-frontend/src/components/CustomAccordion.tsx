@@ -8,20 +8,21 @@ interface ICustomAccordionProps {
     subTitle?: string;
     onChange?: () => void;
     expanded?: boolean;
+    defaultExpanded?: boolean;
 }
 
-const CustomAccordion: React.FC<ICustomAccordionProps> = ({ label, children, subTitle, onChange, expanded }) => {
+const CustomAccordion: React.FC<ICustomAccordionProps> = ({ label, children, subTitle, onChange, expanded, defaultExpanded }) => {
     return (
-        <div className='p-2'>
-            <Accordion expanded={expanded} className="bg-red-50" onChange={onChange}>
+        <div className='py-2'>
+            <Accordion expanded={expanded} defaultExpanded={defaultExpanded} className="bg-red-50" onChange={onChange}>
                 <AccordionSummary
                     expandIcon={<ArrowDropDownIcon />}
                 >
-                    <div>
+                    <div className='flex flex-col items-start'>
                         <Typography>{label}</Typography>
                         {
                             subTitle !== "" &&
-                            <p>
+                            <p className='text-xs pt-2'>
                                 {subTitle?.split("\n").map((line, index) => (
                                     <React.Fragment key={index}>
                                         {line}

@@ -3,6 +3,106 @@ import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
+export const addSelectesAssets = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params
+        const {
+            properties,
+            bankAccounts,
+            fixedDeposits,
+            insurancePolicies,
+            safetyDepositBoxes,
+            dematAccounts,
+            mutualFunds,
+            providentFunds,
+            pensionAccounts,
+            businesses,
+            bonds,
+            debentures,
+            esops,
+            otherInvestments,
+            vehicles,
+            jewellery,
+            digitalAssets,
+            intellectualProperties,
+            customAssets,
+        } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is required" });
+        }
+
+        // Check if user exists
+        const existingUser = await prisma.users.findUnique({
+            where: { userid: userId },
+        });
+
+        if (!existingUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Upsert (Insert if not exists, Update if exists)
+        const selectedAssets = await prisma.selectedassets.upsert({
+            where: { userid: userId },
+            update: {
+                data: {
+                    properties,
+                    bankAccounts,
+                    fixedDeposits,
+                    insurancePolicies,
+                    safetyDepositBoxes,
+                    dematAccounts,
+                    mutualFunds,
+                    providentFunds,
+                    pensionAccounts,
+                    businesses,
+                    bonds,
+                    debentures,
+                    esops,
+                    otherInvestments,
+                    vehicles,
+                    jewellery,
+                    digitalAssets,
+                    intellectualProperties,
+                    customAssets,
+                },
+                updatedat: new Date(),
+            },
+            create: {
+                userid: userId,
+                data: {
+                    properties,
+                    bankAccounts,
+                    fixedDeposits,
+                    insurancePolicies,
+                    safetyDepositBoxes,
+                    dematAccounts,
+                    mutualFunds,
+                    providentFunds,
+                    pensionAccounts,
+                    businesses,
+                    bonds,
+                    debentures,
+                    esops,
+                    otherInvestments,
+                    vehicles,
+                    jewellery,
+                    digitalAssets,
+                    intellectualProperties,
+                    customAssets,
+                },
+                createdat: new Date(),
+                updatedat: new Date(),
+            },
+        });
+
+        res.status(201).json(selectedAssets.data);
+    } catch (error) {
+        console.error("Error adding/updating selected assets:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 // export const getAssetById = async (req: Request, res: Response) => {
 //     try {
 //         const { id } = req.params;
@@ -57,54 +157,6 @@ const prisma = new PrismaClient();
 //         res.status(200).json({ message: "Asset deleted successfully", asset });
 //     } catch (error) {
 //         console.error("Error deleting asset:", error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// };
-
-// export const upsertAsset = async (req: Request, res: Response) => {
-//     try {
-//         const { id, userid, type, subtype, data } = req.body;
-
-//         // Check if the combination of user_id, type, and subtype exists
-//         const existingAsset = await prisma.assets.findFirst({
-//             where: {
-//                 userid: userid,  // Check by user_id
-//                 type: type,        // Check by type
-//                 subtype: subtype   // Check by subtype
-//             }
-//         });
-
-//         let asset;
-//         // if (existingAsset) {
-//         //     // If it exists, update the asset
-//         //     asset = await prisma.assets.update({
-//         //         where: { id: existingAsset.id }, // Update by the id of the existing asset
-//         //         data: {
-//         //             userid,
-//         //             type,
-//         //             subtype,
-//         //             data,
-//         //             updatedat: new Date(), // Update timestamp
-//         //         },
-//         //     });
-//         // } else {
-//             // If it doesn't exist, create a new asset
-//             asset = await prisma.assets.create({
-//                 data: {
-//                     userid,
-//                     type,
-//                     subtype,
-//                     data,
-//                     createdat: new Date(), // Ensure created_at is set
-//                     updatedat: new Date(), // Ensure updated_at is set
-//                 },
-//             });
-//         // }
-
-//         // Return the upserted asset
-//         res.status(200).json(asset);
-//     } catch (error) {
-//         console.error("Error upserting asset:", error);
 //         res.status(500).json({ error: "Internal server error" });
 //     }
 // };
@@ -165,7 +217,7 @@ export const getAssetsByUserId = async (req: Request, res: Response) => {
         // Fetch the assets by userId
         const assets = await prisma.assets.findMany({
             where: {
-                userid : userId,
+                userid: userId,
             },
         });
 
@@ -190,17 +242,6 @@ export const upsertAsset = async (req: Request, res: Response) => {
             });
         }
 
-        if (!existingAsset) {
-            // If no asset was found by ID, check by user_id, type, and subtype
-            existingAsset = await prisma.assets.findFirst({
-                where: {
-                    userid: userId,
-                    type: type,
-                    subtype: subtype
-                }
-            });
-        }
-
         let asset;
 
         if (existingAsset) {
@@ -216,7 +257,7 @@ export const upsertAsset = async (req: Request, res: Response) => {
             // Create new asset
             asset = await prisma.assets.create({
                 data: {
-                    userid : userId,
+                    userid: userId,
                     type,
                     subtype,
                     data,
@@ -251,7 +292,7 @@ export const deleteAssetsByUserId = async (req: Request, res: Response) => {
         // Delete the assets by user_id
         const deleteResult = await prisma.assets.deleteMany({
             where: {
-                userid : userId, // Ensure user_id is a string UUID
+                userid: userId, // Ensure user_id is a string UUID
             },
         });
 
@@ -265,7 +306,6 @@ export const deleteAssetsByUserId = async (req: Request, res: Response) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
-
 
 export const deleteAssetById = async (req: Request, res: Response) => {
     try {

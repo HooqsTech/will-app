@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 
-export interface IImmovableAssetState {
+export interface IPropertiesState {
+    id: string
     propertyType: string;
     ownershipType: string;
     address: string;
@@ -8,9 +9,10 @@ export interface IImmovableAssetState {
     city: string;
 }
 
-export const immovableAssetsState = atom<IImmovableAssetState[]>({
-    key: 'immovableAssetsState',
+export const propertiesState = atom<IPropertiesState[]>({
+    key: 'propertiesState',
     default: [{
+        id: "",
         propertyType: "",
         ownershipType: "",
         address: "",

@@ -49,11 +49,16 @@ const NavItems: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
     ]
   },
   {
-    id: 'assets_details',
+    id: 'assets',
     label: 'Asset',
     iconName: 'pdf',
     children: [
-      { id: 'immovable_assets', label: 'Immovable Assets', iconName: 'pdf' },
+      {
+        id: 'immovable_assets', label: 'Immovable Assets', iconName: 'pdf',
+        children: [
+          { id: 'properties', label: 'Properties', iconName: 'pdf' },
+        ]
+      },
       // { id: 'financial_assets', label: 'Financial Assets',  iconName: 'pdf',
       //     children: [
       //         {id: 'bank_accounts', label: 'Bank Accounts', iconName: 'pdf'},
@@ -131,12 +136,10 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
   padding: theme.spacing(0.5),
   paddingRight: theme.spacing(1),
   fontWeight: 500,
+  color: "white",
   [`&.Mui-expanded `]: {
     '&:not(.Mui-focused, .Mui-selected, .Mui-selected.Mui-focused) .labelIcon': {
-      color: theme.palette.primary.dark,
-      ...theme.applyStyles('light', {
-        color: theme.palette.primary.main,
-      }),
+      color: 'white',
     },
     '&::before': {
       content: '""',
@@ -146,25 +149,16 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
       top: '44px',
       height: 'calc(100% - 48px)',
       width: '1.5px',
-      backgroundColor: theme.palette.grey[700],
-      ...theme.applyStyles('light', {
-        backgroundColor: theme.palette.grey[300],
-      }),
+      backgroundColor: 'white',
     },
   },
   '&:hover': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    backgroundColor: "#358477",
     color: 'white',
-    ...theme.applyStyles('light', {
-      color: theme.palette.primary.main,
-    }),
   },
-  [`&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused`]: {
-    backgroundColor: theme.palette.primary.dark,
-    color: theme.palette.primary.contrastText,
-    ...theme.applyStyles('light', {
-      backgroundColor: theme.palette.primary.main,
-    }),
+  [`&.Mui-focused, &.Mui-selected, &.Mui-selected, &.Mui-focused`]: {
+    backgroundColor: "#358477",
+    color: 'white',
   },
 }));
 
@@ -182,7 +176,7 @@ function TransitionComponent(props: TransitionProps) {
 }
 
 const StyledTreeItemLabelText = styled(Typography)({
-  color: 'inherit',
+  color: 'white',
   fontWeight: 500,
 }) as unknown as typeof Typography;
 
@@ -210,7 +204,7 @@ function CustomLabel({
         <Box
           component={Icon}
           className="labelIcon"
-          color="inherit"
+          color="white"
           sx={{ mr: 1, fontSize: '1.2rem' }}
         />
       )}
@@ -317,6 +311,7 @@ export default function Sidebar2() {
 
   return (
     <RichTreeView
+      multiSelect={false}
       items={NavItems}
       slots={{ item: CustomTreeItem }}
       onItemClick={handleSelectedItemChange}

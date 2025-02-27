@@ -39,7 +39,7 @@ const CustomAssets = () => {
                         />
                     ))
                 }
-                <CustomButton className='mt-5' onClick={addImmovableAsset} label="Add" />
+                <CustomButton onClick={addImmovableAsset} label="Add" />
             </div>
         </div>
     )

@@ -3,7 +3,7 @@ import CustomButton from "../components/CustomButton";
 import { currentStepper } from "../atoms/StepperState";
 import { useRecoilState } from "recoil";
 import CustomAccordion from "../components/CustomAccordion";
-import ImmovableAssets from "./ImmovableAssets";
+import PropertiesPage from "./PropertiesPage";
 import CustomTabs from "../components/CustomTabs";
 
 const AssetDetails = () => {
@@ -18,22 +18,22 @@ const AssetDetails = () => {
                         {
                             label: "Immovable Assets",
                             value: "immovable-assets",
-                            children: <ImmovableAssets />
+                            children: <PropertiesPage />
                         },
                         {
                             label: "Immovable Assets",
                             value: "immovable-assets1",
-                            children: <ImmovableAssets />
+                            children: <PropertiesPage />
                         },
                         {
                             label: "Immovable Assets",
                             value: "immovable-assets2",
-                            children: <ImmovableAssets />
+                            children: <PropertiesPage />
                         },
                         {
                             label: "Immovable Assets",
                             value: "immovable-assets3",
-                            children: <ImmovableAssets />
+                            children: <PropertiesPage />
                         }
                     ]
                 }
