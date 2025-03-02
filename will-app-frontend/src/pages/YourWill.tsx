@@ -30,7 +30,7 @@ const YourWill: React.FC = () => {
         <BrowserRouter>
             <div className='grid grid-cols-12 w-5xl m-auto'>
                 <div className='bg-[#265e55] col-span-3'>
-                    <div className='top-14 p-6 min-h-screen sticky'>
+                    <div className='top-14 min-h-screen sticky'>
                         <Sidebar2 />
                     </div>
                 </div>

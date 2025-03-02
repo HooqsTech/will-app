@@ -9,6 +9,7 @@ interface ICustomButtonProps {
 const CustomButton: React.FC<ICustomButtonProps> = ({ label, onClick, loading }) => {
     return (
         <Button onClick={onClick} loading={loading} variant="contained" sx={{
+            textTransform: "none",
             borderRadius: 0,
             boxShadow: "none"
         }} className="mt-5 font-[frank] normal-case">

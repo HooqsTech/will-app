@@ -313,11 +313,24 @@ export default function Sidebar2() {
   };
 
   return (
-    <RichTreeView
-      multiSelect={false}
-      items={NavItems}
-      slots={{ item: CustomTreeItem }}
-      onItemClick={handleSelectedItemChange}
-    />
+    <div className='flex flex-col items-start'>
+      <div className='w-full py-6 border-b-slate-400 border-b-[1px]'>
+        <img
+          src={`/assets/hamara-logo-icon.png`}
+          className='h-20 m-auto w-fit'
+          alt={"hamara-logo"}
+          loading="lazy"
+        />
+      </div>
+      <div className='p-6 '>
+        <RichTreeView
+          multiSelect={false}
+          items={NavItems}
+          slots={{ item: CustomTreeItem }}
+          onItemClick={handleSelectedItemChange}
+        />
+      </div>
+    </div>
+
   );
 }
