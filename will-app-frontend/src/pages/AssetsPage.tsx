@@ -6,11 +6,15 @@ import NextButton from "../components/NextButton";
 import { addSelectedAssetsAsync } from "../api/asset";
 import { useState } from "react";
 import { userState } from "../atoms/UserDetailsState";
+import { routesState } from "../atoms/RouteState";
+import { useNavigate, useNavigation } from "react-router";
 
 const AssetsPage = () => {
     const [selectedAssets, setSelectedAssets] = useRecoilState(selectedAssetsState);
     const user = useRecoilValue(userState);
     const [loading, setLoading] = useState<boolean>(false);
+    const routeData = useRecoilValue(routesState);
+    const navigate = useNavigate();
 
     console.log('selectedAssets', selectedAssets)
 
@@ -28,9 +32,9 @@ const AssetsPage = () => {
         setLoading(false);
 
         // NAVIGATE TO ADDRESS DETAILS
-        // if (result.userName === personalDetails.userName) {
-        //     navigate("/address_details");
-        // }
+        if (result.bankAccounts === selectedAssets.bankAccounts) {
+            navigate("/properties");
+        }
     }
 
     return (

@@ -5,12 +5,12 @@ import { useSetRecoilState } from "recoil"
 import { userState } from "./atoms/UserDetailsState"
 import { personalDetailsState } from "./atoms/PersonalDetailsState"
 import { addressDetailsState } from "./atoms/AddressDetailsState"
-import Header from "./components/Header"
 import { assetRoutesMap, ISelectedAssetsState, selectedAssetsState } from "./atoms/SelectedAssetsState"
 import { routesState } from "./atoms/RouteState"
 import { IPropertiesState, propertiesState } from "./atoms/PropertiesState"
 import { ASSET_SUBTYPES } from "./constants"
-import { a } from "@react-spring/web"
+import { emptyPropertyValidationState, propertiesValidationState } from "./atoms/validationStates/PropertiesValidationState"
+import Header from "./components/Header"
 
 
 function App() {
@@ -18,7 +18,12 @@ function App() {
   const setPersonalDetails = useSetRecoilState(personalDetailsState);
   const setAddressDetails = useSetRecoilState(addressDetailsState);
   const setSelectedAssets = useSetRecoilState(selectedAssetsState);
+
+  // PROPERTIES
   const setProperties = useSetRecoilState(propertiesState);
+  const setPropertiesValidationState = useSetRecoilState(propertiesValidationState);
+
+
   const setRouteState = useSetRecoilState(routesState);
 
   useEffect(() => {
@@ -44,6 +49,7 @@ function App() {
       var properties: IPropertiesState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PROPERTIES).map((s) => ({ ...s.data, id: s.id }));
       if (properties.length > 0) {
         setProperties(properties)
+        setPropertiesValidationState(properties.map(_ => ({...emptyPropertyValidationState})))
       }
     }
 
@@ -68,10 +74,10 @@ function App() {
   }
 
   return (
-    <>
+    <div className="font-[frank]">
       <Header />
       <YourWill />
-    </>
+    </div>
   )
 }
 

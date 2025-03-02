@@ -158,6 +158,7 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
   },
   [`&.Mui-focused, &.Mui-selected, &.Mui-selected, &.Mui-focused`]: {
     backgroundColor: "#358477",
+    
     color: 'white',
   },
 }));
@@ -195,6 +196,7 @@ function CustomLabel({
   return (
     <TreeItem2Label
       {...other}
+      className="border-l-[4px] border-white flex space-x-1"
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -205,7 +207,7 @@ function CustomLabel({
           component={Icon}
           className="labelIcon"
           color="white"
-          sx={{ mr: 1, fontSize: '1.2rem' }}
+          sx={{ fontSize: '1.2rem' }}
         />
       )}
 

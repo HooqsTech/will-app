@@ -11,7 +11,7 @@ const CustomButton: React.FC<ICustomButtonProps> = ({ label, onClick, loading })
         <Button onClick={onClick} loading={loading} variant="contained" sx={{
             borderRadius: 0,
             boxShadow: "none"
-        }} className="mt-5">
+        }} className="mt-5 font-[frank] normal-case">
             {label}
         </Button>
     )

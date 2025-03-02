@@ -17,6 +17,21 @@ export const upsertAsset = async (assetData: IAsset): Promise<IAsset> => {
   return asset;
 };
 
+export const deleteAsset = async (assetId: string): Promise<boolean> => {
+  const response = await fetch(`http://localhost:5000/api/assets/${assetId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to upsert asset");
+  }
+
+  return true;
+};
+
 export const addSelectedAssetsAsync = async (assetData: ISelectedAssets, userId: string): Promise<ISelectedAssets> => {
   const response = await fetch(`http://localhost:5000/api/assets/selectedAssets/${userId}/upsert`, {
     method: "POST",

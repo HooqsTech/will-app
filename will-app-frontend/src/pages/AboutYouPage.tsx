@@ -32,13 +32,13 @@ const AboutYouPage = () => {
                 <p className='text-lg col-span-4'>Address</p>
                 <div className='flex items-start col-span-4 justify-start gap-14'>
                     <p>:</p>
-                    <div className='text-gray-700'>
+                    <div className='text-gray-700 w-full text-wrap'>
                         <p>{addressDetails.address1}</p>
                         <p>{addressDetails.address2}</p>
                         <p>{addressDetails.city}</p>
                         <p>{addressDetails.state}</p>
                         <p>{addressDetails.phoneNumber}</p>
-                        <p>{addressDetails.email}</p>
+                        <p className='text-ellipsis'>{addressDetails.email}</p>
                     </div>
                 </div>
             </div>
@@ -46,11 +46,11 @@ const AboutYouPage = () => {
     }
 
     return (
-        <div className='w-full rounded-lg bg-white max-w-md shadow-md border-l-[20px] p-4 border-[#358477] shadow-gray-400 justify-center flex flex-col'>
+        <div className='w-full rounded-lg bg-white max-w-fit shadow-md border-l-[20px] p-4 border-[#358477] shadow-gray-400 justify-center flex flex-col'>
             <div className='flex justify-end'>
                 <CustomButton label={"edit"} onClick={() => { }} />
             </div>
-            <div className='flex w-full flex-col items-center justify-between p-6 text-md space-y-2'>
+            <div className='flex w-full flex-col items-center justify-between p-6 text-md space-y-2 text-wrap'>
                 <Item label={"Full Name"} text={personalDetails.fullName} />
                 <Item label={"Father Name"} text={personalDetails.fatherName} />
                 <Item label={"Gender"} text={personalDetails.gender} />

@@ -7,6 +7,6 @@ router.get("/assets/getAssetsByUserId", getAssetsByUserId);
 router.post('/assets/upsert', upsertAsset);
 router.post('/assets/selectedAssets/:userId/upsert', addSelectesAssets);
 router.delete('/assets/deleteAssetsByUserId', deleteAssetsByUserId);
-router.delete('/assets/deleteAssetById', deleteAssetById);
+router.delete('/assets/:assetId', deleteAssetById);
 
 export default router;

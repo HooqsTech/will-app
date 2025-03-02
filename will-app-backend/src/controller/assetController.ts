@@ -309,7 +309,7 @@ export const deleteAssetsByUserId = async (req: Request, res: Response) => {
 
 export const deleteAssetById = async (req: Request, res: Response) => {
     try {
-        const { assetId } = req.query;
+        const { assetId } = req.params
 
         // Validate asset_id
         if (!assetId || typeof assetId !== "string") {

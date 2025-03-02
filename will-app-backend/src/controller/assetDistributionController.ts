@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 //Check if the given user id is valid
 const validUser = async (userId: UUID): Promise<boolean> => {
-    const user = await prisma.users.findUnique({ where: { user_id: userId } });
+    const user = await prisma.users.findUnique({ where: { userid: userId } });
     return !!user;
 };
 
@@ -24,7 +24,7 @@ const getUserDistributionType = async (userId: UUID): Promise<string | null> => 
 //Check for valid beneficiaries
 const validBeneficiaries = async (userId: UUID, beneficiaries: UUID[]): Promise<Boolean> =>{
     const allBeneficiaries = await prisma.beneficiaries.findMany({
-        where: {user_id: userId},
+        where: {userid: userId},
         select: {id: true}
     })
     const existingIds = new Set(allBeneficiaries.map(b => b.id)); 

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-html{
-    padding: 0;
-    margin: 0;
-}
+@theme {
+    --color-will-green: #265e55;
+  }
