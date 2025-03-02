@@ -9,12 +9,13 @@ interface ICustomAccordionProps {
     onChange?: () => void;
     expanded?: boolean;
     defaultExpanded?: boolean;
+    error?: boolean;
 }
 
-const CustomAccordion: React.FC<ICustomAccordionProps> = ({ label, children, subTitle, onChange, expanded, defaultExpanded }) => {
+const CustomAccordion: React.FC<ICustomAccordionProps> = ({ label, children, subTitle, onChange, expanded, defaultExpanded, error }) => {
     return (
         <div className='py-2'>
-            <Accordion expanded={expanded} defaultExpanded={defaultExpanded} className="bg-red-50" onChange={onChange}>
+            <Accordion expanded={expanded} defaultExpanded={defaultExpanded} className={`bg-red-50 ${error && 'border-1 border-red-300'} `} onChange={onChange}>
                 <AccordionSummary
                     expandIcon={<ArrowDropDownIcon />}
                 >

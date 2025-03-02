@@ -1,4 +1,4 @@
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { IPropertiesState, propertiesState } from "../../atoms/PropertiesState";
 import CustomFormContainer from "../CustomFormContainer"
 import CustomSelect from "../CustomSelect"
@@ -48,9 +48,12 @@ const PropertiesForm: React.FC<IPropertiesFormProps> = ({ index }) => {
                 value={item.pincode}
                 onChange={(e) => handleChange(index, "pincode", e)}
                 label="Pincode"
+                maxLength={6}
+                restrictAlphabets
                 type="text" />
             <CustomTextBox
                 value={item.city}
+                helperText={validationStateItem.city}
                 onChange={(e) => handleChange(index, "city", e)}
                 label="City"
                 type="text" />

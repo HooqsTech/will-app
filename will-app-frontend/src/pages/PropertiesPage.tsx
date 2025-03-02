@@ -25,6 +25,7 @@ const PropertiesPage = () => {
     const user = useRecoilValue(userState);
     const navigate = useNavigate();
     const location = useLocation();
+    const [showErrorBorder, setShowErrorBorder] = useState(false);
 
     const savePropertyAsync = async (property: IPropertiesState, index: number) => {
         var data: IAsset = {
@@ -70,7 +71,12 @@ const PropertiesPage = () => {
                 setPropertyValidationState(index, "propertyType", "property type is required");
                 isValid = false;
             }
+            else if (IsEmptyString(prop.city)) {
+                setPropertyValidationState(index, "city", "city is required");
+                isValid = false;
+            }
         });
+        setShowErrorBorder(!isValid);
         return isValid;
     }
 
@@ -115,7 +121,12 @@ const PropertiesPage = () => {
     }
 
     const shouldExpandAccordion = (index: number) => {
-        return currentItem === index || Object.values(validationState[index]).some(s => s != undefined && s != null && s != "");
+        return currentItem === index
+    }
+
+    const handleAccordionOnChange = (index: number) => {
+        setCurrentItem((prevItem) => prevItem === index ? -1 : index)
+        setShowErrorBorder(false);
     }
 
     return (
@@ -127,7 +138,8 @@ const PropertiesPage = () => {
                         <div key={formState[index].id} className='flex w-full justify-between items-center space-x-1 h-fit'>
                             <div className='w-full h-full'>
                                 <CustomAccordion key={index} expanded={shouldExpandAccordion(index)}
-                                    onChange={() => setCurrentItem((prevItem) => prevItem === index ? -1 : index)}
+                                    error={showErrorBorder && Object.values(validationState[index]).some(s => s != undefined && s != null && s != "")}
+                                    onChange={() => handleAccordionOnChange(index)}
                                     label={`Property ${index + 1}`}
                                     subTitle={
                                         currentItem !== index && !shouldExpandAccordion(index) ? getSubTitle(index) : ""
