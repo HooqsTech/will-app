@@ -1,7 +1,7 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import { animated, useSpring } from '@react-spring/web';
-import { styled, alpha } from '@mui/material/styles';
+import { borderColor, borderLeft, styled } from '@mui/system';
 import { TransitionProps } from '@mui/material/transitions';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -131,6 +131,7 @@ const StyledTreeItemRoot = styled(TreeItem2Root)(({ theme }) => ({
 const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
   flexDirection: 'row-reverse',
   borderRadius: theme.spacing(0.7),
+  borderColor: "white",
   marginBottom: theme.spacing(0.5),
   marginTop: theme.spacing(0.5),
   padding: theme.spacing(0.5),
@@ -158,7 +159,7 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
   },
   [`&.Mui-focused, &.Mui-selected, &.Mui-selected, &.Mui-focused`]: {
     backgroundColor: "#358477",
-    
+    borderLeft: "4px solid white",
     color: 'white',
   },
 }));
@@ -196,18 +197,18 @@ function CustomLabel({
   return (
     <TreeItem2Label
       {...other}
-      className="border-l-[4px] border-white flex space-x-1"
       sx={{
         display: 'flex',
+
         alignItems: 'center',
       }}
     >
       {Icon && (
         <Box
           component={Icon}
-          className="labelIcon"
+          className="labelIcon pr-2"
           color="white"
-          sx={{ fontSize: '1.2rem' }}
+          sx={{ fontSize: '1.7rem' }}
         />
       )}
 

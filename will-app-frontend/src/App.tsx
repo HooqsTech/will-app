@@ -74,7 +74,7 @@ function App() {
   }
 
   return (
-    <div className="font-[frank]">
+    <div className="font-[frank] flex flex-col">
       <Header />
       <YourWill />
     </div>

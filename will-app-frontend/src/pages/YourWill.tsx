@@ -28,13 +28,13 @@ import AssetsPage from './AssetsPage';
 const YourWill: React.FC = () => {
     return (
         <BrowserRouter>
-            <div className='grid grid-cols-12 h-screen max-w-5xl m-auto'>
+            <div className='grid grid-cols-12 max-w-5xl m-auto'>
                 <div className='bg-[#265e55] h-full col-span-3 p-6'>
-                    <div className='top-2 sticky'>
+                    <div className='top-28 sticky'>
                         <Sidebar2 />
                     </div>
                 </div>
-                <div className='h-full flex flex-col col-span-9 items-center p-10 justify-center'>
+                <div className='h-screen flex flex-col col-span-9 items-center p-10 justify-center'>
                     <Routes>
                         <Route path="/about_you" element={<AboutYouPage />} />
                         <Route path="/personal_details" element={<PersonalDetailsPage />} />

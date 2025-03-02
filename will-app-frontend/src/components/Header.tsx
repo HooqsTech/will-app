@@ -2,7 +2,7 @@ import CustomButton from "./CustomButton"
 
 const Header = () => {
     return (
-        <nav className="bg-white top-0 sticky z-50 shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
+        <nav className="bg-white top-0 w-full sticky z-50 shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
                     <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo" />
