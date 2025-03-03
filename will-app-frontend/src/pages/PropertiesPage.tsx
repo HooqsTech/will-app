@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const PropertiesPage = () => {
     const [formState, setFormState] = useRecoilState<IPropertiesState[]>(propertiesState);
-    const [validationState, setValidationState] = useRecoilState<IPropertiesState[]>(propertiesValidationState);
+    const [validationState, setValidationState] = useRecoilState<IPropertiesValidationState[]>(propertiesValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
     const routeState = useRecoilValue(routesState);
     const user = useRecoilValue(userState);
@@ -43,11 +43,17 @@ const PropertiesPage = () => {
     }
 
     const deletePropertyAsync = async (index: number) => {
-        var isDeleted = await deleteAsset(formState[index].id);
-        if (isDeleted) {
-
+        if (formState[index].id !== ""
+            && formState[index].id !== undefined
+        ) {
+            await deleteAsset(formState[index].id);
             setFormState((prevItems) =>
                 prevItems.filter(item => item.id !== formState[index].id)
+            );
+        }
+        else {
+            setFormState((prevItems) =>
+                prevItems.filter((_, i) => i !== index)
             );
         }
     }

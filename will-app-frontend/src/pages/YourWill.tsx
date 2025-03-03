@@ -12,7 +12,7 @@ import Escops from './Escops';
 import Debentures from './Debentures';
 import Bonds from './Bonds';
 import Businesses from './Businesses';
-import BankAccountAsset from './BankAccountAsset';
+import BankAccountAsset from './BankAccountsPage';
 import FixedDepositAsset from './FixedDepositAsset';
 import InsurancePolicyAsset from './InsurancePolicyAsset';
 import SafetyDepositAsset from './SafetyDepositAsset';
@@ -24,6 +24,7 @@ import BeneficiariesPage from './BeneficiariesDetails';
 import AboutYouPage from './AboutYouPage';
 import CustomAssets from './CustomAssets';
 import AssetsPage from './AssetsPage';
+import BankAccountsPage from './BankAccountsPage';
 
 const YourWill: React.FC = () => {
     return (
@@ -41,7 +42,7 @@ const YourWill: React.FC = () => {
                         <Route path="/address_details" element={<AddressDetailsPage />} />
                         <Route path="/assets" element={<AssetsPage />} />
                         <Route path="/properties" element={<PropertiesPage />} />
-                        <Route path="/bank_accounts" element={<BankAccountAsset />} />
+                        <Route path="/bank_accounts" element={<BankAccountsPage />} />
                         <Route path="/fixed_deposits" element={<FixedDepositAsset />} />
                         <Route path="/insurance_policies" element={<InsurancePolicyAsset />} />
                         <Route path="/safe_deposit_boxes" element={<SafetyDepositAsset />} />
