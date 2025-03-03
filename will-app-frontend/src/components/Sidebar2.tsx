@@ -59,49 +59,49 @@ const NavItems: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
           { id: 'properties', label: 'Properties', iconName: 'pdf' },
         ]
       },
-      // { id: 'financial_assets', label: 'Financial Assets',  iconName: 'pdf',
-      //     children: [
-      //         {id: 'bank_accounts', label: 'Bank Accounts', iconName: 'pdf'},
-      //         {id: 'fixed_deposits', label: 'Fixed Deposits', iconName: 'pdf'},
-      //         {id: 'insurance_policies', label: 'insurance Policies', iconName: 'pdf'},
-      //         {id: 'safe_deposit_boxes', label: 'Safe Deposit Boxes', iconName: 'pdf'},
-      //         {id: 'demat_accounts', label:'Demat Accounts', iconName: 'pdf'},
-      //         {id: 'mutual_funds', label: 'Mutual Funds', iconName: 'pdf'},
-      //         {id: 'provident_fund', label: 'Provident Fund', iconName: 'pdf'},
-      //         {id: 'pension_accounts', label:'Pension Accounts', iconName: 'pdf'}
-      //     ]
-      // },
-      // { id: 'business_assets', label: 'Business Assets', iconName: 'pdf',
-      //     children: [
-      //         {id: 'business', label: 'Business', iconName: 'pdf'},
-      //         {id: 'bonds', label: 'Bonds', iconName: 'pdf'},
-      //         {id: 'debentures', label: 'Debentures', iconName: 'pdf'},
-      //         {id: 'esops', label: 'Esops', iconName: 'pdf'}
-      //     ]
-      // },
-      // { id: 'other_investments', label: 'Other Investments',  iconName: 'pdf',
-      //     children: [
-      //         {id: 'vehicles', label: 'vechicles', iconName: 'pdf'},
-      //         {id: 'jewelry', label: 'Jewlery', iconName: 'pdf'},
-      //         {id: 'digital_assets', label: 'Digital Assets', iconName: 'pdf'},
-      //         {id: 'intellectual_property', label: 'Intellectual', iconName: 'pdf'},
-      //         {id: 'custom_assets', label: 'Custom Assets', iconName: 'pdf'}
-      //     ]
-      // }
+      { id: 'financial_assets', label: 'Financial Assets',  iconName: 'pdf',
+          children: [
+              {id: 'bank_accounts', label: 'Bank Accounts', iconName: 'pdf'},
+              {id: 'fixed_deposits', label: 'Fixed Deposits', iconName: 'pdf'},
+              {id: 'insurance_policies', label: 'insurance Policies', iconName: 'pdf'},
+              {id: 'safe_deposit_boxes', label: 'Safe Deposit Boxes', iconName: 'pdf'},
+              {id: 'demat_accounts', label:'Demat Accounts', iconName: 'pdf'},
+              {id: 'mutual_funds', label: 'Mutual Funds', iconName: 'pdf'},
+              {id: 'provident_fund', label: 'Provident Fund', iconName: 'pdf'},
+              {id: 'pension_accounts', label:'Pension Accounts', iconName: 'pdf'}
+          ]
+      },
+      { id: 'business_assets', label: 'Business Assets', iconName: 'pdf',
+          children: [
+              {id: 'business', label: 'Business', iconName: 'pdf'},
+              {id: 'bonds', label: 'Bonds', iconName: 'pdf'},
+              {id: 'debentures', label: 'Debentures', iconName: 'pdf'},
+              {id: 'esops', label: 'Esops', iconName: 'pdf'}
+          ]
+      },
+      { id: 'other_investments', label: 'Other Investments',  iconName: 'pdf',
+          children: [
+              {id: 'vehicles', label: 'vechicles', iconName: 'pdf'},
+              {id: 'jewelry', label: 'Jewlery', iconName: 'pdf'},
+              {id: 'digital_assets', label: 'Digital Assets', iconName: 'pdf'},
+              {id: 'intellectual_property', label: 'Intellectual', iconName: 'pdf'},
+              {id: 'custom_assets', label: 'Custom Assets', iconName: 'pdf'}
+          ]
+      }
     ],
   },
-  // {
-  //     id: 'liabilities',
-  //     label: 'Liabilities',
-  //     iconName: '',
-  //     children: [
-  //         { id: 'home_loans', label: 'Home Loans', iconName: 'pdf' },
-  //         { id: 'personal_loans', label: 'Personal Loans', iconName: 'pdf' },
-  //         { id: 'vehicle_loans', label: 'Vechicle Loans', iconName: 'pdf' },
-  //         { id: 'education_loans', label: 'Education Loans', iconName: 'pdf' },
-  //         { id: 'other_liabilities', label: 'Other Liabilities', iconName: 'pdf' }
-  //     ],
-  // }
+  {
+      id: 'liabilities',
+      label: 'Liabilities',
+      iconName: '',
+      children: [
+          { id: 'home_loans', label: 'Home Loans', iconName: 'pdf' },
+          { id: 'personal_loans', label: 'Personal Loans', iconName: 'pdf' },
+          { id: 'vehicle_loans', label: 'Vechicle Loans', iconName: 'pdf' },
+          { id: 'education_loans', label: 'Education Loans', iconName: 'pdf' },
+          { id: 'other_liabilities', label: 'Other Liabilities', iconName: 'pdf' }
+      ],
+  },
   {
     id: 'beneficiaries',
     label: 'Beneficiaries',
@@ -199,7 +199,6 @@ function CustomLabel({
       {...other}
       sx={{
         display: 'flex',
-
         alignItems: 'center',
       }}
     >
@@ -322,7 +321,7 @@ export default function Sidebar2() {
           loading="lazy"
         />
       </div>
-      <div className='p-6 '>
+      <div className='p-6 w-full'>
         <RichTreeView
           multiSelect={false}
           items={NavItems}
