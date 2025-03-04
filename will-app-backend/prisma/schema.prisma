@@ -19,16 +19,16 @@ model assets {
 }
 
 model beneficiaries {
-  id                                                                                                      String                            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userid                                                                                                  String?                           @db.Uuid
-  type                                                                                                    String?
-  data                                                                                                    Json?
-  createdat                                                                                               DateTime?                         @default(now()) @db.Timestamptz(6)
-  updatedat                                                                                               DateTime?                         @default(now()) @db.Timestamptz(6)
-  users                                                                                                   users?                            @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
-  single_beneficiary_distribution_single_beneficiary_distribution_primary_beneficiary_idTobeneficiaries   single_beneficiary_distribution[] @relation("single_beneficiary_distribution_primary_beneficiary_idTobeneficiaries")
-  single_beneficiary_distribution_single_beneficiary_distribution_secondary_beneficiary_idTobeneficiaries single_beneficiary_distribution[] @relation("single_beneficiary_distribution_secondary_beneficiary_idTobeneficiaries")
-  single_beneficiary_distribution_single_beneficiary_distribution_tertiary_beneficiary_idTobeneficiaries  single_beneficiary_distribution[] @relation("single_beneficiary_distribution_tertiary_beneficiary_idTobeneficiaries")
+  id                                                                                                    String                            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userid                                                                                                String?                           @db.Uuid
+  type                                                                                                  String?
+  data                                                                                                  Json?
+  createdat                                                                                             DateTime?                         @default(now()) @db.Timestamptz(6)
+  updatedat                                                                                             DateTime?                         @default(now()) @db.Timestamptz(6)
+  users                                                                                                 users?                            @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
+  single_beneficiary_distribution_single_beneficiary_distribution_primarybeneficiaryidTobeneficiaries   single_beneficiary_distribution[] @relation("single_beneficiary_distribution_primarybeneficiaryidTobeneficiaries")
+  single_beneficiary_distribution_single_beneficiary_distribution_secondarybeneficiaryidTobeneficiaries single_beneficiary_distribution[] @relation("single_beneficiary_distribution_secondarybeneficiaryidTobeneficiaries")
+  single_beneficiary_distribution_single_beneficiary_distribution_tertiarybeneficiaryidTobeneficiaries  single_beneficiary_distribution[] @relation("single_beneficiary_distribution_tertiarybeneficiaryidTobeneficiaries")
 }
 
 model liabilities {
@@ -71,53 +71,51 @@ model users {
 }
 
 model single_beneficiary_distribution {
-  user_id                                                                               String         @id @db.Uuid
-  primary_beneficiary_id                                                                String         @db.Uuid
-  secondary_beneficiary_id                                                              String?        @db.Uuid
-  tertiary_beneficiary_id                                                               String?        @db.Uuid
-  created_at                                                                            DateTime?      @default(now()) @db.Timestamptz(6)
-  updated_at                                                                            DateTime?      @default(now()) @db.Timestamptz(6)
-  beneficiaries_single_beneficiary_distribution_primary_beneficiary_idTobeneficiaries   beneficiaries  @relation("single_beneficiary_distribution_primary_beneficiary_idTobeneficiaries", fields: [primary_beneficiary_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  beneficiaries_single_beneficiary_distribution_secondary_beneficiary_idTobeneficiaries beneficiaries? @relation("single_beneficiary_distribution_secondary_beneficiary_idTobeneficiaries", fields: [secondary_beneficiary_id], references: [id], onUpdate: NoAction)
-  beneficiaries_single_beneficiary_distribution_tertiary_beneficiary_idTobeneficiaries  beneficiaries? @relation("single_beneficiary_distribution_tertiary_beneficiary_idTobeneficiaries", fields: [tertiary_beneficiary_id], references: [id], onUpdate: NoAction)
-  users                                                                                 users          @relation(fields: [user_id], references: [userid], onDelete: Cascade, onUpdate: NoAction)
+  userid                                                                              String         @id @db.Uuid
+  primarybeneficiaryid                                                                String         @db.Uuid
+  secondarybeneficiaryid                                                              String?        @db.Uuid
+  tertiarybeneficiaryid                                                               String?        @db.Uuid
+  createdat                                                                           DateTime?      @default(now()) @db.Timestamptz(6)
+  updatedat                                                                           DateTime?      @default(now()) @db.Timestamptz(6)
+  beneficiaries_single_beneficiary_distribution_primarybeneficiaryidTobeneficiaries   beneficiaries  @relation("single_beneficiary_distribution_primarybeneficiaryidTobeneficiaries", fields: [primarybeneficiaryid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  beneficiaries_single_beneficiary_distribution_secondarybeneficiaryidTobeneficiaries beneficiaries? @relation("single_beneficiary_distribution_secondarybeneficiaryidTobeneficiaries", fields: [secondarybeneficiaryid], references: [id], onUpdate: NoAction)
+  beneficiaries_single_beneficiary_distribution_tertiarybeneficiaryidTobeneficiaries  beneficiaries? @relation("single_beneficiary_distribution_tertiarybeneficiaryidTobeneficiaries", fields: [tertiarybeneficiaryid], references: [id], onUpdate: NoAction)
+  users                                                                               users          @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model will_distribution {
-  user_id                     String    @id @db.Uuid
-  distribution_type           String    @db.VarChar(20)
-  residuary_distribution_type String?   @db.VarChar(20)
-  fallback_rule               String?
-  created_at                  DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at                  DateTime? @default(now()) @db.Timestamptz(6)
-  users                       users     @relation(fields: [user_id], references: [userid], onDelete: Cascade, onUpdate: NoAction)
+  userid                    String    @id @db.Uuid
+  distributiontype          String    @db.VarChar(20)
+  residuarydistributiontype String?   @db.VarChar(20)
+  fallbackrule              String?
+  createdat                 DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat                 DateTime? @default(now()) @db.Timestamptz(6)
+  users                     users     @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model percentage_distribution {
-  user_id       String    @id @db.Uuid
+  userid        String    @id @db.Uuid
   beneficiaries Json
-  is_residuary  Boolean   @default(false)
-  created_at    DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime? @default(now()) @db.Timestamptz(6)
-  users         users     @relation(fields: [user_id], references: [userid], onDelete: Cascade, onUpdate: NoAction)
+  createdat     DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat     DateTime? @default(now()) @db.Timestamptz(6)
+  users         users     @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model residuary_asset_distribution {
-  user_id       String    @id @db.Uuid
+  userid        String    @id @db.Uuid
   beneficiaries Json
-  is_residuary  Boolean   @default(false)
-  created_at    DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime? @default(now()) @db.Timestamptz(6)
-  users         users     @relation(fields: [user_id], references: [userid], onDelete: Cascade, onUpdate: NoAction)
+  createdat     DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat     DateTime? @default(now()) @db.Timestamptz(6)
+  users         users     @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model specific_asset_distribution {
-  user_id    String    @id @db.Uuid
-  assets     Json
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at DateTime? @default(now()) @db.Timestamptz(6)
-  users      users     @relation(fields: [user_id], references: [userid], onDelete: Cascade, onUpdate: NoAction)
+  userid    String    @id @db.Uuid
+  assets    Json
+  createdat DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat DateTime? @default(now()) @db.Timestamptz(6)
+  users     users     @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model addressdetails {

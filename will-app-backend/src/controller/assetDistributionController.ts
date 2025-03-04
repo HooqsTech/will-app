@@ -14,11 +14,11 @@ const validUser = async (userId: UUID): Promise<boolean> => {
 //Get distribution type for user
 const getUserDistributionType = async (userId: UUID): Promise<string | null> => {
     const distribution = await prisma.will_distribution.findUnique({
-        where: { user_id: userId },
-        select: { distribution_type: true }
+        where: { userid: userId },
+        select: { distributiontype: true }
     });
 
-    return distribution?.distribution_type || null; 
+    return distribution?.distributiontype || null; 
 };
 
 //Check for valid beneficiaries
@@ -42,22 +42,22 @@ export const saveDistributionType = async (request: Request, response: Response)
 
         //Check if there is an existing entry for the user
         const existingDistribution = await prisma.will_distribution.findUnique({
-            where: { user_id: userId }
+            where: { userid: userId }
         });
 
         //Delete current distribution data if the user is changing the type of distribution
-        if(existingDistribution && existingDistribution.distribution_type !== distributionType){
-            switch (existingDistribution.distribution_type) {
+        if(existingDistribution && existingDistribution.distributiontype !== distributionType){
+            switch (existingDistribution.distributiontype) {
                 case DistributionType.SINGLE:
                     await prisma.single_beneficiary_distribution.deleteMany({
-                        where: {user_id: userId}
+                        where: {userid: userId}
                     })
                     console.log("Deleted data stored for single beneficiary");
                     break;
             
                 case DistributionType.SPECIFIC:
                     await prisma.specific_asset_distribution.deleteMany({
-                        where: {user_id: userId}
+                        where: {userid: userId}
                     })
                     
                     console.log("Deleted data stored for specific asset based beneficiaries");
@@ -65,7 +65,7 @@ export const saveDistributionType = async (request: Request, response: Response)
             
                 case DistributionType.PERCENTAGE:
                     await prisma.percentage_distribution.deleteMany({
-                        where: {user_id: userId}
+                        where: {userid: userId}
                     })
                     console.log("Deleted data stored for percentage based beneficiaries");
                     break;
@@ -74,15 +74,15 @@ export const saveDistributionType = async (request: Request, response: Response)
                     throw new Error("Invalid distribution type");
             }
             await prisma.residuary_asset_distribution.deleteMany({
-                where: {user_id: userId}
+                where: {userid: userId}
             })
             console.log("Deleted data stored for residuary distribution");
         }
 
         //Delete current residuary distribution data if the user is changing the type of residuary distribution
-        if(existingDistribution?.residuary_distribution_type !== residuaryDistributionType){
+        if(existingDistribution?.residuarydistributiontype !== residuaryDistributionType){
             await prisma.residuary_asset_distribution.deleteMany({
-                where: {user_id: userId}
+                where: {userid: userId}
             })
             console.log("Deleted data stored for percentage based beneficiaries");
         }
@@ -92,22 +92,22 @@ export const saveDistributionType = async (request: Request, response: Response)
         //Update existing record if it exists, or add new entry
         if (existingDistribution) {
             distributionDetails = await prisma.will_distribution.update({
-                where: { user_id: userId },
+                where: { userid: userId },
                 data: {
-                    distribution_type: distributionType,
-                    residuary_distribution_type: residuaryDistributionType,
-                    fallback_rule: fallbackRule,
-                    updated_at: new Date(),
+                    distributiontype: distributionType,
+                    residuarydistributiontype: residuaryDistributionType,
+                    fallbackrule: fallbackRule,
+                    updatedat: new Date(),
                 },
             });
         } else {
             distributionDetails = await prisma.will_distribution.create({
                 data: {
-                    user_id: userId,
-                    distribution_type: distributionType,
-                    residuary_distribution_type: residuaryDistributionType,
-                    fallback_rule: fallbackRule,
-                    created_at: new Date(),
+                    userid: userId,
+                    distributiontype: distributionType,
+                    residuarydistributiontype: residuaryDistributionType,
+                    fallbackrule: fallbackRule,
+                    createdat: new Date(),
                 },
             });
         }
@@ -136,29 +136,29 @@ export const saveSingleBeneficiaryAssetDistribution = async (request: Request, r
 
         const existingEntry = await prisma.single_beneficiary_distribution.findUnique({
             where: {
-                user_id: userId
+                userid: userId
             },
         });
 
         //Update existing record if it exists, or add new entry
         if (existingEntry) {
             distributionDetails = await prisma.single_beneficiary_distribution.update({
-                where: { user_id:userId },
+                where: { userid:userId },
                 data: {
-                    primary_beneficiary_id: primaryBeneficiary,
-                    secondary_beneficiary_id: secondaryBeneficiary,
-                    tertiary_beneficiary_id: tertiaryBeneficiary,
-                    updated_at: new Date(),
+                    primarybeneficiaryid: primaryBeneficiary,
+                    secondarybeneficiaryid: secondaryBeneficiary,
+                    tertiarybeneficiaryid: tertiaryBeneficiary,
+                    updatedat: new Date(),
                 },
             });
         } else {
             distributionDetails = await prisma.single_beneficiary_distribution.create({
                 data: {
-                    user_id: userId,
-                    primary_beneficiary_id: primaryBeneficiary,
-                    secondary_beneficiary_id: secondaryBeneficiary,
-                    tertiary_beneficiary_id: tertiaryBeneficiary,
-                    created_at: new Date(),
+                    userid: userId,
+                    primarybeneficiaryid: primaryBeneficiary,
+                    secondarybeneficiaryid: secondaryBeneficiary,
+                    tertiarybeneficiaryid: tertiaryBeneficiary,
+                    createdat: new Date(),
                 },
             });
         }
@@ -186,7 +186,7 @@ export const savePercentageAssetDistribution = async (request: Request, response
 
         const existingEntry = await prisma.percentage_distribution.findFirst({
             where: {
-                user_id: userId
+                userid: userId
             },
         });
 
@@ -195,19 +195,19 @@ export const savePercentageAssetDistribution = async (request: Request, response
             //Update existing record if it exists, or add new entry
             if(existingEntry){
             distributionDetails = await prisma.percentage_distribution.update({
-                where: {user_id : userId},
+                where: {userid : userId},
                 data: {
                     beneficiaries: beneficiaryData,
-                    updated_at: new Date(),
+                    updatedat: new Date(),
                 }
             });
         }
         else{
             distributionDetails = await prisma.percentage_distribution.create({
                 data: {
-                    user_id: userId,
+                    userid: userId,
                     beneficiaries: beneficiaryData,
-                    created_at: new Date(),
+                    createdat: new Date(),
                 },
             })
         }
@@ -235,7 +235,7 @@ export const saveSpecificAssetDistribution = async (request : Request, response 
 
         const existingEntry = await prisma.specific_asset_distribution.findFirst({
             where: {
-                user_id: userId
+                userid: userId
             },
         });
         let distributionDetails;
@@ -243,19 +243,19 @@ export const saveSpecificAssetDistribution = async (request : Request, response 
         //Update existing record if it exists, or add new entry
         if(existingEntry){
             distributionDetails = await prisma.specific_asset_distribution.update({
-                where: {user_id : userId},
+                where: {userid : userId},
                 data: {
                     assets: assetData,
-                    updated_at: new Date(),
+                    updatedat: new Date(),
                 }
             });
         }
         else{
             distributionDetails = await prisma.specific_asset_distribution.create({
                 data: {
-                    user_id: userId,
+                    userid: userId,
                     assets: assetData,
-                    created_at: new Date(),
+                    createdat: new Date(),
                 },
             })
         }
@@ -279,7 +279,7 @@ export const saveResiduaryAssetDistribution = async (request: Request, response 
 
         const existingEntry = await prisma.residuary_asset_distribution.findFirst({
             where: {
-                user_id: userId
+                userid: userId
             },
         });
 
@@ -288,19 +288,19 @@ export const saveResiduaryAssetDistribution = async (request: Request, response 
         //Update existing record if it exists, or add new entry
         if(existingEntry){
             residuaryDistributionDetails = await prisma.residuary_asset_distribution.update({
-                where: {user_id : userId},
+                where: {userid : userId},
                 data: {
                     beneficiaries: beneficiaryData,
-                    updated_at: new Date(),
+                    updatedat: new Date(),
                 }
             });
         }
         else{
             residuaryDistributionDetails = await prisma.residuary_asset_distribution.create({
                 data: {
-                    user_id: userId,
+                    userid: userId,
                     beneficiaries: beneficiaryData,
-                    created_at: new Date(),
+                    createdat: new Date(),
                 },
             })
         }
@@ -322,8 +322,8 @@ export const getAssetDistributionByUserId = async (request: Request, response: R
         }
 
         const distribution = await prisma.will_distribution.findUnique({
-            where: { user_id: userId },
-            select: { distribution_type: true, residuary_distribution_type: true, fallback_rule: true },
+            where: { userid: userId },
+            select: { distributiontype: true, residuarydistributiontype: true, fallbackrule: true },
         });
 
         if (!distribution) {
@@ -334,28 +334,28 @@ export const getAssetDistributionByUserId = async (request: Request, response: R
         let residuaryDistributionDetails;
 
         //Get distribution data from corresponding table based on the type of distribution
-        switch (distribution.distribution_type) {
+        switch (distribution.distributiontype) {
             case DistributionType.SINGLE:
                 distributionDetails = await prisma.single_beneficiary_distribution.findUnique({
-                    where: { user_id: userId },
+                    where: { userid: userId },
                     select: {
-                        primary_beneficiary_id: true,
-                        secondary_beneficiary_id: true,
-                        tertiary_beneficiary_id: true
+                        primarybeneficiaryid: true,
+                        secondarybeneficiaryid: true,
+                        tertiarybeneficiaryid: true
                     },
                 });
                 break;
         
             case DistributionType.SPECIFIC:
                 distributionDetails = await prisma.specific_asset_distribution.findUnique({
-                    where: { user_id: userId },
+                    where: { userid: userId },
                     select: { assets: true },
                 });
                 break;
         
             case DistributionType.PERCENTAGE:
                 distributionDetails = await prisma.percentage_distribution.findUnique({
-                    where: { user_id: userId },
+                    where: { userid: userId },
                     select: { beneficiaries: true },
                 });
                 break;
@@ -366,17 +366,17 @@ export const getAssetDistributionByUserId = async (request: Request, response: R
         
 
         residuaryDistributionDetails = await prisma.residuary_asset_distribution.findUnique({
-            where: { user_id: userId },
+            where: { userid: userId },
             select: {beneficiaries: true},
         });
 
         response.status(200).json({
-            user_id: userId,
-            fall_back_rule: distribution.fallback_rule,
-            distribution_type: distribution.distribution_type,
+            userid: userId,
+            fallbackrule: distribution.fallbackrule,
+            distributiontype: distribution.distributiontype,
             distributionDetails,
-            residuary_distribution_type: distribution.residuary_distribution_type,
-            residuaryDistributionDetails,
+            residuarydistributiontype: distribution.residuarydistributiontype,
+            residuaryDistributionDetails
         });
     } catch (error) {
         console.error("Error while getting asset distribution details:", error);
