@@ -1,11 +1,3 @@
-import * as React from 'react';
-import clsx from 'clsx';
-import { animated, useSpring } from '@react-spring/web';
-import { borderColor, borderLeft, styled } from '@mui/system';
-import { TransitionProps } from '@mui/material/transitions';
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import Typography from '@mui/material/Typography';
 import ArticleIcon from '@mui/icons-material/Article';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
@@ -13,9 +5,13 @@ import FolderRounded from '@mui/icons-material/FolderRounded';
 import ImageIcon from '@mui/icons-material/Image';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
+import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
+import Typography from '@mui/material/Typography';
+import { TransitionProps } from '@mui/material/transitions';
+import { styled } from '@mui/system';
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import { treeItemClasses } from '@mui/x-tree-view/TreeItem';
-import { useTreeItem2, UseTreeItem2Parameters } from '@mui/x-tree-view/useTreeItem2';
 import {
   TreeItem2Checkbox,
   TreeItem2Content,
@@ -23,10 +19,14 @@ import {
   TreeItem2Label,
   TreeItem2Root,
 } from '@mui/x-tree-view/TreeItem2';
+import { TreeItem2DragAndDropOverlay } from '@mui/x-tree-view/TreeItem2DragAndDropOverlay';
 import { TreeItem2Icon } from '@mui/x-tree-view/TreeItem2Icon';
 import { TreeItem2Provider } from '@mui/x-tree-view/TreeItem2Provider';
-import { TreeItem2DragAndDropOverlay } from '@mui/x-tree-view/TreeItem2DragAndDropOverlay';
 import { TreeViewBaseItem } from '@mui/x-tree-view/models';
+import { useTreeItem2, UseTreeItem2Parameters } from '@mui/x-tree-view/useTreeItem2';
+import { animated, useSpring } from '@react-spring/web';
+import clsx from 'clsx';
+import * as React from 'react';
 import { useNavigate } from 'react-router';
 
 
@@ -307,7 +307,7 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
 export default function Sidebar2() {
 
   const navigate = useNavigate();
-  const handleSelectedItemChange = (event: React.SyntheticEvent, itemId: string) => {
+  const handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
     navigate("/" + itemId);
   };
 

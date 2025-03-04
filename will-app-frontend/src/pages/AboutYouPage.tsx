@@ -46,18 +46,20 @@ const AboutYouPage = () => {
     }
 
     return (
-        <div className='w-full rounded-lg bg-white max-w-fit shadow-md border-l-[20px] p-4 border-[#358477] shadow-gray-400 justify-center flex flex-col'>
-            <div className='flex justify-end'>
-                <CustomButton label={"edit"} onClick={() => { }} />
-            </div>
-            <div className='flex w-full flex-col items-center justify-between p-6 text-md space-y-2 text-wrap'>
-                <Item label={"Full Name"} text={personalDetails.fullName} />
-                <Item label={"Father Name"} text={personalDetails.fatherName} />
-                <Item label={"Gender"} text={personalDetails.gender} />
-                <Item label={"DOB"} text={personalDetails.dob == null ? "" : dayjs(personalDetails.dob).format("DD-MM-YYYY")} />
-                <Item label={"Religion"} text={personalDetails.religion} />
-                <Item label={"Aadhaar Number"} text={personalDetails.aadhaarNumber} />
-                <AddressItem />
+        <div className='flex flex-col items-start h-full'>
+            <div className='w-full rounded-lg bg-white max-w-fit shadow-md border-l-[20px] p-4 border-[#358477] shadow-gray-400 justify-center flex flex-col'>
+                <div className='flex justify-end'>
+                    <CustomButton label={"edit"} onClick={() => { }} />
+                </div>
+                <div className='flex w-full flex-col items-center justify-between p-6 text-md space-y-2 text-wrap'>
+                    <Item label={"Full Name"} text={personalDetails.fullName} />
+                    <Item label={"Father Name"} text={personalDetails.fatherName} />
+                    <Item label={"Gender"} text={personalDetails.gender} />
+                    <Item label={"DOB"} text={personalDetails.dob == null ? "" : dayjs(personalDetails.dob).format("DD-MM-YYYY")} />
+                    <Item label={"Religion"} text={personalDetails.religion} />
+                    <Item label={"Aadhaar Number"} text={personalDetails.aadhaarNumber} />
+                    <AddressItem />
+                </div>
             </div>
         </div>
     )

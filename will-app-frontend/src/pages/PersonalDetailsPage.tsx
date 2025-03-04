@@ -1,15 +1,14 @@
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import CustomButton from "../components/CustomButton";
-import PersonalDetailsForm from "../components/Forms/PersonalDetailsForm";
-import { useNavigate } from "react-router";
-import { personalDetailsState } from "../atoms/PersonalDetailsState";
-import { addPersonalDetailsAsync } from "../api/user";
-import { userState } from "../atoms/UserDetailsState";
-import { useState } from "react";
-import { IPersonalDetailsValidationState, personalDetailsValidationState } from "../atoms/validationStates/PersonalDetailValidationState";
 import { Dayjs } from "dayjs";
-import { IsEmptyString } from "../utils";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { addPersonalDetailsAsync } from "../api/user";
+import { personalDetailsState } from "../atoms/PersonalDetailsState";
+import { userState } from "../atoms/UserDetailsState";
+import { IPersonalDetailsValidationState, personalDetailsValidationState } from "../atoms/validationStates/PersonalDetailValidationState";
+import PersonalDetailsForm from "../components/Forms/PersonalDetailsForm";
 import NextButton from "../components/NextButton";
+import { IsEmptyString } from "../utils";
 
 
 const PersonalDetailsPage = () => {
@@ -78,7 +77,7 @@ const PersonalDetailsPage = () => {
     }
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-start h-full">
             <div className="w-lg space-y-8">
                 <PersonalDetailsForm />
                 <NextButton onClick={addUserDetails} loading={loading} label="Save & Next" />

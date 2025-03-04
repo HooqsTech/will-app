@@ -20,3 +20,12 @@ export const bankDetailsValidationState = atom<IBankDetailsValidationState[]>({
         city: ""
     }]
 });
+
+export var emptyBankAccountValidationState: IBankDetailsValidationState = {
+    id: "",
+    accountType: "",
+    accountNumber: "",
+    bankName: "",
+    branch: "",
+    city: ""
+}

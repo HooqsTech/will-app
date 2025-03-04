@@ -36,16 +36,19 @@ const PropertiesForm: React.FC<IPropertiesFormProps> = ({ index }) => {
                 onChange={(e) => handleChange(index, "propertyType", e)} />
             <CustomSelect
                 label="Ownership Type"
+                helperText={validationStateItem.ownershipType}
                 options={["Single", "Joint"]}
                 value={item.ownershipType}
                 onChange={(e) => handleChange(index, "ownershipType", e)} />
             <CustomTextBox
                 value={item.address}
+                helperText={validationStateItem.address}
                 onChange={(e) => handleChange(index, "address", e)}
                 label="Address"
                 type="text" />
             <CustomTextBox
                 value={item.pincode}
+                helperText={validationStateItem.pincode}
                 onChange={(e) => handleChange(index, "pincode", e)}
                 label="Pincode"
                 maxLength={6}

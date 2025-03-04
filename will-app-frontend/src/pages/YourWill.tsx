@@ -1,34 +1,34 @@
 import * as React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router';
-import PersonalDetailsPage from './PersonalDetailsPage';
-import AddressDetailsPage from './AddressDetailsPage';
 import Sidebar2 from '../components/Sidebar2';
-import PropertiesPage from './PropertiesPage';
-import IntellectualProperties from './IntellectualProperties';
-import DigitalAssets from './DigitalAssets';
-import Jewelleries from './Jewelleries';
-import Vehicles from './Vehicles';
-import Escops from './Escops';
-import Debentures from './Debentures';
-import Bonds from './Bonds';
-import BusinessesPage from './BusinessesPage';
-import FixedDepositAsset from './FixedDepositAsset';
-import InsurancePolicyAsset from './InsurancePolicyAsset';
-import SafetyDepositAsset from './SafetyDepositAsset';
-import DematAccountPage from './DematAccountPage';
-import MutualFundsPage from './MutualFundsPage';
-import PensionAccountPage from './PensionAccountPage';
-import BeneficiariesPage from './BeneficiariesDetails';
 import AboutYouPage from './AboutYouPage';
-import CustomAssets from './CustomAssets';
+import AddressDetailsPage from './AddressDetailsPage';
 import AssetsPage from './AssetsPage';
 import BankAccountsPage from './BankAccountsPage';
+import BeneficiariesPage from './BeneficiariesDetails';
+import Bonds from './Bonds';
+import BusinessesPage from './BusinessesPage';
+import CustomAssets from './CustomAssets';
+import Debentures from './Debentures';
+import DematAccountPage from './DematAccountPage';
+import DigitalAssets from './DigitalAssets';
+import Escops from './Escops';
+import FixedDepositsPage from './FixedDepositsPage';
+import InsurancePoliciesPage from './InsurancePoliciesPage';
+import IntellectualProperties from './IntellectualProperties';
+import Jewelleries from './Jewelleries';
+import MutualFundsPage from './MutualFundsPage';
+import PensionAccountPage from './PensionAccountPage';
+import PersonalDetailsPage from './PersonalDetailsPage';
+import PropertiesPage from './PropertiesPage';
 import ProvidentFundpage from './ProvidentFundPage';
+import SafetyDepositAsset from './SafetyDepositBoxesPage';
+import Vehicles from './Vehicles';
 
 const YourWill: React.FC = () => {
     return (
         <BrowserRouter>
-            <div className='grid grid-cols-12 w-5xl m-auto'>
+            <div className='grid grid-cols-12 w-full m-auto'>
                 <div className='bg-[#265e55] col-span-3'>
                     <div className='top-14 min-h-screen sticky'>
                         <Sidebar2 />
@@ -42,8 +42,8 @@ const YourWill: React.FC = () => {
                         <Route path="/assets" element={<AssetsPage />} />
                         <Route path="/properties" element={<PropertiesPage />} />
                         <Route path="/bank_accounts" element={<BankAccountsPage />} />
-                        <Route path="/fixed_deposits" element={<FixedDepositAsset />} />
-                        <Route path="/insurance_policies" element={<InsurancePolicyAsset />} />
+                        <Route path="/fixed_deposits" element={<FixedDepositsPage />} />
+                        <Route path="/insurance_policies" element={<InsurancePoliciesPage />} />
                         <Route path="/safe_deposit_boxes" element={<SafetyDepositAsset />} />
                         <Route path="/demat_accounts" element={<DematAccountPage />} />
                         <Route path="/mutual_funds" element={<MutualFundsPage />} />

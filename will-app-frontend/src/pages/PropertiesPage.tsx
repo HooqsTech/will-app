@@ -14,7 +14,6 @@ import { userState } from '../atoms/UserDetailsState';
 import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
 import { emptyPropertyValidationState, IPropertiesValidationState, propertiesValidationState } from '../atoms/validationStates/PropertiesValidationState';
 import { IsEmptyString } from '../utils';
-import { Icon, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const PropertiesPage = () => {
@@ -77,7 +76,23 @@ const PropertiesPage = () => {
                 setPropertyValidationState(index, "propertyType", "property type is required");
                 isValid = false;
             }
-            else if (IsEmptyString(prop.city)) {
+
+            if (IsEmptyString(prop.ownershipType)) {
+                setPropertyValidationState(index, "ownershipType", "ownership type is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(prop.address)) {
+                setPropertyValidationState(index, "address", "address is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(prop.pincode)) {
+                setPropertyValidationState(index, "pincode", "pincode is required");
+                isValid = false;
+            }
+            
+            if (IsEmptyString(prop.city)) {
                 setPropertyValidationState(index, "city", "city is required");
                 isValid = false;
             }
@@ -169,7 +184,7 @@ const PropertiesPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton label='Save & Next' onClick={handleNextClick} />
             </div>
         </div>
     )

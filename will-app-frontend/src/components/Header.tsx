@@ -3,7 +3,7 @@ import CustomButton from "./CustomButton"
 const Header = () => {
     return (
         <nav className="bg-white top-0 w-full sticky z-50 shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
-            <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <div className="flex w-full items-center justify-between p-4">
                 <a href="/" className="flex items-center space-x-3">
                     <img src="/assets/hamara-logo-icon.png" className="h-10" alt="Flowbite Logo" />
                     <span className="self-center text-2xl text-will-green whitespace-nowrap uppercase">Hamara Will</span>

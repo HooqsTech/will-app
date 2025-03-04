@@ -1,14 +1,16 @@
 import { atom } from 'recoil';
 
-export interface IInsuranceDetailState {
+export interface IInsurancePolicyState {
+    id: ""
     insuranceType: string;
     insuranceProvider: string;
     policyNumber: string;
 }
 
-export const insuranceDetailsState = atom<IInsuranceDetailState[]>({
-    key: 'insuranceDetailsState',
+export const insurancePoliciesState = atom<IInsurancePolicyState[]>({
+    key: 'insurancePoliciesState',
     default: [{
+        id: "",
         insuranceType: "",
         insuranceProvider: "",
         policyNumber: ""

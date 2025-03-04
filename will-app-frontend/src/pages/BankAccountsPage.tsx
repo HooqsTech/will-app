@@ -1,6 +1,5 @@
 
 import { useRecoilState, useRecoilValue } from 'recoil';
-import CustomButton from '../components/CustomButton';
 import CustomAccordion from '../components/CustomAccordion';
 import BankAccountForm from '../components/Forms/BankAccountForm';
 import { useState } from 'react';
@@ -14,7 +13,7 @@ import { deleteAsset, upsertAsset } from '../api/asset';
 import { routesState } from '../atoms/RouteState';
 import { useNavigate } from 'react-router';
 import { IsEmptyString } from '../utils';
-import { bankDetailsValidationState, IBankDetailsValidationState } from '../atoms/validationStates/BankDetailsValidationState';
+import { bankDetailsValidationState, emptyBankAccountValidationState, IBankDetailsValidationState } from '../atoms/validationStates/BankDetailsValidationState';
 import AddButton from '../components/AddButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -39,6 +38,10 @@ const BankAccountsPage = () => {
                 city: ""
             },
         ]);
+        setValidationState((prevState) => [
+            ...prevState,
+            emptyBankAccountValidationState
+        ])
         setCurrentItem(formState.length)
     };
 
@@ -129,7 +132,7 @@ const BankAccountsPage = () => {
     }
 
     const deleteAssetAsync = async (index: number) => {
-        if (formState[index].id !== "" 
+        if (formState[index].id !== ""
             && formState[index].id !== undefined
         ) {
             await deleteAsset(formState[index].id);
@@ -144,6 +147,11 @@ const BankAccountsPage = () => {
         }
     }
 
+    const handleAccordionOnChange = (index: number) => {
+        setCurrentItem((prevItem) => prevItem === index ? -1 : index)
+        setShowErrorBorder(false);
+    }
+
     return (
         <div className='flex flex-col justify-start h-full space-y-3 w-xl m-auto'>
             <h1 className='text-2xl font-semibold'>Bank Accounts</h1>
@@ -152,8 +160,9 @@ const BankAccountsPage = () => {
                     formState.map((_, index) => (
                         <div key={formState[index].id} className='flex w-full justify-between items-center space-x-1 h-fit'>
                             <div className='w-full h-full'>
-                                <CustomAccordion expanded={currentItem === index}
-                                    onChange={() => setCurrentItem((prevItem) => prevItem === index ? -1 : index)}
+                                <CustomAccordion key={index} expanded={currentItem === index}
+                                    error={showErrorBorder && Object.values(validationState[index]).some(s => s != undefined && s != null && s != "")}
+                                    onChange={() => handleAccordionOnChange(index)}
                                     label={`Bank Accounts ${index + 1}`}
                                     subTitle={
                                         currentItem !== index ? getSubTitle(index) : ""
@@ -177,7 +186,7 @@ const BankAccountsPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton label='Save & Next' onClick={handleNextClick} />
             </div>
         </div>
     )

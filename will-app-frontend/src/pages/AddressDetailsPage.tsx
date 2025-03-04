@@ -80,7 +80,7 @@ const AddressDetailsPage = () => {
     }
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-start h-full">
             <div className="w-lg space-y-8">
                 <AddressDetailsForm />
                 <div className="flex gap-2">

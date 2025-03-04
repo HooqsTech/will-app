@@ -58,7 +58,6 @@ function App() {
   }
 
   const generateRouteDataFromSelectedAssets = (selectedAssets: ISelectedAssetsState) => {
-    debugger;
     const selectedKeys = Object.entries(selectedAssets)
       .filter(([_, value]) => value === true)
       .map(([key]) => key as keyof ISelectedAssetsState)
@@ -74,7 +73,7 @@ function App() {
   }
 
   return (
-    <div className="font-[frank]">
+    <div className="font-[frank] w-full">
       <Header />
       <YourWill />
     </div>
