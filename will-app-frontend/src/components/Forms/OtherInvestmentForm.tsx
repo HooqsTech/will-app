@@ -2,14 +2,14 @@ import { useRecoilState } from "recoil";
 import CustomFormContainer from "../CustomFormContainer"
 import CustomTextBox from "../CustomTextBox"
 import CustomSelect from "../CustomSelect";
-import { IOtherInvestmentState, otherInvestementState } from "../../atoms/OtherInvestmentsState";
+import { IOtherInvestmentState, otherInvestmentState } from "../../atoms/OtherInvestmentsState";
 
 interface IOtherInvestmentFormProps {
     index: number
 }
 
 const OtherInvestmentForm: React.FC<IOtherInvestmentFormProps> = ({ index }) => {
-    const [formState, setFormState] = useRecoilState<IOtherInvestmentState[]>(otherInvestementState);
+    const [formState, setFormState] = useRecoilState<IOtherInvestmentState[]>(otherInvestmentState);
     const item = formState[index];
 
     const handleChange = (index: number, key: keyof IOtherInvestmentState, value: string) => {

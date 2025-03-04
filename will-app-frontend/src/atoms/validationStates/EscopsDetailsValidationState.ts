@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-export interface IEscopState {
+export interface IEscopValidationState {
     id: string;
     companyName: string;
     noOfUnitGraged: string;
@@ -8,8 +8,8 @@ export interface IEscopState {
     noOfUnVestedEscops: string;
 }
 
-export const escopsState = atom<IEscopState[]>({
-    key: 'escopsState',
+export const escopsValidationState = atom<IEscopValidationState[]>({
+    key: 'escopsValidationState',
     default: [{
         id: "",
         companyName: "",
@@ -18,3 +18,11 @@ export const escopsState = atom<IEscopState[]>({
         noOfUnVestedEscops: "",
     }]
 });
+
+export var emptyEscopValidationState: IEscopValidationState = {
+    id: "",
+    companyName: "",
+    noOfUnitGraged: "",
+    noOfVestedEscops: "",
+    noOfUnVestedEscops: "",
+};
