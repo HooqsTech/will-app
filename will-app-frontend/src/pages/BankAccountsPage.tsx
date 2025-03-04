@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const BankAccountsPage = () => {
     const [formState, setFormState] = useRecoilState<IBankDetailsState[]>(bankDetailsState);
-    const [currentItem, setCurrentItem] = useState<number>(0);
+    const [currentItem, setCurrentItem] = useState<number>(-1);
     const user = useRecoilValue(userState);
     const routeState = useRecoilValue(routesState);
     const navigate = useNavigate();

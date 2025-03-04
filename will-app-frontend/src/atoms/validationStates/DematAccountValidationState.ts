@@ -15,7 +15,7 @@ export const dematAccountValidationState = atom<IDematAccountValidationState[]>(
     }]
 });
 
-export var emptyPropertyValidationState: IDematAccountValidationState = {
+export var emptyDematAccountsValidationState: IDematAccountValidationState = {
     id: "",
     brokerName: "",
     accountNumber: ""

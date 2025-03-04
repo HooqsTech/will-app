@@ -11,6 +11,18 @@ import { IPropertiesState, propertiesState } from "./atoms/PropertiesState"
 import { ASSET_SUBTYPES } from "./constants"
 import { emptyPropertyValidationState, propertiesValidationState } from "./atoms/validationStates/PropertiesValidationState"
 import Header from "./components/Header"
+import { bankDetailsState, IBankDetailsState } from "./atoms/BankDetailsState"
+import { bankDetailsValidationState, emptyBankAccountValidationState } from "./atoms/validationStates/BankDetailsValidationState"
+import { fixedDepositsState, IFixedDepositState } from "./atoms/FixedDepositState"
+import { emptyFixedDepositsValidationState, fixedDepositsValidationState } from "./atoms/validationStates/FixedDepositValidationState"
+import { IInsurancePolicyState, insurancePoliciesState } from "./atoms/InsurancePoliciesState"
+import { emptyInsurancePoliciesValidationState, insurancePoliciesValidationState } from "./atoms/validationStates/InsurancePoliciesValidationState"
+import { ISafetyDepositBoxState, safetyDepositBoxesState } from "./atoms/SafetyDepositBoxesState"
+import { emptySafetyDepositBoxesValidationState, safetyDepositBoxesValidationState } from "./atoms/validationStates/SafetyDepositBoxesValidationState"
+import { dematAccountsState, IDematAccountState } from "./atoms/DematAccountsState"
+import { dematAccountValidationState, emptyDematAccountsValidationState } from "./atoms/validationStates/DematAccountValidationState"
+import { IMutualFundState, mutualFundsState } from "./atoms/MutualFundsState"
+import { emptyMutualFundsValidationState, mutualFundValidationState } from "./atoms/validationStates/MutualFundsValidationState"
 
 
 function App() {
@@ -23,6 +35,29 @@ function App() {
   const setProperties = useSetRecoilState(propertiesState);
   const setPropertiesValidationState = useSetRecoilState(propertiesValidationState);
 
+  // BANK ACCOUNTS
+  const setBankAccounts = useSetRecoilState(bankDetailsState);
+  const setBankAccountsValidationState = useSetRecoilState(bankDetailsValidationState);
+
+  // FIXED DEPOSITS
+  const setFixedDeposits = useSetRecoilState(fixedDepositsState);
+  const setFixedDepositsValidationState = useSetRecoilState(fixedDepositsValidationState);
+
+  // INSURANCE POLICIES
+  const setInsurancePolicies = useSetRecoilState(insurancePoliciesState);
+  const setInsurancePoliciesValidationState = useSetRecoilState(insurancePoliciesValidationState);
+
+  // SAFETY DEPOSIT BOXES
+  const setSafetyDepositBoxes = useSetRecoilState(safetyDepositBoxesState);
+  const setSafetyDepositBoxesValidationState = useSetRecoilState(safetyDepositBoxesValidationState);
+
+  // DEMAT ACCOUNTS
+  const setDematAccounts = useSetRecoilState(dematAccountsState);
+  const setDematAccountsValidationState = useSetRecoilState(dematAccountValidationState);
+
+  // MUTUAL FUNDS
+  const setMutualFunds = useSetRecoilState(mutualFundsState);
+  const setMutualFundsValidationState = useSetRecoilState(mutualFundValidationState);
 
   const setRouteState = useSetRecoilState(routesState);
 
@@ -50,6 +85,48 @@ function App() {
       if (properties.length > 0) {
         setProperties(properties)
         setPropertiesValidationState(properties.map(_ => ({...emptyPropertyValidationState})))
+      }
+
+      // SET BANK ACCOUNTS
+      var bankAccounts: IBankDetailsState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.BANK_ACCOUNTS).map((s) => ({ ...s.data, id: s.id }));
+      if (bankAccounts.length > 0) {
+        setBankAccounts(bankAccounts)
+        setBankAccountsValidationState(properties.map(_ => ({...emptyBankAccountValidationState})))
+      }
+
+      // SET BANK ACCOUNTS
+      var fixedDeposits: IFixedDepositState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.FIXED_DEPOSITS).map((s) => ({ ...s.data, id: s.id }));
+      if (fixedDeposits.length > 0) {
+        setFixedDeposits(fixedDeposits)
+        setFixedDepositsValidationState(properties.map(_ => ({...emptyFixedDepositsValidationState})))
+      }
+
+      // SET INSURANCE POLICIES
+      var insurancePolicies: IInsurancePolicyState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.INSURANCE_POLICIES).map((s) => ({ ...s.data, id: s.id }));
+      if (insurancePolicies.length > 0) {
+        setInsurancePolicies(insurancePolicies)
+        setInsurancePoliciesValidationState(properties.map(_ => ({...emptyInsurancePoliciesValidationState})))
+      }
+
+      // SET SAFETY DEPOSIT BOXES
+      var safetyBoxes: ISafetyDepositBoxState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.SAFETY_DEPOSIT_BOXES).map((s) => ({ ...s.data, id: s.id }));
+      if (safetyBoxes.length > 0) {
+        setSafetyDepositBoxes(safetyBoxes)
+        setSafetyDepositBoxesValidationState(properties.map(_ => ({...emptySafetyDepositBoxesValidationState})))
+      }
+
+      // SET DEMAT ACCOUNTS
+      var dematAccounts: IDematAccountState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.DEMAT_ACCOUNTS).map((s) => ({ ...s.data, id: s.id }));
+      if (dematAccounts.length > 0) {
+        setDematAccounts(dematAccounts)
+        setDematAccountsValidationState(properties.map(_ => ({...emptyDematAccountsValidationState})))
+      }
+
+      // SET MUTUAL FUNDS
+      var mutualFunds: IMutualFundState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.MUTUAL_FUNDS).map((s) => ({ ...s.data, id: s.id }));
+      if (mutualFunds.length > 0) {
+        setMutualFunds(mutualFunds)
+        setMutualFundsValidationState(properties.map(_ => ({...emptyMutualFundsValidationState})))
       }
     }
 

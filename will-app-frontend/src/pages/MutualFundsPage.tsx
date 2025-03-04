@@ -13,7 +13,7 @@ import { deleteAsset, upsertAsset } from '../api/asset';
 import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
 import { IAsset } from '../models/asset';
 import { userState } from '../atoms/UserDetailsState';
-import { emptyPropertyValidationState, IMutualFundValidationState, mutualFundValidationState } from '../atoms/validationStates/MutualFundsValidationState';
+import { emptyMutualFundsValidationState, IMutualFundValidationState, mutualFundValidationState } from '../atoms/validationStates/MutualFundsValidationState';
 import { IsEmptyString } from '../utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -106,7 +106,7 @@ const MutualFundsPage = () => {
         ]);
         setValidationState((prevState) => [
                             ...prevState,
-                            emptyPropertyValidationState
+                            emptyMutualFundsValidationState
                         ])
         setCurrentItem(formState.length);
     };

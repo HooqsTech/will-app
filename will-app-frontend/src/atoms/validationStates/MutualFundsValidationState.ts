@@ -15,7 +15,7 @@ export const mutualFundValidationState = atom<IMutualFundValidationState[]>({
     }]
 });
 
-export var emptyPropertyValidationState: IMutualFundValidationState = {
+export var emptyMutualFundsValidationState: IMutualFundValidationState = {
     id: "",
     noOfHolders: "",
     fundName: "",

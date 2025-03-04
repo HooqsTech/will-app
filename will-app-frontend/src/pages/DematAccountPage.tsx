@@ -4,7 +4,7 @@ import CustomAccordion from '../components/CustomAccordion';
 import { useState } from 'react';
 import { IDematAccountState , dematAccountsState} from '../atoms/DematAccountsState';
 import DematAccountForm from '../components/Forms/DematAccountForm';
-import { emptyPropertyValidationState, IDematAccountValidationState, dematAccountValidationState } from '../atoms/validationStates/DematAccountValidationState';
+import { emptyDematAccountsValidationState, IDematAccountValidationState, dematAccountValidationState } from '../atoms/validationStates/DematAccountValidationState';
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
@@ -105,7 +105,7 @@ const DematAccountPage = () => {
         ]);
         setValidationState((prevState) => [
                     ...prevState,
-                    emptyPropertyValidationState
+                    emptyDematAccountsValidationState
                 ])
         setCurrentItem(formState.length);
     };
