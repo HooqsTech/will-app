@@ -11,20 +11,19 @@ import Vehicles from './Vehicles';
 import Escops from './Escops';
 import Debentures from './Debentures';
 import Bonds from './Bonds';
-import Businesses from './Businesses';
-import BankAccountAsset from './BankAccountsPage';
+import BusinessesPage from './BusinessesPage';
 import FixedDepositAsset from './FixedDepositAsset';
 import InsurancePolicyAsset from './InsurancePolicyAsset';
 import SafetyDepositAsset from './SafetyDepositAsset';
-import DematAccountAsset from './DematAccountAsset';
+import DematAccountPage from './DematAccountPage';
 import MutualFundsPage from './MutualFundsPage';
-import ProvidentFundAsset from './ProvidentFundAsset';
-import PensionAccountAsset from './PensionAccountAsset';
+import PensionAccountPage from './PensionAccountPage';
 import BeneficiariesPage from './BeneficiariesDetails';
 import AboutYouPage from './AboutYouPage';
 import CustomAssets from './CustomAssets';
 import AssetsPage from './AssetsPage';
 import BankAccountsPage from './BankAccountsPage';
+import ProvidentFundpage from './ProvidentFundPage';
 
 const YourWill: React.FC = () => {
     return (
@@ -46,10 +45,10 @@ const YourWill: React.FC = () => {
                         <Route path="/fixed_deposits" element={<FixedDepositAsset />} />
                         <Route path="/insurance_policies" element={<InsurancePolicyAsset />} />
                         <Route path="/safe_deposit_boxes" element={<SafetyDepositAsset />} />
-                        <Route path="/demat_accounts" element={<DematAccountAsset />} />
+                        <Route path="/demat_accounts" element={<DematAccountPage />} />
                         <Route path="/mutual_funds" element={<MutualFundsPage />} />
-                        <Route path="/provident_fund" element={<ProvidentFundAsset />} />
-                        <Route path="/pension_accounts" element={<PensionAccountAsset />} />
+                        <Route path="/provident_fund" element={<ProvidentFundpage />} />
+                        <Route path="/pension_accounts" element={<PensionAccountPage />} />
                         <Route path="/custom_assets" element={<CustomAssets />} />
                         <Route path="/intellectual_property" element={<IntellectualProperties />} />
                         <Route path="/digital_assets" element={<DigitalAssets />} />
@@ -58,7 +57,7 @@ const YourWill: React.FC = () => {
                         <Route path="/esops" element={<Escops />} />
                         <Route path="/debentures" element={<Debentures />} />
                         <Route path="/bonds" element={<Bonds />} />
-                        <Route path="/business" element={<Businesses />} />
+                        <Route path="/business" element={<BusinessesPage />} />
                         <Route path="/beneficiaries" element={<BeneficiariesPage />} />
                     </Routes>
                 </div>

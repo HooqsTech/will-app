@@ -25,4 +25,8 @@ export const ASSET_SUBTYPES = {
     VEHICLES:"vehicles",
     OTHER_INVESTMENTS: "other_investments",
     BONDS: "bonds",
+    DEMAT_ACCOUNTS: "demat_accounts",
+    PROVIDENT_FUNDS: "provident_funds",
+    PENSION_ACCOUNTS: "pension_accounts",
+    BUSINESSES: "businesses"
 }

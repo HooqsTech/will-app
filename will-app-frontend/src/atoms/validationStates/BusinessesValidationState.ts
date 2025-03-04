@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-export interface IBusinessState {
+export interface IBusinessValidationState {
     id: string;
     type: string;
     companyName: string;
@@ -12,8 +12,8 @@ export interface IBusinessState {
     typeOfSecurity: string;
 }
 
-export const businessesState = atom<IBusinessState[]>({
-    key: 'businessesState',
+export const businessesValidationState = atom<IBusinessValidationState[]>({
+    key: 'businessesValidationState',
     default: [{
         id: "",
         type: "",
@@ -26,3 +26,15 @@ export const businessesState = atom<IBusinessState[]>({
         typeOfSecurity: ""
     }]
 });
+
+export var emptyPropertyValidationState: IBusinessValidationState = {
+    id: "",
+    type: "",
+    companyName: "",
+    address: "",
+    holdingPercentage: "",
+    partnership: "",
+    pan: "",
+    natureOfHolding: "",
+    typeOfSecurity: ""
+}

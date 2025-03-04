@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 
 export interface IProvidentFundState {
+    id: string;
     type: string;
     bankName: string;
     branch: string;
@@ -10,6 +11,7 @@ export interface IProvidentFundState {
 export const providentFundsState = atom<IProvidentFundState[]>({
     key: 'providentFundsState',
     default: [{
+        id: "",
         type: "",
         bankName: "",
         branch: "",
