@@ -12,7 +12,8 @@ export const COLORS: { PRIMARY_GREEN: string } = {
 
 export const ASSET_TYPES = {
     IMMOVABLE_ASSETS: "immovable_assets",
-    FINANCIAL_ASSETS: "financial_assets"
+    FINANCIAL_ASSETS: "financial_assets",
+    PHYSICAL_ASSETS :"physical_assets"
 }
 
 export const ASSET_SUBTYPES = {
@@ -22,5 +23,6 @@ export const ASSET_SUBTYPES = {
     DEBENTURES: "debentures",
     ESCOPS:"escops",
     VEHICLES:"vehicles",
-    OTHER_INVESTMENTS: "other_investments"
+    OTHER_INVESTMENTS: "other_investments",
+    BONDS: "bonds",
 }
