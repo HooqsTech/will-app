@@ -46,15 +46,15 @@ const SafetyDepositBoxesPage = () => {
             && formState[index].id !== undefined
         ) {
             await deleteAsset(formState[index].id);
-            setFormState((prevItems) =>
-                prevItems.filter(item => item.id !== formState[index].id)
-            );
         }
-        else {
-            setFormState((prevItems) =>
-                prevItems.filter((_, i) => i !== index)
-            );
-        }
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+
+        setValidationState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
     }
 
     const handleBackClick = async () => {
@@ -86,7 +86,7 @@ const SafetyDepositBoxesPage = () => {
                 setSafetyDepositBoxValidationState(index, "branch", "branch is required");
                 isValid = false;
             }
-            
+
             if (IsEmptyString(prop.city)) {
                 setSafetyDepositBoxValidationState(index, "city", "city is required");
                 isValid = false;

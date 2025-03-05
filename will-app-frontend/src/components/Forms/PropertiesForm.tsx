@@ -31,24 +31,28 @@ const PropertiesForm: React.FC<IPropertiesFormProps> = ({ index }) => {
             <CustomSelect
                 label="Property Type"
                 helperText={validationStateItem.propertyType}
+                required
                 options={["Apartment", "House / Plot", "Commercial / Land"]}
                 value={item.propertyType}
                 onChange={(e) => handleChange(index, "propertyType", e)} />
             <CustomSelect
                 label="Ownership Type"
                 helperText={validationStateItem.ownershipType}
+                required
                 options={["Single", "Joint"]}
                 value={item.ownershipType}
                 onChange={(e) => handleChange(index, "ownershipType", e)} />
             <CustomTextBox
                 value={item.address}
                 helperText={validationStateItem.address}
+                required
                 onChange={(e) => handleChange(index, "address", e)}
                 label="Address"
                 type="text" />
             <CustomTextBox
                 value={item.pincode}
                 helperText={validationStateItem.pincode}
+                required
                 onChange={(e) => handleChange(index, "pincode", e)}
                 label="Pincode"
                 maxLength={6}
@@ -56,6 +60,7 @@ const PropertiesForm: React.FC<IPropertiesFormProps> = ({ index }) => {
                 type="text" />
             <CustomTextBox
                 value={item.city}
+                required
                 helperText={validationStateItem.city}
                 onChange={(e) => handleChange(index, "city", e)}
                 label="City"

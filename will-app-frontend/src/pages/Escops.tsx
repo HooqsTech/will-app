@@ -75,11 +75,19 @@ const Escops = () => {
     };
 
     const deleteEscopAsync = async (index: number) => {
-        const isDeleted = await deleteAsset(formState[index].id);
-        if (isDeleted) {
-            setFormState((prevItems) => prevItems.filter((_, i) => i !== index));
-            setValidationState((prevValidations) => prevValidations.filter((_, i) => i !== index));
+        if (formState[index].id !== ""
+            && formState[index].id !== undefined
+        ) {
+            await deleteAsset(formState[index].id);
         }
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+
+        setValidationState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
     };
 
     const setEscopValidationState = (index: number, key: keyof IEscopValidationState, value: string) => {

@@ -30,17 +30,22 @@ const JewelleryForm: React.FC<IJewelleryFormProps> = ({ index }) => {
         <CustomFormContainer hideBorder>
             <CustomSelect
                 helperText={validationStateItem.type}
+                required
                 label="Jewellery Type"
                 options={["Gold", "Silver", "Others"]}
                 value={item.type}
                 onChange={(e) => handleChange(index, "type", e)} />
             <CustomTextBox
                 value={item.description}
+                helperText={validationStateItem.description}
+                required
                 onChange={(e) => handleChange(index, "description", e)}
                 label="Description"
                 type="text" />
             <CustomTextBox
                 value={item.preciousMetalInWeight}
+                helperText={validationStateItem.preciousMetalInWeight}
+                required
                 onChange={(e) => handleChange(index, "preciousMetalInWeight", e)}
                 label="Precious Metal Weight in Grams"
                 type="text" />

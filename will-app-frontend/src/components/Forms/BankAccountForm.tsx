@@ -31,17 +31,20 @@ const BankAccountForm: React.FC<IBankAccountFormProps> = ({ index }) => {
             <CustomSelect
                 label="Account Type"
                 helperText={validationStateItem.accountType}
+                required
                 options={["Single", "Joint"]}
                 value={item.accountType}
                 onChange={(e) => handleChange(index, "accountType", e)} />
             <CustomTextBox
                 value={item.bankName}
+                required
                 helperText={validationStateItem.bankName}
                 onChange={(e) => handleChange(index, "bankName", e)}
                 label="Bank Name"
                 type="text" />
             <CustomTextBox
                 value={item.accountNumber}
+                required
                 helperText={validationStateItem.accountNumber}
                 restrictAlphabets
                 onChange={(e) => handleChange(index, "accountNumber", e)}
@@ -49,12 +52,14 @@ const BankAccountForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                 type="text" />
             <CustomTextBox
                 value={item.branch}
+                required
                 helperText={validationStateItem.branch}
                 onChange={(e) => handleChange(index, "branch", e)}
                 label="Branch"
                 type="text" />
             <CustomTextBox
                 value={item.city}
+                required
                 helperText={validationStateItem.city}
                 onChange={(e) => handleChange(index, "city", e)}
                 label="City"

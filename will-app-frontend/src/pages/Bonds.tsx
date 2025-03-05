@@ -57,10 +57,19 @@ const Bonds = () => {
     };
 
     const deleteBondAsync = async (index: number) => {
-        const isDeleted = await deleteAsset(formState[index].id);
-        if (isDeleted) {
-            setValidationState((prevValidations) => prevValidations.filter((_, i) => i !== index));
+        if (formState[index].id !== ""
+            && formState[index].id !== undefined
+        ) {
+            await deleteAsset(formState[index].id);
         }
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+
+        setValidationState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
     };
 
     const setBondValidationState = (index: number, key: keyof IBondValidationState, value: string) => {
@@ -90,7 +99,7 @@ const Bonds = () => {
     };
 
     const getBondSubTitle = (index: number) => {
-        const { type, financialServiceProviderName, certificateNumber } = formState[index]; 
+        const { type, financialServiceProviderName, certificateNumber } = formState[index];
         const firstLine = type?.trim() || "";
         const secondLine = [financialServiceProviderName?.trim(), certificateNumber?.trim()].filter(Boolean).join(" - ");
         return [firstLine, secondLine].filter(Boolean).join("\n");
@@ -104,7 +113,7 @@ const Bonds = () => {
     };
 
     const shouldExpandAccordion = (index: number) => currentItem === index;
-    
+
     const handleAccordionOnChange = (index: number) => {
         setCurrentItem((prevItem) => prevItem === index ? -1 : index)
         setShowErrorBorder(false);
@@ -138,7 +147,7 @@ const Bonds = () => {
                 <AddButton onClick={addBond} label={`Bond ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick}/>
+                <BackButton label='Back' onClick={handleBackClick} />
                 <NextButton label='Next' onClick={handleNextClick} />
             </div>
         </div>

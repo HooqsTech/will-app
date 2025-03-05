@@ -57,11 +57,19 @@ const IntellectualProperties = () => {
     };
 
     const deletePropertyAsync = async (index: number) => {
-        const isDeleted = await deleteAsset(formState[index].id);
-        if (isDeleted) {
-            setFormState((prevState) => prevState.filter((_, i) => i !== index));
-            setValidationState((prevValidations) => prevValidations.filter((_, i) => i !== index));
+        if (formState[index].id !== ""
+            && formState[index].id !== undefined
+        ) {
+            await deleteAsset(formState[index].id);
         }
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+
+        setValidationState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
     };
 
     const setPropertyValidationState = (index: number, key: keyof IIntellectualPropertyValidationState, value: string) => {
@@ -113,7 +121,7 @@ const IntellectualProperties = () => {
 
     return (
         <div className='flex flex-col justify-start h-full space-y-3 w-xl m-auto'>
-            <h1 className='text-2xl font-semibold'>Digital Assets</h1>
+            <h1 className='text-2xl font-semibold'>Intellectual Properties</h1>
             <div>
                 {
                     formState.map((_, index) => (
@@ -122,7 +130,7 @@ const IntellectualProperties = () => {
                                 <CustomAccordion key={index} expanded={shouldExpandAccordion(index)}
                                     error={showErrorBorder && Object.values(validationState[index]).some(s => s != undefined && s != null && s != "")}
                                     onChange={() => handleAccordionOnChange(index)}
-                                    label={`Digital Asset ${index + 1}`}
+                                    label={`Intellectual Property ${index + 1}`}
                                     subTitle={
                                         currentItem !== index && !shouldExpandAccordion(index) ? getSubTitle(index) : ""
                                     }
@@ -141,7 +149,7 @@ const IntellectualProperties = () => {
                         </div>
                     ))
                 }
-                <AddButton onClick={addProperty} label={`Digital Asset ${formState.length + 1}`} />
+                <AddButton onClick={addProperty} label={`Intellectual Property ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />

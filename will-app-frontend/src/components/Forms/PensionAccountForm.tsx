@@ -30,12 +30,14 @@ const PensionAccountForm: React.FC<IPensionAccountFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.schemeName}
                 onChange={(e) => handleChange(index, "schemeName", e)}
+                required
                 helperText={validationStateItem.schemeName}
                 label="Scheme Name"
                 type="text" />
             <CustomTextBox
                 value={item.bankName}
                 onChange={(e) => handleChange(index, "bankName", e)}
+                required
                 helperText={validationStateItem.bankName}
                 label="Bank Name"
                 type="text" />

@@ -30,6 +30,7 @@ const FixedDepositForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.noOfHolders}
                 helperText={validationItem.noOfHolders}
+                required
                 restrictAlphabets
                 maxLength={2}
                 onChange={(e) => handleChange(index, "noOfHolders", e)}
@@ -38,6 +39,7 @@ const FixedDepositForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.bankName}
                 helperText={validationItem.bankName}
+                required
                 onChange={(e) => handleChange(index, "bankName", e)}
                 label="Bank Name"
                 type="text" />
@@ -45,18 +47,21 @@ const FixedDepositForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
                 value={item.accountNumber}
                 restrictAlphabets
                 helperText={validationItem.accountNumber}
+                required
                 onChange={(e) => handleChange(index, "accountNumber", e)}
                 label="Account Number"
                 type="text" />
             <CustomTextBox
                 value={item.branch}
                 helperText={validationItem.branch}
+                required
                 onChange={(e) => handleChange(index, "branch", e)}
                 label="Branch"
                 type="text" />
             <CustomTextBox
                 value={item.city}
                 helperText={validationItem.city}
+                required
                 onChange={(e) => handleChange(index, "city", e)}
                 label="City"
                 type="text" />

@@ -30,17 +30,20 @@ const BondForm: React.FC<IBondFormProps> = ({ index }) => {
             <CustomSelect
                 label="Bond Type"
                 helperText={validationStateItem.type}
+                required
                 options={["Single", "Joint"]}
                 value={item.type}
                 onChange={(e) => handleChange(index, "type", e)} />
             <CustomTextBox
                 value={item.financialServiceProviderName}
+                required
                 helperText={validationStateItem.financialServiceProviderName}
                 onChange={(e) => handleChange(index, "financialServiceProviderName", e)}
                 label="Bank / Financial Service Provider Name"
                 type="text" />
             <CustomTextBox
                 value={item.certificateNumber}
+                required
                 helperText={validationStateItem.certificateNumber}
                 onChange={(e) => handleChange(index, "certificateNumber", e)}
                 label="Certificate / Folio Number"

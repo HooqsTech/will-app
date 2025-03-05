@@ -30,22 +30,26 @@ const EscopForm: React.FC<IEscopFormProps> = ({ index }) => {
                 helperText={validationStateItem.companyName}
                 value={item.companyName}
                 onChange={(e) => handleChange(index, "companyName", e)}
+                required
                 label="Company Name"
                 type="text" />
             <CustomTextBox
                 helperText={validationStateItem.noOfUnitGraged}
                 value={item.noOfUnitGraged}
                 onChange={(e) => handleChange(index, "noOfUnitGraged", e)}
+                required
                 label="Number of Unit Graged"
                 type="text" />
             <CustomTextBox
                 helperText={validationStateItem.noOfVestedEscops}
+                required
                 value={item.noOfVestedEscops}
                 onChange={(e) => handleChange(index, "noOfVestedEscops", e)}
                 label="Number of Vested ESCOPs"
                 type="text" />
             <CustomTextBox
                 helperText={validationStateItem.noOfUnVestedEscops}
+                required
                 value={item.noOfUnVestedEscops}
                 onChange={(e) => handleChange(index, "noOfUnVestedEscops", e)}
                 label="Number of UnVested ESCOPs"

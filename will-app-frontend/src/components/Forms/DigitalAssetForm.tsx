@@ -29,12 +29,14 @@ const DigitalAssetForm: React.FC<IBankAccountFormProps> = ({ index }) => {
         <CustomFormContainer hideBorder>
             <CustomSelect
                 helperText={validationStateItem.type}
+                required
                 label="Type"
                 options={["Crypto", "NFT", "Digital Land Banks", "Virtual / Digital Gold"]}
                 value={item.type}
                 onChange={(e) => handleChange(index, "type", e)} />
             <CustomTextBox
                 helperText={validationStateItem.walletAddress}
+                required
                 value={item.walletAddress}
                 onChange={(e) => handleChange(index, "walletAddress", e)}
                 label="Wallet Address"
@@ -42,7 +44,8 @@ const DigitalAssetForm: React.FC<IBankAccountFormProps> = ({ index }) => {
             {
                 item.type === "Virtual / Digital Gold" &&
                 <CustomTextBox
-                    helperText={validationStateItem.type}
+                    helperText={validationStateItem.investmentTool}
+                    required
                     value={item.investmentTool}
                     onChange={(e) => handleChange(index, "investmentTool", e)}
                     label="Investment Tool"

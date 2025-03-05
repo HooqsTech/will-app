@@ -11,7 +11,7 @@ interface IDematAccountFormProps {
 const DematAccountForm: React.FC<IDematAccountFormProps> = ({ index }) => {
     const [formState, setFormState] = useRecoilState<IDematAccountState[]>(dematAccountsState);
     const [validationState, setValidationState] = useRecoilState<IDematAccountValidationState[]>(dematAccountValidationState);
-    
+
     const item = formState[index];
     const validationStateItem = validationState[index];
 
@@ -20,9 +20,9 @@ const DematAccountForm: React.FC<IDematAccountFormProps> = ({ index }) => {
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
         );
 
-    setValidationState((prevState) =>
-        prevState.map((item, i) => (i === index ? { ...item, [key]: "" } : item))
-    );
+        setValidationState((prevState) =>
+            prevState.map((item, i) => (i === index ? { ...item, [key]: "" } : item))
+        );
     };
 
     return (
@@ -30,11 +30,13 @@ const DematAccountForm: React.FC<IDematAccountFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.brokerName}
                 helperText={validationStateItem.brokerName}
+                required
                 onChange={(e) => handleChange(index, "brokerName", e)}
                 label="Broker Name"
                 type="text" />
             <CustomTextBox
                 value={item.accountNumber}
+                required
                 helperText={validationStateItem.accountNumber}
                 onChange={(e) => handleChange(index, "accountNumber", e)}
                 label="Account Number"

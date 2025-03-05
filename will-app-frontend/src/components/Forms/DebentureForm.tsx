@@ -30,18 +30,21 @@ const DebentureForm: React.FC<IDebentureFormProps> = ({ index }) => {
             <CustomSelect
                 label="Debenture Type"
                 helperText={validationStateItem.type}
+                required
                 options={["Single", "Joint"]}
                 value={item.type}
                 onChange={(e) => handleChange(index, "type", e)} />
             <CustomTextBox
                 value={item.financialServiceProviderName}
                 helperText={validationStateItem.financialServiceProviderName}
+                required
                 onChange={(e) => handleChange(index, "financialServiceProviderName", e)}
                 label="Bank / Financial Service Provider Name"
                 type="text" />
             <CustomTextBox
                 value={item.certificateNumber}
                 helperText={validationStateItem.certificateNumber}
+                required
                 onChange={(e) => handleChange(index, "certificateNumber", e)}
                 label="Certificate / Folio Number"
                 type="text" />

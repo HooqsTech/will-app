@@ -2,7 +2,7 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
 import CustomAccordion from '../components/CustomAccordion';
 import { useState } from 'react';
-import { IDematAccountState , dematAccountsState} from '../atoms/DematAccountsState';
+import { IDematAccountState, dematAccountsState } from '../atoms/DematAccountsState';
 import DematAccountForm from '../components/Forms/DematAccountForm';
 import { emptyDematAccountsValidationState, IDematAccountValidationState, dematAccountValidationState } from '../atoms/validationStates/DematAccountValidationState';
 import AddButton from '../components/AddButton';
@@ -27,37 +27,43 @@ const DematAccountPage = () => {
     const location = useLocation();
     const [showErrorBorder, setShowErrorBorder] = useState(false);
 
-    const savePropertyAsync = async (property: IDematAccountState, index: number) => {
-            let data: IAsset = {
-                id: property.id,
-                type: ASSET_TYPES.FINANCIAL_ASSETS,
-                subtype: ASSET_SUBTYPES.DEMAT_ACCOUNTS,
-                userId: user.userId,
-                data: property
-            }
-            let upsertedAsset = await upsertAsset(data);
-    
-            setFormState((prevItems) =>
-                prevItems.map((item, i) => (i === index ? { ...upsertedAsset.data, id: upsertedAsset.id } : item))
-            );
+    const saveDematAccountAsync = async (property: IDematAccountState, index: number) => {
+        let data: IAsset = {
+            id: property.id,
+            type: ASSET_TYPES.FINANCIAL_ASSETS,
+            subtype: ASSET_SUBTYPES.DEMAT_ACCOUNTS,
+            userId: user.userId,
+            data: property
         }
-    
-    const deletePropertyAsync = async (index: number) => {
-        let isDeleted = await deleteAsset(formState[index].id);
-        if (isDeleted) {
+        let upsertedAsset = await upsertAsset(data);
 
-            setFormState((prevItems) =>
-                prevItems.filter(item => item.id !== formState[index].id)
-            );
+        setFormState((prevItems) =>
+            prevItems.map((item, i) => (i === index ? { ...upsertedAsset.data, id: upsertedAsset.id } : item))
+        );
+    }
+
+    const deleteDematAccountAsync = async (index: number) => {
+        if (formState[index].id !== ""
+            && formState[index].id !== undefined
+        ) {
+            await deleteAsset(formState[index].id);
         }
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
     }
 
     const handleBackClick = async () => {
-            // NAVIGATE TO PREVIOUS ROUTE
-            let routeValue = routeState.find(s => s.nextPath == location.pathname);
-            navigate(routeValue?.currentPath ?? "/");
-        }
-    
+        // NAVIGATE TO PREVIOUS ROUTE
+        let routeValue = routeState.find(s => s.nextPath == location.pathname);
+        navigate(routeValue?.currentPath ?? "/");
+    }
+
     const setPropertyValidationState = (index: number, key: keyof IDematAccountValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -86,7 +92,7 @@ const DematAccountPage = () => {
 
         // SAVE PROPERTIES
         formState.forEach(async (property, index) => {
-            await savePropertyAsync(property, index);
+            await saveDematAccountAsync(property, index);
         })
 
         // NAVIGATE TO NEXT ROUTE
@@ -104,9 +110,9 @@ const DematAccountPage = () => {
             },
         ]);
         setValidationState((prevState) => [
-                    ...prevState,
-                    emptyDematAccountsValidationState
-                ])
+            ...prevState,
+            emptyDematAccountsValidationState
+        ])
         setCurrentItem(formState.length);
     };
 
@@ -128,7 +134,7 @@ const DematAccountPage = () => {
 
     return (
         <div className='flex flex-col justify-start h-full space-y-3 w-xl m-auto'>
-            <h1 className='text-2xl font-semibold'>DEMAT ACCOUNTS</h1>
+            <h1 className='text-2xl font-semibold'>Demat Accounts</h1>
             <div>
                 {
                     formState.map((_, index) => (
@@ -147,7 +153,7 @@ const DematAccountPage = () => {
                             </div>
                             {
                                 !shouldExpandAccordion(index) && (
-                                    <button onClick={() => deletePropertyAsync(index)} className='p-2 h-full bg-will-green'>
+                                    <button onClick={() => deleteDematAccountAsync(index)} className='p-2 h-full bg-will-green'>
                                         <DeleteIcon fontSize="small" className='text-white bg-will-green' />
                                     </button>
                                 )
@@ -164,7 +170,7 @@ const DematAccountPage = () => {
             </div>
         </div>
     )
-    
+
 }
 
 export default DematAccountPage;   

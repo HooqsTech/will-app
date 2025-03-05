@@ -11,10 +11,10 @@ interface IBankAccountFormProps {
 
 const BusinessForm: React.FC<IBankAccountFormProps> = ({ index }) => {
     const [formState, setFormState] = useRecoilState<IBusinessState[]>(businessesState);
-     const [validationState, setValidationState] = useRecoilState<IBusinessValidationState[]>(businessesValidationState);
-            
-            const item = formState[index];
-            const validationStateItem = validationState[index];
+    const [validationState, setValidationState] = useRecoilState<IBusinessValidationState[]>(businessesValidationState);
+
+    const item = formState[index];
+    const validationStateItem = validationState[index];
 
     const handleChange = (index: number, key: keyof IBusinessState, value: string) => {
         setFormState((prevState) =>
@@ -33,16 +33,19 @@ const BusinessForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                 options={["Proprietorship", "LLP/Partnership", "Private Limited"]}
                 value={item.type}
                 helperText={validationStateItem.type}
+                required
                 onChange={(e) => handleChange(index, "type", e)} />
             <CustomTextBox
                 value={item.companyName}
                 helperText={validationStateItem.companyName}
+                required
                 onChange={(e) => handleChange(index, "companyName", e)}
                 label="Company Name"
                 type="text" />
             <CustomTextBox
                 value={item.address}
                 helperText={validationStateItem.address}
+                required
                 onChange={(e) => handleChange(index, "address", e)}
                 label="Address"
                 type="text" />
@@ -50,6 +53,8 @@ const BusinessForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                 item.type == "Private Limited" &&
                 <CustomSelect
                     label="Nature of Holding"
+                    helperText={item.natureOfHolding}
+                    required
                     options={["Holding Percentage", "No of Securities"]}
                     value={item.natureOfHolding}
                     onChange={(e) => handleChange(index, "natureOfHolding", e)} />
@@ -58,6 +63,7 @@ const BusinessForm: React.FC<IBankAccountFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.holdingPercentage}
                 helperText={validationStateItem.holdingPercentage}
+                required
                 onChange={(e) => handleChange(index, "holdingPercentage", e)}
                 label={item.natureOfHolding == "No of Securities" ? "Number of Securities" : "Holding Percentage"}
                 type="text" />
@@ -81,6 +87,7 @@ const BusinessForm: React.FC<IBankAccountFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.pan}
                 helperText={validationStateItem.pan}
+                required
                 onChange={(e) => handleChange(index, "pan", e)}
                 label="PAN"
                 type="text" />

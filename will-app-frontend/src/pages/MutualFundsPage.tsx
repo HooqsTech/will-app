@@ -27,7 +27,7 @@ const MutualFundsPage = () => {
     const location = useLocation();
     const [showErrorBorder, setShowErrorBorder] = useState(false);
 
-    const saveMutualFundAsync = async (property: IMutualFundState,index: number) => {
+    const saveMutualFundAsync = async (property: IMutualFundState, index: number) => {
         let data: IAsset = {
             id: "",
             type: ASSET_TYPES.FINANCIAL_ASSETS,
@@ -43,42 +43,48 @@ const MutualFundsPage = () => {
     }
 
     const deleteMutualFundAsync = async (index: number) => {
-            let isDeleted = await deleteAsset(formState[index].id);
-            if (isDeleted) {
-    
-                setFormState((prevItems) =>
-                    prevItems.filter(item => item.id !== formState[index].id)
-                );
-            }
+        if (formState[index].id !== ""
+            && formState[index].id !== undefined
+        ) {
+            await deleteAsset(formState[index].id);
         }
-    
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+
+        setValidationState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+    }
+
     const handleBackClick = async () => {
-                // NAVIGATE TO PREVIOUS ROUTE
-                let routeValue = routeState.find(s => s.nextPath == location.pathname);
-                navigate(routeValue?.currentPath ?? "/");
-            };
-        
+        // NAVIGATE TO PREVIOUS ROUTE
+        let routeValue = routeState.find(s => s.nextPath == location.pathname);
+        navigate(routeValue?.currentPath ?? "/");
+    };
+
     const setPropertyValidationState = (index: number, key: keyof IMutualFundValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
         );
     };
-    
+
     const validate = () => {
-            let isValid: boolean = true;
-            formState.forEach((prop, index) => {
-                if (IsEmptyString(prop.fundName)) {
-                    setPropertyValidationState(index, "fundName", "Fundname is required");
-                    isValid = false;
-                }
-                if (IsEmptyString(prop.noOfHolders)) {
-                    setPropertyValidationState(index, "noOfHolders", "please enter no of holders");
-                    isValid = false;
-                }
-            });
-            setShowErrorBorder(!isValid);
-            return isValid;
-        }
+        let isValid: boolean = true;
+        formState.forEach((prop, index) => {
+            if (IsEmptyString(prop.fundName)) {
+                setPropertyValidationState(index, "fundName", "Fundname is required");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.noOfHolders)) {
+                setPropertyValidationState(index, "noOfHolders", "please enter no of holders");
+                isValid = false;
+            }
+        });
+        setShowErrorBorder(!isValid);
+        return isValid;
+    }
 
     const handleNextClick = async () => {
         // VALIDATE
@@ -93,7 +99,7 @@ const MutualFundsPage = () => {
         let routeValue = routeState.find(s => s.currentPath == location.pathname);
         navigate(routeValue?.nextPath ?? "/");
     }
-    
+
 
     const addMutualFund = () => {
         setFormState((prevState) => [
@@ -105,13 +111,13 @@ const MutualFundsPage = () => {
             },
         ]);
         setValidationState((prevState) => [
-                            ...prevState,
-                            emptyMutualFundsValidationState
-                        ])
+            ...prevState,
+            emptyMutualFundsValidationState
+        ])
         setCurrentItem(formState.length);
     };
 
-    
+
     const getSubTitle = (index: number) => {
         const { fundName, noOfHolders } = formState[index];
         const secondLine = [fundName?.trim(), noOfHolders?.trim()].filter(Boolean).join(" - ");
@@ -129,41 +135,41 @@ const MutualFundsPage = () => {
 
     return (
         <div className='flex flex-col justify-start h-full space-y-3 w-xl m-auto'>
-        <h1 className='text-2xl font-semibold'>MUTUAL FUNDS</h1>
-        <div>
-            {
-                formState.map((_, index) => (
-                    <div key={formState[index].id} className='flex w-full justify-between items-center space-x-1 h-fit'>
-                        <div className='w-full h-full'>
-                            <CustomAccordion key={index} expanded={shouldExpandAccordion(index)}
-                                error={showErrorBorder && Object.values(validationState[index]).some(s => s != undefined && s != null && s != "")}
-                                onChange={() => handleAccordionOnChange(index)}
-                                label={`MUTUAL FUNDS ${index + 1}`}
-                                subTitle={
-                                    currentItem !== index && !shouldExpandAccordion(index) ? getSubTitle(index) : ""
-                                }
-                            >
-                                <MutualFundForm index={index} />
-                            </CustomAccordion>
-                        </div>
-                        {
-                            !shouldExpandAccordion(index) && (
-                                <button onClick={() => deleteMutualFundAsync(index)} className='p-2 h-full bg-will-green'>
-                                    <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                                </button>
-                            )
-                        }
+            <h1 className='text-2xl font-semibold'>Mutual Funds</h1>
+            <div>
+                {
+                    formState.map((_, index) => (
+                        <div key={formState[index].id} className='flex w-full justify-between items-center space-x-1 h-fit'>
+                            <div className='w-full h-full'>
+                                <CustomAccordion key={index} expanded={shouldExpandAccordion(index)}
+                                    error={showErrorBorder && Object.values(validationState[index]).some(s => s != undefined && s != null && s != "")}
+                                    onChange={() => handleAccordionOnChange(index)}
+                                    label={`MUTUAL FUNDS ${index + 1}`}
+                                    subTitle={
+                                        currentItem !== index && !shouldExpandAccordion(index) ? getSubTitle(index) : ""
+                                    }
+                                >
+                                    <MutualFundForm index={index} />
+                                </CustomAccordion>
+                            </div>
+                            {
+                                !shouldExpandAccordion(index) && (
+                                    <button onClick={() => deleteMutualFundAsync(index)} className='p-2 h-full bg-will-green'>
+                                        <DeleteIcon fontSize="small" className='text-white bg-will-green' />
+                                    </button>
+                                )
+                            }
 
-                    </div>
-                ))
-            }
-            <AddButton onClick={addMutualFund} label={`MUTUAL FUND ${formState.length + 1}`} />
+                        </div>
+                    ))
+                }
+                <AddButton onClick={addMutualFund} label={`MUTUAL FUND ${formState.length + 1}`} />
+            </div>
+            <div className='justify-between flex mt-10'>
+                <BackButton label='Back' onClick={handleBackClick} />
+                <NextButton label='Next' onClick={handleNextClick} />
+            </div>
         </div>
-        <div className='justify-between flex mt-10'>
-            <BackButton label='Back' onClick={handleBackClick} />
-            <NextButton label='Next' onClick={handleNextClick} />
-        </div>
-    </div>
     )
 
 }

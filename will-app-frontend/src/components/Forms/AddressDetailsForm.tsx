@@ -26,11 +26,13 @@ const AddressDetailsForm = () => {
             <CustomTextBox
                 value={formState.address1}
                 onChange={(e) => handleChange("address1", e)}
+                required
                 helperText={validationState.address1}
                 label="Address 1"
                 type="text" />
             <CustomTextBox
                 value={formState.address2}
+                required
                 onChange={(e) => handleChange("address2", e)}
                 helperText={validationState.address2}
                 label="Address 2"
@@ -38,6 +40,7 @@ const AddressDetailsForm = () => {
             <CustomTextBox
                 restrictAlphabets
                 value={formState.pincode}
+                required
                 helperText={validationState.pincode}
                 onChange={(e) => handleChange("pincode", e)}
                 maxLength={6}
@@ -45,18 +48,21 @@ const AddressDetailsForm = () => {
                 type="text" />
             <CustomTextBox
                 value={formState.city}
+                required
                 helperText={validationState.city}
                 onChange={(e) => handleChange("city", e)}
                 label="City"
                 type="text" />
             <CustomTextBox
                 value={formState.state}
+                required
                 helperText={validationState.state}
                 onChange={(e) => handleChange("state", e)}
                 label="State"
                 type="text" />
             <CustomTextBox
                 value={formState.email}
+                required
                 helperText={validationState.email}
                 onChange={(e) => handleChange("email", e)}
                 label="Email"
@@ -64,6 +70,7 @@ const AddressDetailsForm = () => {
             <CustomTextBox
                 value={formState.phoneNumber}
                 restrictAlphabets
+                required
                 maxLength={10}
                 helperText={validationState.phoneNumber}
                 onChange={(e) => handleChange("phoneNumber", e)}

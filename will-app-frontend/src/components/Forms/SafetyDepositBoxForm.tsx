@@ -33,23 +33,27 @@ const SafetyDepositBoxForm: React.FC<ISafetyDepositBoxFormProps> = ({ index }) =
                 label="Type"
                 options={["Single", "Joint"]}
                 helperText={validationStateItem.depositBoxType}
+                required
                 value={item.depositBoxType}
                 onChange={(e) => handleChange(index, "depositBoxType", e)} />
             <CustomTextBox
                 value={item.bankName}
                 helperText={validationStateItem.bankName}
+                required
                 onChange={(e) => handleChange(index, "bankName", e)}
                 label="Bank Name"
                 type="text" />
             <CustomTextBox
                 value={item.branch}
                 helperText={validationStateItem.branch}
+                required
                 onChange={(e) => handleChange(index, "branch", e)}
                 label="Branch"
                 type="text" />
             <CustomTextBox
                 value={item.city}
                 helperText={validationStateItem.city}
+                required
                 onChange={(e) => handleChange(index, "city", e)}
                 label="City"
                 type="text" />

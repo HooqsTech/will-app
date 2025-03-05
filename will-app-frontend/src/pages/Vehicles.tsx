@@ -1,20 +1,19 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
-import CustomButton from '../components/CustomButton';
-import CustomAccordion from '../components/CustomAccordion';
-import { useState } from 'react';
-import VehicleForm from '../components/Forms/VehicleForm';
-import { IVehicleState, vehiclesState } from '../atoms/VehiclesState';
-import { userState } from '../atoms/UserDetailsState';
-import { IsEmptyString } from '../utils';
-import { emptyVehicleValidationState, IVehicleValidationState, vehiclesValidationState } from '../atoms/validationStates/VehicleValidationState';
-import { upsertAsset, deleteAsset } from '../api/asset';
-import { ASSET_TYPES, ASSET_SUBTYPES } from '../constants';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { deleteAsset, upsertAsset } from '../api/asset';
+import { routesState } from '../atoms/RouteState';
+import { userState } from '../atoms/UserDetailsState';
+import { emptyVehicleValidationState, IVehicleValidationState, vehiclesValidationState } from '../atoms/validationStates/VehicleValidationState';
+import { IVehicleState, vehiclesState } from '../atoms/VehiclesState';
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
+import CustomAccordion from '../components/CustomAccordion';
+import VehicleForm from '../components/Forms/VehicleForm';
 import NextButton from '../components/NextButton';
-import { routesState } from '../atoms/RouteState';
-import { useLocation, useNavigate } from 'react-router';
+import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
+import { IsEmptyString } from '../utils';
 
 const Vehicles = () => {
     const [formState, setFormState] = useRecoilState<IVehicleState[]>(vehiclesState);
@@ -59,11 +58,19 @@ const Vehicles = () => {
     };
 
     const deleteVehicleAsync = async (index: number) => {
-        const isDeleted = await deleteAsset(formState[index].id);
-        if (isDeleted) {
-            setFormState((prevItems) => prevItems.filter((_, i) => i !== index));
-            setValidationState((prevValidations) => prevValidations.filter((_, i) => i !== index));
+        if (formState[index].id !== ""
+            && formState[index].id !== undefined
+        ) {
+            await deleteAsset(formState[index].id);
         }
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+
+        setValidationState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
     };
 
     const setVehicleValidationState = (index: number, key: keyof IVehicleValidationState, value: string) => {
@@ -115,7 +122,7 @@ const Vehicles = () => {
 
     return (
         <div className='flex flex-col justify-start h-full space-y-3 w-xl m-auto'>
-            <h1 className='text-2xl font-semibold'>Properties</h1>
+            <h1 className='text-2xl font-semibold'>Vehicles</h1>
             <div>
                 {
                     formState.map((_, index) => (

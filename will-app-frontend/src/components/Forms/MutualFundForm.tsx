@@ -11,7 +11,7 @@ interface IMutualFundFormProps {
 const MutualFundForm: React.FC<IMutualFundFormProps> = ({ index }) => {
     const [formState, setFormState] = useRecoilState<IMutualFundState[]>(mutualFundsState);
     const [validationState, setValidationState] = useRecoilState<IMutualFundValidationState[]>(mutualFundValidationState);
-    
+
     const item = formState[index];
     const validationStateItem = validationState[index];
 
@@ -30,12 +30,14 @@ const MutualFundForm: React.FC<IMutualFundFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.noOfHolders}
                 helperText={validationStateItem.noOfHolders}
+                required
                 onChange={(e) => handleChange(index, "noOfHolders", e)}
                 label="No of Holders"
                 type="text" />
             <CustomTextBox
                 value={item.fundName}
                 helperText={validationStateItem.fundName}
+                required
                 onChange={(e) => handleChange(index, "fundName", e)}
                 label="Fund Name"
                 type="text" />

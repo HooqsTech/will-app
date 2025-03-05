@@ -34,28 +34,28 @@ const JewelleryPage = () => {
             userId: user.userId,
             data: jewellery
         };
-            var upsertedAsset = await upsertAsset(data);
-    
-            setFormState((prevItems) =>
-                prevItems.map((item, i) => (i === index ? { ...upsertedAsset.data, id: upsertedAsset.id } : item))
-            );
+        var upsertedAsset = await upsertAsset(data);
+
+        setFormState((prevItems) =>
+            prevItems.map((item, i) => (i === index ? { ...upsertedAsset.data, id: upsertedAsset.id } : item))
+        );
+    }
+
+    const deleteJewelleryAsync = async (index: number) => {
+        if (formState[index].id !== ""
+            && formState[index].id !== undefined
+        ) {
+            await deleteAsset(formState[index].id);
         }
-    
-        const deleteJewelleryAsync = async (index: number) => {
-            if (formState[index].id !== ""
-                && formState[index].id !== undefined
-            ) {
-                await deleteAsset(formState[index].id);
-                setFormState((prevItems) =>
-                    prevItems.filter(item => item.id !== formState[index].id)
-                );
-            }
-            else {
-                setFormState((prevItems) =>
-                    prevItems.filter((_, i) => i !== index)
-                );
-            }
-        }
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+
+        setValidationState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+    }
 
     const handleBackClick = async () => {
         var routeValue = routeState.find(s => s.nextPath == location.pathname);
@@ -73,6 +73,16 @@ const JewelleryPage = () => {
         formState.forEach((jewel, index) => {
             if (IsEmptyString(jewel.type)) {
                 setJewelleryValidationState(index, "type", "Jewellery type is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(jewel.description)) {
+                setJewelleryValidationState(index, "description", "description is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(jewel.preciousMetalInWeight)) {
+                setJewelleryValidationState(index, "preciousMetalInWeight", "Weight is required");
                 isValid = false;
             }
         });

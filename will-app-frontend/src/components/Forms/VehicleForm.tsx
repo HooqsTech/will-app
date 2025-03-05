@@ -29,12 +29,14 @@ const VehicleForm: React.FC<IVehicleFormProps> = ({ index }) => {
             <CustomTextBox
                 helperText={validationStateItem.brandOrModel}
                 value={item.brandOrModel}
+                required
                 onChange={(e) => handleChange(index, "brandOrModel", e)}
                 label="Brand / Model"
                 type="text" />
             <CustomTextBox
                 helperText={validationStateItem.registrationNumber}
                 value={item.registrationNumber}
+                required
                 onChange={(e) => handleChange(index, "registrationNumber", e)}
                 label="Registration Number"
                 type="text" />

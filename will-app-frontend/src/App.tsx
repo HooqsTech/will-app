@@ -91,7 +91,7 @@ function App() {
       var bankAccounts: IBankDetailsState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.BANK_ACCOUNTS).map((s) => ({ ...s.data, id: s.id }));
       if (bankAccounts.length > 0) {
         setBankAccounts(bankAccounts)
-        setBankAccountsValidationState(properties.map(_ => ({...emptyBankAccountValidationState})))
+        setBankAccountsValidationState(bankAccounts.map(_ => ({...emptyBankAccountValidationState})))
       }
 
       // SET BANK ACCOUNTS

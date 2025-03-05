@@ -32,17 +32,20 @@ const InsurancePolicyForm: React.FC<IInsurancePolicyFormProps> = ({ index }) => 
                 label="Insurance Type"
                 options={["Life", "Health"]}
                 helperText={validationItem.insuranceType}
+                required
                 value={item.insuranceType}
                 onChange={(e) => handleChange(index, "insuranceType", e)} />
             <CustomTextBox
                 value={item.insuranceProvider}
                 helperText={validationItem.insuranceProvider}
+                required
                 onChange={(e) => handleChange(index, "insuranceProvider", e)}
                 label="Insurance Provider"
                 type="text" />
             <CustomTextBox
                 value={item.policyNumber}
                 helperText={validationItem.policyNumber}
+                required
                 onChange={(e) => handleChange(index, "policyNumber", e)}
                 label="Policy Number"
                 type="text" />

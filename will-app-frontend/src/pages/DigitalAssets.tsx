@@ -42,16 +42,19 @@ const DigitalAssets = () => {
     };
 
     const deleteDigitalAssetAsync = async (index: number) => {
-        if (formState[index].id !== "" && formState[index].id !== undefined) {
+        if (formState[index].id !== ""
+            && formState[index].id !== undefined
+        ) {
             await deleteAsset(formState[index].id);
-            setFormState((prevItems) =>
-                prevItems.filter(item => item.id !== formState[index].id)
-            );
-        } else {
-            setFormState((prevItems) =>
-                prevItems.filter((_, i) => i !== index)
-            );
         }
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+
+        setValidationState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
     };
 
     const handleBackClick = async () => {

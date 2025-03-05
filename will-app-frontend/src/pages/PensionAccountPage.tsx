@@ -42,13 +42,19 @@ const PensionAccountPage = () => {
     }
 
     const deletePensionAccountAsync = async (index: number) => {
-        let isDeleted = await deleteAsset(formState[index].id);
-        if (isDeleted) {
-
-            setFormState((prevItems) =>
-                prevItems.filter(item => item.id !== formState[index].id)
-            );
+        if (formState[index].id !== ""
+            && formState[index].id !== undefined
+        ) {
+            await deleteAsset(formState[index].id);
         }
+
+        setFormState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
+
+        setValidationState((prevItems) =>
+            prevItems.filter((_, i) => i !== index)
+        );
     }
 
     const handleBackClick = async () => {
@@ -129,7 +135,7 @@ const PensionAccountPage = () => {
 
     return (
         <div className='flex flex-col justify-start h-full space-y-3 w-xl m-auto'>
-            <h1 className='text-2xl font-semibold'>PENSION ACCOUNTS</h1>
+            <h1 className='text-2xl font-semibold'>Pension Accounts</h1>
             <div>
                 {
                     formState.map((_, index) => (

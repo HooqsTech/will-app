@@ -24,14 +24,17 @@ const IntellectualPropertyForm: React.FC<IIntellectualPropertyFormProps> = ({ in
                 label="Account Type"
                 options={["Brand Name", "Exclusive Product", "Invention", "Software", "Website", "Content", "Secret Formula"]}
                 value={item.type}
+                required
                 onChange={(e) => handleChange(index, "type", e)} />
             <CustomTextBox
                 value={item.identificationNumber}
+                required
                 onChange={(e) => handleChange(index, "identificationNumber", e)}
                 label="Identification Number"
                 type="text" />
             <CustomTextBox
                 value={item.description}
+                required
                 onChange={(e) => handleChange(index, "description", e)}
                 label="Description"
                 type="text" />

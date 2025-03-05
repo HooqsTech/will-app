@@ -29,6 +29,7 @@ const CustomAssetForm: React.FC<ICustomAssetFormProps> = ({ index }) => {
             <CustomTextBox
                 helperText={validationStateItem.description}
                 value={item.description}
+                required
                 onChange={(e) => handleChange(index, "description", e)}
                 label="Description"
                 type="text" />
