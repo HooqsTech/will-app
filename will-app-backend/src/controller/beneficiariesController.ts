@@ -1,77 +1,108 @@
 import { PrismaClient } from '@prisma/client';
+import { UUID } from 'crypto';
 import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
+//Check if the given user id is valid
+const validUser = async (userId: UUID): Promise<boolean> => {
+    const user = await prisma.users.findUnique({ where: { userid: userId } });
+    return !!user;
+};
+
+//Check if the given beneficairy id exists and is valid for the user
+const validBeneficiary = async (id: UUID, userId: UUID): Promise<boolean> => {
+    const beneficiary = await prisma.beneficiaries.findFirst({ where: { id, userid: userId } });
+    return !!beneficiary;
+};
+
+//Verify ID format
+const validateId = async (id: UUID): Promise<boolean> => {
+    if (!id || typeof id !== "string") {
+        return false;
+    }
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+        return false;
+    }
+    return true;
+}
+
 // Get a beneficiary by ID
-export const getBeneficiaryById = async (req: Request, res: Response) => {
+export const getBeneficiaryById = async (request: Request, response: Response) => {
     try {
-        const { id } = req.query;
+        const { userId, id } = request.body;
 
-        // Validate id
-        if (!id || typeof id !== "string") {
-            return res.status(400).json({ error: "Beneficiary ID is required and must be a valid UUID string" });
+        if(!(await validateId(id))){
+            return response.status(400).json({ error: "Invalid Beneficiary ID format. Must be a valid UUID." });
+        }
+        if(!(await validateId(userId))){
+            return response.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
+        }
+        if(!(await validUser(userId))){
+            return response.status(400).json({ error: "Invalid User" });
         }
 
-        // Check if id is a valid UUID format
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-        if (!uuidRegex.test(id)) {
-            return res.status(400).json({ error: "Invalid Beneficiary ID format. Must be a valid UUID." });
-        }
-
-        const beneficiary = await prisma.beneficiaries.findUnique({
-            where: { id },
+        const beneficiary = await prisma.beneficiaries.findFirst({
+            where: { id , userid: userId },
         });
 
         if (!beneficiary) {
-            return res.status(404).json({ error: "Beneficiary not found" });
+            return response.status(404).json({ error: "Beneficiary not found" });
         }
 
-        res.status(200).json(beneficiary);
+        response.status(200).json(beneficiary);
     } catch (error) {
         console.error("Error fetching beneficiary:", error);
-        res.status(500).json({ error: "Internal server error" });
+        response.status(500).json({ error: "Internal server error" });
     }
 };
 
 // Get all beneficiaries for a user
-export const getBeneficiariesByUserId = async (req: Request, res: Response) => {
+export const getBeneficiariesByUserId = async (request: Request, response: Response) => {
     try {
-        const { userId } = req.query;
+        const { userId } = request.body;
 
-        // Validate userId
-        if (!userId || typeof userId !== "string") {
-            return res.status(400).json({ error: "User ID is required and must be a valid UUID string" });
+        if(!(await validateId(userId))){
+            return response.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
         }
-
-        // Check if userId is a valid UUID format
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-        if (!uuidRegex.test(userId)) {
-            return res.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
+        if(!(await validUser(userId))){
+            return response.status(400).json({ error: "Invalid User" });
         }
 
         const beneficiaries = await prisma.beneficiaries.findMany({
             where: { userid: userId },
         });
 
-        res.status(200).json(beneficiaries);
+        response.status(200).json(beneficiaries);
     } catch (error) {
         console.error("Error fetching beneficiaries:", error);
-        res.status(500).json({ error: "Internal server error" });
+        response.status(500).json({ error: "Internal server error" });
     }
 };
 
 // Create or update a beneficiary (Upsert)
-export const upsertBeneficiary = async (req: Request, res: Response) => {
+export const upsertBeneficiary = async (request: Request, response: Response) => {
     try {
-        const { id, userId, type, data } = req.body;
+        const { id, userId, type, data } = request.body;
+
+        
+        if(!(await validateId(userId))){
+            return response.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
+        }
+        if(!(await validUser(userId))){
+            return response.status(400).json({ error: "Invalid User" });
+        }
 
         let beneficiary;
 
         if (id) {
+            if(!(await validateId(id))){
+                return response.status(400).json({ error: "Invalid Beneficiary ID format. Must be a valid UUID." });
+            }
             // Check if the beneficiary exists
-            const existingBeneficiary = await prisma.beneficiaries.findUnique({
-                where: { id },
+            const existingBeneficiary = await prisma.beneficiaries.findFirst({
+                where: { id, userid : userId },
             });
 
             if (existingBeneficiary) {
@@ -111,59 +142,35 @@ export const upsertBeneficiary = async (req: Request, res: Response) => {
             });
         }
 
-        res.status(200).json(beneficiary);
+        response.status(200).json(beneficiary);
     } catch (error) {
         console.error("Error upserting beneficiary:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-};
-
-// Update a beneficiary by ID
-export const updateBeneficiaryById = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const { userId, type, data } = req.body;
-
-        const beneficiary = await prisma.beneficiaries.update({
-            where: { id },
-            data: {
-                userid: userId,
-                type,
-                data,
-                updatedat: new Date(),
-            },
-        });
-
-        res.status(200).json(beneficiary);
-    } catch (error) {
-        console.error("Error updating beneficiary:", error);
-        res.status(500).json({ error: "Internal server error" });
+        response.status(500).json({ error: "Internal server error" });
     }
 };
 
 // Delete a beneficiary by ID
-export const deleteBeneficiaryById = async (req: Request, res: Response) => {
+export const deleteBeneficiaryById = async (request: Request, response: Response) => {
     try {
-        const { id } = req.query;
+        const { id, userId } = request.body;
 
-        // Validate id
-        if (!id || typeof id !== "string") {
-            return res.status(400).json({ error: "Beneficiary ID is required and must be a valid UUID string" });
+        if(!(await validateId(id))){
+            return response.status(400).json({ error: "Invalid Beneficiary ID format. Must be a valid UUID." });
         }
-
-        // Check if id is a valid UUID format
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-        if (!uuidRegex.test(id)) {
-            return res.status(400).json({ error: "Invalid Beneficiary ID format. Must be a valid UUID." });
+        if(!(await validateId(userId))){
+            return response.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
+        }
+        if(!(await validUser(userId))){
+            return response.status(400).json({ error: "Invalid User" });
         }
 
         // Check if the beneficiary exists before deleting
-        const existingBeneficiary = await prisma.beneficiaries.findUnique({
-            where: { id },
+        const existingBeneficiary = await prisma.beneficiaries.findFirst({
+            where: { id, userid : userId },
         });
 
         if (!existingBeneficiary) {
-            return res.status(404).json({ error: "Beneficiary not found" });
+            return response.status(404).json({ error: "Beneficiary not found" });
         }
 
         // Delete the beneficiary
@@ -171,26 +178,22 @@ export const deleteBeneficiaryById = async (req: Request, res: Response) => {
             where: { id },
         });
 
-        res.status(200).json({ message: "Beneficiary deleted successfully", deletedBeneficiary });
+        response.status(200).json({ message: "Beneficiary deleted successfully", deletedBeneficiary });
     } catch (error) {
         console.error("Error deleting beneficiary:", error);
-        res.status(500).json({ error: "Internal server error" });
+        response.status(500).json({ error: "Internal server error" });
     }
 };
 
-export const deleteBeneficiariesByUserId = async (req: Request, res: Response) => {
+export const deleteBeneficiariesByUserId = async (request: Request, response: Response) => {
     try {
-        const { userId } = req.query;
+        const { userId } = request.body;
 
-        // Validate userId
-        if (!userId || typeof userId !== "string") {
-            return res.status(400).json({ error: "User ID is required and must be a valid UUID string" });
+        if(!(await validateId(userId))){
+            return response.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
         }
-
-        // Check if userId is a valid UUID format
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-        if (!uuidRegex.test(userId)) {
-            return res.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
+        if(!(await validUser(userId))){
+            return response.status(400).json({ error: "Invalid User" });
         }
 
         // Check if any beneficiaries exist for the given userId
@@ -199,7 +202,7 @@ export const deleteBeneficiariesByUserId = async (req: Request, res: Response) =
         });
 
         if (!existingBeneficiaries.length) {
-            return res.status(404).json({ error: "No beneficiaries found for this User ID" });
+            return response.status(404).json({ error: "No beneficiaries found for this User ID" });
         }
 
         // Delete all beneficiaries associated with the userId
@@ -207,12 +210,12 @@ export const deleteBeneficiariesByUserId = async (req: Request, res: Response) =
             where: { userid: userId },
         });
 
-        res.status(200).json({
+        response.status(200).json({
             message: "Beneficiaries deleted successfully",
             deletedCount: deletedBeneficiaries.count,
         });
     } catch (error) {
         console.error("Error deleting beneficiaries:", error);
-        res.status(500).json({ error: "Internal server error" });
+        response.status(500).json({ error: "Internal server error" });
     }
 };
