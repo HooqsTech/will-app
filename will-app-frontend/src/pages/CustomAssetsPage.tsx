@@ -15,7 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { emptyCustomAssetValidationState, ICustomAssetValidationState, customAssetsValidationState } from '../atoms/validationStates/CustomAssetsValidationState';
 import { IsEmptyString } from '../utils';
 
-const CustomAssets = () => {
+const CustomAssetsPage = () => {
     const [formState, setFormState] = useRecoilState<ICustomAssetState[]>(customAssetsState);
     const [validationState, setValidationState] = useRecoilState<ICustomAssetValidationState[]>(customAssetsValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
@@ -28,7 +28,7 @@ const CustomAssets = () => {
     const saveCustomAssetAsync = async (asset: ICustomAssetState, index: number) => {
         var data = {
             id: asset.id,
-            type: ASSET_TYPES.OTHER_INVESTMENTS,
+            type: ASSET_TYPES.OTHER_ASSETS,
             subtype: ASSET_SUBTYPES.CUSTOM_ASSETS,
             userId: user.userId,
             data: asset,
@@ -150,4 +150,4 @@ const CustomAssets = () => {
     );
 };
 
-export default CustomAssets;
+export default CustomAssetsPage;

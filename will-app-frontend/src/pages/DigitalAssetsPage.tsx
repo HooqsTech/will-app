@@ -16,7 +16,7 @@ import { emptyDigitalAssetValidationState, IDigitalAssetValidationState, digital
 import { IsEmptyString } from '../utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const DigitalAssets = () => {
+const DigitalAssetsPage = () => {
     const [formState, setFormState] = useRecoilState<IDigitalAssetState[]>(digitalAssetsState);
     const [validationState, setValidationState] = useRecoilState<IDigitalAssetValidationState[]>(digitalAssetsValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
@@ -29,7 +29,7 @@ const DigitalAssets = () => {
     const saveDigitalAssetAsync = async (asset: IDigitalAssetState, index: number) => {
         var data: IAsset = {
             id: asset.id,
-            type: ASSET_TYPES.OTHER_INVESTMENTS,
+            type: ASSET_TYPES.OTHER_ASSETS,
             subtype: ASSET_SUBTYPES.DIGITAL_ASSETS,
             userId: user.userId,
             data: asset
@@ -166,4 +166,4 @@ const DigitalAssets = () => {
     );
 };
 
-export default DigitalAssets;
+export default DigitalAssetsPage;

@@ -15,7 +15,7 @@ import BackButton from '../components/BackButton';
 import { useLocation, useNavigate } from 'react-router';
 import { routesState } from '../atoms/RouteState';
 
-const Bonds = () => {
+const BondsPage = () => {
     const [formState, setFormState] = useRecoilState<IBondState[]>(bondsState);
     const [validationState, setValidationState] = useRecoilState<IBondValidationState[]>(bondsValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
@@ -39,7 +39,7 @@ const Bonds = () => {
     const saveBondAsync = async (bond: IBondState, index: number) => {
         const data = {
             id: bond.id,
-            type: ASSET_TYPES.FINANCIAL_ASSETS,
+            type: ASSET_TYPES.BUSINESS_ASSETS,
             subtype: ASSET_SUBTYPES.BONDS,
             userId: user.userId,
             data: bond
@@ -154,4 +154,4 @@ const Bonds = () => {
     );
 };
 
-export default Bonds;
+export default BondsPage;

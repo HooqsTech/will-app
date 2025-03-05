@@ -15,7 +15,7 @@ import NextButton from '../components/NextButton';
 import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
 import { IsEmptyString } from '../utils';
 
-const Vehicles = () => {
+const VehiclesPage = () => {
     const [formState, setFormState] = useRecoilState<IVehicleState[]>(vehiclesState);
     const [validationState, setValidationState] = useRecoilState<IVehicleValidationState[]>(vehiclesValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
@@ -45,7 +45,7 @@ const Vehicles = () => {
     const saveVehicleAsync = async (vehicle: IVehicleState, index: number) => {
         const data = {
             id: vehicle.id,
-            type: ASSET_TYPES.OTHER_INVESTMENTS,
+            type: ASSET_TYPES.OTHER_ASSETS,
             subtype: ASSET_SUBTYPES.VEHICLES,
             userId: user.userId,
             data: vehicle
@@ -160,4 +160,4 @@ const Vehicles = () => {
     );
 };
 
-export default Vehicles;
+export default VehiclesPage;

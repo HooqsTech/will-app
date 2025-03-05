@@ -15,7 +15,7 @@ import NextButton from '../components/NextButton';
 import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
 import { IsEmptyString } from '../utils';
 
-const Debentures = () => {
+const DebenturesPage = () => {
     const [formState, setFormState] = useRecoilState<IDebentureState[]>(debenturesState);
     const [validationState, setValidationState] = useRecoilState<IDebentureValidationState[]>(debenturesValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
@@ -49,7 +49,7 @@ const Debentures = () => {
     const saveDebentureAsync = async (debenture: IDebentureState, index: number) => {
         const data = {
             id: debenture.id,
-            type: ASSET_TYPES.FINANCIAL_ASSETS,
+            type: ASSET_TYPES.BUSINESS_ASSETS,
             subtype: ASSET_SUBTYPES.DEBENTURES,
             userId: user.userId,
             data: debenture
@@ -158,4 +158,4 @@ const Debentures = () => {
     );
 };
 
-export default Debentures;
+export default DebenturesPage;

@@ -16,7 +16,7 @@ import { emptyJewelleryValidationState, IJewelleriesValidationState, jewelleries
 import { IsEmptyString } from '../utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const JewelleryPage = () => {
+const JewelleriesPage = () => {
     const [formState, setFormState] = useRecoilState<IJewelleryState[]>(jewelleriesState);
     const [validationState, setValidationState] = useRecoilState<IJewelleriesValidationState[]>(jewelleriesValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
@@ -29,7 +29,7 @@ const JewelleryPage = () => {
     const saveJewelleryAsync = async (jewellery: IJewelleryState, index: number) => {
         var data: IAsset = {
             id: jewellery.id,
-            type: ASSET_TYPES.OTHER_INVESTMENTS,
+            type: ASSET_TYPES.OTHER_ASSETS,
             subtype: ASSET_SUBTYPES.JEWELLERIES,
             userId: user.userId,
             data: jewellery
@@ -170,4 +170,4 @@ const JewelleryPage = () => {
     );
 };
 
-export default JewelleryPage;
+export default JewelleriesPage;

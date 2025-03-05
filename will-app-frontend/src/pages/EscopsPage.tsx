@@ -15,7 +15,7 @@ import NextButton from '../components/NextButton';
 import { useLocation, useNavigate } from 'react-router';
 import { routesState } from '../atoms/RouteState';
 
-const Escops = () => {
+const EscopsPage = () => {
     const [formState, setFormState] = useRecoilState<IEscopState[]>(escopsState);
     const [validationState, setValidationState] = useRecoilState<IEscopValidationState[]>(escopsValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
@@ -62,7 +62,7 @@ const Escops = () => {
     const saveEscopAsync = async (escop: IEscopState, index: number) => {
         const data = {
             id: escop.id,
-            type: ASSET_TYPES.FINANCIAL_ASSETS,
+            type: ASSET_TYPES.BUSINESS_ASSETS,
             subtype: ASSET_SUBTYPES.ESCOPS,
             userId: user.userId,
             data: escop
@@ -166,4 +166,4 @@ const Escops = () => {
     );
 };
 
-export default Escops;
+export default EscopsPage;

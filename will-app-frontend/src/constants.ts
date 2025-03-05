@@ -13,7 +13,8 @@ export const COLORS: { PRIMARY_GREEN: string } = {
 export const ASSET_TYPES = {
     IMMOVABLE_ASSETS: "immovable_assets",
     FINANCIAL_ASSETS: "financial_assets",
-    OTHER_INVESTMENTS : "other_investment",
+    OTHER_ASSETS : "other_assets",
+    BUSINESS_ASSETS: "business_assets",
     LIABILITIES: "liabilities"
 }
 

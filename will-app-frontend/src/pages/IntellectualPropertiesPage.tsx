@@ -15,7 +15,7 @@ import AddButton from '../components/AddButton';
 import { routesState } from '../atoms/RouteState';
 import { useLocation, useNavigate } from 'react-router';
 
-const IntellectualProperties = () => {
+const IntellectualPropertiesPage = () => {
     const [formState, setFormState] = useRecoilState<IIntellectualPropertyState[]>(intellectualPropertiesState);
     const [validationState, setValidationState] = useRecoilState<IIntellectualPropertyValidationState[]>(intellectualPropertyValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
@@ -44,7 +44,7 @@ const IntellectualProperties = () => {
     const savePropertyAsync = async (property: IIntellectualPropertyState, index: number) => {
         const data = {
             id: property.id,
-            type: ASSET_TYPES.OTHER_INVESTMENTS,
+            type: ASSET_TYPES.OTHER_ASSETS,
             subtype: ASSET_SUBTYPES.INTELLECTUAL_PROPERTY,
             userId: user.userId,
             data: property
@@ -159,4 +159,4 @@ const IntellectualProperties = () => {
     );
 };
 
-export default IntellectualProperties;
+export default IntellectualPropertiesPage;

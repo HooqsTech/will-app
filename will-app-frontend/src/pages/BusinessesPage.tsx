@@ -30,7 +30,7 @@ const BusinessesPage = () => {
     const saveBusinessesAsync = async (property: IBusinessState, index: number) => {
         let data: IAsset = {
             id: "",
-            type: ASSET_TYPES.FINANCIAL_ASSETS,
+            type: ASSET_TYPES.BUSINESS_ASSETS,
             subtype: ASSET_SUBTYPES.BUSINESSES,
             userId: user.userId,
             data: property

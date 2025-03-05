@@ -76,12 +76,13 @@ const NavItems: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
               {id: 'business', label: 'Business', iconName: 'pdf'},
               {id: 'bonds', label: 'Bonds', iconName: 'pdf'},
               {id: 'debentures', label: 'Debentures', iconName: 'pdf'},
-              {id: 'esops', label: 'Esops', iconName: 'pdf'}
+              {id: 'esops', label: 'Esops', iconName: 'pdf'},
+              {id: 'other_investments', label: 'Other Investments', iconName: 'pdf'}
           ]
       },
-      { id: 'other_investments', label: 'Other Investments',  iconName: 'pdf',
+      { id: 'other_assets', label: 'Other Assets',  iconName: 'pdf',
           children: [
-              {id: 'vehicles', label: 'vechicles', iconName: 'pdf'},
+              {id: 'vehicles', label: 'Vechicles', iconName: 'pdf'},
               {id: 'jewelry', label: 'Jewlery', iconName: 'pdf'},
               {id: 'digital_assets', label: 'Digital Assets', iconName: 'pdf'},
               {id: 'intellectual_property', label: 'Intellectual', iconName: 'pdf'},
