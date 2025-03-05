@@ -46,7 +46,7 @@ const Vehicles = () => {
     const saveVehicleAsync = async (vehicle: IVehicleState, index: number) => {
         const data = {
             id: vehicle.id,
-            type: ASSET_TYPES.PHYSICAL_ASSETS,
+            type: ASSET_TYPES.OTHER_INVESTMENTS,
             subtype: ASSET_SUBTYPES.VEHICLES,
             userId: user.userId,
             data: vehicle

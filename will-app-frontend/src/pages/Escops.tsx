@@ -1,5 +1,4 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
-import CustomButton from '../components/CustomButton';
 import CustomAccordion from '../components/CustomAccordion';
 import { useState } from 'react';
 import EscopForm from '../components/Forms/EscopForm';
@@ -13,6 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
+import { useLocation, useNavigate } from 'react-router';
+import { routesState } from '../atoms/RouteState';
 
 const Escops = () => {
     const [formState, setFormState] = useRecoilState<IEscopState[]>(escopsState);
@@ -20,6 +21,9 @@ const Escops = () => {
     const [currentItem, setCurrentItem] = useState<number>(-1);
     const [showErrorBorder, setShowErrorBorder] = useState(false);
     const user = useRecoilValue(userState);
+    const routeState = useRecoilValue(routesState);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const shouldExpandAccordion = (index: number) => currentItem === index;
 
@@ -48,6 +52,11 @@ const Escops = () => {
         ]);
         setValidationState((prevState) => [...prevState, emptyEscopValidationState]);
         setCurrentItem(formState.length);
+    };
+
+    const handleBackClick = () => {
+        var routeValue = routeState.find(s => s.nextPath === location.pathname);
+        navigate(routeValue?.currentPath ?? "/");
     };
 
     const saveEscopAsync = async (escop: IEscopState, index: number) => {
@@ -142,8 +151,7 @@ const Escops = () => {
                 <AddButton onClick={addItem} label={`Add ESCOP ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                {/* testing purpose i kept back button Onclick change event */}
-                <BackButton label='Back' onClick={handleNextClick}/>
+                <BackButton label='Back' onClick={handleBackClick}/>
                 <NextButton label='Next' onClick={handleNextClick} />
             </div>
         </div>

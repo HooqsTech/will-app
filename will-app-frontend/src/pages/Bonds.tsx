@@ -12,13 +12,18 @@ import { upsertAsset, deleteAsset } from '../api/asset';
 import { ASSET_TYPES, ASSET_SUBTYPES } from '../constants';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BackButton from '../components/BackButton';
+import { useLocation, useNavigate } from 'react-router';
+import { routesState } from '../atoms/RouteState';
 
 const Bonds = () => {
     const [formState, setFormState] = useRecoilState<IBondState[]>(bondsState);
     const [validationState, setValidationState] = useRecoilState<IBondValidationState[]>(bondsValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
     const [showErrorBorder, setShowErrorBorder] = useState(false);
+    const routeState = useRecoilValue(routesState);
     const user = useRecoilValue(userState);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const addBond = () => {
         setFormState((prevState) => [...prevState, {
@@ -44,6 +49,11 @@ const Bonds = () => {
         setFormState((prevItems) =>
             prevItems.map((item, i) => (i === index ? { ...upsertedAsset.data, id: upsertedAsset.id } : item))
         );
+    };
+
+    const handleBackClick = () => {
+        var routeValue = routeState.find(s => s.nextPath === location.pathname);
+        navigate(routeValue?.currentPath ?? "/");
     };
 
     const deleteBondAsync = async (index: number) => {
@@ -128,8 +138,7 @@ const Bonds = () => {
                 <AddButton onClick={addBond} label={`Bond ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                {/* testing purpose i kept back button Onclick change event */}
-                <BackButton label='Back' onClick={handleNextClick}/>
+                <BackButton label='Back' onClick={handleBackClick}/>
                 <NextButton label='Next' onClick={handleNextClick} />
             </div>
         </div>

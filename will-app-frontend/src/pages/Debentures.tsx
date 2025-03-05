@@ -13,6 +13,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
 import AddButton from '../components/AddButton';
+import { useLocation, useNavigate } from 'react-router';
+import { routesState } from '../atoms/RouteState';
 
 const Debentures = () => {
     const [formState, setFormState] = useRecoilState<IDebentureState[]>(debenturesState);
@@ -20,8 +22,16 @@ const Debentures = () => {
     const [currentItem, setCurrentItem] = useState<number>(-1);
     const [showErrorBorder, setShowErrorBorder] = useState(false);
     const user = useRecoilValue(userState);
+    const routeState = useRecoilValue(routesState);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const shouldExpandAccordion = (index: number) => currentItem === index;
+
+    const handleBackClick = () => {
+        var routeValue = routeState.find(s => s.nextPath === location.pathname);
+        navigate(routeValue?.currentPath ?? "/");
+    };
 
     const addItem = () => {
         setFormState((prevState) => [
@@ -135,8 +145,7 @@ const Debentures = () => {
             <AddButton onClick={addItem} label={`Debenture ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                {/* testing purpose i kept back button Onclick change event */}
-                <BackButton label='Back' onClick={handleNextClick} />
+                <BackButton label='Back' onClick={handleBackClick} />
                 <NextButton label='Next' onClick={handleNextClick} />
             </div>
         </div>

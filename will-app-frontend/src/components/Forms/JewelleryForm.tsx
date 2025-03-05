@@ -3,6 +3,7 @@ import CustomFormContainer from "../CustomFormContainer"
 import CustomTextBox from "../CustomTextBox"
 import CustomSelect from "../CustomSelect";
 import { IJewelleryState, jewelleriesState } from "../../atoms/JewelleriesState";
+import { IJewelleriesValidationState, jewelleriesValidationState } from "../../atoms/validationStates/JewelleriesValidationState";
 
 interface IJewelleryFormProps {
     index: number
@@ -10,17 +11,25 @@ interface IJewelleryFormProps {
 
 const JewelleryForm: React.FC<IJewelleryFormProps> = ({ index }) => {
     const [formState, setFormState] = useRecoilState<IJewelleryState[]>(jewelleriesState);
+    const [validationState, setValidationState] = useRecoilState<IJewelleriesValidationState[]>(jewelleriesValidationState);
+    
     const item = formState[index];
-
+    const validationStateItem = validationState[index];
+    
     const handleChange = (index: number, key: keyof IJewelleryState, value: string) => {
         setFormState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
+        );
+
+        setValidationState((prevState) =>
+            prevState.map((item, i) => (i === index ? { ...item, [key]: "" } : item))
         );
     };
 
     return (
         <CustomFormContainer hideBorder>
             <CustomSelect
+                helperText={validationStateItem.type}
                 label="Jewellery Type"
                 options={["Gold", "Silver", "Others"]}
                 value={item.type}
