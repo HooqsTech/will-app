@@ -15,7 +15,7 @@ import { IAsset } from '../models/asset';
 import { userState } from '../atoms/UserDetailsState';
 import { IsEmptyString } from '../utils';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { businessesValidationState, emptyPropertyValidationState, IBusinessValidationState } from '../atoms/validationStates/BusinessesValidationState';
+import { businessesValidationState, emptyBusinessesValidationState, IBusinessValidationState } from '../atoms/validationStates/BusinessesValidationState';
 
 const BusinessesPage = () => {
     const [formState, setFormState] = useRecoilState<IBusinessState[]>(businessesState);
@@ -136,7 +136,7 @@ const BusinessesPage = () => {
         ]);
         setValidationState((prevState) => [
             ...prevState,
-            emptyPropertyValidationState
+            emptyBusinessesValidationState
         ])
         setCurrentItem(formState.length);
     };

@@ -19,7 +19,7 @@ export const providentFundValidationState = atom<IProvidentFundValidationState[]
     }]
 });
 
-export const emptyPropertyValidationState: IProvidentFundValidationState = {
+export const emptyProvidentFundValidationState: IProvidentFundValidationState = {
     id: "",
     type: "",
     bankName: "",

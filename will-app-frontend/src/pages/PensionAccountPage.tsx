@@ -1,20 +1,20 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
-import CustomAccordion from '../components/CustomAccordion';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { deleteAsset, upsertAsset } from '../api/asset';
 import { IPensionAccountState, pensionAccountsState } from '../atoms/PensionAccountsState';
-import PensionAccountForm from '../components/Forms/PensionAccountForm';
+import { routesState } from '../atoms/RouteState';
+import { userState } from '../atoms/UserDetailsState';
+import { emptyPensionAccountValidationState, IPensionAccountValidationState, pensionAccountValidationState } from '../atoms/validationStates/PensionAccountValidationState';
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
+import CustomAccordion from '../components/CustomAccordion';
+import PensionAccountForm from '../components/Forms/PensionAccountForm';
 import NextButton from '../components/NextButton';
-import { useLocation, useNavigate } from 'react-router';
-import { routesState } from '../atoms/RouteState';
-import { deleteAsset, upsertAsset } from '../api/asset';
 import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
 import { IAsset } from '../models/asset';
-import { userState } from '../atoms/UserDetailsState';
 import { IsEmptyString } from '../utils';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { emptyPropertyValidationState, IPensionAccountValidationState, pensionAccountValidationState } from '../atoms/validationStates/PensionAccountValidationState';
 
 const PensionAccountPage = () => {
     const [formState, setFormState] = useRecoilState<IPensionAccountState[]>(pensionAccountsState);
@@ -111,7 +111,7 @@ const PensionAccountPage = () => {
 
         setValidationState((prevState) => [
             ...prevState,
-            emptyPropertyValidationState
+            emptyPensionAccountValidationState
         ])
         setCurrentItem(formState.length)
 

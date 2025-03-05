@@ -16,7 +16,7 @@ export const pensionAccountValidationState = atom<IPensionAccountValidationState
 });
 
 
-export var emptyPropertyValidationState: IPensionAccountValidationState = {
+export var emptyPensionAccountValidationState: IPensionAccountValidationState = {
     id: "",
     schemeName: "",
     bankName: "",

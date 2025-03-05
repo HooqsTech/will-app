@@ -15,7 +15,7 @@ import { IAsset } from '../models/asset';
 import { userState } from '../atoms/UserDetailsState';
 import { IsEmptyString } from '../utils';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { emptyPropertyValidationState, IProvidentFundValidationState, providentFundValidationState } from '../atoms/validationStates/ProvidentValidationState';
+import { emptyProvidentFundValidationState, IProvidentFundValidationState, providentFundValidationState } from '../atoms/validationStates/ProvidentValidationState';
 
 const ProvidentFundpage = () => {
     const [formState, setFormState] = useRecoilState<IProvidentFundState[]>(providentFundsState);
@@ -121,7 +121,7 @@ const ProvidentFundpage = () => {
         ]);
         setValidationState((prevState) => [
             ...prevState,
-            emptyPropertyValidationState
+            emptyProvidentFundValidationState
         ])
         setCurrentItem(formState.length);
     };

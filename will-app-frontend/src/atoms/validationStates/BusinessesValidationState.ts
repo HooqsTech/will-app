@@ -27,7 +27,7 @@ export const businessesValidationState = atom<IBusinessValidationState[]>({
     }]
 });
 
-export var emptyPropertyValidationState: IBusinessValidationState = {
+export var emptyBusinessesValidationState: IBusinessValidationState = {
     id: "",
     type: "",
     companyName: "",
