@@ -24,6 +24,11 @@ import PropertiesPage from './PropertiesPage';
 import ProvidentFundpage from './ProvidentFundPage';
 import SafetyDepositAsset from './SafetyDepositBoxesPage';
 import Vehicles from './Vehicles';
+import HomeLoanPage from './HomeLoanPage';
+import PersonalLoanPage from './PersonalLoanPage';
+import EducationLoanPage from './EducationLoanPage';
+import VechicleLoanPage from './VehicleLoanPage';
+import OtherLiabilityPage from './OtherLiabilityPage';
 
 const YourWill: React.FC = () => {
     return (
@@ -59,6 +64,11 @@ const YourWill: React.FC = () => {
                         <Route path="/bonds" element={<Bonds />} />
                         <Route path="/business" element={<BusinessesPage />} />
                         <Route path="/beneficiaries" element={<BeneficiariesPage />} />
+                        <Route path="/home_loans" element={<HomeLoanPage />} />
+                        <Route path="/personal_loans" element={<PersonalLoanPage />} />
+                        <Route path="/education_loans" element={<EducationLoanPage />} />
+                        <Route path="/vehicle_loans" element={<VechicleLoanPage />} />
+                        <Route path="/other_liabilities" element={<OtherLiabilityPage />} />
                     </Routes>
                 </div>
             </div>
