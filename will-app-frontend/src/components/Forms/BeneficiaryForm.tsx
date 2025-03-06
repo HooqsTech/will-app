@@ -4,8 +4,9 @@ import CustomTextBox from "../CustomTextBox"
 import CustomSelect from "../CustomSelect";
 import { beneficiariesState, IBeneficiaryState } from "../../atoms/BeneficiariesState";
 import CustomDatePicker from "../CustomDatePicker";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { CHILDREN_ORGANIZATION, GENERAL_ORGANIZATION, OLDAGE_ORGANIZATION, SPIRITUAL_ORGANIZATION } from "../../constants";
+import { beneficiariesValidationState, IBeneficiaryValidationState } from "../../atoms/validationStates/BeneficiariesValidationState";
 
 interface IBankAccountFormProps {
     index: number
@@ -15,11 +16,16 @@ const RELATIONSHIP = ['son ', 'daughter ', 'spouse ', 'mother ', 'father ', 'bro
 
 const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
     const [formState, setFormState] = useRecoilState<IBeneficiaryState[]>(beneficiariesState);
-    const item = formState[index];
+    const [validationState, setValidationState] = useRecoilState<IBeneficiaryValidationState[]>(beneficiariesValidationState);
+        const item = formState[index];
+        const validationStateItem = validationState[index];
 
     const handleChange = (index: number, key: keyof IBeneficiaryState, value: string | Dayjs | null) => {
         setFormState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
+        );
+        setValidationState((prevState) =>
+            prevState.map((item, i) => (i === index ? { ...item, [key]: "" } : item))
         );
     };
 
@@ -47,6 +53,7 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                 label="Beneficiary Type"
                 options={["Person", "Charity"]}
                 value={item.type}
+                helperText={validationStateItem.type}
                 onChange={(e) => handleChange(index, "type", e)} />
             {
                 item.type === "Person" &&
@@ -55,29 +62,35 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                         value={item.fullName}
                         onChange={(e) => handleChange(index, "fullName", e)}
                         label="Full Name"
+                        helperText={validationStateItem.fullName}
                         type="text" />
                     <CustomSelect
                         label="Gender"
                         options={["Male", "Female", "Others"]}
-                        value={item.type}
+                        value={item.gender}
+                        helperText={validationStateItem.gender}
                         onChange={(e) => handleChange(index, "gender", e)} />
                     <CustomDatePicker
                         onChange={(e) => handleChange(index, "dateOfBirth", e)}
-                        value={item.dateOfBirth}
+                        value={item.dateOfBirth ? dayjs(item.dateOfBirth) : null}
+                        helperText={validationStateItem.dateOfBirth}
                         label="DOB" />
                     <CustomTextBox
                         value={item.email}
                         onChange={(e) => handleChange(index, "email", e)}
+                        helperText={validationStateItem.email}
                         label={"Email"}
                         type="text" />
                     <CustomTextBox
                         value={item.phone}
                         onChange={(e) => handleChange(index, "phone", e)}
+                        helperText={validationStateItem.phone}
                         label="Phone"
                         type="text" />
                     <CustomSelect
                         label="Relationship"
                         options={RELATIONSHIP}
+                        helperText={validationStateItem.relationship}
                         value={item.relationship}
                         onChange={(e) => handleChange(index, "relationship", e)} />
                 </>
@@ -99,10 +112,12 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                             "Spiritual"
                         ]}
                         value={item.charityType}
+                        helperText={validationStateItem.charityType}
                         onChange={(e) => handleChange(index, "charityType", e)} />
                     <CustomSelect
                         label="Organization"
                         options={getOrganizationOptions()}
+                        helperText={validationStateItem.organization}
                         value={item.organization}
                         onChange={(e) => handleChange(index, "organization", e)} />
                     {
@@ -117,6 +132,7 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                         label="Donation Amount"
                         type="text"
                         value={item.donationAmount}
+                        helperText={validationStateItem.donationAmount}
                         onChange={(e) => handleChange(index, "donationAmount", e)} />
                 </>
             }

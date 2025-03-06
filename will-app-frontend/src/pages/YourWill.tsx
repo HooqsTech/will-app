@@ -5,7 +5,7 @@ import AboutYouPage from './AboutYouPage';
 import AddressDetailsPage from './AddressDetailsPage';
 import AssetsPage from './AssetsPage';
 import BankAccountsPage from './BankAccountsPage';
-import BeneficiariesPage from './BeneficiariesDetails';
+import BeneficiariesPage from './BeneficiariesPage';
 import BondsPage from './BondsPage';
 import BusinessesPage from './BusinessesPage';
 import CustomAssetsPage from './CustomAssetsPage';

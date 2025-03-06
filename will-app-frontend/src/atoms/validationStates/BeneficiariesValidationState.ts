@@ -1,7 +1,6 @@
-
 import { atom } from 'recoil';
 
-export interface IBeneficiaryState {
+export interface IBeneficiaryValidationState {
     id: string;
     type: string;
     fullName: string;
@@ -13,11 +12,11 @@ export interface IBeneficiaryState {
     charityType: string;
     organization: string;
     otherOrganization: string;
-    donationAmount: number | null;
+    donationAmount: string;
 }
 
-export const beneficiariesState = atom<IBeneficiaryState[]>({
-    key: 'beneficiariesState',
+export const beneficiariesValidationState = atom<IBeneficiaryValidationState[]>({
+    key: 'beneficiariesValidationState',
     default: [{
         id: "",
         type: "",
@@ -30,6 +29,21 @@ export const beneficiariesState = atom<IBeneficiaryState[]>({
         charityType: "",
         organization: "",
         otherOrganization: "",
-        donationAmount: null,
+        donationAmount: "",
     }]
 });
+
+export var emptyBeneficiariesValidationState: IBeneficiaryValidationState = {
+    id: "",
+    type: "",
+    fullName: "",
+    gender: "",
+    dateOfBirth: "",
+    email: "",
+    phone: "",
+    relationship: "",
+    charityType: "",
+    organization: "",
+    otherOrganization: "",
+    donationAmount: "",
+};
