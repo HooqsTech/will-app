@@ -1,19 +1,19 @@
-import { useRecoilState, useRecoilValue } from "recoil"
-import CustomAccordion from "../components/CustomAccordion"
-import { ISelectedAssetsState, selectedAssetsState } from "../atoms/SelectedAssetsState"
-import CheckboxContainer from "../components/CheckboxContainer";
-import NextButton from "../components/NextButton";
-import { addSelectedAssetsAsync } from "../api/asset";
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { addSelectedAssetsAsync } from "../api/asset";
+import { getRouteDataFromSelectedAssets, routesState } from "../atoms/RouteState";
+import { ISelectedAssetsState, selectedAssetsState } from "../atoms/SelectedAssetsState";
 import { userState } from "../atoms/UserDetailsState";
-import { routesState } from "../atoms/RouteState";
-import { useNavigate, useNavigation } from "react-router";
+import CheckboxContainer from "../components/CheckboxContainer";
+import CustomAccordion from "../components/CustomAccordion";
+import NextButton from "../components/NextButton";
 
 const AssetsPage = () => {
     const [selectedAssets, setSelectedAssets] = useRecoilState(selectedAssetsState);
     const user = useRecoilValue(userState);
     const [loading, setLoading] = useState<boolean>(false);
-    const routeData = useRecoilValue(routesState);
+    const setRouteState = useSetRecoilState(routesState);
     const navigate = useNavigate();
 
     console.log('selectedAssets', selectedAssets)
@@ -30,6 +30,9 @@ const AssetsPage = () => {
         setLoading(true);
         const result = await addSelectedAssetsAsync(selectedAssets, user.userId);
         setLoading(false);
+
+        const routeData = getRouteDataFromSelectedAssets(selectedAssets);
+        setRouteState(routeData);
 
         // NAVIGATE TO ADDRESS DETAILS
         if (result.bankAccounts === selectedAssets.bankAccounts) {

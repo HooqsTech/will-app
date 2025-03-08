@@ -11,7 +11,7 @@ interface ICustomSelectProps {
 
 const CustomSelect: React.FC<ICustomSelectProps> = ({ label, options, onChange, value, required, helperText }) => {
     return (
-        <FormControl error={helperText !== undefined && helperText.length > 0} required={required} fullWidth className='bg-gray-50 font-[frank]' size='small'>
+        <FormControl error={helperText !== undefined && helperText.length > 0} required={required} fullWidth className='font-[frank]' size='small'>
             <InputLabel>{label}</InputLabel>
             <Select
                 required={required}

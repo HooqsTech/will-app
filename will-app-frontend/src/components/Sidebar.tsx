@@ -69,7 +69,7 @@ const NavItems: TreeViewBaseItem[] = [
 export default function Sidebar() {
 
     let navigate = useNavigate();
-    const handleSelectedItemChange = (event: React.SyntheticEvent, itemId: string) => {
+    const handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
         navigate("/" + itemId);
     };
 

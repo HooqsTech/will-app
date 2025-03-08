@@ -117,13 +117,13 @@ function App() {
   const setDigitalAssets = useSetRecoilState(digitalAssetsState);
   const setDigitalAssetsValidationState = useSetRecoilState(digitalAssetsValidationState);
 
-   // INTELLECTUAL PROPERTIES 
-   const setIntellectualProperties = useSetRecoilState(intellectualPropertiesState);
-   const setIntellectualPropertiesValidationState = useSetRecoilState(intellectualPropertyValidationState);
+  // INTELLECTUAL PROPERTIES 
+  const setIntellectualProperties = useSetRecoilState(intellectualPropertiesState);
+  const setIntellectualPropertiesValidationState = useSetRecoilState(intellectualPropertyValidationState);
 
-   // INTELLECTUAL PROPERTIES 
-   const setCustomAssets = useSetRecoilState(customAssetsState);
-   const setCustomAssetsValidationState = useSetRecoilState(customAssetsValidationState);
+  // INTELLECTUAL PROPERTIES 
+  const setCustomAssets = useSetRecoilState(customAssetsState);
+  const setCustomAssetsValidationState = useSetRecoilState(customAssetsValidationState);
 
   const setRouteState = useSetRecoilState(routesState);
 
@@ -265,12 +265,12 @@ function App() {
         setIntellectualPropertiesValidationState(intellectualProperties.map(_ => ({ ...emptyIntellectualPropertyValidationState })))
       }
 
-       // SET DIGITAL ASSETS
-       var customAssets: ICustomAssetState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.CUSTOM_ASSETS).map((s) => ({ ...s.data, id: s.id }));
-       if (customAssets.length > 0) {
-         setCustomAssets(customAssets)
-         setCustomAssetsValidationState(customAssets.map(_ => ({ ...emptyCustomAssetValidationState })))
-       }
+      // SET DIGITAL ASSETS
+      var customAssets: ICustomAssetState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.CUSTOM_ASSETS).map((s) => ({ ...s.data, id: s.id }));
+      if (customAssets.length > 0) {
+        setCustomAssets(customAssets)
+        setCustomAssetsValidationState(customAssets.map(_ => ({ ...emptyCustomAssetValidationState })))
+      }
     }
 
     // DYNAMIC ROUTE MAPPING
