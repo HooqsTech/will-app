@@ -6,7 +6,8 @@ import {
     createPersonalDetailsHandler, 
     deletePersonalDetailsHandler, 
     createAddressDetailsHandler, 
-    deleteAddressDetailsHandler 
+    deleteAddressDetailsHandler,
+    verifyTokenAndInsertPhoneNumber
 } from '../controller/userController';
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.post('/users/createPersonalDetails/:userId', createPersonalDetailsHandler
 router.delete('/users/personalDetails/:userId', deletePersonalDetailsHandler);
 router.post('/users/createAddressDetails/:userId', createAddressDetailsHandler);
 router.delete('/users/addressDetails/:userId', deleteAddressDetailsHandler);
+router.post('/users/verifyToken',verifyTokenAndInsertPhoneNumber)
 
 export default router;

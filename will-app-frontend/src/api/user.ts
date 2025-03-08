@@ -63,3 +63,22 @@ export const getUser = async (phoneNumber: string): Promise<IUserDetails> => {
   const user: IUserDetails = await response.json();
   return user;
 };
+
+export const verifyToken = async(idToken:any): Promise<IUserDetails> => {
+  const response = await fetch(`http://localhost:5000/api/users/verifyToken`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      idToken: idToken
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to upsert user");
+  }
+
+  const user: IUserDetails = await response.json();
+  return user;
+};
