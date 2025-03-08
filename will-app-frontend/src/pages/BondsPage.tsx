@@ -110,6 +110,10 @@ const BondsPage = () => {
         formState.forEach(async (bond, index) => {
             await saveBondAsync(bond, index);
         });
+
+        // NAVIGATE TO NEXT ROUTE
+        var routeValue = routeState.find(s => s.currentPath == location.pathname);
+        navigate(routeValue?.nextPath ?? "/");
     };
 
     const shouldExpandAccordion = (index: number) => currentItem === index;

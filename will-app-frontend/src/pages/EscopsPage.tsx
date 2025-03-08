@@ -28,14 +28,14 @@ const EscopsPage = () => {
     const shouldExpandAccordion = (index: number) => currentItem === index;
 
     const getEscopSubTitle = (index: number) => {
-        const { companyName, noOfUnitGraged, noOfVestedEscops, noOfUnVestedEscops } = formState[index]; 
+        const { companyName, noOfUnitGraged, noOfVestedEscops, noOfUnVestedEscops } = formState[index];
         const firstLine = companyName?.trim() || "";
         const secondLine = [
             noOfUnitGraged ? `Units Graded: ${noOfUnitGraged}` : "",
             noOfVestedEscops ? `Vested: ${noOfVestedEscops}` : "",
             noOfUnVestedEscops ? `Unvested: ${noOfUnVestedEscops}` : ""
         ].filter(Boolean).join(" - ");
-        
+
         return [firstLine, secondLine].filter(Boolean).join("\n");
     };
 
@@ -125,6 +125,9 @@ const EscopsPage = () => {
         formState.forEach(async (escop, index) => {
             await saveEscopAsync(escop, index);
         });
+        // NAVIGATE TO NEXT ROUTE
+        var routeValue = routeState.find(s => s.currentPath == location.pathname);
+        navigate(routeValue?.nextPath ?? "/");
     };
 
     const handleAccordionOnChange = (index: number) => {
@@ -134,32 +137,32 @@ const EscopsPage = () => {
 
     return (
         <div className="flex flex-col justify-start h-full space-y-3 w-xl m-auto">
-    <h1 className="text-2xl font-semibold">ESCOP</h1>
-    <div>
-        {formState.map((_, index) => (
-            <div key={formState[index].id} className="flex w-full justify-between items-center space-x-1 h-fit">
-                <div className="w-full h-full">
-                    <CustomAccordion
-                        expanded={shouldExpandAccordion(index)}
-                        error={showErrorBorder && Object.values(validationState[index]).some(s => s !== undefined && s !== null && s !== "")}
-                        onChange={() => handleAccordionOnChange(index)}
-                        label={`ESCOP ${index + 1}`}
-                        subTitle={currentItem !== index && !shouldExpandAccordion(index) ? getEscopSubTitle(index) : ""}
-                    >
-                        <EscopForm index={index} />
-                    </CustomAccordion>
-                </div>
-                {!shouldExpandAccordion(index) && (
-                    <button onClick={() => deleteEscopAsync(index)} className="p-2 h-full bg-will-green">
-                        <DeleteIcon fontSize="small" className="text-white" />
-                    </button>
-                )}
-            </div>
-        ))}
+            <h1 className="text-2xl font-semibold">ESCOPs</h1>
+            <div>
+                {formState.map((_, index) => (
+                    <div key={formState[index].id} className="flex w-full justify-between items-center space-x-1 h-fit">
+                        <div className="w-full h-full">
+                            <CustomAccordion
+                                expanded={shouldExpandAccordion(index)}
+                                error={showErrorBorder && Object.values(validationState[index]).some(s => s !== undefined && s !== null && s !== "")}
+                                onChange={() => handleAccordionOnChange(index)}
+                                label={`ESCOP ${index + 1}`}
+                                subTitle={currentItem !== index && !shouldExpandAccordion(index) ? getEscopSubTitle(index) : ""}
+                            >
+                                <EscopForm index={index} />
+                            </CustomAccordion>
+                        </div>
+                        {!shouldExpandAccordion(index) && (
+                            <button onClick={() => deleteEscopAsync(index)} className="p-2 h-full bg-will-green">
+                                <DeleteIcon fontSize="small" className="text-white" />
+                            </button>
+                        )}
+                    </div>
+                ))}
                 <AddButton onClick={addItem} label={`Add ESCOP ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick}/>
+                <BackButton label='Back' onClick={handleBackClick} />
                 <NextButton label='Next' onClick={handleNextClick} />
             </div>
         </div>

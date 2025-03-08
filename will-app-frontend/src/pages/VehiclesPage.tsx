@@ -97,9 +97,14 @@ const VehiclesPage = () => {
 
     const handleNextClick = async () => {
         if (!validate()) return;
+
         formState.forEach(async (vehicle, index) => {
             await saveVehicleAsync(vehicle, index);
         });
+
+        // NAVIGATE TO NEXT ROUTE
+        var routeValue = routeState.find(s => s.currentPath == location.pathname);
+        navigate(routeValue?.nextPath ?? "/");
     };
 
     const handleBackClick = async () => {

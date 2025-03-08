@@ -28,8 +28,9 @@ import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
 import { useNavigate } from 'react-router';
-
-
+import { useRecoilValue } from 'recoil';
+import { routesState } from '../atoms/RouteState';
+import { ASSET_TYPES } from '../constants';
 
 type ExtendedTreeItemProps = {
   iconName?: string;
@@ -59,49 +60,52 @@ const NavItems: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
           { id: 'properties', label: 'Properties', iconName: 'pdf' },
         ]
       },
-      { id: 'financial_assets', label: 'Financial Assets',  iconName: 'pdf',
-          children: [
-              {id: 'bank_accounts', label: 'Bank Accounts', iconName: 'pdf'},
-              {id: 'fixed_deposits', label: 'Fixed Deposits', iconName: 'pdf'},
-              {id: 'insurance_policies', label: 'insurance Policies', iconName: 'pdf'},
-              {id: 'safe_deposit_boxes', label: 'Safe Deposit Boxes', iconName: 'pdf'},
-              {id: 'demat_accounts', label:'Demat Accounts', iconName: 'pdf'},
-              {id: 'mutual_funds', label: 'Mutual Funds', iconName: 'pdf'},
-              {id: 'provident_fund', label: 'Provident Fund', iconName: 'pdf'},
-              {id: 'pension_accounts', label:'Pension Accounts', iconName: 'pdf'}
-          ]
+      {
+        id: 'financial_assets', label: 'Financial Assets', iconName: 'pdf',
+        children: [
+          { id: 'bank_accounts', label: 'Bank Accounts', iconName: 'pdf' },
+          { id: 'fixed_deposits', label: 'Fixed Deposits', iconName: 'pdf' },
+          { id: 'insurance_policies', label: 'insurance Policies', iconName: 'pdf' },
+          { id: 'safe_deposit_boxes', label: 'Safe Deposit Boxes', iconName: 'pdf' },
+          { id: 'demat_accounts', label: 'Demat Accounts', iconName: 'pdf' },
+          { id: 'mutual_funds', label: 'Mutual Funds', iconName: 'pdf' },
+          { id: 'provident_fund', label: 'Provident Fund', iconName: 'pdf' },
+          { id: 'pension_accounts', label: 'Pension Accounts', iconName: 'pdf' }
+        ]
       },
-      { id: 'business_assets', label: 'Business Assets', iconName: 'pdf',
-          children: [
-              {id: 'business', label: 'Business', iconName: 'pdf'},
-              {id: 'bonds', label: 'Bonds', iconName: 'pdf'},
-              {id: 'debentures', label: 'Debentures', iconName: 'pdf'},
-              {id: 'esops', label: 'Esops', iconName: 'pdf'},
-              {id: 'other_investments', label: 'Other Investments', iconName: 'pdf'}
-          ]
+      {
+        id: 'business_assets', label: 'Business Assets', iconName: 'pdf',
+        children: [
+          { id: 'business', label: 'Business', iconName: 'pdf' },
+          { id: 'bonds', label: 'Bonds', iconName: 'pdf' },
+          { id: 'debentures', label: 'Debentures', iconName: 'pdf' },
+          { id: 'esops', label: 'Esops', iconName: 'pdf' },
+          { id: 'other_investments', label: 'Other Investments', iconName: 'pdf' }
+        ]
       },
-      { id: 'other_assets', label: 'Other Assets',  iconName: 'pdf',
-          children: [
-              {id: 'vehicles', label: 'Vechicles', iconName: 'pdf'},
-              {id: 'jewelry', label: 'Jewlery', iconName: 'pdf'},
-              {id: 'digital_assets', label: 'Digital Assets', iconName: 'pdf'},
-              {id: 'intellectual_property', label: 'Intellectual', iconName: 'pdf'},
-              {id: 'custom_assets', label: 'Custom Assets', iconName: 'pdf'}
-          ]
+      {
+        id: 'other_assets', label: 'Other Assets', iconName: 'pdf',
+        children: [
+          { id: 'vehicles', label: 'Vechicles', iconName: 'pdf' },
+          { id: 'jewelry', label: 'Jewlery', iconName: 'pdf' },
+          { id: 'digital_assets', label: 'Digital Assets', iconName: 'pdf' },
+          { id: 'intellectual_property', label: 'Intellectual', iconName: 'pdf' },
+          { id: 'custom_assets', label: 'Custom Assets', iconName: 'pdf' }
+        ]
       }
     ],
   },
   {
-      id: 'liabilities',
-      label: 'Liabilities',
-      iconName: '',
-      children: [
-          { id: 'home_loans', label: 'Home Loans', iconName: 'pdf' },
-          { id: 'personal_loans', label: 'Personal Loans', iconName: 'pdf' },
-          { id: 'vehicle_loans', label: 'Vechicle Loans', iconName: 'pdf' },
-          { id: 'education_loans', label: 'Education Loans', iconName: 'pdf' },
-          { id: 'other_liabilities', label: 'Other Liabilities', iconName: 'pdf' }
-      ],
+    id: 'liabilities',
+    label: 'Liabilities',
+    iconName: '',
+    children: [
+      { id: 'home_loans', label: 'Home Loans', iconName: 'pdf' },
+      { id: 'personal_loans', label: 'Personal Loans', iconName: 'pdf' },
+      { id: 'vehicle_loans', label: 'Vechicle Loans', iconName: 'pdf' },
+      { id: 'education_loans', label: 'Education Loans', iconName: 'pdf' },
+      { id: 'other_liabilities', label: 'Other Liabilities', iconName: 'pdf' }
+    ],
   },
   {
     id: 'beneficiaries',
@@ -306,11 +310,120 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
 });
 
 export default function Sidebar2() {
-
   const navigate = useNavigate();
+
+  const routeState = useRecoilValue(routesState);
+  const [menuItems, seTmenuItems] = React.useState<TreeViewBaseItem<ExtendedTreeItemProps>[]>([]);
+
   const handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
     navigate("/" + itemId);
   };
+
+  React.useEffect(() => {
+    const items: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
+      {
+        id: 'about_you',
+        label: 'About You',
+        iconName: 'pdf',
+        children: [
+          { id: 'personal_details', label: 'Personal Details', iconName: 'pdf' },
+          { id: 'address_details', label: 'Address Details', iconName: 'pdf' }
+        ]
+      },
+      {
+        id: 'assets',
+        label: 'Asset',
+        iconName: 'pdf',
+        children: [],
+      },
+      {
+        id: 'liabilities',
+        label: 'Liabilities',
+        iconName: '',
+        children: [
+          { id: 'home_loans', label: 'Home Loans', iconName: 'pdf' },
+          { id: 'personal_loans', label: 'Personal Loans', iconName: 'pdf' },
+          { id: 'vehicle_loans', label: 'Vechicle Loans', iconName: 'pdf' },
+          { id: 'education_loans', label: 'Education Loans', iconName: 'pdf' },
+          { id: 'other_liabilities', label: 'Other Liabilities', iconName: 'pdf' }
+        ],
+      },
+      {
+        id: 'beneficiaries',
+        label: 'Beneficiaries',
+        iconName: 'pdf'
+      },
+    ];
+
+    // SET ASSETS
+    var immovalbleAssets: ExtendedTreeItemProps[] = routeState.filter(s => s.type === ASSET_TYPES.IMMOVABLE_ASSETS)
+      .map(s => ({
+        id: s.id,
+        label: s.label,
+        iconName: "pdf"
+      }))
+
+    var financialAssets: ExtendedTreeItemProps[] = routeState.filter(s => s.type === ASSET_TYPES.FINANCIAL_ASSETS)
+      .map(s => ({
+        id: s.id,
+        label: s.label,
+        iconName: "pdf"
+      }))
+
+    var businessAssets: ExtendedTreeItemProps[] = routeState.filter(s => s.type === ASSET_TYPES.BUSINESS_ASSETS)
+      .map(s => ({
+        id: s.id,
+        label: s.label,
+        iconName: "pdf"
+      }))
+
+    var otherAssets: ExtendedTreeItemProps[] = routeState.filter(s => s.type === ASSET_TYPES.OTHER_ASSETS)
+      .map(s => ({
+        id: s.id,
+        label: s.label,
+        iconName: "pdf"
+      }))
+
+    const assetsItem = items.find(item => item.id === 'assets');
+    if (assetsItem && assetsItem.children) {
+      if (immovalbleAssets.length > 0)
+        assetsItem.children.push({
+          id: "immovable_assets",
+          label: "Immovable Assets",
+          iconName: "pdf",
+          children: [...immovalbleAssets]
+        });
+
+      if (financialAssets.length > 0)
+        assetsItem.children.push({
+          id: "financial_assets",
+          label: "Financial Assets",
+          iconName: "pdf",
+          children: [...financialAssets]
+        });
+
+      if (businessAssets.length > 0)
+        assetsItem.children.push({
+          id: "business_assets",
+          label: "Business Assets",
+          iconName: "pdf",
+          children: [...businessAssets]
+        });
+
+      if (otherAssets.length > 0)
+        assetsItem.children.push({
+          id: "other_assets",
+          label: "Other Assets",
+          iconName: "pdf",
+          children: [...otherAssets]
+        });
+    }
+
+    // SET MENU ITEMS
+    seTmenuItems(items);
+
+  }, [routeState])
+
 
   return (
     <div className='flex flex-col items-start'>
@@ -325,7 +438,7 @@ export default function Sidebar2() {
       <div className='p-6 w-full'>
         <RichTreeView
           multiSelect={false}
-          items={NavItems}
+          items={menuItems}
           slots={{ item: CustomTreeItem }}
           onItemClick={handleSelectedItemChange}
         />

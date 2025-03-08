@@ -115,6 +115,9 @@ const DebenturesPage = () => {
         formState.forEach(async (debenture, index) => {
             await saveDebentureAsync(debenture, index);
         });
+        // NAVIGATE TO NEXT ROUTE
+        var routeValue = routeState.find(s => s.currentPath == location.pathname);
+        navigate(routeValue?.nextPath ?? "/");
     };
 
 

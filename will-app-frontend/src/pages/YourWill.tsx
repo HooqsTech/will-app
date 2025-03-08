@@ -61,7 +61,7 @@ const YourWill: React.FC = () => {
                         {routeState.find(s => s.currentPath == "/custom_assets") && <Route path="/custom_assets" element={<CustomAssetsPage />} />}
                         {routeState.find(s => s.currentPath == "/intellectual_property") && <Route path="/intellectual_property" element={<IntellectualPropertiesPage />} />}
                         {routeState.find(s => s.currentPath == "/digital_assets") && <Route path="/digital_assets" element={<DigitalAssetsPage />} />}
-                        {routeState.find(s => s.currentPath == "/jewelry") && <Route path="/jewelry" element={<JewelleriesPage />} />}
+                        {routeState.find(s => s.currentPath == "/jewelleries") && <Route path="/jewelleries" element={<JewelleriesPage />} />}
                         {routeState.find(s => s.currentPath == "/vehicles") && <Route path="/vehicles" element={<VehiclesPage />} />}
                         {routeState.find(s => s.currentPath == "/debentures") && <Route path="/debentures" element={<DebenturesPage />} />}
                         {routeState.find(s => s.currentPath == "/esops") && <Route path="/esops" element={<EscopsPage />} />}

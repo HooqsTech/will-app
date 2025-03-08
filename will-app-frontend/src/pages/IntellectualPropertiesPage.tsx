@@ -50,7 +50,7 @@ const IntellectualPropertiesPage = () => {
             data: property
         };
         const upsertedAsset = await upsertAsset(data);
-        
+
         setFormState((prevItems) =>
             prevItems.map((item, i) => (i === index ? { ...upsertedAsset.data, id: upsertedAsset.id } : item))
         );
@@ -110,10 +110,14 @@ const IntellectualPropertiesPage = () => {
         formState.forEach(async (property, index) => {
             await savePropertyAsync(property, index);
         });
+
+        // NAVIGATE TO NEXT ROUTE
+        var routeValue = routeState.find(s => s.currentPath == location.pathname);
+        navigate(routeValue?.nextPath ?? "/");
     };
 
     const shouldExpandAccordion = (index: number) => currentItem === index;
-    
+
     const handleAccordionOnChange = (index: number) => {
         setCurrentItem((prevItem) => prevItem === index ? -1 : index);
         setShowErrorBorder(false);

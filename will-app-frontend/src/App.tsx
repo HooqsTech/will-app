@@ -6,7 +6,7 @@ import { userState } from "./atoms/UserDetailsState"
 import { personalDetailsState } from "./atoms/PersonalDetailsState"
 import { addressDetailsState } from "./atoms/AddressDetailsState"
 import { assetRoutesMap, ISelectedAssetsState, selectedAssetsState } from "./atoms/SelectedAssetsState"
-import { routesState } from "./atoms/RouteState"
+import { getRouteDataFromSelectedAssets, IRouteState, routesState } from "./atoms/RouteState"
 import { IPropertiesState, propertiesState } from "./atoms/PropertiesState"
 import { ASSET_SUBTYPES } from "./constants"
 import { emptyPropertyValidationState, propertiesValidationState } from "./atoms/validationStates/PropertiesValidationState"
@@ -278,17 +278,7 @@ function App() {
   }
 
   const generateRouteDataFromSelectedAssets = (selectedAssets: ISelectedAssetsState) => {
-    const selectedKeys = Object.entries(selectedAssets)
-      .filter(([_, value]) => value === true)
-      .map(([key]) => key as keyof ISelectedAssetsState)
-
-    const selectedPaths = selectedKeys.map((key) => assetRoutesMap[key]).sort((a, b) => a.order - b.order);
-
-    const routeData = selectedPaths.map((path, index) => ({
-      currentPath: path.routePath,
-      nextPath: selectedPaths[index + 1]?.routePath || "/", // Last route leads to summary
-    }));
-
+    const routeData = getRouteDataFromSelectedAssets(selectedAssets)
     setRouteState(routeData);
   }
 

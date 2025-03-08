@@ -33,6 +33,8 @@ const MutualFundForm: React.FC<IMutualFundFormProps> = ({ index }) => {
                 required
                 onChange={(e) => handleChange(index, "noOfHolders", e)}
                 label="No of Holders"
+                restrictAlphabets
+                maxLength={2}
                 type="text" />
             <CustomTextBox
                 value={item.fundName}
