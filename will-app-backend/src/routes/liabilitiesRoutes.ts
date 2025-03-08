@@ -1,9 +1,9 @@
 import express from 'express';
-import {
-    getLiabilityById,
-    getLiabilitiesByUserId,
-    upsertLiability,
-    deleteLiabilityById,
+import  {
+    getLiabilitiesByUserId, 
+    getLiabilityById, 
+    upsertLiability, 
+    deleteLiabilityById, 
     deleteLiabilitiesByUserId
 } from '../controller/liabilitiesController';
 

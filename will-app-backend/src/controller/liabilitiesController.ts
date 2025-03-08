@@ -1,164 +1,95 @@
-import { PrismaClient } from '@prisma/client';
-import { UUID } from 'crypto';
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
+import { 
+    validateId, 
+    getLiabilityByIdService, 
+    getLiabilitiesByUserIdService, 
+    upsertLiabilityService, 
+    deleteLiabilityByIdService, 
+    deleteLiabilitiesByUserIdService 
+} from "../services/liabilityService";
 
-const prisma = new PrismaClient();
+import { UUID } from "crypto";
 
-//Check if the given user id is valid
-const validUser = async (userId: UUID): Promise<boolean> => {
-    const user = await prisma.users.findUnique({ where: { userid: userId } });
-    return !!user;
-};
-
-//Verify ID format
-const validateId = async (id: UUID): Promise<boolean> => {
-    if (!id || typeof id !== "string") {
-        return false;
-    }
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(id)) {
-        return false;
-    }
-    return true;
-}
-
-// Get a liability by ID
-export const getLiabilityById = async (request: Request, response: Response) => {
+// Get liability by ID
+export const getLiabilityById = async (req: Request, res: Response) => {
     try {
-        const { id, userId } = request.body;
+        const { id, userId } = req.params as { id: UUID; userId: UUID };
 
-        if(!(await validateId(id))){
-            return response.status(400).json({ error: "Invalid Liability ID format. Must be a valid UUID." });
+        if (!validateId(id) || !validateId(userId)) {
+            return res.status(400).json({ error: "Invalid ID format" });
         }
-        if(!(await validateId(userId))){
-            return response.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
-        }
-        if(!(await validUser(userId))){
-            return response.status(400).json({ error: "Invalid User" });
-        }
-        const liability = await prisma.liabilities.findFirst({ where: { id, userid: userId } });
 
+        const liability = await getLiabilityByIdService(id, userId);
         if (!liability) {
-            return response.status(404).json({ error: "Liability not found" });
+            return res.status(404).json({ error: "Liability not found" });
         }
 
-        response.status(200).json(liability);
+        res.json(liability);
     } catch (error) {
-        console.error("Error fetching liability:", error);
-        response.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
 // Get all liabilities for a user
-export const getLiabilitiesByUserId = async (request: Request, response: Response) => {
+export const getLiabilitiesByUserId = async (req: Request, res: Response) => {
     try {
-        const { userId } = request.body;
-        
-        if(!(await validateId(userId))){
-            return response.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
-        }
-        if(!(await validUser(userId))){
-            return response.status(400).json({ error: "Invalid User" });
+        const { userId } = req.params as { userId: UUID };
+
+        if (!validateId(userId)) {
+            return res.status(400).json({ error: "Invalid user ID format" });
         }
 
-        const liabilities = await prisma.liabilities.findMany({ where: { userid: userId } });
-        response.status(200).json(liabilities);
+        const liabilities = await getLiabilitiesByUserIdService(userId);
+        res.json(liabilities);
     } catch (error) {
-        console.error("Error fetching liabilities:", error);
-        response.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
-// Create or update a liability (Upsert)
-export const upsertLiability = async (request: Request, response: Response) => {
+// Create or update liability
+export const upsertLiability = async (req: Request, res: Response) => {
     try {
-        const { id, userId, type, data } = request.body;
-        let liability;
+        const { id, userId, type, data } = req.body as { id?: UUID; userId: UUID; type: string; data: any };
 
-        if(!(await validateId(userId))){
-            return response.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
-        }
-        if(!(await validUser(userId))){
-            return response.status(400).json({ error: "Invalid User" });
+        if (!validateId(userId) || (id && !validateId(id))) {
+            return res.status(400).json({ error: "Invalid ID format" });
         }
 
-        if (id) {
-            if(!(await validateId(id))){
-                return response.status(400).json({ error: "Invalid Liability ID format. Must be a valid UUID." });
-            }
-            const existingLiability = await prisma.liabilities.findFirst({ where: { id, userid : userId } });
-            if (existingLiability) {
-                liability = await prisma.liabilities.update({
-                    where: { id },
-                    data: { userid: userId, type, data, updatedat: new Date() },
-                });
-            } else {
-                liability = await prisma.liabilities.create({
-                    data: { id, userid: userId, type, data, createdat: new Date(), updatedat: new Date() },
-                });
-            }
-        } else {
-            liability = await prisma.liabilities.create({
-                data: { userid: userId, type, data, createdat: new Date(), updatedat: new Date() },
-            });
-        }
-
-        response.status(200).json(liability);
+        const liability = await upsertLiabilityService(id ?? null, userId, type, data);
+        res.status(201).json(liability);
     } catch (error) {
-        console.error("Error upserting liability:", error);
-        response.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
-// Delete a liability by ID
-export const deleteLiabilityById = async (request: Request, response: Response) => {
+// Delete liability by ID
+export const deleteLiabilityById = async (req: Request, res: Response) => {
     try {
-        const { id, userId } = request.body;
+        const { id } = req.params as { id: UUID };
 
-        if(!(await validateId(id))){
-            return response.status(400).json({ error: "Invalid Liability ID format. Must be a valid UUID." });
-        }
-        if(!(await validateId(userId))){
-            return response.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
-        }
-        if(!(await validUser(userId))){
-            return response.status(400).json({ error: "Invalid User" });
+        if (!validateId(id)) {
+            return res.status(400).json({ error: "Invalid ID format" });
         }
 
-        const existingLiability = await prisma.liabilities.findFirst({ where: { id, userid : userId } });
-        if (!existingLiability) {
-            return response.status(404).json({ error: "Liability not found" });
-        }
-
-        var deletedLiability = await prisma.liabilities.delete({ where: { id } });
-        response.status(200).json({ message: "Liability deleted successfully", deletedLiability });
+        await deleteLiabilityByIdService(id);
+        res.status(200).json({ message: "Liability deleted successfully" });
     } catch (error) {
-        console.error("Error deleting liability:", error);
-        response.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
 // Delete all liabilities for a user
-export const deleteLiabilitiesByUserId = async (request: Request, response: Response) => {
+export const deleteLiabilitiesByUserId = async (req: Request, res: Response) => {
     try {
-        const { userId } = request.body;
-        
-        if(!(await validateId(userId))){
-            return response.status(400).json({ error: "Invalid User ID format. Must be a valid UUID." });
-        }
-        if(!(await validUser(userId))){
-            return response.status(400).json({ error: "Invalid User" });
+        const { userId } = req.params as { userId: UUID };
+
+        if (!validateId(userId)) {
+            return res.status(400).json({ error: "Invalid user ID format" });
         }
 
-        const existingLiabilities = await prisma.liabilities.findMany({ where: { userid: userId } });
-        if (!existingLiabilities.length) {
-            return response.status(404).json({ error: "No liabilities found for this User ID" });
-        }
-
-        const deletedLiabilities = await prisma.liabilities.deleteMany({ where: { userid: userId } });
-        response.status(200).json({ message: "Liabilities deleted successfully", deletedCount: deletedLiabilities.count });
+        await deleteLiabilitiesByUserIdService(userId);
+        res.status(200).json({ message: "All liabilities deleted successfully" });
     } catch (error) {
-        console.error("Error deleting liabilities:", error);
-        response.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: "Internal server error" });
     }
 };
