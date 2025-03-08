@@ -4,8 +4,18 @@ import assetRoutes from './routes/assetRoutes';
 import benefciariesRoutes from './routes/benefciariesRoutes';
 import liabilitiesRoutes from './routes/liabilitiesRoutes';
 import assetDistributionRoutes from './routes/assetDistributionRoutes';
+import cors from 'cors';
+import admin from "firebase-admin";
+import path from "path";
 
-import cors from 'cors'
+// Initialize Firebase Admin SDK
+const serviceAccount = require(path.join(__dirname, "../serviceAccountKey.json"));
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+
 const app = express();
 
 app.use(cors());
