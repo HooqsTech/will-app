@@ -32,6 +32,8 @@ import OtherLiabilityPage from './OtherLiabilityPage';
 import OtherInvestmentPage from './OtherInvestmentPage';
 import { routesState } from '../atoms/RouteState';
 import { useRecoilValue } from 'recoil';
+import LiabilitiesPage from './LiabilitiesPage';
+import { ROUTE_PATHS } from '../constants';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -45,35 +47,43 @@ const YourWill: React.FC = () => {
                 </div>
                 <div className='h-full overflow-hidden flex flex-col col-span-9 items-center p-10 justify-center'>
                     <Routes>
-                        <Route path="/about_you" element={<AboutYouPage />} />
-                        <Route path="/personal_details" element={<PersonalDetailsPage />} />
-                        <Route path="/address_details" element={<AddressDetailsPage />} />
-                        <Route path="/assets" element={<AssetsPage />} />
-                        {routeState.find(s => s.currentPath == "/properties") && <Route path="/properties" element={<PropertiesPage />} />}
-                        {routeState.find(s => s.currentPath == "/bank_accounts") && <Route path="/bank_accounts" element={<BankAccountsPage />} />}
-                        {routeState.find(s => s.currentPath == "/fixed_deposits") && <Route path="/fixed_deposits" element={<FixedDepositsPage />} />}
-                        {routeState.find(s => s.currentPath == "/insurance_policies") && <Route path="/insurance_policies" element={<InsurancePoliciesPage />} />}
-                        {routeState.find(s => s.currentPath == "/safe_deposit_boxes") && <Route path="/safe_deposit_boxes" element={<SafetyDepositBoxesPage />} />}
-                        {routeState.find(s => s.currentPath == "/demat_accounts") && <Route path="/demat_accounts" element={<DematAccountPage />} />}
-                        {routeState.find(s => s.currentPath == "/mutual_funds") && <Route path="/mutual_funds" element={<MutualFundsPage />} />}
-                        {routeState.find(s => s.currentPath == "/provident_fund") && <Route path="/provident_fund" element={<ProvidentFundpage />} />}
-                        {routeState.find(s => s.currentPath == "/pension_accounts") && <Route path="/pension_accounts" element={<PensionAccountPage />} />}
-                        {routeState.find(s => s.currentPath == "/custom_assets") && <Route path="/custom_assets" element={<CustomAssetsPage />} />}
-                        {routeState.find(s => s.currentPath == "/intellectual_property") && <Route path="/intellectual_property" element={<IntellectualPropertiesPage />} />}
-                        {routeState.find(s => s.currentPath == "/digital_assets") && <Route path="/digital_assets" element={<DigitalAssetsPage />} />}
-                        {routeState.find(s => s.currentPath == "/jewelleries") && <Route path="/jewelleries" element={<JewelleriesPage />} />}
-                        {routeState.find(s => s.currentPath == "/vehicles") && <Route path="/vehicles" element={<VehiclesPage />} />}
-                        {routeState.find(s => s.currentPath == "/debentures") && <Route path="/debentures" element={<DebenturesPage />} />}
-                        {routeState.find(s => s.currentPath == "/esops") && <Route path="/esops" element={<EscopsPage />} />}
-                        {routeState.find(s => s.currentPath == "/other_investments") && <Route path="/other_investments" element={<OtherInvestmentPage />} />}
-                        {routeState.find(s => s.currentPath == "/bonds") && <Route path="/bonds" element={<BondsPage />} />}
-                        {routeState.find(s => s.currentPath == "/business") && <Route path="/business" element={<BusinessesPage />} />}
-                        <Route path="/beneficiaries" element={<BeneficiariesPage />} />
-                        <Route path="/home_loans" element={<HomeLoanPage />} />
-                        <Route path="/personal_loans" element={<PersonalLoanPage />} />
-                        <Route path="/education_loans" element={<EducationLoanPage />} />
-                        <Route path="/vehicle_loans" element={<VechicleLoanPage />} />
-                        <Route path="/other_liabilities" element={<OtherLiabilityPage />} />
+                        <Route path={ROUTE_PATHS.ABOUT_YOU} element={<AboutYouPage />} />
+                        <Route path={ROUTE_PATHS.PERSONAL_DETAILS} element={<PersonalDetailsPage />} />
+                        <Route path={ROUTE_PATHS.ADDRESS_DETAILS} element={<AddressDetailsPage />} />
+
+                        {/* ASSETS START */}
+                        <Route path={ROUTE_PATHS.ASSETS} element={<AssetsPage />} />
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.PROPERTIES) && <Route path={ROUTE_PATHS.PROPERTIES} element={<PropertiesPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.BANK_ACCOUNTS) && <Route path={ROUTE_PATHS.BANK_ACCOUNTS} element={<BankAccountsPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.FIXED_DEPOSITS) && <Route path={ROUTE_PATHS.FIXED_DEPOSITS} element={<FixedDepositsPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.INSURANCE_POLICIES) && <Route path={ROUTE_PATHS.INSURANCE_POLICIES} element={<InsurancePoliciesPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.SAFE_DEPOSIT_BOXES) && <Route path={ROUTE_PATHS.SAFE_DEPOSIT_BOXES} element={<SafetyDepositBoxesPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.DEMAT_ACCOUNTS) && <Route path={ROUTE_PATHS.DEMAT_ACCOUNTS} element={<DematAccountPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.MUTUAL_FUNDS) && <Route path={ROUTE_PATHS.MUTUAL_FUNDS} element={<MutualFundsPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.PROVIDENT_FUND) && <Route path={ROUTE_PATHS.PROVIDENT_FUND} element={<ProvidentFundpage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.PENSION_ACCOUNTS) && <Route path={ROUTE_PATHS.PENSION_ACCOUNTS} element={<PensionAccountPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.CUSTOM_ASSETS) && <Route path={ROUTE_PATHS.CUSTOM_ASSETS} element={<CustomAssetsPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.INTELLECTUAL_PROPERTY) && <Route path={ROUTE_PATHS.INTELLECTUAL_PROPERTY} element={<IntellectualPropertiesPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.DIGITAL_ASSETS) && <Route path={ROUTE_PATHS.DIGITAL_ASSETS} element={<DigitalAssetsPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.JEWELLERIES) && <Route path={ROUTE_PATHS.JEWELLERIES} element={<JewelleriesPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.VEHICLES) && <Route path={ROUTE_PATHS.VEHICLES} element={<VehiclesPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.DEBENTURES) && <Route path={ROUTE_PATHS.DEBENTURES} element={<DebenturesPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.ESCOPS) && <Route path={ROUTE_PATHS.ESCOPS} element={<EscopsPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.OTHER_INVESTMENTS) && <Route path={ROUTE_PATHS.OTHER_INVESTMENTS} element={<OtherInvestmentPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.BONDS) && <Route path={ROUTE_PATHS.BONDS} element={<BondsPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.BUSINESS) && <Route path={ROUTE_PATHS.BUSINESS} element={<BusinessesPage />} />}
+                        {/* ASSETS END */}
+
+                        {/* LIABILITIES START */}
+                        <Route path={ROUTE_PATHS.LIABILITIES} element={<LiabilitiesPage />} />
+                        {routeState.find(s => s.currentPath === ROUTE_PATHS.HOME_LOANS) && <Route path={ROUTE_PATHS.HOME_LOANS} element={<HomeLoanPage />} />}
+                        {routeState.find(s => s.currentPath === ROUTE_PATHS.PERSONAL_LOANS) && <Route path={ROUTE_PATHS.PERSONAL_LOANS} element={<PersonalLoanPage />} />}
+                        {routeState.find(s => s.currentPath === ROUTE_PATHS.VEHICLE_LOANS) && <Route path={ROUTE_PATHS.VEHICLE_LOANS} element={<VechicleLoanPage />} />}
+                        {routeState.find(s => s.currentPath === ROUTE_PATHS.EDUCATION_LOANS) && <Route path={ROUTE_PATHS.EDUCATION_LOANS} element={<EducationLoanPage />} />}
+                        {routeState.find(s => s.currentPath === ROUTE_PATHS.OTHER_LIABILITIES) && <Route path={ROUTE_PATHS.OTHER_LIABILITIES} element={<OtherLiabilityPage />} />}
+                        {/* LIABILITIES END */}
+
+                        <Route path={ROUTE_PATHS.BENEFICIARIES} element={<BeneficiariesPage />} />
                     </Routes>
                 </div>
             </div>

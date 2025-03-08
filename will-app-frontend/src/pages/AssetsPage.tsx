@@ -16,8 +16,6 @@ const AssetsPage = () => {
     const setRouteState = useSetRecoilState(routesState);
     const navigate = useNavigate();
 
-    console.log('selectedAssets', selectedAssets)
-
     const handleChange = (key: keyof ISelectedAssetsState) => {
         setSelectedAssets((prevState) => ({
             ...prevState,
@@ -34,9 +32,9 @@ const AssetsPage = () => {
         const routeData = getRouteDataFromSelectedAssets(selectedAssets);
         setRouteState(routeData);
 
-        // NAVIGATE TO ADDRESS DETAILS
+        // NAVIGATE TO FIRST ASSET SUB PAGE
         if (result.bankAccounts === selectedAssets.bankAccounts) {
-            navigate("/properties");
+            navigate(routeData[0].currentPath);
         }
     }
 
@@ -77,7 +75,7 @@ const AssetsPage = () => {
                     </div>
                 </CustomAccordion>
             </div>
-            <NextButton loading={loading} onClick={handleOnClick} label="Save & Next" />
+            <NextButton loading={loading} onClick={handleOnClick} />
         </div>
     )
 }

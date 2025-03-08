@@ -13,7 +13,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { IAsset } from '../models/asset';
 import { deleteAsset, upsertAsset } from '../api/asset';
 import { userState } from '../atoms/UserDetailsState';
-import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
+import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
 import { IsEmptyString } from '../utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -97,7 +97,7 @@ const DematAccountPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         let routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        navigate(routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES);
     }
 
     const addDematAccountAsset = () => {
@@ -166,7 +166,7 @@ const DematAccountPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton onClick={handleNextClick} />
             </div>
         </div>
     )

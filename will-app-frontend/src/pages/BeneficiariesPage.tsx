@@ -26,48 +26,48 @@ const BeneficiariesPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const saveBeneficiaryAsync = async (property: IBeneficiaryState,index: number) => {
-            let data: IBeneficiary = {
-                id: "",
-                type: BENEFICIARIES,
-                subtype: "",
-                userId: user.userId,
-                data: property
-            }
-            let upsertedBeneficiary = await upsertBeneficiary(data);
-    
-            setFormState((prevItems) =>
-                prevItems.map((item, i) => (i === index ? { ...upsertedBeneficiary.data, id: upsertedBeneficiary.id } : item))
-            );
+    const saveBeneficiaryAsync = async (property: IBeneficiaryState, index: number) => {
+        let data: IBeneficiary = {
+            id: "",
+            type: BENEFICIARIES,
+            subtype: "",
+            userId: user.userId,
+            data: property
         }
-    
+        let upsertedBeneficiary = await upsertBeneficiary(data);
+
+        setFormState((prevItems) =>
+            prevItems.map((item, i) => (i === index ? { ...upsertedBeneficiary.data, id: upsertedBeneficiary.id } : item))
+        );
+    }
+
     const deleteBeneficiaryAsync = async (index: number) => {
         let data: IBeneficiaryDeleteRequest = {
             id: "",
             userId: user.userId
         }
-            let isDeleted = await deleteBeneficiary(data);
-            if (isDeleted) {
-    
-                setFormState((prevItems) =>
-                    prevItems.filter(item => item.id !== formState[index].id)
-                );
-            }
+        let isDeleted = await deleteBeneficiary(data);
+        if (isDeleted) {
+
+            setFormState((prevItems) =>
+                prevItems.filter(item => item.id !== formState[index].id)
+            );
         }
+    }
 
     const handleBackClick = async () => {
-                    // NAVIGATE TO PREVIOUS ROUTE
-                    let routeValue = routeState.find(s => s.nextPath == location.pathname);
-                    navigate(routeValue?.currentPath ?? "/");
-                };
-            
+        // NAVIGATE TO PREVIOUS ROUTE
+        let routeValue = routeState.find(s => s.nextPath == location.pathname);
+        navigate(routeValue?.currentPath ?? "/");
+    };
+
     const setPropertyValidationState = (index: number, key: keyof IBeneficiaryValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
         );
     };
 
-     const validate = () => {
+    const validate = () => {
         let isValid: boolean = true;
         formState.forEach((prop, index) => {
             if (IsEmptyString(prop.type)) {
@@ -106,7 +106,7 @@ const BeneficiariesPage = () => {
                 setPropertyValidationState(index, "organization", "Organization is required");
                 isValid = false;
             }
-            if ( prop.type == "Charity" && IsEmptyNumber(prop.donationAmount)) {
+            if (prop.type == "Charity" && IsEmptyNumber(prop.donationAmount)) {
                 setPropertyValidationState(index, "donationAmount", "Donation Amount is required");
                 isValid = false;
             }
@@ -147,26 +147,25 @@ const BeneficiariesPage = () => {
             },
         ]);
         setValidationState((prevState) => [
-                                    ...prevState,
-                                    emptyBeneficiariesValidationState
-                                ])
+            ...prevState,
+            emptyBeneficiariesValidationState
+        ])
         setCurrentItem(formState.length)
     };
 
     const getSubTitle = (index: number) => {
-        const { type, fullName, email,relationship,charityType, organization } = formState[index];
-        if(type == "Person")
-        {
+        const { type, fullName, email, relationship, charityType, organization } = formState[index];
+        if (type == "Person") {
             let firstLine = [type?.trim(), fullName.trim()].filter(Boolean).join(" - ");
             let secondLine = [relationship?.trim(), email?.trim()].filter(Boolean).join(" - ");
             return [firstLine, secondLine].filter(Boolean).join("\n");
         }
         else {
             let firstLine = [type?.trim()].filter(Boolean).join(" - ");
-            let secondLine = [charityType?.trim(),organization?.trim()].filter(Boolean).join(" - ");
+            let secondLine = [charityType?.trim(), organization?.trim()].filter(Boolean).join(" - ");
             return [firstLine, secondLine].filter(Boolean).join("\n");
         }
-        
+
     }
 
     const shouldExpandAccordion = (index: number) => {
@@ -180,7 +179,7 @@ const BeneficiariesPage = () => {
 
     return (
         <div className='flex flex-col justify-start h-full space-y-3 w-xl m-auto'>
-            <h1 className='text-2xl font-semibold'>BENEFICIARIES</h1>
+            <h1 className='text-2xl font-semibold'>Beneficiaries</h1>
             <div>
                 {
                     formState.map((_, index) => (
@@ -212,7 +211,7 @@ const BeneficiariesPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton onClick={handleNextClick} />
             </div>
         </div>
     )

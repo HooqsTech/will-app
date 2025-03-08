@@ -7,7 +7,7 @@ import { userState } from '../atoms/UserDetailsState';
 import { IsEmptyString } from '../utils';
 import { emptyEscopValidationState, IEscopValidationState, escopsValidationState } from '../atoms/validationStates/EscopsDetailsValidationState';
 import { upsertAsset, deleteAsset } from '../api/asset';
-import { ASSET_TYPES, ASSET_SUBTYPES } from '../constants';
+import { ASSET_TYPES, ASSET_SUBTYPES, ROUTE_PATHS } from '../constants';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
@@ -127,7 +127,7 @@ const EscopsPage = () => {
         });
         // NAVIGATE TO NEXT ROUTE
         var routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        navigate(routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES);
     };
 
     const handleAccordionOnChange = (index: number) => {
@@ -163,7 +163,7 @@ const EscopsPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton onClick={handleNextClick} />
             </div>
         </div>
     );

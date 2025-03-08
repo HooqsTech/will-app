@@ -26,4 +26,9 @@ export interface ISelectedAssets {
     digitalAssets: boolean
     intellectualProperties: boolean
     customAssets: boolean
+    homeLoans: boolean
+    vehicleLoans: boolean
+    educationLoans: boolean
+    personalLoans: boolean
+    otherLiabilities: boolean
 }

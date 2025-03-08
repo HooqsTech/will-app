@@ -12,7 +12,7 @@ import BackButton from '../components/BackButton';
 import CustomAccordion from '../components/CustomAccordion';
 import VehicleForm from '../components/Forms/VehicleForm';
 import NextButton from '../components/NextButton';
-import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
+import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
 import { IsEmptyString } from '../utils';
 
 const VehiclesPage = () => {
@@ -104,7 +104,7 @@ const VehiclesPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         var routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        navigate(routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES);
     };
 
     const handleBackClick = async () => {
@@ -159,7 +159,7 @@ const VehiclesPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton onClick={handleNextClick} />
             </div>
         </div>
     );

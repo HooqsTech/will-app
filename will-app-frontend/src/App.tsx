@@ -1,50 +1,58 @@
-import YourWill from "./pages/YourWill"
 import { useEffect } from "react"
-import { getUser } from "./api/user"
 import { useSetRecoilState } from "recoil"
-import { userState } from "./atoms/UserDetailsState"
-import { personalDetailsState } from "./atoms/PersonalDetailsState"
+import { getUser } from "./api/user"
 import { addressDetailsState } from "./atoms/AddressDetailsState"
-import { assetRoutesMap, ISelectedAssetsState, selectedAssetsState } from "./atoms/SelectedAssetsState"
-import { getRouteDataFromSelectedAssets, IRouteState, routesState } from "./atoms/RouteState"
-import { IPropertiesState, propertiesState } from "./atoms/PropertiesState"
-import { ASSET_SUBTYPES } from "./constants"
-import { emptyPropertyValidationState, propertiesValidationState } from "./atoms/validationStates/PropertiesValidationState"
-import Header from "./components/Header"
 import { bankDetailsState, IBankDetailsState } from "./atoms/BankDetailsState"
-import { bankDetailsValidationState, emptyBankAccountValidationState } from "./atoms/validationStates/BankDetailsValidationState"
-import { fixedDepositsState, IFixedDepositState } from "./atoms/FixedDepositState"
-import { emptyFixedDepositsValidationState, fixedDepositsValidationState } from "./atoms/validationStates/FixedDepositValidationState"
-import { IInsurancePolicyState, insurancePoliciesState } from "./atoms/InsurancePoliciesState"
-import { emptyInsurancePoliciesValidationState, insurancePoliciesValidationState } from "./atoms/validationStates/InsurancePoliciesValidationState"
-import { ISafetyDepositBoxState, safetyDepositBoxesState } from "./atoms/SafetyDepositBoxesState"
-import { emptySafetyDepositBoxesValidationState, safetyDepositBoxesValidationState } from "./atoms/validationStates/SafetyDepositBoxesValidationState"
-import { dematAccountsState, IDematAccountState } from "./atoms/DematAccountsState"
-import { dematAccountValidationState, emptyDematAccountsValidationState } from "./atoms/validationStates/DematAccountValidationState"
-import { IMutualFundState, mutualFundsState } from "./atoms/MutualFundsState"
-import { emptyMutualFundsValidationState, mutualFundValidationState } from "./atoms/validationStates/MutualFundsValidationState"
-import { IProvidentFundState, providentFundsState } from "./atoms/ProvidentFundsState"
-import { emptyProvidentFundValidationState, providentFundValidationState } from "./atoms/validationStates/ProvidentValidationState"
-import { IPensionAccountState, pensionAccountsState } from "./atoms/PensionAccountsState"
-import { emptyPensionAccountValidationState, pensionAccountValidationState } from "./atoms/validationStates/PensionAccountValidationState"
-import { businessesState, IBusinessState } from "./atoms/BusinessesState"
-import { businessesValidationState, emptyBusinessesValidationState } from "./atoms/validationStates/BusinessesValidationState"
 import { bondsState, IBondState } from "./atoms/BondsState"
-import { bondsValidationState, emptyBondValidationState } from "./atoms/validationStates/BondDetailsValidationState"
-import { debenturesState, IDebentureState } from "./atoms/DebenturesState"
-import { debenturesValidationState, emptyDebentureValidationState } from "./atoms/validationStates/DebentureValidationState"
-import { escopsState, IEscopState } from "./atoms/EscopsState"
-import { emptyEscopValidationState, escopsValidationState } from "./atoms/validationStates/EscopsDetailsValidationState"
-import { IVehicleState, vehiclesState } from "./atoms/VehiclesState"
-import { emptyVehicleValidationState, vehiclesValidationState } from "./atoms/validationStates/VehicleValidationState"
-import { IJewelleryState, jewelleriesState } from "./atoms/JewelleriesState"
-import { emptyJewelleryValidationState, jewelleriesValidationState } from "./atoms/validationStates/JewelleriesValidationState"
-import { digitalAssetsState, IDigitalAssetState } from "./atoms/DigitalAssetsState"
-import { digitalAssetsValidationState, emptyDigitalAssetValidationState } from "./atoms/validationStates/DigitalAssetValidationState"
-import { IIntellectualPropertyState, intellectualPropertiesState } from "./atoms/IntellectualPropertiesState"
-import { emptyIntellectualPropertyValidationState, intellectualPropertyValidationState } from "./atoms/validationStates/IntellectualPropertiesValidationState"
+import { businessesState, IBusinessState } from "./atoms/BusinessesState"
 import { customAssetsState, ICustomAssetState } from "./atoms/CustomAssets"
+import { debenturesState, IDebentureState } from "./atoms/DebenturesState"
+import { dematAccountsState, IDematAccountState } from "./atoms/DematAccountsState"
+import { digitalAssetsState, IDigitalAssetState } from "./atoms/DigitalAssetsState"
+import { educationLoansState, IEducationLoanState } from "./atoms/EducationsLoanState"
+import { escopsState, IEscopState } from "./atoms/EscopsState"
+import { fixedDepositsState, IFixedDepositState } from "./atoms/FixedDepositState"
+import { homeLoansState, IHomeLoanState } from "./atoms/HomeLoansState"
+import { IInsurancePolicyState, insurancePoliciesState } from "./atoms/InsurancePoliciesState"
+import { IIntellectualPropertyState, intellectualPropertiesState } from "./atoms/IntellectualPropertiesState"
+import { IJewelleryState, jewelleriesState } from "./atoms/JewelleriesState"
+import { IMutualFundState, mutualFundsState } from "./atoms/MutualFundsState"
+import { IPensionAccountState, pensionAccountsState } from "./atoms/PensionAccountsState"
+import { personalDetailsState } from "./atoms/PersonalDetailsState"
+import { IPersonalLoanState, personalLoansState } from "./atoms/PersonalLoansState"
+import { IPropertiesState, propertiesState } from "./atoms/PropertiesState"
+import { IProvidentFundState, providentFundsState } from "./atoms/ProvidentFundsState"
+import { getRouteDataFromSelectedAssets, routesState } from "./atoms/RouteState"
+import { ISafetyDepositBoxState, safetyDepositBoxesState } from "./atoms/SafetyDepositBoxesState"
+import { ISelectedAssetsState, selectedAssetsState } from "./atoms/SelectedAssetsState"
+import { userState } from "./atoms/UserDetailsState"
+import { bankDetailsValidationState, emptyBankAccountValidationState } from "./atoms/validationStates/BankDetailsValidationState"
+import { bondsValidationState, emptyBondValidationState } from "./atoms/validationStates/BondDetailsValidationState"
+import { businessesValidationState, emptyBusinessesValidationState } from "./atoms/validationStates/BusinessesValidationState"
 import { customAssetsValidationState, emptyCustomAssetValidationState } from "./atoms/validationStates/CustomAssetsValidationState"
+import { debenturesValidationState, emptyDebentureValidationState } from "./atoms/validationStates/DebentureValidationState"
+import { dematAccountValidationState, emptyDematAccountsValidationState } from "./atoms/validationStates/DematAccountValidationState"
+import { digitalAssetsValidationState, emptyDigitalAssetValidationState } from "./atoms/validationStates/DigitalAssetValidationState"
+import { educationLoanValidationState, emptyEducationLoanValidationState } from "./atoms/validationStates/EducationLoanValidationState"
+import { emptyEscopValidationState, escopsValidationState } from "./atoms/validationStates/EscopsDetailsValidationState"
+import { emptyFixedDepositsValidationState, fixedDepositsValidationState } from "./atoms/validationStates/FixedDepositValidationState"
+import { emptyHomeLoanValidationState, homeLoanValidationState } from "./atoms/validationStates/HomeLoanValidationState"
+import { emptyInsurancePoliciesValidationState, insurancePoliciesValidationState } from "./atoms/validationStates/InsurancePoliciesValidationState"
+import { emptyIntellectualPropertyValidationState, intellectualPropertyValidationState } from "./atoms/validationStates/IntellectualPropertiesValidationState"
+import { emptyJewelleryValidationState, jewelleriesValidationState } from "./atoms/validationStates/JewelleriesValidationState"
+import { emptyMutualFundsValidationState, mutualFundValidationState } from "./atoms/validationStates/MutualFundsValidationState"
+import { emptyPensionAccountValidationState, pensionAccountValidationState } from "./atoms/validationStates/PensionAccountValidationState"
+import { emptyPersonalLoanValidationState, personalLoanValidationState } from "./atoms/validationStates/PersonalLoanValidationState"
+import { emptyPropertyValidationState, propertiesValidationState } from "./atoms/validationStates/PropertiesValidationState"
+import { emptyProvidentFundValidationState, providentFundValidationState } from "./atoms/validationStates/ProvidentValidationState"
+import { emptySafetyDepositBoxesValidationState, safetyDepositBoxesValidationState } from "./atoms/validationStates/SafetyDepositBoxesValidationState"
+import { emptyVehicleloanValidationState, vehicleLoanValdationState } from "./atoms/validationStates/VehicleLoanValidationState"
+import { emptyVehicleValidationState, vehiclesValidationState } from "./atoms/validationStates/VehicleValidationState"
+import { IVehicleLoanState, vehicleLoansState } from "./atoms/VehicleLoansState"
+import { IVehicleState, vehiclesState } from "./atoms/VehiclesState"
+import Header from "./components/Header"
+import { ASSET_SUBTYPES } from "./constants"
+import YourWill from "./pages/YourWill"
 
 
 function App() {
@@ -121,9 +129,25 @@ function App() {
   const setIntellectualProperties = useSetRecoilState(intellectualPropertiesState);
   const setIntellectualPropertiesValidationState = useSetRecoilState(intellectualPropertyValidationState);
 
-  // INTELLECTUAL PROPERTIES 
+  // CUSTOM ASSETS
   const setCustomAssets = useSetRecoilState(customAssetsState);
   const setCustomAssetsValidationState = useSetRecoilState(customAssetsValidationState);
+
+  // HOME LOANS
+  const setHomeLoans = useSetRecoilState(homeLoansState);
+  const setHomeLoansValidationState = useSetRecoilState(homeLoanValidationState);
+
+  // PERSONAL LOANS
+  const setPersonalLoans = useSetRecoilState(personalLoansState);
+  const setPersonalLoansValidationState = useSetRecoilState(personalLoanValidationState);
+
+  // VEHICLE LOANS
+  const setVehicleLoans = useSetRecoilState(vehicleLoansState);
+  const setVehicleLoansValidationState = useSetRecoilState(vehicleLoanValdationState);
+
+  // EDUCATION LOANS
+  const setEducationLoans = useSetRecoilState(educationLoansState);
+  const setEducationLoansValidationState = useSetRecoilState(educationLoanValidationState);
 
   const setRouteState = useSetRecoilState(routesState);
 
@@ -258,18 +282,46 @@ function App() {
         setDigitalAssetsValidationState(digitalAssets.map(_ => ({ ...emptyDigitalAssetValidationState })))
       }
 
-      // SET DIGITAL ASSETS
+      // SET INTELLECTUAL PROPERTIES
       var intellectualProperties: IIntellectualPropertyState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.INTELLECTUAL_PROPERTY).map((s) => ({ ...s.data, id: s.id }));
       if (intellectualProperties.length > 0) {
         setIntellectualProperties(intellectualProperties)
         setIntellectualPropertiesValidationState(intellectualProperties.map(_ => ({ ...emptyIntellectualPropertyValidationState })))
       }
 
-      // SET DIGITAL ASSETS
+      // SET CUSTOM ASSETS
       var customAssets: ICustomAssetState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.CUSTOM_ASSETS).map((s) => ({ ...s.data, id: s.id }));
       if (customAssets.length > 0) {
         setCustomAssets(customAssets)
         setCustomAssetsValidationState(customAssets.map(_ => ({ ...emptyCustomAssetValidationState })))
+      }
+
+      // SET HOME LOANS
+      var homeLoans: IHomeLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.HOME_LOAN).map((s) => ({ ...s.data, id: s.id }));
+      if (homeLoans.length > 0) {
+        setHomeLoans(homeLoans)
+        setHomeLoansValidationState(customAssets.map(_ => ({ ...emptyHomeLoanValidationState })))
+      }
+
+      // SET PERSONAL LOANS
+      var personalLoans: IPersonalLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PERSONAL_LOAN).map((s) => ({ ...s.data, id: s.id }));
+      if (personalLoans.length > 0) {
+        setPersonalLoans(personalLoans)
+        setPersonalLoansValidationState(customAssets.map(_ => ({ ...emptyPersonalLoanValidationState })))
+      }
+
+      // SET VEHICLE LOANS
+      var vehcileLoans: IVehicleLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.VECHICLE_LOAN).map((s) => ({ ...s.data, id: s.id }));
+      if (vehcileLoans.length > 0) {
+        setVehicleLoans(vehcileLoans)
+        setVehicleLoansValidationState(customAssets.map(_ => ({ ...emptyVehicleloanValidationState })))
+      }
+
+      // SET EDUCATION LOANS
+      var educationLoans: IEducationLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.EDUCATION_LOAN).map((s) => ({ ...s.data, id: s.id }));
+      if (educationLoans.length > 0) {
+        setEducationLoans(educationLoans)
+        setEducationLoansValidationState(customAssets.map(_ => ({ ...emptyEducationLoanValidationState })))
       }
     }
 

@@ -38,7 +38,6 @@ type ExtendedTreeItemProps = {
   label: string;
 };
 
-
 const NavItems: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
   {
     id: 'about_you',
@@ -340,13 +339,7 @@ export default function Sidebar2() {
         id: 'liabilities',
         label: 'Liabilities',
         iconName: '',
-        children: [
-          { id: 'home_loans', label: 'Home Loans', iconName: 'pdf' },
-          { id: 'personal_loans', label: 'Personal Loans', iconName: 'pdf' },
-          { id: 'vehicle_loans', label: 'Vechicle Loans', iconName: 'pdf' },
-          { id: 'education_loans', label: 'Education Loans', iconName: 'pdf' },
-          { id: 'other_liabilities', label: 'Other Liabilities', iconName: 'pdf' }
-        ],
+        children: [],
       },
       {
         id: 'beneficiaries',
@@ -378,6 +371,14 @@ export default function Sidebar2() {
       }))
 
     var otherAssets: ExtendedTreeItemProps[] = routeState.filter(s => s.type === ASSET_TYPES.OTHER_ASSETS)
+      .map(s => ({
+        id: s.id,
+        label: s.label,
+        iconName: "pdf"
+      }))
+
+
+    var liabilities: ExtendedTreeItemProps[] = routeState.filter(s => s.type === ASSET_TYPES.LIABILITIES)
       .map(s => ({
         id: s.id,
         label: s.label,
@@ -417,6 +418,12 @@ export default function Sidebar2() {
           iconName: "pdf",
           children: [...otherAssets]
         });
+    }
+
+    const liabilitiesItem = items.find(item => item.id === 'liabilities');
+    if (liabilitiesItem && liabilitiesItem.children) {
+      if (liabilities.length > 0)
+        liabilitiesItem.children = [...liabilities];
     }
 
     // SET MENU ITEMS

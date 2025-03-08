@@ -1,21 +1,21 @@
 
-import { useRecoilState, useRecoilValue } from 'recoil';
-import CustomAccordion from '../components/CustomAccordion';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { deleteAsset, upsertAsset } from '../api/asset';
+import { IOtherLiabilityState, otherLiabilitiesState } from '../atoms/OtherLiabilitiesState';
+import { routesState } from '../atoms/RouteState';
+import { userState } from '../atoms/UserDetailsState';
+import { emptyOtherLiabilitiesValidationState, IOtherLiabilitiesValidationState, otherLiabilitiesvalidationState } from '../atoms/validationStates/OtherLiabilitiesValidationState';
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
-import NextButton from '../components/NextButton';
-import { useLocation, useNavigate } from 'react-router';
-import { routesState } from '../atoms/RouteState';
-import { deleteAsset, upsertAsset } from '../api/asset';
-import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
-import { IAsset } from '../models/asset';
-import { userState } from '../atoms/UserDetailsState';
-import { IsEmptyNumber, IsEmptyString } from '../utils';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { IOtherLiabilityState, otherLiabilitiesState } from '../atoms/OtherLiabilitiesState';
-import { emptyOtherLiabilitiesValidationState, IOtherLiabilitiesValidationState, otherLiabilitiesvalidationState } from '../atoms/validationStates/OtherLiabilitiesValidationState';
+import CustomAccordion from '../components/CustomAccordion';
 import OtherLiabilityForm from '../components/Forms/OtherLiabilitiesForm';
+import NextButton from '../components/NextButton';
+import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
+import { IAsset } from '../models/asset';
+import { IsEmptyNumber, IsEmptyString } from '../utils';
 
 
 const OtherLiabilityPage = () => {
@@ -104,7 +104,7 @@ const OtherLiabilityPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         let routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        navigate(routeValue?.nextPath ?? ROUTE_PATHS.BENEFICIARIES);
     }
 
 
@@ -177,7 +177,7 @@ const OtherLiabilityPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton onClick={handleNextClick} />
             </div>
         </div>
     )

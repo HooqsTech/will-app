@@ -7,7 +7,7 @@ import { userState } from '../atoms/UserDetailsState';
 import { emptyIntellectualPropertyValidationState, intellectualPropertyValidationState, IIntellectualPropertyValidationState } from '../atoms/validationStates/IntellectualPropertiesValidationState';
 import { IsEmptyString } from '../utils';
 import { upsertAsset, deleteAsset } from '../api/asset';
-import { ASSET_TYPES, ASSET_SUBTYPES } from '../constants';
+import { ASSET_TYPES, ASSET_SUBTYPES, ROUTE_PATHS } from '../constants';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
@@ -113,7 +113,7 @@ const IntellectualPropertiesPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         var routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        navigate(routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES);
     };
 
     const shouldExpandAccordion = (index: number) => currentItem === index;
@@ -157,7 +157,7 @@ const IntellectualPropertiesPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton onClick={handleNextClick} />
             </div>
         </div>
     );

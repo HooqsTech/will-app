@@ -9,7 +9,7 @@ import { userState } from '../atoms/UserDetailsState';
 import { IsEmptyString } from '../utils';
 import { emptyBondValidationState, IBondValidationState, bondsValidationState } from '../atoms/validationStates/BondDetailsValidationState';
 import { upsertAsset, deleteAsset } from '../api/asset';
-import { ASSET_TYPES, ASSET_SUBTYPES } from '../constants';
+import { ASSET_TYPES, ASSET_SUBTYPES, ROUTE_PATHS } from '../constants';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BackButton from '../components/BackButton';
 import { useLocation, useNavigate } from 'react-router';
@@ -113,7 +113,7 @@ const BondsPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         var routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        navigate(routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES);
     };
 
     const shouldExpandAccordion = (index: number) => currentItem === index;
@@ -152,7 +152,7 @@ const BondsPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton onClick={handleNextClick} />
             </div>
         </div>
     );

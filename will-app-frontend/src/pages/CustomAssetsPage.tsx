@@ -10,7 +10,7 @@ import { routesState } from '../atoms/RouteState';
 import { customAssetsState, ICustomAssetState } from '../atoms/CustomAssets';
 import { deleteAsset, upsertAsset } from '../api/asset';
 import { userState } from '../atoms/UserDetailsState';
-import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
+import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { emptyCustomAssetValidationState, ICustomAssetValidationState, customAssetsValidationState } from '../atoms/validationStates/CustomAssetsValidationState';
 import { IsEmptyString } from '../utils';
@@ -87,7 +87,7 @@ const CustomAssetsPage = () => {
         });
 
         var routeValue = routeState.find(s => s.currentPath === location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        navigate(routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES);
     };
 
     const addCustomAsset = () => {
@@ -144,7 +144,7 @@ const CustomAssetsPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton onClick={handleNextClick} />
             </div>
         </div>
     );

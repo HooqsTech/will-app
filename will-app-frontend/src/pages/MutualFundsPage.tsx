@@ -10,7 +10,7 @@ import NextButton from '../components/NextButton';
 import { useLocation, useNavigate } from 'react-router';
 import { routesState } from '../atoms/RouteState';
 import { deleteAsset, upsertAsset } from '../api/asset';
-import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
+import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
 import { IAsset } from '../models/asset';
 import { userState } from '../atoms/UserDetailsState';
 import { emptyMutualFundsValidationState, IMutualFundValidationState, mutualFundValidationState } from '../atoms/validationStates/MutualFundsValidationState';
@@ -97,7 +97,7 @@ const MutualFundsPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         let routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        navigate(routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES);
     }
 
 
@@ -167,7 +167,7 @@ const MutualFundsPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Next' onClick={handleNextClick} />
+                <NextButton onClick={handleNextClick} />
             </div>
         </div>
     )

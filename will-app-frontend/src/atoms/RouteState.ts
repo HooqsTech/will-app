@@ -3,7 +3,7 @@ import { assetRoutesMap, ISelectedAssetsState } from './SelectedAssetsState';
 
 export interface IRouteState {
     currentPath: string;
-    nextPath: string;
+    nextPath?: string;
     label: string;
     id: string;
     type: string;
@@ -29,7 +29,7 @@ export const getRouteDataFromSelectedAssets = (selectedAssets: ISelectedAssetsSt
 
     return selectedPaths.map((path, index) => ({
         currentPath: path.routePath,
-        nextPath: selectedPaths[index + 1]?.routePath || "/", // Last route leads to summary
+        nextPath: selectedPaths[index + 1]?.routePath || undefined, // Last route leads to summary
         id: path.id,
         label: path.label,
         type: path.type

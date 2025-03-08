@@ -12,7 +12,7 @@ import BackButton from '../components/BackButton';
 import CustomAccordion from '../components/CustomAccordion';
 import SafetyDepositBoxForm from '../components/Forms/SafetyDepositBoxForm';
 import NextButton from '../components/NextButton';
-import { ASSET_SUBTYPES, ASSET_TYPES } from '../constants';
+import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
 import { IAsset } from '../models/asset';
 import { IsEmptyString } from '../utils';
 
@@ -107,7 +107,7 @@ const SafetyDepositBoxesPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         var routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        navigate(routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES);
     }
 
     const addProperty = () => {
@@ -178,7 +178,7 @@ const SafetyDepositBoxesPage = () => {
             </div>
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' onClick={handleBackClick} />
-                <NextButton label='Save & Next' onClick={handleNextClick} />
+                <NextButton onClick={handleNextClick} />
             </div>
         </div>
     )
