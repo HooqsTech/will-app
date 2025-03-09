@@ -1,7 +1,14 @@
-import Header from "../components/Header"
-import NextButton from "../components/NextButton"
+import { useNavigate } from "react-router";
+import Header from "../components/Header";
+import NextButton from "../components/NextButton";
+import { ROUTE_PATHS } from "../constants";
 
 const HomePage = () => {
+    const navigate = useNavigate();
+    const handleGetStartedClick = () => {
+        navigate(ROUTE_PATHS.YOUR_WILL)
+    }
+
     return (
         <div>
             <Header />
@@ -20,7 +27,7 @@ const HomePage = () => {
                             <p className="text-2xl text-slate-500">
                                 Be prepared for the unexpected with a secure, affordable WILL
                             </p>
-                            <NextButton className="w-fit lowercase" onClick={() => { }} label="Get Started" />
+                            <NextButton className="w-fit lowercase" onClick={handleGetStartedClick} label="Get Started" />
                         </div>
                         <div className="col-span-2 flex items-end justify-end w-full">
                             <img className="w-80" src="/assets/family.jpg" />
@@ -32,7 +39,7 @@ const HomePage = () => {
                         <img className="h-40" src="/assets/make-your-will.png" />
                         <p className="font-semibold text-xl">Make your will</p>
                         <p>Create a will in 15 minutes</p>
-                        <NextButton onClick={() => { }} label="Get Started" className="!bg-white !text-will-green" />
+                        <NextButton onClick={handleGetStartedClick} label="Get Started" className="!bg-white !text-will-green" />
                     </div>
                     <div className="bg-[#f5f6f8] col-span-1 w-full p-5 space-y-2 text-black">
                         <img className="h-40" src="/assets/expert-review.png" />
