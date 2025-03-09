@@ -9,6 +9,7 @@ import { IsEmptyString } from "../utils";
 import { addressDetailsValidationState, IAddressDetailsValidationState } from "../atoms/validationStates/AddressDetailsValidationState";
 import NextButton from "../components/NextButton";
 import BackButton from "../components/BackButton";
+import { ROUTE_PATHS } from "../constants";
 
 const AddressDetailsPage = () => {
     const addressDetails = useRecoilValue(addressDetailsState);
@@ -75,7 +76,7 @@ const AddressDetailsPage = () => {
 
         // NAVIGATE TO IMMOVABLE ASSETS
         if (result.address1 === addressDetails.address1) {
-            navigate("/assets");
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSETS);
         }
     }
 
@@ -85,7 +86,7 @@ const AddressDetailsPage = () => {
                 <AddressDetailsForm />
                 <div className="flex gap-2">
                     <BackButton loading={loading} onClick={() => navigate("/personal_details")} label="Back" />
-                    <NextButton loading={loading} onClick={addUserDetails} label="Save & Next" />
+                    <NextButton loading={loading} onClick={addUserDetails} />
                 </div>
             </div>
         </div>

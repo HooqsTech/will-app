@@ -44,11 +44,11 @@ const LiabilitiesPage = () => {
             <div>
                 <CustomAccordion defaultExpanded label="Liabilities">
                     <div className="flex flex-col gap-2">
-                        <CheckboxContainer checked={selectedAssets?.homeLoans} label="Home Loans" onChange={() => handleChange("homeLoans")} />
-                        <CheckboxContainer checked={selectedAssets?.personalLoans} label="Personal Loans" onChange={() => handleChange("personalLoans")} />
-                        <CheckboxContainer checked={selectedAssets?.vehicleLoans} label="Vehicle Loans" onChange={() => handleChange("vehicleLoans")} />
-                        <CheckboxContainer checked={selectedAssets?.educationLoans} label="Education Loans" onChange={() => handleChange("educationLoans")} />
-                        <CheckboxContainer checked={selectedAssets?.otherLiabilities} label="Other Liabilities" onChange={() => handleChange("otherLiabilities")} />
+                        <CheckboxContainer checked={selectedAssets?.homeLoans ?? false} label="Home Loans" onChange={() => handleChange("homeLoans")} />
+                        <CheckboxContainer checked={selectedAssets?.personalLoans ?? false} label="Personal Loans" onChange={() => handleChange("personalLoans")} />
+                        <CheckboxContainer checked={selectedAssets?.vehicleLoans ?? false} label="Vehicle Loans" onChange={() => handleChange("vehicleLoans")} />
+                        <CheckboxContainer checked={selectedAssets?.educationLoans ?? false} label="Education Loans" onChange={() => handleChange("educationLoans")} />
+                        <CheckboxContainer checked={selectedAssets?.otherLiabilities ?? false} label="Other Liabilities" onChange={() => handleChange("otherLiabilities")} />
                     </div>
                 </CustomAccordion>
             </div>

@@ -29,7 +29,7 @@ export const getRouteDataFromSelectedAssets = (selectedAssets: ISelectedAssetsSt
 
     return selectedPaths.map((path, index) => ({
         currentPath: path.routePath,
-        nextPath: selectedPaths[index + 1]?.routePath || undefined, // Last route leads to summary
+        nextPath: selectedPaths[index + 1]?.routePath || undefined,
         id: path.id,
         label: path.label,
         type: path.type

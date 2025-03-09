@@ -12,6 +12,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { styled } from '@mui/system';
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import { treeItemClasses } from '@mui/x-tree-view/TreeItem';
+import { useTreeViewApiRef } from '@mui/x-tree-view/hooks';
 import {
   TreeItem2Checkbox,
   TreeItem2Content,
@@ -30,88 +31,14 @@ import * as React from 'react';
 import { useNavigate } from 'react-router';
 import { useRecoilValue } from 'recoil';
 import { routesState } from '../atoms/RouteState';
-import { ASSET_TYPES } from '../constants';
+import { ASSET_TYPES, ROUTE_PATHS } from '../constants';
 
 type ExtendedTreeItemProps = {
   iconName?: string;
+  routePath: string;
   id: string;
   label: string;
 };
-
-const NavItems: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
-  {
-    id: 'about_you',
-    label: 'About You',
-    iconName: 'pdf',
-    children: [
-      { id: 'personal_details', label: 'Personal Details', iconName: 'pdf' },
-      { id: 'address_details', label: 'Address Details', iconName: 'pdf' }
-    ]
-  },
-  {
-    id: 'assets',
-    label: 'Asset',
-    iconName: 'pdf',
-    children: [
-      {
-        id: 'immovable_assets', label: 'Immovable Assets', iconName: 'pdf',
-        children: [
-          { id: 'properties', label: 'Properties', iconName: 'pdf' },
-        ]
-      },
-      {
-        id: 'financial_assets', label: 'Financial Assets', iconName: 'pdf',
-        children: [
-          { id: 'bank_accounts', label: 'Bank Accounts', iconName: 'pdf' },
-          { id: 'fixed_deposits', label: 'Fixed Deposits', iconName: 'pdf' },
-          { id: 'insurance_policies', label: 'insurance Policies', iconName: 'pdf' },
-          { id: 'safe_deposit_boxes', label: 'Safe Deposit Boxes', iconName: 'pdf' },
-          { id: 'demat_accounts', label: 'Demat Accounts', iconName: 'pdf' },
-          { id: 'mutual_funds', label: 'Mutual Funds', iconName: 'pdf' },
-          { id: 'provident_fund', label: 'Provident Fund', iconName: 'pdf' },
-          { id: 'pension_accounts', label: 'Pension Accounts', iconName: 'pdf' }
-        ]
-      },
-      {
-        id: 'business_assets', label: 'Business Assets', iconName: 'pdf',
-        children: [
-          { id: 'business', label: 'Business', iconName: 'pdf' },
-          { id: 'bonds', label: 'Bonds', iconName: 'pdf' },
-          { id: 'debentures', label: 'Debentures', iconName: 'pdf' },
-          { id: 'esops', label: 'Esops', iconName: 'pdf' },
-          { id: 'other_investments', label: 'Other Investments', iconName: 'pdf' }
-        ]
-      },
-      {
-        id: 'other_assets', label: 'Other Assets', iconName: 'pdf',
-        children: [
-          { id: 'vehicles', label: 'Vechicles', iconName: 'pdf' },
-          { id: 'jewelry', label: 'Jewlery', iconName: 'pdf' },
-          { id: 'digital_assets', label: 'Digital Assets', iconName: 'pdf' },
-          { id: 'intellectual_property', label: 'Intellectual', iconName: 'pdf' },
-          { id: 'custom_assets', label: 'Custom Assets', iconName: 'pdf' }
-        ]
-      }
-    ],
-  },
-  {
-    id: 'liabilities',
-    label: 'Liabilities',
-    iconName: '',
-    children: [
-      { id: 'home_loans', label: 'Home Loans', iconName: 'pdf' },
-      { id: 'personal_loans', label: 'Personal Loans', iconName: 'pdf' },
-      { id: 'vehicle_loans', label: 'Vechicle Loans', iconName: 'pdf' },
-      { id: 'education_loans', label: 'Education Loans', iconName: 'pdf' },
-      { id: 'other_liabilities', label: 'Other Liabilities', iconName: 'pdf' }
-    ],
-  },
-  {
-    id: 'beneficiaries',
-    label: 'Beneficiaries',
-    iconName: 'pdf'
-  },
-];
 
 declare module 'react' {
   interface CSSProperties {
@@ -315,7 +242,8 @@ export default function Sidebar2() {
   const [menuItems, seTmenuItems] = React.useState<TreeViewBaseItem<ExtendedTreeItemProps>[]>([]);
 
   const handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
-    navigate("/" + itemId);
+    var item = apiRef.current?.getItem(itemId)
+    navigate(ROUTE_PATHS.YOUR_WILL + (item.routePath ?? ""));
   };
 
   React.useEffect(() => {
@@ -324,27 +252,31 @@ export default function Sidebar2() {
         id: 'about_you',
         label: 'About You',
         iconName: 'pdf',
+        routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ABOUT_YOU,
         children: [
-          { id: 'personal_details', label: 'Personal Details', iconName: 'pdf' },
-          { id: 'address_details', label: 'Address Details', iconName: 'pdf' }
+          { id: 'personal_details', label: 'Personal Details', iconName: 'pdf', routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.PERSONAL_DETAILS },
+          { id: 'address_details', label: 'Address Details', iconName: 'pdf', routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ADDRESS_DETAILS }
         ]
       },
       {
         id: 'assets',
         label: 'Asset',
         iconName: 'pdf',
+        routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSETS,
         children: [],
       },
       {
         id: 'liabilities',
         label: 'Liabilities',
-        iconName: '',
+        routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.LIABILITIES,
+        iconName: 'pdf',
         children: [],
       },
       {
         id: 'beneficiaries',
         label: 'Beneficiaries',
-        iconName: 'pdf'
+        iconName: 'pdf',
+        routePath: ROUTE_PATHS.BENEFICIARIES
       },
     ];
 
@@ -353,28 +285,32 @@ export default function Sidebar2() {
       .map(s => ({
         id: s.id,
         label: s.label,
-        iconName: "pdf"
+        iconName: "pdf",
+        routePath: s.currentPath
       }))
 
     var financialAssets: ExtendedTreeItemProps[] = routeState.filter(s => s.type === ASSET_TYPES.FINANCIAL_ASSETS)
       .map(s => ({
         id: s.id,
         label: s.label,
-        iconName: "pdf"
+        iconName: "pdf",
+        routePath: s.currentPath
       }))
 
     var businessAssets: ExtendedTreeItemProps[] = routeState.filter(s => s.type === ASSET_TYPES.BUSINESS_ASSETS)
       .map(s => ({
         id: s.id,
         label: s.label,
-        iconName: "pdf"
+        iconName: "pdf",
+        routePath: ROUTE_PATHS.BUSINESS
       }))
 
     var otherAssets: ExtendedTreeItemProps[] = routeState.filter(s => s.type === ASSET_TYPES.OTHER_ASSETS)
       .map(s => ({
         id: s.id,
         label: s.label,
-        iconName: "pdf"
+        iconName: "pdf",
+        routePath: s.currentPath
       }))
 
 
@@ -382,7 +318,8 @@ export default function Sidebar2() {
       .map(s => ({
         id: s.id,
         label: s.label,
-        iconName: "pdf"
+        iconName: "pdf",
+        routePath: s.currentPath
       }))
 
     const assetsItem = items.find(item => item.id === 'assets');
@@ -391,6 +328,7 @@ export default function Sidebar2() {
         assetsItem.children.push({
           id: "immovable_assets",
           label: "Immovable Assets",
+          routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.IMMOVABLE_ASSETS,
           iconName: "pdf",
           children: [...immovalbleAssets]
         });
@@ -399,6 +337,7 @@ export default function Sidebar2() {
         assetsItem.children.push({
           id: "financial_assets",
           label: "Financial Assets",
+          routePath: ROUTE_PATHS.FINANCIAL_ASSETS,
           iconName: "pdf",
           children: [...financialAssets]
         });
@@ -407,6 +346,7 @@ export default function Sidebar2() {
         assetsItem.children.push({
           id: "business_assets",
           label: "Business Assets",
+          routePath: ROUTE_PATHS.BUSINESS_ASSETS,
           iconName: "pdf",
           children: [...businessAssets]
         });
@@ -415,6 +355,7 @@ export default function Sidebar2() {
         assetsItem.children.push({
           id: "other_assets",
           label: "Other Assets",
+          routePath: ROUTE_PATHS.OTHER_ASSETS,
           iconName: "pdf",
           children: [...otherAssets]
         });
@@ -431,6 +372,7 @@ export default function Sidebar2() {
 
   }, [routeState])
 
+  const apiRef = useTreeViewApiRef();
 
   return (
     <div className='flex flex-col items-start'>
@@ -444,10 +386,11 @@ export default function Sidebar2() {
       </div>
       <div className='p-6 w-full'>
         <RichTreeView
+          apiRef={apiRef}
           multiSelect={false}
           items={menuItems}
           slots={{ item: CustomTreeItem }}
-          onItemClick={handleSelectedItemChange}
+          onItemClick={(e, itemId) => handleSelectedItemChange(e, itemId)}
         />
       </div>
     </div>

@@ -103,8 +103,8 @@ const OtherLiabilityPage = () => {
         })
 
         // NAVIGATE TO NEXT ROUTE
-        let routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? ROUTE_PATHS.BENEFICIARIES);
+        let routeValue = routeState.find(s => location.pathname.includes(s.currentPath));
+        navigate(ROUTE_PATHS.YOUR_WILL + (routeValue?.nextPath ?? ROUTE_PATHS.BENEFICIARIES));
     }
 
 
@@ -146,7 +146,7 @@ const OtherLiabilityPage = () => {
 
     return (
         <div className='flex flex-col justify-start h-full space-y-3 w-xl m-auto'>
-            <h1 className='text-2xl font-semibold'>OTHER LIABILITIES</h1>
+            <h1 className='text-2xl font-semibold'>Other Liabilities</h1>
             <div>
                 {
                     formState.map((_, index) => (

@@ -101,8 +101,8 @@ const InsurancePoliciesPage = () => {
         })
 
         // NAVIGATE TO NEXT ROUTE
-        var routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES);
+        var routeValue = routeState.find(s => location.pathname.includes(s.currentPath));
+        navigate(ROUTE_PATHS.YOUR_WILL + (routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES));
     }
 
     const addInsurancePolicy = () => {

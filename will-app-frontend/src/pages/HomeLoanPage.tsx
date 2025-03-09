@@ -27,6 +27,8 @@ const HomeLoanPage = () => {
     const location = useLocation();
     const [showErrorBorder, setShowErrorBorder] = useState(false);
 
+    console.log('formState', formState)
+
     const saveHomeLoanAsync = async (property: IHomeLoanState, index: number) => {
         let data: IAsset = {
             id: "",
@@ -94,8 +96,8 @@ const HomeLoanPage = () => {
         })
 
         // NAVIGATE TO NEXT ROUTE
-        let routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? ROUTE_PATHS.BENEFICIARIES);
+        let routeValue = routeState.find(s => location.pathname.includes(s.currentPath));
+        navigate(ROUTE_PATHS.YOUR_WILL + (routeValue?.nextPath ?? ROUTE_PATHS.BENEFICIARIES));
     }
 
 

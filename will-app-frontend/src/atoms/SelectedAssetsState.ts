@@ -31,6 +31,7 @@ export interface ISelectedAssetsState {
 interface IRoutePathWithOrder {
   order: number
   routePath: string
+  parentRoutePath?: string
   type: string
   id: string
   label: string
@@ -40,6 +41,7 @@ export const assetRoutesMap: Record<keyof ISelectedAssetsState, IRoutePathWithOr
   properties: {
     order: 1,
     routePath: ROUTE_PATHS.PROPERTIES,
+    parentRoutePath: ROUTE_PATHS.YOUR_WILL,
     id: "properties",
     type: ASSET_TYPES.IMMOVABLE_ASSETS,
     label: "Properties"
@@ -47,6 +49,7 @@ export const assetRoutesMap: Record<keyof ISelectedAssetsState, IRoutePathWithOr
   bankAccounts: {
     order: 2,
     routePath: ROUTE_PATHS.BANK_ACCOUNTS,
+    parentRoutePath: ROUTE_PATHS.YOUR_WILL,
     id: "bank_accounts",
     type: ASSET_TYPES.FINANCIAL_ASSETS,
     label: "Bank Accounts"

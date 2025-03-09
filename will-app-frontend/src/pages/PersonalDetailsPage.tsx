@@ -9,6 +9,7 @@ import { IPersonalDetailsValidationState, personalDetailsValidationState } from 
 import PersonalDetailsForm from "../components/Forms/PersonalDetailsForm";
 import NextButton from "../components/NextButton";
 import { IsEmptyString } from "../utils";
+import { ROUTE_PATHS } from "../constants";
 
 
 const PersonalDetailsPage = () => {
@@ -72,7 +73,7 @@ const PersonalDetailsPage = () => {
 
         // NAVIGATE TO ADDRESS DETAILS
         if (result.userName === personalDetails.userName) {
-            navigate("/address_details");
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ADDRESS_DETAILS);
         }
     }
 
@@ -80,7 +81,7 @@ const PersonalDetailsPage = () => {
         <div className="flex flex-col items-start h-full">
             <div className="w-lg space-y-8">
                 <PersonalDetailsForm />
-                <NextButton onClick={addUserDetails} loading={loading} label="Save & Next" />
+                <NextButton onClick={addUserDetails} loading={loading} />
             </div>
         </div>
     )

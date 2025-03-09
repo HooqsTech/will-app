@@ -11,6 +11,7 @@ export const COLORS: { PRIMARY_GREEN: string } = {
 };
 
 export const ROUTE_PATHS = {
+    YOUR_WILL: "/your_will",
     BENEFICIARIES: "/beneficiaries",
     OTHER_LIABILITIES: "/other_liabilities",
     EDUCATION_LOANS: "/education_loans",
@@ -18,7 +19,7 @@ export const ROUTE_PATHS = {
     PERSONAL_LOANS: "/personal_loans",
     HOME_LOANS: "/home_loans",
     LIABILITIES: "/liabilities",
-    ABOUT_YOU: "/about_you",
+    ABOUT_YOU: `/about_you`,
     PERSONAL_DETAILS: "/personal_details",
     ADDRESS_DETAILS: "/address_details",
     ASSETS: "/assets",
@@ -40,7 +41,11 @@ export const ROUTE_PATHS = {
     ESCOPS: "/esops",
     OTHER_INVESTMENTS: "/other_investments",
     BONDS: "/bonds",
-    BUSINESS: "/business"
+    BUSINESS: "/business",
+    IMMOVABLE_ASSETS: "/immovable_assets",
+    FINANCIAL_ASSETS: "/financial_assets",
+    BUSINESS_ASSETS: "/business_assets",
+    OTHER_ASSETS: "/other_assets"
 }
 
 export const BENEFICIARIES = "beneficiaries"
