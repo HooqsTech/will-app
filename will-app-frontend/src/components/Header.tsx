@@ -7,7 +7,6 @@ const Header = () => {
     const handleLogout = () => {
         removeCookie('idToken'); // Removes the 'idToken' cookie
         removeCookie('phoneNumber');
-        removeCookie('userId');
         navigate('/login');
       };
     return (
