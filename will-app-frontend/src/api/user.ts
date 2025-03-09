@@ -1,7 +1,7 @@
 import { IAddressDetails, IPersonalDetails, IUserDetails } from "../models/user";
 
 export const addPersonalDetailsAsync = async (personalDetails: IPersonalDetails, userId: string): Promise<IPersonalDetails> => {
-  const response = await fetch(`http://localhost:5000/api/users/createPersonalDetails/${userId}`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/createPersonalDetails/${userId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export const addPersonalDetailsAsync = async (personalDetails: IPersonalDetails,
 };
 
 export const addAddressDetailsAsync = async (personalDetails: IAddressDetails, userId: string): Promise<IAddressDetails> => {
-  const response = await fetch(`http://localhost:5000/api/users/createAddressDetails/${userId}`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/createAddressDetails/${userId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -35,7 +35,7 @@ export const addAddressDetailsAsync = async (personalDetails: IAddressDetails, u
 };
 
 export const upsertUser = async (userData: IUserDetails): Promise<IUserDetails> => {
-  const response = await fetch("http://localhost:5000/api/users/upsert", {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/upsert`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export const upsertUser = async (userData: IUserDetails): Promise<IUserDetails> 
 };
 
 export const getUser = async (phoneNumber: string): Promise<IUserDetails> => {
-  const response = await fetch(`http://localhost:5000/api/users/GetbyPhoneNumber?phoneNumber=${phoneNumber}`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/GetbyPhoneNumber?phoneNumber=${phoneNumber}`, {
     method: "GET"
   });
 
@@ -64,8 +64,8 @@ export const getUser = async (phoneNumber: string): Promise<IUserDetails> => {
   return user;
 };
 
-export const verifyToken = async(idToken:any): Promise<IUserDetails> => {
-  const response = await fetch(`http://localhost:5000/api/users/verifyToken`, {
+export const verifyToken = async (idToken: any): Promise<IUserDetails> => {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/verifyToken`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { 
-    validateId, 
-    getLiabilityByIdService, 
-    getLiabilitiesByUserIdService, 
-    upsertLiabilityService, 
-    deleteLiabilityByIdService, 
-    deleteLiabilitiesByUserIdService 
+import {
+    validateId,
+    getLiabilityByIdService,
+    getLiabilitiesByUserIdService,
+    upsertLiabilityService,
+    deleteLiabilityByIdService,
+    deleteLiabilitiesByUserIdService
 } from "../services/liabilityService";
 
 import { UUID } from "crypto";
@@ -65,13 +65,13 @@ export const upsertLiability = async (req: Request, res: Response) => {
 // Delete liability by ID
 export const deleteLiabilityById = async (req: Request, res: Response) => {
     try {
-        const { id } = req.params as { id: UUID };
+        const { liabilityId } = req.params as { liabilityId: UUID };
 
-        if (!validateId(id)) {
+        if (!validateId(liabilityId)) {
             return res.status(400).json({ error: "Invalid ID format" });
         }
 
-        await deleteLiabilityByIdService(id);
+        await deleteLiabilityByIdService(liabilityId);
         res.status(200).json({ message: "Liability deleted successfully" });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
