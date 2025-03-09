@@ -28,8 +28,8 @@ const LoginPage = () => {
         if (!recaptchaVerifier) {
             const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
                 size: "invisible",
-                callback: (response: any) => {
-                   
+                callback: (_: any) => {
+
                 },
             });
             verifier.render().then(() => {
@@ -118,7 +118,7 @@ const LoginPage = () => {
             const userCredential = await formState.confirmationResult.confirm(formState.otp);
 
             const idToken = await userCredential.user.getIdToken();
-            const response = await verifyToken(idToken);
+            await verifyToken(idToken);
 
             setCookie('idToken', idToken, {
                 expires: 1, // Expires in 1 day
