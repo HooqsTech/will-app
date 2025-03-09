@@ -8,7 +8,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { useEffect, useState } from 'react';
 import { verifyToken } from '../api/user';
 import { getCookie, setCookie } from 'typescript-cookie';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import CustomSnackBar, { TAlertType } from '../components/CustomSnackBar';
 
 const LoginPage = () => {
@@ -20,7 +20,7 @@ const LoginPage = () => {
     const [alertMessage, setAlertMessage] = useState("");
     const [alertType, setAlertType] = useState<TAlertType>("info");
     const navigate = useNavigate();
-    
+    const location = useLocation();
     
     useEffect(() => {
         if (!recaptchaVerifier) {
@@ -54,7 +54,7 @@ const LoginPage = () => {
     
         if (idToken) {
           // Token is present, redirect to dashboard or another protected route
-          navigate("/your_will");
+          navigate(location.state?.from?.pathname || '/home');
         }
       }, [navigate]);
 
@@ -134,7 +134,7 @@ const LoginPage = () => {
             setShowAlert(true);
             setAlertMessage("OTP Verified Sucessfully!");
             setAlertType("success");
-            navigate("/your_will");
+            navigate(location.state?.from?.pathname || '/home');
             
         } catch (error) {
             setFormState((prevState) => ({

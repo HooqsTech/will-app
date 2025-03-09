@@ -1,6 +1,13 @@
 import CustomButton from "./CustomButton"
+import { useNavigate } from 'react-router';
+import { removeCookie } from 'typescript-cookie';
 
 const Header = () => {
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        removeCookie('idToken'); // Removes the 'idToken' cookie
+        navigate('/login');
+      };
     return (
         <nav className="bg-white top-0 w-full sticky z-50 shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
             <div className="flex m-auto w-full items-center justify-between p-4">
@@ -26,7 +33,7 @@ const Header = () => {
                             <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:border-0  md:p-0 ">Contact Us</a>
                         </li>
                         <li>
-                            <CustomButton label="Log Out" onClick={() => { }} />
+                            <CustomButton label="Log Out" onClick={handleLogout} />
                         </li>
                     </ul>
                 </div>
