@@ -7,10 +7,21 @@ import { auth } from "../../firebaseConfig";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { useEffect, useState } from 'react';
 import { verifyToken } from '../api/user';
+import { getCookie, setCookie } from 'typescript-cookie';
+import { useNavigate } from 'react-router';
+import CustomSnackBar, { TAlertType } from '../components/CustomSnackBar';
 
 const LoginPage = () => {
     const [formState, setFormState] = useRecoilState<ILoginState>(loginState);
     const [recaptchaVerifier, setRecaptchaVerifier] = useState<any>();
+    const [timer, setTimer] = useState(60);
+    const [isResendDisabled, setIsResendDisabled] = useState(true);
+    const [showAlert,setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertType, setAlertType] = useState<TAlertType>("info");
+    const navigate = useNavigate();
+    
+    
     useEffect(() => {
         if (!recaptchaVerifier) {
           const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
@@ -19,32 +30,80 @@ const LoginPage = () => {
               console.log("reCAPTCHA resolved:", response);
             },
           });
-          setRecaptchaVerifier(verifier); // Store in state to prevent re-initialization
+          verifier.render().then(() => {
+            setRecaptchaVerifier(verifier);
+          });
         }
       }, [recaptchaVerifier]);
+
+      useEffect(() => {
+        let countdown:any;
+        if (timer > 0) {
+          countdown = setInterval(() => {
+            setTimer((prev) => prev - 1);
+          }, 1000);
+        } else {
+          setIsResendDisabled(false);
+          clearInterval(countdown);
+        }
+        return () => clearInterval(countdown);
+      }, [timer]);
+    
+      useEffect(() => {
+        const idToken = getCookie('idToken');
+    
+        if (idToken) {
+          // Token is present, redirect to dashboard or another protected route
+          navigate("/your_will");
+        }
+      }, [navigate]);
+
+      const handleResend = () => {
+        setIsResendDisabled(true);
+        sendOtp();
+        console.log('OTP resent!');
+      };
+
+    const alertOnClose = () => {
+        setShowAlert(false);
+        setAlertMessage("");
+        setAlertType("info");
+    }
     
     const sendOtp = async () => {
        
         try {
             if (!formState.phoneNumber) {
+                setShowAlert(true);
+                setAlertMessage("Please enter a phone number.");
+                setAlertType("error");
                 console.log("Please enter a phone number.");
                 return;
             }
 
             if (!recaptchaVerifier) {
+                setShowAlert(true);
+                setAlertMessage("Error: reCAPTCHA not initialized.");
+                setAlertType("error");
                 console.log("Error: reCAPTCHA not initialized.");
                 return;
             }
-
+            
             const confirmation = await signInWithPhoneNumber(auth, "+"+formState.phoneNumber, recaptchaVerifier);
             setFormState((prevState) => ({
                 ...prevState,
                 showOTP: true,
                 confirmationResult: confirmation
-                }))
-            console.log(confirmation);
+                }));
+                setTimer(60);
+                setShowAlert(true);
+                setAlertMessage("OTP Sent Sucessfully!");
+                setAlertType("success");
         } catch (error) {
             console.error("Error sending OTP:", error);
+            setShowAlert(true);
+            setAlertMessage("Error sending OTP. Try Again !!!");
+            setAlertType("error");
         }
     };
 
@@ -52,6 +111,9 @@ const LoginPage = () => {
         try {
             if (!formState.otp || !formState.confirmationResult) {
                 console.log("Please enter OTP.");
+                setShowAlert(true);
+                setAlertMessage("Please enter OTP.");
+                setAlertType("error");
                 return;
             }
 
@@ -60,16 +122,36 @@ const LoginPage = () => {
 
             const idToken = await userCredential.user.getIdToken();
             const response = await verifyToken(idToken);
-
+            
+            setCookie('idToken', idToken, {
+                expires: 1, // Expires in 1 day
+                secure: true, // HTTPS only
+                sameSite: 'Strict', // Prevent CSRF
+                path: '/', // Available for all routes
+                });
             console.log("User Verified Successfully!");
             console.log("Server response:", response.userId);
+            setShowAlert(true);
+            setAlertMessage("OTP Verified Sucessfully!");
+            setAlertType("success");
+            navigate("/your_will");
+            
         } catch (error) {
+            setFormState((prevState) => ({
+                ...prevState,
+                showOTP: false,
+                otp:"",
+                confirmationResult: undefined
+                }));
+                setShowAlert(true);
+                setAlertMessage("Error verifying OTP. Try Again !!!");
+                setAlertType("error");
             console.error("Error verifying OTP:", error);
         }
     };
     return(
-        <div className="p-4 h-screen bg-white border border-gray-200 shadow-sm sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
-            <div className="flex flex-col m-2 h-full w-full bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row max-w-none dark:border-gray-700 dark:bg-gray-800">
+        <div className="p-4 h-screen bg-white border border-gray-200 shadow-sm sm:p-6 md:p-8">
+            <div className="flex flex-col m-2 h-full w-full bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row max-w-none">
                 
                 <div className="flex flex-col items-center p-4  w-full">
                     <div className="flex items-center mt-8 space-x-3">
@@ -92,8 +174,8 @@ const LoginPage = () => {
                                 }
                             />
                         </div>
-                        <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-md px-20 py-2 mt-8 dark:bg-green-600 dark:hover:bg-green-700" onClick={sendOtp}>Verify Mobile Number</button>
-                        <div id="recaptcha-container"></div>
+                        <button type="button" disabled={formState.showOTP} className="focus:outline-none cursor-pointer text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-md px-20 py-2 mt-8" onClick={sendOtp}>Verify Mobile Number</button>
+                        
                         <p className=" mt-4 text-will-green">By clicking the above button you agree to receive verification code as SMS.</p>
                     </div>}
                     {formState.showOTP && <div className='flex flex-col items-center'>
@@ -105,19 +187,31 @@ const LoginPage = () => {
                                 ...prevState,
                                 otp: otp,
                                 }))}
-                            numInputs={4}
+                            numInputs={6}
                             renderInput={(props) => <input {...props} onKeyDown={(e) => {
                                 if (!/^\d$/.test(e.key) && e.key !== "Backspace") {
                                   e.preventDefault(); // Block non-numeric keys
                                 }
                               }} inputMode="numeric" pattern="[0-9]*" className="w-[40px] h-[40px] border border-black m-4 rounded-md text-[20px] font-semibold outline-none" style={{width:"10px !important",textAlign: 'center'}} />}
                         />
-                        <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-md px-20 py-2 mt-4 dark:bg-green-600 dark:hover:bg-green-700" onClick={verifyOtp}>Verify OTP</button>
-                        <div className='flex mt-4 space-x-3'>
+                        <button type="button" 
+                            className="focus:outline-none text-white bg-green-700 cursor-pointer hover:bg-green-800 font-medium rounded-lg text-md px-20 py-2 mt-4" 
+                            onClick={verifyOtp}
+                            >
+                            Verify OTP
+                        </button>
+                        <div className='flex mt-4 space-x-1'>
                             <p className=" text-will-green">Didn't receive the OTP?</p>
-                            <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Resend</a>
+                            <button
+                                onClick={handleResend}
+                                disabled={isResendDisabled}
+                                className={`font-medium cursor-pointer focus:outline-none ${isResendDisabled ? 'text-gray-500' : 'text-blue-500 hover:underline'}`}
+                            >
+                                {isResendDisabled ? `Resend OTP in ${timer}s` : 'Resend OTP'}
+                            </button>
                         </div>
                     </div>}
+                    <div id="recaptcha-container"></div>
                 </div>
                 <img
                 className="object-cover w-full rounded-tr-lg rounded-br-lg h-auto"
@@ -125,6 +219,7 @@ const LoginPage = () => {
                 alt="Descriptive Alt Text"
                 />
             </div>
+            {showAlert && <CustomSnackBar alertType={alertType} message={alertMessage} open={showAlert} onClose={alertOnClose}/>}
         </div>
 
     )
