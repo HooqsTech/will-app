@@ -128,7 +128,7 @@ export const deleteAddressDetails = async (userId: string) => {
 
 export const getUserDetailsByPhone = async (phoneNumber: string) => {
     const user = await prisma.users.findFirst({
-        where: { phonenumber: phoneNumber },
+        where: { phonenumber: "+" + phoneNumber.trim() },
         include: {
             addressdetails: true,
             assets: true,
@@ -152,23 +152,23 @@ const formatUserResponse = (user: any) => ({
     userId: user.userid,
     personalDetails: user.personaldetails?.details || {},
     addressDetails: user.addressdetails?.address || {},
-    assets: user.assets.map((asset: any) => ({
+    assets: user.assets?.map((asset: any) => ({
         id: asset.id,
         type: asset.type,
         subtype: asset.subtype,
         data: asset.data,
     })),
-    beneficiaries: user.beneficiaries.map((ben: any) => ({
+    beneficiaries: user.beneficiaries?.map((ben: any) => ({
         id: ben.id,
         type: ben.type,
         data: ben.data,
     })),
-    excludedPersons: user.excludedpersons.map((ex: any) => ex.data),
-    liabilities: user.liabilities.map((liability: any) => ({
+    excludedPersons: user.excludedpersons?.map((ex: any) => ex.data),
+    liabilities: user.liabilities?.map((liability: any) => ({
         id: liability.id,
         type: liability.type,
         data: liability.data,
     })),
-    pets: user.pets.map((pet: any) => pet.data),
+    pets: user.pets?.map((pet: any) => pet.data),
     selectedAssets: user.selectedassets?.data || {},
 });

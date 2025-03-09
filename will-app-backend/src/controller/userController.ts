@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { 
-    createUser, 
-    deleteUserByPhone, 
-    createPersonalDetails, 
-    deletePersonalDetails, 
-    createAddressDetails, 
-    deleteAddressDetails, 
-    getUserDetailsByPhone ,
+import {
+    createUser,
+    deleteUserByPhone,
+    createPersonalDetails,
+    deletePersonalDetails,
+    createAddressDetails,
+    deleteAddressDetails,
+    getUserDetailsByPhone,
     checkUserExists
 } from "../services/userServices";
 import admin from "firebase-admin";
@@ -30,7 +30,7 @@ export const createUserHandler = async (req: Request, res: Response) => {
         await createUser(phoneNumber);
         const newUserDetails = await getUserDetailsByPhone(phoneNumber);
 
-        res.status(201).json( {user: newUserDetails});
+        res.status(201).json({ user: newUserDetails });
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }
@@ -100,6 +100,7 @@ export const getUserDetailsByPhoneHandler = async (req: Request, res: Response) 
         const user = await getUserDetailsByPhone(phoneNumber);
         res.status(200).json(user);
     } catch (error: any) {
+        console.log('error', error)
         res.status(404).json({ error: error.message });
     }
 };

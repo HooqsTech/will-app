@@ -86,6 +86,7 @@ import ProvidentFundpage from './ProvidentFundPage';
 import SafetyDepositBoxesPage from './SafetyDepositBoxesPage';
 import VechicleLoanPage from './VehicleLoanPage';
 import VehiclesPage from './VehiclesPage';
+import { getCookie } from 'typescript-cookie';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -194,7 +195,9 @@ const YourWill: React.FC = () => {
     }, [])
 
     const getUserAndSetState = async () => {
-        const user = await getUser("9876543211");
+        const phoneNumber = getCookie('phoneNumber');
+        console.log('phoneNumber', phoneNumber)
+        const user = await getUser(phoneNumber ?? "/");
 
         setUser({
             userId: user.userId
