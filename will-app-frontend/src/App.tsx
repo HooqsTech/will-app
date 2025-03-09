@@ -18,8 +18,11 @@ function App() {
   return (
     <div className="font-[frank] w-full">
       <BrowserRouter>
-      <Routes>
-        <Route path="your_will/*" element={<ProtectedRoute><YourWill /></ProtectedRoute>} />
+        <Routes>
+          <Route path="" element={<ProtectedRoute>
+            <Navigate to="/home" />
+          </ProtectedRoute>} />
+          <Route path="your_will/*" element={<ProtectedRoute><YourWill /></ProtectedRoute>} />
           <Route path="home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="login" element={<LoginPage />} />
         </Routes>
