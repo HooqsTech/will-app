@@ -252,23 +252,23 @@ export default function Sidebar2() {
         id: 'about_you',
         label: 'About You',
         iconName: 'pdf',
-        routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ABOUT_YOU,
+        routePath: ROUTE_PATHS.ABOUT_YOU,
         children: [
-          { id: 'personal_details', label: 'Personal Details', iconName: 'pdf', routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.PERSONAL_DETAILS },
-          { id: 'address_details', label: 'Address Details', iconName: 'pdf', routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ADDRESS_DETAILS }
+          { id: 'personal_details', label: 'Personal Details', iconName: 'pdf', routePath: ROUTE_PATHS.PERSONAL_DETAILS },
+          { id: 'address_details', label: 'Address Details', iconName: 'pdf', routePath: ROUTE_PATHS.ADDRESS_DETAILS }
         ]
       },
       {
         id: 'assets',
         label: 'Asset',
         iconName: 'pdf',
-        routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSETS,
+        routePath: ROUTE_PATHS.ASSETS,
         children: [],
       },
       {
         id: 'liabilities',
         label: 'Liabilities',
-        routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.LIABILITIES,
+        routePath: ROUTE_PATHS.LIABILITIES,
         iconName: 'pdf',
         children: [],
       },
