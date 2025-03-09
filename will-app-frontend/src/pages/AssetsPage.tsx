@@ -8,6 +8,7 @@ import { userState } from "../atoms/UserDetailsState";
 import CheckboxContainer from "../components/CheckboxContainer";
 import CustomAccordion from "../components/CustomAccordion";
 import NextButton from "../components/NextButton";
+import { ROUTE_PATHS } from "../constants";
 
 const AssetsPage = () => {
     const [selectedAssets, setSelectedAssets] = useRecoilState(selectedAssetsState);
@@ -34,7 +35,7 @@ const AssetsPage = () => {
 
         // NAVIGATE TO FIRST ASSET SUB PAGE
         if (result.bankAccounts === selectedAssets.bankAccounts) {
-            navigate(routeData[0].currentPath);
+            navigate(ROUTE_PATHS.YOUR_WILL + routeData[0].currentPath);
         }
     }
 
