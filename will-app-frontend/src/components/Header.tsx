@@ -6,6 +6,7 @@ const Header = () => {
     const navigate = useNavigate();
     const handleLogout = () => {
         removeCookie('idToken'); // Removes the 'idToken' cookie
+        removeCookie('phoneNumber')
         navigate('/login');
       };
     return (

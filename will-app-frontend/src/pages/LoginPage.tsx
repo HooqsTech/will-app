@@ -132,6 +132,12 @@ const LoginPage = () => {
                 sameSite: 'Strict', // Prevent CSRF
                 path: '/', // Available for all routes
             });
+            setCookie('phoneNumber', "+" + formState.phoneNumber, {
+                expires: 1, // Expires in 1 day
+                secure: true, // HTTPS only
+                sameSite: 'Strict', // Prevent CSRF
+                path: '/', // Available for all routes
+            });
             console.log("User Verified Successfully!");
             console.log("Server response:", response.userId);
             setShowAlert(true);
