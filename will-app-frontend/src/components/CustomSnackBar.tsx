@@ -13,7 +13,7 @@ const CustomSnackBar:React.FC<ICustomSnackBarPros> = ({alertType,message,open,on
   return (
     <Snackbar
         open={open}
-        autoHideDuration={3000} // Hides after 3 seconds
+        autoHideDuration={10000} // Hides after 3 seconds
         onClose={onClose}
         anchorOrigin={{ "vertical": "top", "horizontal":"right" }}
       >
