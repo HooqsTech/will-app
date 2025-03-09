@@ -196,7 +196,6 @@ const YourWill: React.FC = () => {
 
     const getUserAndSetState = async () => {
         const phoneNumber = getCookie('phoneNumber');
-        console.log('phoneNumber', phoneNumber)
         const user = await getUser(phoneNumber ?? "/");
 
         setUser({

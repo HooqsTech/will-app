@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import { addressDetailsState } from '../atoms/AddressDetailsState';
 import CustomButton from '../components/CustomButton';
 import { useNavigate } from 'react-router';
+import { ROUTE_PATHS } from '../constants';
 
 interface IItemProps {
     label: string,
@@ -16,7 +17,7 @@ const AboutYouPage = () => {
     const navigate = useNavigate();
 
     const handleOnClick = () => {
-        navigate("/personal_details");
+        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.PERSONAL_DETAILS);
     }
 
     const Item: React.FC<IItemProps> = ({ label, text }) => {
