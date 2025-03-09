@@ -29,7 +29,7 @@ const LoginPage = () => {
             const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
                 size: "invisible",
                 callback: (response: any) => {
-                    console.log("reCAPTCHA resolved:", response);
+                   
                 },
             });
             verifier.render().then(() => {
@@ -63,7 +63,6 @@ const LoginPage = () => {
     const handleResend = () => {
         setIsResendDisabled(true);
         sendOtp();
-        console.log('OTP resent!');
     };
 
     const alertOnClose = () => {
@@ -78,7 +77,6 @@ const LoginPage = () => {
                 setShowAlert(true);
                 setAlertMessage("Please enter a phone number.");
                 setAlertType("error");
-                console.log("Please enter a phone number.");
                 return;
             }
 
@@ -86,7 +84,6 @@ const LoginPage = () => {
                 setShowAlert(true);
                 setAlertMessage("Error: reCAPTCHA not initialized.");
                 setAlertType("error");
-                console.log("Error: reCAPTCHA not initialized.");
                 return;
             }
             setLoading(true);
@@ -102,7 +99,6 @@ const LoginPage = () => {
             setAlertMessage("OTP Sent Sucessfully!");
             setAlertType("success");
         } catch (error) {
-            console.error("Error sending OTP:", error);
             setShowAlert(true);
             setAlertMessage("Error sending OTP. Try Again !!!");
             setAlertType("error");
@@ -113,7 +109,6 @@ const LoginPage = () => {
     const verifyOtp = async () => {
         try {
             if (!formState.otp || !formState.confirmationResult) {
-                console.log("Please enter OTP.");
                 setShowAlert(true);
                 setAlertMessage("Please enter OTP.");
                 setAlertType("error");
@@ -121,7 +116,6 @@ const LoginPage = () => {
             }
             setLoading(true);
             const userCredential = await formState.confirmationResult.confirm(formState.otp);
-            console.log("User verified:", userCredential.user);
 
             const idToken = await userCredential.user.getIdToken();
             const response = await verifyToken(idToken);
@@ -138,8 +132,6 @@ const LoginPage = () => {
                 sameSite: 'Strict', // Prevent CSRF
                 path: '/', // Available for all routes
             });
-            console.log("User Verified Successfully!");
-            console.log("Server response:", response.userId);
             setShowAlert(true);
             setAlertMessage("OTP Verified Sucessfully!");
             setAlertType("success");
@@ -155,7 +147,6 @@ const LoginPage = () => {
             setShowAlert(true);
             setAlertMessage("Error verifying OTP. Try Again !!!");
             setAlertType("error");
-            console.error("Error verifying OTP:", error);
         }
 
         setLoading(false);

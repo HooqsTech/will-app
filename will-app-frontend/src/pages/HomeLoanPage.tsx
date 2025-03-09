@@ -27,7 +27,6 @@ const HomeLoanPage = () => {
     const location = useLocation();
     const [showErrorBorder, setShowErrorBorder] = useState(false);
 
-    console.log('formState', formState)
 
     const saveHomeLoanAsync = async (property: IHomeLoanState, index: number) => {
         let data: IAsset = {
