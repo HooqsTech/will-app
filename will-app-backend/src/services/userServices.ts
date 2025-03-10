@@ -128,7 +128,7 @@ export const deleteAddressDetails = async (userId: string) => {
 
 export const getUserDetailsByPhone = async (phoneNumber: string) => {
     const user = await prisma.users.findFirst({
-        where: { phonenumber: "+" + phoneNumber.trim() },
+        where: { phonenumber: phoneNumber[0] == "+" ? phoneNumber : "+" + phoneNumber.trim() },
         include: {
             addressdetails: true,
             assets: true,
