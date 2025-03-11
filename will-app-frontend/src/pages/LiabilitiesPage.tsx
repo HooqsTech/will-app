@@ -8,7 +8,7 @@ import { addSelectedAssetsAsync } from '../api/asset';
 import { userState } from '../atoms/UserDetailsState';
 import { getRouteDataFromSelectedAssets, routesState } from '../atoms/RouteState';
 import { useNavigate } from 'react-router';
-import { ASSET_TYPES } from '../constants';
+import { ASSET_TYPES, ROUTE_PATHS } from '../constants';
 
 const LiabilitiesPage = () => {
     const [selectedAssets, setSelectedAssets] = useRecoilState(selectedAssetsState);
@@ -35,7 +35,7 @@ const LiabilitiesPage = () => {
 
         // NAVIGATE TO ADDRESS DETAILS
         if (result.bankAccounts === selectedAssets.bankAccounts) {
-            navigate(routeData.find(s => s.type === ASSET_TYPES.LIABILITIES)?.currentPath ?? "");
+            navigate(ROUTE_PATHS.YOUR_WILL + (routeData.find(s => s.type === ASSET_TYPES.LIABILITIES)?.currentPath ?? ""));
         }
     }
 
