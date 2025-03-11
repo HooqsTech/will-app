@@ -302,7 +302,7 @@ export default function Sidebar2() {
         id: s.id,
         label: s.label,
         iconName: "pdf",
-        routePath: ROUTE_PATHS.BUSINESS
+        routePath: s.currentPath
       }))
 
     var otherAssets: ExtendedTreeItemProps[] = routeState.filter(s => s.type === ASSET_TYPES.OTHER_ASSETS)
