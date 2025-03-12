@@ -15,7 +15,7 @@ import { deleteAsset, upsertAsset } from '../api/asset';
 import { userState } from '../atoms/UserDetailsState';
 import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
 import { IsEmptyString } from '../utils';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmDelete from "../components/ConfirmDelete";
 
 const DematAccountPage = () => {
     const [formState, setFormState] = useRecoilState<IDematAccountState[]>(dematAccountsState);
@@ -153,9 +153,7 @@ const DematAccountPage = () => {
                             </div>
                             {
                                 !shouldExpandAccordion(index) && (
-                                    <button onClick={() => deleteDematAccountAsync(index)} className='p-2 h-full bg-will-green'>
-                                        <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                                    </button>
+                                    <ConfirmDelete onConfirm={() => deleteDematAccountAsync(index)} />
                                 )
                             }
 

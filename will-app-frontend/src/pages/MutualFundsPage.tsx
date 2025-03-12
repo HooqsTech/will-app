@@ -15,7 +15,7 @@ import { IAsset } from '../models/asset';
 import { userState } from '../atoms/UserDetailsState';
 import { emptyMutualFundsValidationState, IMutualFundValidationState, mutualFundValidationState } from '../atoms/validationStates/MutualFundsValidationState';
 import { IsEmptyString } from '../utils';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmDelete from "../components/ConfirmDelete";
 
 const MutualFundsPage = () => {
     const [formState, setFormState] = useRecoilState<IMutualFundState[]>(mutualFundsState);
@@ -154,9 +154,7 @@ const MutualFundsPage = () => {
                             </div>
                             {
                                 !shouldExpandAccordion(index) && (
-                                    <button onClick={() => deleteMutualFundAsync(index)} className='p-2 h-full bg-will-green'>
-                                        <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                                    </button>
+                                    <ConfirmDelete onConfirm={() => deleteMutualFundAsync(index)} />
                                 )
                             }
 

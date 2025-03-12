@@ -1,4 +1,4 @@
-import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmDelete from "../components/ConfirmDelete";
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -146,9 +146,7 @@ const VehiclesPage = () => {
                             </div>
                             {
                                 !shouldExpandAccordion(index) && (
-                                    <button onClick={() => deleteVehicleAsync(index)} className='p-2 h-full bg-will-green'>
-                                        <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                                    </button>
+                                    <ConfirmDelete onConfirm={() => deleteVehicleAsync(index)} />
                                 )
                             }
 

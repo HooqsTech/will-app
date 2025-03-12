@@ -8,7 +8,7 @@ import { emptyIntellectualPropertyValidationState, intellectualPropertyValidatio
 import { IsEmptyString } from '../utils';
 import { upsertAsset, deleteAsset } from '../api/asset';
 import { ASSET_TYPES, ASSET_SUBTYPES, ROUTE_PATHS } from '../constants';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmDelete from "../components/ConfirmDelete";
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
 import AddButton from '../components/AddButton';
@@ -144,9 +144,7 @@ const IntellectualPropertiesPage = () => {
                             </div>
                             {
                                 !shouldExpandAccordion(index) && (
-                                    <button onClick={() => deletePropertyAsync(index)} className='p-2 h-full bg-will-green'>
-                                        <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                                    </button>
+                                    <ConfirmDelete onConfirm={() => deletePropertyAsync(index)} />
                                 )
                             }
 

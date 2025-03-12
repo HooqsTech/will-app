@@ -14,7 +14,7 @@ import { BENEFICIARIES } from '../constants';
 import { IsEmptyNumber, IsEmptyString } from '../utils';
 import { beneficiariesValidationState, emptyBeneficiariesValidationState, IBeneficiaryValidationState } from '../atoms/validationStates/BeneficiariesValidationState';
 import { useLocation, useNavigate } from 'react-router';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmDelete from "../components/ConfirmDelete";
 
 const BeneficiariesPage = () => {
     const [formState, setFormState] = useRecoilState<IBeneficiaryState[]>(beneficiariesState);
@@ -198,9 +198,7 @@ const BeneficiariesPage = () => {
                             </div>
                             {
                                 !shouldExpandAccordion(index) && (
-                                    <button onClick={() => deleteBeneficiaryAsync(index)} className='p-2 h-full bg-will-green'>
-                                        <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                                    </button>
+                                    <ConfirmDelete onConfirm={() => deleteBeneficiaryAsync(index)} />
                                 )
                             }
 

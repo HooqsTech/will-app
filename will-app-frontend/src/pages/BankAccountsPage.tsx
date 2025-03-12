@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router';
 import { IsEmptyString } from '../utils';
 import { bankDetailsValidationState, emptyBankAccountValidationState, IBankDetailsValidationState } from '../atoms/validationStates/BankDetailsValidationState';
 import AddButton from '../components/AddButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmDelete from "../components/ConfirmDelete";
 
 const BankAccountsPage = () => {
     const [formState, setFormState] = useRecoilState<IBankDetailsState[]>(bankDetailsState);
@@ -174,9 +174,7 @@ const BankAccountsPage = () => {
                             </div>
                             {
                                 !shouldExpandAccordion(index) && (
-                                    <button onClick={() => deleteAssetAsync(index)} className='p-2 h-full bg-will-green'>
-                                        <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                                    </button>
+                                    <ConfirmDelete onConfirm={() => deleteAssetAsync(index)} />
                                 )
                             }
                         </div>
