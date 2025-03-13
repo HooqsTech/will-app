@@ -300,7 +300,7 @@ const BeneficiariesPage = () => {
                                     error={showErrorBorder && Object.values(validationState[index]).some(s => s != undefined && s != null && s != "")}
                                     onChange={() => handleAccordionOnChange(index)}
                                     label={`BENEFICIARIY ${index + 1}`}
-                                    
+                                    showShield={formState[index].isGuardian}
                                     subTitle={
                                         currentItem !== index && !shouldExpandAccordion(index) ? getSubTitle(index) : ""
                                     }
