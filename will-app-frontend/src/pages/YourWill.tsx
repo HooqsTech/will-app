@@ -88,6 +88,8 @@ import VechicleLoanPage from './VehicleLoanPage';
 import VehiclesPage from './VehiclesPage';
 import { getCookie } from 'typescript-cookie';
 import AssetDistributionSelectionPage from './AssetDistributionSelectionPage';
+import { beneficiariesState, IBeneficiaryState } from '../atoms/BeneficiariesState';
+import { beneficiariesValidationState, emptyBeneficiariesValidationState } from '../atoms/validationStates/BeneficiariesValidationState';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -188,6 +190,10 @@ const YourWill: React.FC = () => {
     // OTHER LIABILITIES
     const setOtherLiabilities = useSetRecoilState(otherLiabilitiesState);
     const setOtherLiabilitiesValidationState = useSetRecoilState(otherLiabilitiesvalidationState);
+
+    // BENEFICIARIES
+    const setBeneficiaries = useSetRecoilState(beneficiariesState);
+    const setBeneficiariesValidationState = useSetRecoilState(beneficiariesValidationState);
 
     const setRouteState = useSetRecoilState(routesState);
 
@@ -370,6 +376,15 @@ const YourWill: React.FC = () => {
             if (otherLiabilities.length > 0) {
                 setOtherLiabilities(otherLiabilities)
                 setOtherLiabilitiesValidationState(otherLiabilities.map(_ => ({ ...emptyOtherLiabilitiesValidationState })))
+            }
+        }
+
+        if (user.beneficiaries) {
+            // SET BENEFICIARIES
+            var beneficiaries: IBeneficiaryState[] = user.beneficiaries.map((s) => ({ ...s.data, id: s.id }));
+            if (beneficiaries.length > 0) {
+                setBeneficiaries(beneficiaries)
+                setBeneficiariesValidationState(beneficiaries.map(_ => ({ ...emptyBeneficiariesValidationState })))
             }
         }
 

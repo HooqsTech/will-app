@@ -13,13 +13,16 @@ const HomePage = () => {
         <div>
             <Header />
             {/* TOP CONTENT */}
-            <div className="py-12">
-                <div className="max-w-5xl m-auto py-6">
+            <div className="py-12 md:px-12">
+                <div className="px-6 md:px-0 md:max-w-5xl m-auto py-6">
                     <div className="max-w-4xl m-auto pb-10">
                         <p className="text-4xl font-bold">Welcome</p>
                         <p className="text-slate-700 text-xl">Let's start your legacy planning today!</p>
                     </div>
-                    <div className="bg-white shadow-xl grid items-center justify-between w-full grid-cols-4 p-10">
+                    <div className="bg-white shadow-xl grid items-center md:justify-between w-full grid-cols-1 md:grid-cols-4 p-10">
+                        <div className="col-span-2 md:hidden flex items-end justify-start w-full">
+                            <img className="w-80" src="/assets/family.jpg" />
+                        </div>
                         <div className="col-span-2 flex flex-col space-y-6">
                             <p className="text-4xl">
                                 In just 20 minutes, you can safeguard your loved one's future.
@@ -29,12 +32,12 @@ const HomePage = () => {
                             </p>
                             <NextButton className="w-fit lowercase" onClick={handleGetStartedClick} label="Get Started" />
                         </div>
-                        <div className="col-span-2 flex items-end justify-end w-full">
+                        <div className="col-span-2 md:flex hidden items-end justify-end w-full">
                             <img className="w-80" src="/assets/family.jpg" />
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-3 max-w-7xl gap-10 m-auto justify-around">
+                <div className="grid grid-cols-1 px-10 md:px-0 md:grid-cols-3 max-w-7xl gap-10 m-auto justify-around">
                     <div className="bg-will-green col-span-1 w-full p-5 space-y-2 text-white">
                         <img className="h-40" src="/assets/make-your-will.png" />
                         <p className="font-semibold text-xl">Make your will</p>
