@@ -1,4 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import SecurityIcon from '@mui/icons-material/Security';
 import { ArrowDropDownIcon } from '@mui/x-date-pickers'
 import React from 'react'
 
@@ -10,9 +11,10 @@ interface ICustomAccordionProps {
     expanded?: boolean;
     defaultExpanded?: boolean;
     error?: boolean;
+    showShield?: boolean
 }
 
-const CustomAccordion: React.FC<ICustomAccordionProps> = ({ label, children, subTitle, onChange, expanded, defaultExpanded, error }) => {
+const CustomAccordion: React.FC<ICustomAccordionProps> = ({ showShield, label, children, subTitle, onChange, expanded, defaultExpanded, error }) => {
     return (
         <div className='py-2'>
             <Accordion expanded={expanded} defaultExpanded={defaultExpanded} className={`bg-red-50 ${error && 'border-1 border-red-300'} `} onChange={onChange}>
@@ -20,7 +22,12 @@ const CustomAccordion: React.FC<ICustomAccordionProps> = ({ label, children, sub
                     expandIcon={<ArrowDropDownIcon />}
                 >
                     <div className='flex flex-col items-start'>
-                        <Typography>{label}</Typography>
+                        <div className='flex'>
+                            <Typography>{label}</Typography>
+                            {
+                                showShield && <SecurityIcon fontSize='small' />
+                            }
+                        </div>
                         {
                             subTitle !== "" &&
                             <p className='text-xs pt-2'>
