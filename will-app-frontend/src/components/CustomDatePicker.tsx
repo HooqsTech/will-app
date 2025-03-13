@@ -18,6 +18,7 @@ const CustomDatePicker: React.FC<ICustomDatePickerProps> = ({ label, onChange, v
                     value={value}
                     label={label}
                     maxDate={dayjs()}
+                    minDate={dayjs().subtract(90, "year")}
                     onChange={(e) => onChange(e)}
                     format="DD/MM/YYYY"
                     slotProps={
