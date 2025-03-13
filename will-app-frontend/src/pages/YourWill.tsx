@@ -87,6 +87,7 @@ import SafetyDepositBoxesPage from './SafetyDepositBoxesPage';
 import VechicleLoanPage from './VehicleLoanPage';
 import VehiclesPage from './VehiclesPage';
 import { getCookie } from 'typescript-cookie';
+import AssetDistributionSelectionPage from './AssetDistributionSelectionPage';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -429,6 +430,7 @@ const YourWill: React.FC = () => {
                         {/* LIABILITIES END */}
 
                         <Route path={ROUTE_PATHS.BENEFICIARIES} element={<BeneficiariesPage />} />
+                        <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION} element={<AssetDistributionSelectionPage />} />
                     </Routes>
                 </div>
             </div>
