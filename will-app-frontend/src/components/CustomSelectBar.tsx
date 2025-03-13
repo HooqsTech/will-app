@@ -4,7 +4,7 @@ interface ISelectOption {
 }
 interface ICustomSelectBarProps {
  options : ISelectOption[];
- onSelectChange: (value:string,multiple:boolean) => void;
+ onSelectChange: (value:string) => void;
  multiple: boolean;
  selectedOptions: string[];
 }
@@ -25,7 +25,7 @@ const CustomSelectBar:React.FC<ICustomSelectBarProps>  = ({ options, onSelectCha
             name="distribution"
             value={option.value}
             checked={selectedOptions.includes(option.value)}
-            onChange={() => onSelectChange(option.value,multiple)}
+            onChange={() => onSelectChange(option.value)}
             className="peer absolute opacity-0"
           />
           <p className="first-letter:capitalize py-[18px] font-medium text-base text-dark_grey_text text-center px-5">
