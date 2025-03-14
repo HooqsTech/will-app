@@ -90,6 +90,8 @@ import { getCookie } from 'typescript-cookie';
 import AssetDistributionSelectionPage from './AssetDistributionSelectionPage';
 import { beneficiariesState, IBeneficiaryState } from '../atoms/BeneficiariesState';
 import { beneficiariesValidationState, emptyBeneficiariesValidationState } from '../atoms/validationStates/BeneficiariesValidationState';
+import AssetDistributionSinglePage from './AssetDistributionSinglePage';
+import AssetDistributionPercentPage from './AssetDistributionPercentPage';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -446,6 +448,8 @@ const YourWill: React.FC = () => {
 
                         <Route path={ROUTE_PATHS.BENEFICIARIES} element={<BeneficiariesPage />} />
                         <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION} element={<AssetDistributionSelectionPage />} />
+                        <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_SINGLE} element={<AssetDistributionSinglePage />} />
+                        <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_PERCENT} element={<AssetDistributionPercentPage />} />
                     </Routes>
                 </div>
             </div>
