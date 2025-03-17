@@ -3,6 +3,35 @@ import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();
 
+export const validUser = async (userId: string): Promise<boolean> => {
+    const user = await prisma.users.findUnique({ where: { userid: userId } });
+    return !!user;
+};
+
+export const getUserByUserId = async (userId: string) => {
+    const user = await prisma.users.findUnique({ 
+        where: { userid: userId },
+        include: {
+            addressdetails: true,
+            assets: true,
+            beneficiaries: true,
+            excludedpersons: true,
+            liabilities: true,
+            personaldetails: true,
+            pets: true,
+            selectedassets: true,
+            will_distribution: true
+        },
+    });
+
+    if (!user) {
+        return null;
+    }
+
+    return formatUserResponse(user);
+};
+
+
 export const checkUserExists = async (phoneNumber: string) => {
     const user = await prisma.users.findUnique({
         where: { phonenumber: phoneNumber },
@@ -138,6 +167,7 @@ export const getUserDetailsByPhone = async (phoneNumber: string) => {
             personaldetails: true,
             pets: true,
             selectedassets: true,
+            will_distribution: true
         },
     });
 
@@ -152,23 +182,24 @@ const formatUserResponse = (user: any) => ({
     userId: user.userid,
     personalDetails: user.personaldetails?.details || {},
     addressDetails: user.addressdetails?.address || {},
-    assets: user.assets?.map((asset: any) => ({
+    assets: Array.isArray(user.assets) ? user.assets.map((asset: any) => ({
         id: asset.id,
         type: asset.type,
         subtype: asset.subtype,
         data: asset.data,
-    })),
-    beneficiaries: user.beneficiaries?.map((ben: any) => ({
+    })) : [],
+    beneficiaries: Array.isArray(user.beneficiaries) ? user.beneficiaries?.map((ben: any) => ({
         id: ben.id,
         type: ben.type,
         data: ben.data,
-    })),
-    excludedPersons: user.excludedpersons?.map((ex: any) => ex.data),
-    liabilities: user.liabilities?.map((liability: any) => ({
+    })) : [],
+    excludedPersons: Array.isArray(user.excludedpersons) ? user.excludedpersons?.map((ex: any) => ex.data) : [],
+    liabilities: Array.isArray(user.liabilities) ? user.liabilities?.map((liability: any) => ({
         id: liability.id,
         type: liability.type,
         data: liability.data,
-    })),
-    pets: user.pets?.map((pet: any) => pet.data),
+    })) : [],
+    pets: Array.isArray(user.pets) ? user.pets?.map((pet: any) => pet.data) : [],
     selectedAssets: user.selectedassets?.data || {},
+    will_distribution: user.will_distribution || {}
 });

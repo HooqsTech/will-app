@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import {
-    validUser,
     validateId,
     getBeneficiaryByIdService,
     getBeneficiariesByUserIdService,
@@ -8,6 +7,8 @@ import {
     deleteBeneficiaryByIdService,
     deleteBeneficiariesByUserIdService
 } from '../services/beneficiaryService';
+import { validUser } from '../services/userServices';
+
 
 export const getBeneficiaryById = async (req: Request, res: Response) => {
     try {

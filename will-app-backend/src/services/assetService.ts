@@ -2,12 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const checkUserExists = async (userId: string) => {
-    return await prisma.users.findUnique({
-        where: { userid: userId },
-    });
-};
-
 export const upsertSelectedAssets = async (userId: string, assetData: any) => {
     return await prisma.selectedassets.upsert({
         where: { userid: userId },

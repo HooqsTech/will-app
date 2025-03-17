@@ -7,6 +7,7 @@ import assetDistributionRoutes from './routes/assetDistributionRoutes';
 import cors from 'cors';
 import admin from "firebase-admin";
 import path from "path";
+import pdfGeneratorRoutes from "./routes/pdfGeneratorRoutes";
 
 // Initialize Firebase Admin SDK
 const serviceAccount = require(path.join(__dirname, "../serviceAccountKey.json"));
@@ -27,6 +28,7 @@ app.use('/api', benefciariesRoutes);
 app.use('/api', liabilitiesRoutes);
 app.use('/api', liabilitiesRoutes);
 app.use('/api', assetDistributionRoutes);
+app.use('/api', pdfGeneratorRoutes);
 
 
 
