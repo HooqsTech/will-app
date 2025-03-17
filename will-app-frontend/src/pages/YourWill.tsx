@@ -87,6 +87,11 @@ import SafetyDepositBoxesPage from './SafetyDepositBoxesPage';
 import VechicleLoanPage from './VehicleLoanPage';
 import VehiclesPage from './VehiclesPage';
 import { getCookie } from 'typescript-cookie';
+import AssetDistributionSelectionPage from './AssetDistributionSelectionPage';
+import { beneficiariesState, IBeneficiaryState } from '../atoms/BeneficiariesState';
+import { beneficiariesValidationState, emptyBeneficiariesValidationState } from '../atoms/validationStates/BeneficiariesValidationState';
+import AssetDistributionSinglePage from './AssetDistributionSinglePage';
+import AssetDistributionPercentPage from './AssetDistributionPercentPage';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -187,6 +192,10 @@ const YourWill: React.FC = () => {
     // OTHER LIABILITIES
     const setOtherLiabilities = useSetRecoilState(otherLiabilitiesState);
     const setOtherLiabilitiesValidationState = useSetRecoilState(otherLiabilitiesvalidationState);
+
+    // BENEFICIARIES
+    const setBeneficiaries = useSetRecoilState(beneficiariesState);
+    const setBeneficiariesValidationState = useSetRecoilState(beneficiariesValidationState);
 
     const setRouteState = useSetRecoilState(routesState);
 
@@ -372,6 +381,15 @@ const YourWill: React.FC = () => {
             }
         }
 
+        if (user.beneficiaries) {
+            // SET BENEFICIARIES
+            var beneficiaries: IBeneficiaryState[] = user.beneficiaries.map((s) => ({ ...s.data, id: s.id }));
+            if (beneficiaries.length > 0) {
+                setBeneficiaries(beneficiaries)
+                setBeneficiariesValidationState(beneficiaries.map(_ => ({ ...emptyBeneficiariesValidationState })))
+            }
+        }
+
         // DYNAMIC ROUTE MAPPING
         generateRouteDataFromSelectedAssets(user.selectedAssets);
     }
@@ -429,6 +447,9 @@ const YourWill: React.FC = () => {
                         {/* LIABILITIES END */}
 
                         <Route path={ROUTE_PATHS.BENEFICIARIES} element={<BeneficiariesPage />} />
+                        <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION} element={<AssetDistributionSelectionPage />} />
+                        <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_SINGLE} element={<AssetDistributionSinglePage />} />
+                        <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_PERCENT} element={<AssetDistributionPercentPage />} />
                     </Routes>
                 </div>
             </div>

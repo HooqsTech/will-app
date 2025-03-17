@@ -8,7 +8,7 @@ import { IsEmptyString } from '../utils';
 import { emptyEscopValidationState, IEscopValidationState, escopsValidationState } from '../atoms/validationStates/EscopsDetailsValidationState';
 import { upsertAsset, deleteAsset } from '../api/asset';
 import { ASSET_TYPES, ASSET_SUBTYPES, ROUTE_PATHS } from '../constants';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmDelete from "../components/ConfirmDelete";
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
@@ -153,9 +153,7 @@ const EscopsPage = () => {
                             </CustomAccordion>
                         </div>
                         {!shouldExpandAccordion(index) && (
-                            <button onClick={() => deleteEscopAsync(index)} className="p-2 h-full bg-will-green">
-                                <DeleteIcon fontSize="small" className="text-white" />
-                            </button>
+                             <ConfirmDelete onConfirm={() => deleteEscopAsync(index)} />
                         )}
                     </div>
                 ))}

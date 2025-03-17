@@ -7,18 +7,32 @@ import CustomDatePicker from "../CustomDatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { CHILDREN_ORGANIZATION, GENERAL_ORGANIZATION, OLDAGE_ORGANIZATION, SPIRITUAL_ORGANIZATION } from "../../constants";
 import { beneficiariesValidationState, IBeneficiaryValidationState } from "../../atoms/validationStates/BeneficiariesValidationState";
+import AddButton from "../AddButton";
+import "dayjs/plugin/relativeTime";
+import { useEffect, useState } from "react";
 
 interface IBankAccountFormProps {
-    index: number
+    index: number,
+    isGuardian?: boolean,
+    addGuardian?: () => void
 }
 
 const RELATIONSHIP = ['son ', 'daughter ', 'spouse ', 'mother ', 'father ', 'brother ', 'sister ', 'nephew ', 'niece ', 'grand-son ', 'grand-daughter ', 'daughter-in-law ', 'son-in-law ', 'step-son ', 'step-daughter ']
 
-const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
+const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, addGuardian }) => {
     const [formState, setFormState] = useRecoilState<IBeneficiaryState[]>(beneficiariesState);
     const [validationState, setValidationState] = useRecoilState<IBeneficiaryValidationState[]>(beneficiariesValidationState);
-        const item = formState[index];
-        const validationStateItem = validationState[index];
+    const item = formState[index];
+    const validationStateItem = validationState[index];
+    const [needsGuardian, setNeedsGuardian] = useState(false);
+
+    useEffect(() => {
+        if (item.dateOfBirth !== undefined) {
+            var age = dayjs().diff(dayjs(item.dateOfBirth), "year");
+            setNeedsGuardian(age <= 18)
+        }
+    }, [])
+
 
     const handleChange = (index: number, key: keyof IBeneficiaryState, value: string | Dayjs | null) => {
         setFormState((prevState) =>
@@ -27,6 +41,11 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: "" } : item))
         );
+
+        if (key === "dateOfBirth") {
+            var age = dayjs().diff(dayjs(value), "year");
+            setNeedsGuardian(age <= 18)
+        }
     };
 
     const getOrganizationOptions = () => {
@@ -49,12 +68,15 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer hideBorder>
-            <CustomSelect
-                label="Beneficiary Type"
-                options={["Person", "Charity"]}
-                value={item.type}
-                helperText={validationStateItem.type}
-                onChange={(e) => handleChange(index, "type", e)} />
+            {
+                !item.isGuardian && <CustomSelect
+                    label="Beneficiary Type"
+                    options={["Person", "Charity"]}
+                    value={item.type}
+                    helperText={validationStateItem.type}
+                    onChange={(e) => handleChange(index, "type", e)} />
+            }
+
             {
                 item.type === "Person" &&
                 <>
@@ -75,6 +97,21 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                         value={item.dateOfBirth ? dayjs(item.dateOfBirth) : null}
                         helperText={validationStateItem.dateOfBirth}
                         label="DOB" />
+                    {
+                        !isGuardian && needsGuardian && (formState.findIndex(f => f.isGuardian === true) > -1) && (
+                            <CustomSelect
+                                label="Guardian"
+                                options={formState.filter(f => f.isGuardian).map(s => s.fullName)}
+                                value={item.guardian ?? ""}
+                                helperText={validationStateItem.guardian}
+                                onChange={(e) => handleChange(index, "guardian", e)}
+                            />
+
+                        )
+                    }
+                    {
+                        !isGuardian && needsGuardian && (<AddButton onClick={addGuardian!} label="Add Guardian" />)
+                    }
                     <CustomTextBox
                         value={item.email}
                         onChange={(e) => handleChange(index, "email", e)}
@@ -86,6 +123,8 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                         onChange={(e) => handleChange(index, "phone", e)}
                         helperText={validationStateItem.phone}
                         label="Phone"
+                        restrictAlphabets
+                        maxLength={10}
                         type="text" />
                     <CustomSelect
                         label="Relationship"

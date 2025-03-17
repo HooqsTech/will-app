@@ -10,10 +10,10 @@ import { IsEmptyString } from '../utils';
 import { emptyBondValidationState, IBondValidationState, bondsValidationState } from '../atoms/validationStates/BondDetailsValidationState';
 import { upsertAsset, deleteAsset } from '../api/asset';
 import { ASSET_TYPES, ASSET_SUBTYPES, ROUTE_PATHS } from '../constants';
-import DeleteIcon from '@mui/icons-material/Delete';
 import BackButton from '../components/BackButton';
 import { useLocation, useNavigate } from 'react-router';
 import { routesState } from '../atoms/RouteState';
+import ConfirmDelete from "../components/ConfirmDelete";
 
 const BondsPage = () => {
     const [formState, setFormState] = useRecoilState<IBondState[]>(bondsState);
@@ -142,9 +142,7 @@ const BondsPage = () => {
                             </CustomAccordion>
                         </div>
                         {!shouldExpandAccordion(index) && (
-                            <button onClick={() => deleteBondAsync(index)} className='p-2 h-full bg-will-green'>
-                                <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                            </button>
+                            <ConfirmDelete onConfirm={() => deleteBondAsync(index)} />
                         )}
                     </div>
                 ))}

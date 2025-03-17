@@ -11,7 +11,7 @@ import { customAssetsState, ICustomAssetState } from '../atoms/CustomAssets';
 import { deleteAsset, upsertAsset } from '../api/asset';
 import { userState } from '../atoms/UserDetailsState';
 import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmDelete from "../components/ConfirmDelete";
 import { emptyCustomAssetValidationState, ICustomAssetValidationState, customAssetsValidationState } from '../atoms/validationStates/CustomAssetsValidationState';
 import { IsEmptyString } from '../utils';
 
@@ -134,9 +134,7 @@ const CustomAssetsPage = () => {
                             </CustomAccordion>
                         </div>
                         {!shouldExpandAccordion(index) && (
-                            <button onClick={() => deleteCustomAssetAsync(index)} className='p-2 h-full bg-will-green'>
-                                <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                            </button>
+                            <ConfirmDelete onConfirm={() => deleteCustomAssetAsync(index)} />
                         )}
                     </div>
                 ))}

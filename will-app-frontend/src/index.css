@@ -1,5 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-    --color-will-green: #265e55;
-  }
+  --color-will-green: #265e55;
+}
+
+/* Custom SweetAlert2 Styling */
+.swal-sm {
+  width: 300px !important; /* Reduce size */
+  font-size: 14px !important; /* Smaller text */
+  padding: 1rem !important;
+}
+
+.swal-title-sm {
+  font-size: 16px !important; /* Smaller title */
+  font-weight: 600;
+}
+
+.swal-confirm-btn {
+  background-color: var(--color-will-green);
+  color: white !important;
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+
+.swal-cancel-btn {
+  background-color: var(--color-will-green);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+}

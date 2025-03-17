@@ -12,7 +12,7 @@ import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
 import { IAsset } from '../models/asset';
 import { userState } from '../atoms/UserDetailsState';
 import { IsEmptyNumber, IsEmptyString } from '../utils';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmDelete from "../components/ConfirmDelete";
 import { IVehicleLoanState, vehicleLoansState } from '../atoms/VehicleLoansState';
 import { emptyVehicleloanValidationState, IVehicleLoanValidationState, vehicleLoanValdationState } from '../atoms/validationStates/VehicleLoanValidationState';
 import VehicleLoanForm from '../components/Forms/VehcileLoanForm';
@@ -155,9 +155,7 @@ const VechicleLoanPage = () => {
                             </div>
                             {
                                 !shouldExpandAccordion(index) && (
-                                    <button onClick={() => deleteVehicleLoanAsync(index)} className='p-2 h-full bg-will-green'>
-                                        <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                                    </button>
+                                    <ConfirmDelete onConfirm={() => deleteVehicleLoanAsync(index)} />
                                 )
                             }
 

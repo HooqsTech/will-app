@@ -14,6 +14,8 @@ export interface IBeneficiaryState {
     organization: string;
     otherOrganization: string;
     donationAmount: number | null;
+    isGuardian?: boolean
+    guardian?: string
 }
 
 export const beneficiariesState = atom<IBeneficiaryState[]>({
@@ -30,6 +32,8 @@ export const beneficiariesState = atom<IBeneficiaryState[]>({
         charityType: "",
         organization: "",
         otherOrganization: "",
+        isGuardian: undefined,
+        guardian: undefined,
         donationAmount: null,
     }]
 });

@@ -13,6 +13,7 @@ export interface IBeneficiaryValidationState {
     organization: string;
     otherOrganization: string;
     donationAmount: string;
+    guardian: string;
 }
 
 export const beneficiariesValidationState = atom<IBeneficiaryValidationState[]>({
@@ -30,6 +31,7 @@ export const beneficiariesValidationState = atom<IBeneficiaryValidationState[]>(
         organization: "",
         otherOrganization: "",
         donationAmount: "",
+        guardian: ""
     }]
 });
 
@@ -46,4 +48,5 @@ export var emptyBeneficiariesValidationState: IBeneficiaryValidationState = {
     organization: "",
     otherOrganization: "",
     donationAmount: "",
+    guardian: ""
 };

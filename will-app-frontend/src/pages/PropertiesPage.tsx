@@ -14,7 +14,7 @@ import { userState } from '../atoms/UserDetailsState';
 import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
 import { emptyPropertyValidationState, IPropertiesValidationState, propertiesValidationState } from '../atoms/validationStates/PropertiesValidationState';
 import { IsEmptyString } from '../utils';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmDelete from "../components/ConfirmDelete";
 
 const PropertiesPage = () => {
     const [formState, setFormState] = useRecoilState<IPropertiesState[]>(propertiesState);
@@ -171,9 +171,7 @@ const PropertiesPage = () => {
                             </div>
                             {
                                 !shouldExpandAccordion(index) && (
-                                    <button onClick={() => deletePropertyAsync(index)} className='p-2 h-full bg-will-green'>
-                                        <DeleteIcon fontSize="small" className='text-white bg-will-green' />
-                                    </button>
+                                    <ConfirmDelete onConfirm={() => deletePropertyAsync(index)} />
                                 )
                             }
 
