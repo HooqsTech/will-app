@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import {
-    checkUserExists,
     upsertSelectedAssets,
     getAssetsByUserId,
     upsertAsset,
     deleteAssetsByUserId,
     deleteAssetById,
 } from "../services/assetService";
+import { validUser } from '../services/userServices';
+
 
 export const addSelectedAssets = async (req: Request, res: Response) => {
     try {
@@ -17,9 +18,8 @@ export const addSelectedAssets = async (req: Request, res: Response) => {
             return res.status(400).json({ error: "User ID is required" });
         }
 
-        const existingUser = await checkUserExists(userId);
-        if (!existingUser) {
-            return res.status(404).json({ error: "User not found" });
+        if(!(await validUser(userId))){
+            return res.status(400).json({ error: "Invalid User" });
         }
 
         const selectedAssets = await upsertSelectedAssets(userId, assetData);

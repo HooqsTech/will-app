@@ -3,18 +3,6 @@ import { UUID } from 'crypto';
 
 const prisma = new PrismaClient();
 
-// Check if the given user ID is valid
-export const validUser = async (userId: UUID): Promise<boolean> => {
-    const user = await prisma.users.findUnique({ where: { userid: userId } });
-    return !!user;
-};
-
-// Check if the given beneficiary ID exists and is valid for the user
-export const validBeneficiary = async (id: UUID, userId: UUID): Promise<boolean> => {
-    const beneficiary = await prisma.beneficiaries.findFirst({ where: { id, userid: userId } });
-    return !!beneficiary;
-};
-
 // Verify ID format
 export const validateId = async (id: UUID): Promise<boolean> => {
     if (!id || typeof id !== "string") {

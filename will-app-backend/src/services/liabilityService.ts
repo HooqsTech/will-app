@@ -3,11 +3,6 @@ import { UUID } from "crypto";
 
 const prisma = new PrismaClient();
 
-// Check if the given user ID is valid
-export const validUser = async (userId: UUID): Promise<boolean> => {
-    const user = await prisma.users.findUnique({ where: { userid: userId } });
-    return !!user;
-};
 
 // Verify ID format
 export const validateId = async (id: UUID): Promise<boolean> => {

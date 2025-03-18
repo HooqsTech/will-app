@@ -47,7 +47,8 @@ export const ROUTE_PATHS = {
     BUSINESS_ASSETS: "/business_assets",
     OTHER_ASSETS: "/other_assets",
     ASSET_DISTRIBUTION: "/asset_distributrion",
-    ASSET_DISTRIBUTION_SINGLE: "/asset_distributrion_single"
+    ASSET_DISTRIBUTION_SINGLE: "/asset_distributrion_single",
+    ASSET_DISTRIBUTION_PERCENT: "/asset_distributrion_percent",
 }
 
 export const BENEFICIARIES = "beneficiaries"
