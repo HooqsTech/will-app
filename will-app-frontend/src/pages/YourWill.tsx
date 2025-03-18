@@ -92,6 +92,7 @@ import { beneficiariesState, IBeneficiaryState } from '../atoms/BeneficiariesSta
 import { beneficiariesValidationState, emptyBeneficiariesValidationState } from '../atoms/validationStates/BeneficiariesValidationState';
 import AssetDistributionSinglePage from './AssetDistributionSinglePage';
 import AssetDistributionPercentPage from './AssetDistributionPercentPage';
+import AssetDistributionSpecificPage from './AssetDistributionSpecificPage';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -450,6 +451,7 @@ const YourWill: React.FC = () => {
                         <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION} element={<AssetDistributionSelectionPage />} />
                         <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_SINGLE} element={<AssetDistributionSinglePage />} />
                         <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_PERCENT} element={<AssetDistributionPercentPage />} />
+                        <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_SPECIFIC} element={<AssetDistributionSpecificPage />} />   
                     </Routes>
                 </div>
             </div>

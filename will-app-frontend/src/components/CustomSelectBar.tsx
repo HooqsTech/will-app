@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface ISelectOption {
     value: string;
     label: string;
@@ -11,13 +9,12 @@ interface ICustomSelectBarProps {
  selectedOptions: string[];
  onInputChange?: (value: string, input: string) => void;
  showAdditionalInput?: boolean; 
+ onPercentageInput?: Record<string, string>
 }
-const CustomSelectBar:React.FC<ICustomSelectBarProps>  = ({ options, onSelectChange, selectedOptions,onInputChange,multiple = false,showAdditionalInput = false }) => {
-  const [inputs, setInputs] = useState<Record<string, string>>({});
+const CustomSelectBar:React.FC<ICustomSelectBarProps>  = ({ options, onSelectChange, selectedOptions,onInputChange,onPercentageInput,multiple = false,showAdditionalInput = false }) => {
 
   const handleInputChange = (value: string, input: string) => {
-    setInputs((prev) => ({ ...prev, [value]: input }));
-    onInputChange?.(value, input); // Call only if provided
+     onInputChange?.(value, input); // Call only if provided
   };
 
   return (
@@ -53,7 +50,7 @@ const CustomSelectBar:React.FC<ICustomSelectBarProps>  = ({ options, onSelectCha
                   }
                 }}
                 placeholder="%"
-                value={inputs[option.value] || ""}
+                value={onPercentageInput?.[option.value] ?? ""}
                 onChange={(e) =>
                   handleInputChange(option.value, e.target.value)
                 }

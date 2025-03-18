@@ -278,6 +278,12 @@ export default function Sidebar2() {
         iconName: 'pdf',
         routePath: ROUTE_PATHS.BENEFICIARIES
       },
+      {
+        id: 'assetDistribution',
+        label: 'Asset Distribution',
+        iconName: 'pdf',
+        routePath: ROUTE_PATHS.ASSET_DISTRIBUTION
+      }
     ];
 
     // SET ASSETS

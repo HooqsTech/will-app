@@ -77,6 +77,7 @@ const AssetDistributionPercentPage = () => {
             multiple={true}
             selectedOptions={firstBeneficiary}
             showAdditionalInput={true}
+            onPercentageInput={additionalInputs}
           />
           <div className="justify-between flex mt-10">
             <NextButton
