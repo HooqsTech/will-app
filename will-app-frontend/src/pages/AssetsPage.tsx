@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import Swal from "sweetalert2";
 import { addSelectedAssetsAsync } from "../api/asset";
 import { getRouteDataFromSelectedAssets, routesState } from "../atoms/RouteState";
 import { ISelectedAssetsState, selectedAssetsState } from "../atoms/SelectedAssetsState";
@@ -24,7 +25,28 @@ const AssetsPage = () => {
         }));
     }
 
+    const validate = () => {
+        const keysToIgnore = new Set<keyof ISelectedAssetsState>(["homeLoans", "personalLoans", "vehicleLoans", "educationLoans", "otherLiabilities"]);
+
+        let isValid = Object.entries(selectedAssets)
+            .filter(([key]) => !keysToIgnore.has(key as keyof ISelectedAssetsState))
+            .some(([, value]) => value);
+
+        if (isValid !== true) {
+            return false;
+        }
+        return true;
+    }
+
     const handleOnClick = async () => {
+        if (!validate()) {
+            return Swal.fire({
+                title: "Please select at least one asset!",
+                confirmButtonText: "Okay",
+                confirmButtonColor: "var(--color-will-green)",
+            });
+        }
+
         // SAVE PERSONAL DETAILS
         setLoading(true);
         const result = await addSelectedAssetsAsync(selectedAssets, user.userId);
