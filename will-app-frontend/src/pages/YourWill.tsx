@@ -93,6 +93,9 @@ import { beneficiariesValidationState, emptyBeneficiariesValidationState } from 
 import AssetDistributionSinglePage from './AssetDistributionSinglePage';
 import AssetDistributionPercentPage from './AssetDistributionPercentPage';
 import AssetDistributionSpecificPage from './AssetDistributionSpecificPage';
+import ResiduaryEstateSelectionPage from './ResiduaryEstateSelectionPage';
+import ResiduaryEstateSinglePage from './ResiduaryEstateSinglePage';
+import ResiduaryEstatePercentPage from './ResiduaryEstatePercentPage';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -451,7 +454,10 @@ const YourWill: React.FC = () => {
                         <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION} element={<AssetDistributionSelectionPage />} />
                         <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_SINGLE} element={<AssetDistributionSinglePage />} />
                         <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_PERCENT} element={<AssetDistributionPercentPage />} />
-                        <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_SPECIFIC} element={<AssetDistributionSpecificPage />} />   
+                        <Route path={ROUTE_PATHS.ASSET_DISTRIBUTION_SPECIFIC} element={<AssetDistributionSpecificPage />} />
+                        <Route path={ROUTE_PATHS.RESIDUARY_SELECTION} element={<ResiduaryEstateSelectionPage />} />
+                        <Route path={ROUTE_PATHS.RESIDUARY_SELECTION_SINGLE} element={<ResiduaryEstateSinglePage />} />
+                        <Route path={ROUTE_PATHS.RESIDUARY_SELECTION_PERCENT} element={<ResiduaryEstatePercentPage />} />
                     </Routes>
                 </div>
             </div>
