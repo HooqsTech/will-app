@@ -200,7 +200,7 @@ const BeneficiariesPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         let routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        navigate(routeValue?.nextPath ?? "/your_will/payment");
     }
 
     const saveGuardianAsync = async (index: number) => {
@@ -314,7 +314,7 @@ const BeneficiariesPage = () => {
                                 )
                             }
 
-                            </div>
+                        </div>
                     ))
                 }
                 <AddButton onClick={addBeneficiaryItem} label={`BENEFICIARY ${formState.length + 1}`} />

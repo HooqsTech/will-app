@@ -60,6 +60,7 @@ model users {
   beneficiaries                   beneficiaries[]
   excludedpersons                 excludedpersons[]
   liabilities                     liabilities[]
+  paymentorders                   paymentorders[]
   percentage_distribution         percentage_distribution?
   personaldetails                 personaldetails?
   pets                            pets[]
@@ -152,4 +153,23 @@ model selectedassets {
   createdat DateTime? @default(now()) @db.Timestamptz(6)
   updatedat DateTime? @default(now()) @db.Timestamptz(6)
   users     users     @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model paymentorders {
+  orderid      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  razororderid String?   @db.VarChar(100)
+  amount       Int
+  userid       String    @db.Uuid
+  createdat    DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat    DateTime? @default(now()) @db.Timestamptz(6)
+  users        users     @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model razorpaymentevents {
+  razorpaymenteventid String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  razororderid        String    @db.VarChar(100)
+  event               String    @db.VarChar(100)
+  eventpayload        Json
+  createdat           DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat           DateTime? @default(now()) @db.Timestamptz(6)
 }
