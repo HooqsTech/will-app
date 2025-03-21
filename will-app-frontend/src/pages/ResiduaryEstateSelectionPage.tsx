@@ -1,14 +1,13 @@
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import CustomSelectBar from "../components/CustomSelectBar";
 import NextButton from "../components/NextButton";
 import { routesState } from "../atoms/RouteState";
 import { useLocation, useNavigate } from "react-router";
-
 import { userState } from '../atoms/UserDetailsState';
-import { useState } from "react";
+import { DistributionState } from "../atoms/DistributionState";
 
-const ResiduaryEstateSelectionPage  = () => {
-    const [distribution, setDistribution] = useState<string[]>([]);
+const ResiduaryEstateSelectionPage = () => {
+    const [distribution, setDistribution] = useRecoilState(DistributionState);
     const routeState = useRecoilValue(routesState);
     const navigate = useNavigate();
     const location = useLocation();
@@ -22,7 +21,7 @@ const ResiduaryEstateSelectionPage  = () => {
     // Handle Distribution Type Change
     const handleSelectChange = (value: string) => {
         if (["Single", "Percentage"].includes(value)) {
-            setDistribution( [value as "Single" | "Percentage"]);
+            setDistribution(value);
         }
     };
 
@@ -46,7 +45,7 @@ const ResiduaryEstateSelectionPage  = () => {
                 options={options}
                 onSelectChange={handleSelectChange}
                 multiple={false}
-                selectedOptions={distribution}
+                selectedOptions={distribution ? [distribution] : []}
             />
             <div className="justify-between flex mt-10">
                 <NextButton onClick={handleNextClick} />

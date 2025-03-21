@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { AssetDistributionPercentState } from "../atoms/AssetDistributionPercentState";
 import CustomSelectBar from "../components/CustomSelectBar";
-import { useRecoilValue } from "recoil";
 import { beneficiariesState, IBeneficiaryState } from "../atoms/BeneficiariesState";
 import NextButton from "../components/NextButton";
 import { savePercentageAssetDistribution } from "../api/assetDistribution";
@@ -8,11 +8,8 @@ import { userState } from '../atoms/UserDetailsState';
 
 const AssetDistributionPercentPage = () => {
   const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
-  const [firstBeneficiary, setFirstBeneficiary] = useState<string[]>([]);
-  const [backupBeneficiary, setBackupBeneficiary] = useState<string[]>([]);
-  const [additionalInputs, setAdditionalInputs] = useState<Record<string, string>>({});
-  const [step, setStep] = useState(1);
   const user = useRecoilValue(userState);
+  const [assetDistribution, setAssetDistribution] = useRecoilState(AssetDistributionPercentState);
 
   const backupBeneficiaryOptions = [
     { value: "spouse_children", label: "Their spouse and/or children" },
@@ -26,37 +23,39 @@ const AssetDistributionPercentPage = () => {
   }));
 
   const handleFirstSelectChange = (value: string) => {
-    setFirstBeneficiary((prevSelected) =>
-      prevSelected.includes(value)
-        ? prevSelected.filter((option) => option !== value)
-        : [...prevSelected, value]
-    );
+    setAssetDistribution((prev) => ({
+      ...prev,
+      firstBeneficiary: prev.firstBeneficiary.includes(value)
+        ? prev.firstBeneficiary.filter((option) => option !== value)
+        : [...prev.firstBeneficiary, value],
+    }));
   };
 
   const handleInputChange = (value: string, input: string) => {
-    setAdditionalInputs((prevInputs) => ({
-      ...prevInputs,
-      [value]: input,
+    setAssetDistribution((prev) => ({
+      ...prev,
+      additionalInputs: {
+        ...prev.additionalInputs,
+        [value]: input,
+      },
     }));
   };
 
   const handleBackupBeneficiaryChange = (value: string) => {
-    setBackupBeneficiary([value]);
+    setAssetDistribution((prev) => ({
+      ...prev,
+      backupBeneficiary: [value],
+    }));
   };
 
   const handleNextStep = async () => {
-    if (step === 1) {
-      setStep(2);
+    if (assetDistribution.step === 1) {
+      setAssetDistribution((prev) => ({ ...prev, step: 2 }));
     } else {
       try {
         const userId = user.userId;
-        const beneficiaryData = {
-          firstBeneficiary,
-          additionalInputs,
-          backupBeneficiary,
-        };
-  
-        await savePercentageAssetDistribution(userId, beneficiaryData);
+        const { firstBeneficiary, additionalInputs, backupBeneficiary } = assetDistribution;
+        await savePercentageAssetDistribution(userId, { firstBeneficiary, additionalInputs, backupBeneficiary });
       } catch (error) {
         console.log(error);
       }
@@ -65,7 +64,7 @@ const AssetDistributionPercentPage = () => {
 
   return (
     <div>
-      {step === 1 && (
+      {assetDistribution.step === 1 && (
         <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
           <h2 className="text-xl font-bold mb-5">
             In what percentage and to whom, do you want to divide your assets amongst your beneficiaries?
@@ -75,19 +74,16 @@ const AssetDistributionPercentPage = () => {
             onSelectChange={handleFirstSelectChange}
             onInputChange={handleInputChange}
             multiple={true}
-            selectedOptions={firstBeneficiary}
+            selectedOptions={assetDistribution.firstBeneficiary}
             showAdditionalInput={true}
-            onPercentageInput={additionalInputs}
+            onPercentageInput={assetDistribution.additionalInputs}
           />
           <div className="justify-between flex mt-10">
-            <NextButton
-              onClick={handleNextStep}
-              label="Save & continue"
-            />
+            <NextButton onClick={handleNextStep} label="Save & continue" />
           </div>
         </div>
       )}
-      {step === 2 && (
+      {assetDistribution.step === 2 && (
         <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
           <h2 className="text-xl font-bold mb-5">
             If one of your beneficiaries passes away before you, who should inherit their share of the assets instead?
@@ -96,12 +92,10 @@ const AssetDistributionPercentPage = () => {
             options={backupBeneficiaryOptions}
             onSelectChange={handleBackupBeneficiaryChange}
             multiple={false}
-            selectedOptions={backupBeneficiary}
+            selectedOptions={assetDistribution.backupBeneficiary}
           />
           <div className="justify-between flex mt-10">
-            <NextButton
-              onClick={handleNextStep}
-            />
+            <NextButton onClick={handleNextStep} />
           </div>
         </div>
       )}
