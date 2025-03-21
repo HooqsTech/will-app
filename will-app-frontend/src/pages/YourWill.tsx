@@ -97,7 +97,6 @@ import ResiduaryEstateSelectionPage from './ResiduaryEstateSelectionPage';
 import ResiduaryEstateSinglePage from './ResiduaryEstateSinglePage';
 import ResiduaryEstatePercentPage from './ResiduaryEstatePercentPage';
 import PaymentDemoPage from './PaymentDemoPage';
-import ResponsiveSidebar from '../components/ResponsiveSidebar';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
