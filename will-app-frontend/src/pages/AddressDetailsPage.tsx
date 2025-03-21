@@ -81,8 +81,8 @@ const AddressDetailsPage = () => {
     }
 
     return (
-        <div className="flex flex-col items-start h-full">
-            <div className="w-lg space-y-8">
+        <div className="flex flex-col md:w-lg w-full  items-start h-full">
+            <div className="w-full md:w-lg space-y-8">
                 <AddressDetailsForm />
                 <div className="flex gap-2">
                     <BackButton onClick={() => navigate("/personal_details")} label="Back" />

@@ -29,9 +29,12 @@ import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
 import { useNavigate } from 'react-router';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { routesState } from '../atoms/RouteState';
 import { ASSET_TYPES, ROUTE_PATHS } from '../constants';
+import { drawerState } from '../atoms/drawerState';
+import CustomButton from './CustomButton';
+import { removeCookie } from 'typescript-cookie';
 
 type ExtendedTreeItemProps = {
   iconName?: string;
@@ -240,10 +243,18 @@ export default function Sidebar2() {
 
   const routeState = useRecoilValue(routesState);
   const [menuItems, seTmenuItems] = React.useState<TreeViewBaseItem<ExtendedTreeItemProps>[]>([]);
+  const setDrawerState = useSetRecoilState(drawerState);
 
   const handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
     var item = apiRef.current?.getItem(itemId)
+    // setDrawerState(false);
     navigate(ROUTE_PATHS.YOUR_WILL + (item.routePath ?? ""));
+  };
+
+  const handleLogout = () => {
+    removeCookie('idToken'); // Removes the 'idToken' cookie
+    removeCookie('phoneNumber');
+    navigate('/login');
   };
 
   React.useEffect(() => {
@@ -381,23 +392,29 @@ export default function Sidebar2() {
   const apiRef = useTreeViewApiRef();
 
   return (
-    <div className='flex flex-col items-start'>
-      <div className='w-full py-6 border-b-slate-400 border-b-[1px]'>
-        <img
-          src={`/assets/hamara-logo-icon.png`}
-          className='h-20 m-auto w-fit'
-          alt={"hamara-logo"}
-          loading="lazy"
-        />
+    <div className='flex flex-col justify-between items-start h-screen'>
+      <div className='flex flex-col items-start w-full'>
+        <div className='w-full py-6 border-b-slate-400 border-b-[1px]'>
+          <img
+            src={`/assets/hamara-logo-icon.png`}
+            className='h-20 m-auto w-fit'
+            alt={"hamara-logo"}
+            loading="lazy"
+          />
+        </div>
+        <div className='p-6 w-full'>
+          <RichTreeView
+            apiRef={apiRef}
+            multiSelect={false}
+            items={menuItems}
+            slots={{ item: CustomTreeItem }}
+            onItemClick={(e, itemId) => handleSelectedItemChange(e, itemId)}
+          />
+        </div>
       </div>
-      <div className='p-6 w-full'>
-        <RichTreeView
-          apiRef={apiRef}
-          multiSelect={false}
-          items={menuItems}
-          slots={{ item: CustomTreeItem }}
-          onItemClick={(e, itemId) => handleSelectedItemChange(e, itemId)}
-        />
+
+      <div className='w-full'>
+        <button onClick={handleLogout} className='!bg-white !text-will-green w-full'>Log Out</button>
       </div>
     </div>
 

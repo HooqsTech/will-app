@@ -97,6 +97,7 @@ import ResiduaryEstateSelectionPage from './ResiduaryEstateSelectionPage';
 import ResiduaryEstateSinglePage from './ResiduaryEstateSinglePage';
 import ResiduaryEstatePercentPage from './ResiduaryEstatePercentPage';
 import PaymentDemoPage from './PaymentDemoPage';
+import ResponsiveSidebar from '../components/ResponsiveSidebar';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -408,12 +409,12 @@ const YourWill: React.FC = () => {
         <div>
             <Header />
             <div className='grid grid-cols-12 w-full m-auto'>
-                <div className='bg-[#265e55] col-span-3'>
-                    <div className='top-14 min-h-screen sticky'>
+                <div className='bg-[#265e55] md:block hidden col-span-3'>
+                    <div className='top-14 max-h-screen h-full sticky'>
                         <Sidebar2 />
                     </div>
                 </div>
-                <div className='h-full overflow-hidden flex flex-col col-span-9 items-center p-10 justify-center'>
+                <div className='h-full px-2.5 overflow-hidden flex col-span-12 md:col-span-9 items-center md:p-10 justify-center'>
                     <Routes>
                         <Route path={ROUTE_PATHS.ABOUT_YOU} element={<AboutYouPage />} />
                         <Route path={ROUTE_PATHS.PERSONAL_DETAILS} element={<PersonalDetailsPage />} />

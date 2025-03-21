@@ -78,8 +78,8 @@ const PersonalDetailsPage = () => {
     }
 
     return (
-        <div className="flex flex-col items-start h-full">
-            <div className="w-lg space-y-8">
+        <div className="flex flex-col md:w-lg w-full items-start h-full">
+            <div className="md:w-lg w-full space-y-8">
                 <PersonalDetailsForm />
                 <NextButton onClick={addUserDetails} loading={loading} />
             </div>
