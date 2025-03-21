@@ -3,6 +3,7 @@ import YourWill from "./pages/YourWill"
 import LoginPage from "./pages/LoginPage"
 import HomePage from "./pages/HomePage"
 import { getCookie } from "typescript-cookie";
+import MyPlan  from "./pages/MyPlan"
 
 const isAuthenticated = () => {
   const idToken = getCookie('idToken'); // Adjust 'idToken' to match your cookie name
@@ -25,6 +26,7 @@ function App() {
           <Route path="your_will/*" element={<ProtectedRoute><YourWill /></ProtectedRoute>} />
           <Route path="home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="login" element={<LoginPage />} />
+          <Route path={"my_plan"} element={<MyPlan />} />
         </Routes>
       </BrowserRouter>
     </div>
