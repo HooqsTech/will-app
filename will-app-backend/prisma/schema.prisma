@@ -160,9 +160,9 @@ model service_categories {
   categoryname    String     @unique @db.VarChar(50)
   standardprice   Decimal    @db.Decimal(10, 2)
   discountedprice Decimal?   @db.Decimal(10, 2)
-  description     String?
   createdat       DateTime?  @default(now()) @db.Timestamp(6)
   updatedat       DateTime?  @default(now()) @db.Timestamp(6)
+  description     String?
   services        services[]
 }
 

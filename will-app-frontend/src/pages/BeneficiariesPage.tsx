@@ -10,7 +10,7 @@ import { userState } from '../atoms/UserDetailsState';
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
-import { BENEFICIARIES } from '../constants';
+import { BENEFICIARIES, ROUTE_PATHS } from '../constants';
 import { IsEmptyNumber, IsEmptyString } from '../utils';
 import { beneficiariesValidationState, emptyBeneficiariesValidationState, IBeneficiaryValidationState } from '../atoms/validationStates/BeneficiariesValidationState';
 import { useLocation, useNavigate } from 'react-router';
@@ -200,7 +200,7 @@ const BeneficiariesPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         let routeValue = routeState.find(s => s.currentPath == location.pathname);
-        navigate(routeValue?.nextPath ?? "/your_will/payment");
+        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION);
     }
 
     const saveGuardianAsync = async (index: number) => {

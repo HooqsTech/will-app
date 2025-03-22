@@ -5,11 +5,14 @@ import { beneficiariesState, IBeneficiaryState } from "../atoms/BeneficiariesSta
 import NextButton from "../components/NextButton";
 import { savePercentageAssetDistribution } from "../api/assetDistribution";
 import { userState } from '../atoms/UserDetailsState';
+import { useNavigate } from "react-router";
+import { ROUTE_PATHS } from "../constants";
 
 const AssetDistributionPercentPage = () => {
   const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
   const user = useRecoilValue(userState);
   const [assetDistribution, setAssetDistribution] = useRecoilState(AssetDistributionPercentState);
+  const navigate = useNavigate();
 
   const backupBeneficiaryOptions = [
     { value: "spouse_children", label: "Their spouse and/or children" },
@@ -56,6 +59,9 @@ const AssetDistributionPercentPage = () => {
         const userId = user.userId;
         const { firstBeneficiary, additionalInputs, backupBeneficiary } = assetDistribution;
         await savePercentageAssetDistribution(userId, { firstBeneficiary, additionalInputs, backupBeneficiary });
+
+        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
+        
       } catch (error) {
         console.log(error);
       }

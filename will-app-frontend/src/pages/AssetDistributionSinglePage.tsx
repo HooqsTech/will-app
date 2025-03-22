@@ -6,6 +6,7 @@ import NextButton from "../components/NextButton";
 import { saveSingleBeneficiaryAssetDistribution } from "../api/assetDistribution";
 import { userState } from "../atoms/UserDetailsState";
 import { useNavigate } from "react-router";
+import { ROUTE_PATHS } from "../constants";
 
 const AssetDistributionSinglePage = () => {
     const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
@@ -50,7 +51,7 @@ const AssetDistributionSinglePage = () => {
 
         if (distribution.step === 3) {
             await saveWillDistributionAsync();
-            navigate("/next-route");
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
         } else {
             setDistribution(prev => ({ ...prev, step: prev.step + 1 }));
         }

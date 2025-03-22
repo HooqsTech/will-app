@@ -4,10 +4,12 @@ import NextButton from "../components/NextButton";
 import { routesState } from "../atoms/RouteState";
 import { useLocation, useNavigate } from "react-router";
 import { userState } from '../atoms/UserDetailsState';
-import { DistributionState } from "../atoms/DistributionState";
+import { IWillDistributionState, willDistributionState } from "../atoms/WillDistributionState";
+import { upsertWillDistribution } from "../api/assetDistribution";
+import { ROUTE_PATHS } from "../constants";
 
 const ResiduaryEstateSelectionPage = () => {
-    const [distribution, setDistribution] = useRecoilState(DistributionState);
+    const [distribution, setDistribution] = useRecoilState(willDistributionState);
     const routeState = useRecoilValue(routesState);
     const navigate = useNavigate();
     const location = useLocation();
@@ -19,9 +21,13 @@ const ResiduaryEstateSelectionPage = () => {
     ];
 
     // Handle Distribution Type Change
+
     const handleSelectChange = (value: string) => {
         if (["Single", "Percentage"].includes(value)) {
-            setDistribution(value);
+            setDistribution((prevState) => ({
+                ...prevState,
+                residuaryDistributionType: value as "Single" | "Percentage",
+            }));
         }
     };
 
@@ -31,9 +37,34 @@ const ResiduaryEstateSelectionPage = () => {
             alert("Please select a distribution type before proceeding.");
             return;
         }
+        await saveWillDistributionAsync(distribution)
+        
         const routeValue = routeState.find(s => s.currentPath === location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+        
+        if (distribution.residuaryDistributionType == "Single")
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION_SINGLE);
+        else if(distribution.residuaryDistributionType =="Percentage")
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION_PERCENT);
+        else
+            navigate(routeValue?.nextPath ?? "/");
     };
+
+    const saveWillDistributionAsync = async (will: IWillDistributionState) => {
+        const data = {
+            userId: user.userId,
+            id: will.id,
+            distributionType: will.distributionType,
+            residuaryDistributionType: will.residuaryDistributionType,
+            fallbackRule: will.fallbackRule
+        };
+    
+            const upsertedWillDistribution = await upsertWillDistribution(data);
+    
+            setDistribution((prevState) => ({
+                ...prevState,
+                id: upsertedWillDistribution.id
+            }));
+        };
 
     return (
         <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
@@ -45,7 +76,7 @@ const ResiduaryEstateSelectionPage = () => {
                 options={options}
                 onSelectChange={handleSelectChange}
                 multiple={false}
-                selectedOptions={distribution ? [distribution] : []}
+                selectedOptions={distribution.residuaryDistributionType ? [distribution.residuaryDistributionType] : []}
             />
             <div className="justify-between flex mt-10">
                 <NextButton onClick={handleNextClick} />

@@ -6,6 +6,7 @@ import { routesState } from "../atoms/RouteState";
 import { useLocation, useNavigate } from "react-router";
 import { upsertWillDistribution } from "../api/assetDistribution";
 import { userState } from '../atoms/UserDetailsState';
+import { ROUTE_PATHS } from "../constants";
 
 const AssetDistributionSelectionPage = () => {
     const [distribution, setDistribution] = useRecoilState(willDistributionState);
@@ -25,8 +26,7 @@ const AssetDistributionSelectionPage = () => {
         if (["Single", "Specific", "Percentage"].includes(value)) {
             setDistribution((prevState) => ({
                 ...prevState,
-                distributionType: value as "Single" | "Specific" | "Percentage",
-                residuaryDistributionType: value as "Single" | "Percentage",
+                distributionType: value as "Single" | "Specific" | "Percentage"
             }));
         }
     };
@@ -59,7 +59,15 @@ const AssetDistributionSelectionPage = () => {
         await saveWillDistributionAsync(distribution);
 
         const routeValue = routeState.find(s => s.currentPath === location.pathname);
-        navigate(routeValue?.nextPath ?? "/");
+
+        if (distribution.distributionType == "Single")
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION_SINGLE);
+        else if(distribution.distributionType =="Percentage")
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION_PERCENT);
+        else if (distribution.distributionType =="Specific")
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION_SPECIFIC);
+        else
+            navigate(routeValue?.nextPath ?? "/");
     };
 
     return (

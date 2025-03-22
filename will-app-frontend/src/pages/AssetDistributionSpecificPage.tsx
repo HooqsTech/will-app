@@ -378,6 +378,7 @@ const AssetDistributionSpecificPage = () => {
             setSelectedAssets([]);
         }
         else if(step === 3){
+            //navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
             // save logic
         }
     };

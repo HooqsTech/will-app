@@ -7,6 +7,7 @@ import { userState } from "../atoms/UserDetailsState";
 import { useNavigate } from "react-router";
 import { IResiduaryEstateSingleState, ResiduaryEstateSingleState } from "../atoms/ResiduaryEstateSingleState";
 import { saveResiduaryAssetDistributionAPI } from "../api/assetDistribution";
+import { ROUTE_PATHS } from "../constants";
 
 const ResiduaryEstateSinglePage = () => {
     const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
@@ -60,16 +61,14 @@ const ResiduaryEstateSinglePage = () => {
 
     const handleNextStep = async () => {
         if (step === 1) {
-            console.log("test 1")
             if (!primaryBeneficiary) {
-                console.log("test 2")
                 return; 
             }
             setStep(2);
         } else if (step === 2) {
-            console.log("test 3")
             await saveWillDistributionAsync();
-            navigate("/next-route");
+            
+            navigate(ROUTE_PATHS.MY_PLAN);
         }
     };
 

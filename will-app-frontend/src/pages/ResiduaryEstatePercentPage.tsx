@@ -6,6 +6,8 @@ import NextButton from "../components/NextButton";
 import { userState } from '../atoms/UserDetailsState';
 import { residuaryAssetDistributionState } from "../atoms/ResiduaryAssetDistribution";
 import { saveResiduaryAssetDistributionAPI } from "../api/assetDistribution";
+import { ROUTE_PATHS } from "../constants";
+import { useNavigate } from "react-router";
 
 const ResiduaryEstatePercentPage = () => {
   const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
@@ -16,6 +18,7 @@ const ResiduaryEstatePercentPage = () => {
   const [primaryDonation, setPrimaryDonation] = useState<string[]>([]);
   const [residuaryDistribution, setResiduaryDistribution] = useRecoilState(residuaryAssetDistributionState);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const beneficiaryOptionsFirst = beneficiaryState.map((beneficiary) => ({
     value: beneficiary.id,
@@ -65,7 +68,8 @@ const ResiduaryEstatePercentPage = () => {
 
         // Update Recoil state with API response
         setResiduaryDistribution(updatedData);
-        console.log("Residuary distribution saved successfully!");
+        
+        navigate(ROUTE_PATHS.MY_PLAN);
       } catch (error) {
         console.error("Failed to save residuary distribution.");
       } finally {
