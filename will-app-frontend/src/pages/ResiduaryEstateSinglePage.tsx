@@ -47,7 +47,7 @@ const ResiduaryEstateSinglePage = () => {
             if (!primaryBeneficiary) return;
 
             const userId = user.userId;
-            const updatedData = await saveResiduaryAssetDistributionAPI(userId, [{ id: primaryBeneficiary, percentage: 1001 }]);
+            await saveResiduaryAssetDistributionAPI(userId, [{ id: primaryBeneficiary, percentage: 1001 }]);
 
             setDistribution(prev => ({
                 ...prev,
@@ -62,12 +62,12 @@ const ResiduaryEstateSinglePage = () => {
     const handleNextStep = async () => {
         if (step === 1) {
             if (!primaryBeneficiary) {
-                return; 
+                return;
             }
             setStep(2);
         } else if (step === 2) {
             await saveWillDistributionAsync();
-            
+
             navigate(ROUTE_PATHS.MY_PLAN);
         }
     };

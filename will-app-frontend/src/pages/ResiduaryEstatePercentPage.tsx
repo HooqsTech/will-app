@@ -16,7 +16,7 @@ const ResiduaryEstatePercentPage = () => {
   const [step, setStep] = useState(1);
   const user = useRecoilValue(userState);
   const [primaryDonation, setPrimaryDonation] = useState<string[]>([]);
-  const [residuaryDistribution, setResiduaryDistribution] = useRecoilState(residuaryAssetDistributionState);
+  const [_, setResiduaryDistribution] = useRecoilState(residuaryAssetDistributionState);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -68,7 +68,7 @@ const ResiduaryEstatePercentPage = () => {
 
         // Update Recoil state with API response
         setResiduaryDistribution(updatedData);
-        
+
         navigate(ROUTE_PATHS.MY_PLAN);
       } catch (error) {
         console.error("Failed to save residuary distribution.");
@@ -103,13 +103,13 @@ const ResiduaryEstatePercentPage = () => {
         </div>
       )}
       {step === 2 && (
-         <>
+        <>
           <h2 className="text-xl font-bold mb-5">Would you like to pledge your organs for donation?</h2>
           <CustomSelectBar
-              options={donationOptions}
-              onSelectChange={(value) => handleSelectDonationChange(value)}
-              multiple={false}
-              selectedOptions={primaryDonation}
+            options={donationOptions}
+            onSelectChange={(value) => handleSelectDonationChange(value)}
+            multiple={false}
+            selectedOptions={primaryDonation}
           />
           <NextButton onClick={handleNextStep} label={loading ? "Saving..." : "Save & Continue"} />
         </>

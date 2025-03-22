@@ -8,7 +8,7 @@ interface IEditButtonProps {
     className?: string
 }
 
-const EditButton: React.FC<IEditButtonProps> = ({ onClick, loading, label, className }) => {
+const EditButton: React.FC<IEditButtonProps> = ({ onClick, loading, className }) => {
     return (
         <Button endIcon={<EditIcon />} onClick={onClick} loading={loading} variant="contained" sx={{
             borderRadius: 0,

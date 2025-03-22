@@ -1,25 +1,24 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useLocation } from "react-router";
-import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { formattedCategoriesState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
-import { IFormattedServiceCategory, IWillService } from "../models/willService";
-import { getWillServices } from "../api/willService";
-import Header from "../components/Header";
-import NextButton from "../components/NextButton";
-import BackButton from "../components/BackButton";
-import PaymentStepper from "../components/PaymentStepper";
 import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaCheck,
+  FaInfoCircle,
   FaPlus,
   FaTrash,
-  FaInfoCircle,
 } from "react-icons/fa";
-import { createPaymentOrder } from "../api/payment";
+import { useLocation, useNavigate } from "react-router";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import Swal from "sweetalert2";
-import { userState } from "../atoms/UserDetailsState";
-import { getUserIdByPhoneNumber } from "../api/user";
 import { getCookie } from "typescript-cookie";
+import { createPaymentOrder } from "../api/payment";
+import { getUserIdByPhoneNumber } from "../api/user";
+import { getWillServices } from "../api/willService";
+import { formattedCategoriesState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
+import BackButton from "../components/BackButton";
+import Header from "../components/Header";
+import NextButton from "../components/NextButton";
+import PaymentStepper from "../components/PaymentStepper";
+import { IFormattedServiceCategory, IWillService } from "../models/willService";
 
 const WILL_WITH_REGISTRATION_PRICE = parseInt(
   import.meta.env.VITE_WILL_WITH_REGISTRATION_PRICE || "19999",
@@ -39,7 +38,6 @@ const MyPlan: React.FC = () => {
   const [selectedServices, setSelectedServices] = useRecoilState(
     selectedServicesState
   );
-  const user = useRecoilValue(userState);
   const [step, setStep] = useState(initialStep);
   const [coupon, setCoupon] = useState("");
   const [visibleServices, setVisibleServices] = useState<string[]>([]);
@@ -158,7 +156,7 @@ const MyPlan: React.FC = () => {
       name: 'Payment',
       description: 'Thank you for choosing Hamaara will.',
       image: "",
-      handler: async function (response: any) {
+      handler: async function (_: any) {
         Swal.fire("Your payment is successfull.")
       }
     }

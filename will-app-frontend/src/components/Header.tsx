@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router';
 import { removeCookie } from 'typescript-cookie';
 import Sidebar2 from "./Sidebar2";
 import { Drawer } from "@mui/material";
-import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { drawerState } from "../atoms/drawerState";
 

@@ -46,7 +46,7 @@ const PaymentDemoPage = () => {
             name: 'Payment',
             description: 'Thank you for choosing Hamaara will.',
             image: "",
-            handler: async function (response: any) {
+            handler: async function (_: any) {
                 Swal.fire("Your payment is successfull.")
             }
         }

@@ -15,7 +15,6 @@ import { IsEmptyNumber, IsEmptyString } from '../utils';
 import { beneficiariesValidationState, emptyBeneficiariesValidationState, IBeneficiaryValidationState } from '../atoms/validationStates/BeneficiariesValidationState';
 import { useLocation, useNavigate } from 'react-router';
 import ConfirmDelete from "../components/ConfirmDelete";
-import DeleteIcon from '@mui/icons-material/Delete';
 import { Modal } from '@mui/material';
 import { guardianModalState } from '../atoms/GuardianModelState';
 import CustomButton from '../components/CustomButton';
@@ -199,7 +198,7 @@ const BeneficiariesPage = () => {
         })
 
         // NAVIGATE TO NEXT ROUTE
-        let routeValue = routeState.find(s => s.currentPath == location.pathname);
+        routeState.find(s => s.currentPath == location.pathname);
         navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION);
     }
 
