@@ -97,7 +97,6 @@ import ResiduaryEstateSelectionPage from './ResiduaryEstateSelectionPage';
 import ResiduaryEstateSinglePage from './ResiduaryEstateSinglePage';
 import ResiduaryEstatePercentPage from './ResiduaryEstatePercentPage';
 import PaymentDemoPage from './PaymentDemoPage';
-import ResponsiveSidebar from '../components/ResponsiveSidebar';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -419,7 +418,6 @@ const YourWill: React.FC = () => {
                         <Route path={ROUTE_PATHS.ABOUT_YOU} element={<AboutYouPage />} />
                         <Route path={ROUTE_PATHS.PERSONAL_DETAILS} element={<PersonalDetailsPage />} />
                         <Route path={ROUTE_PATHS.ADDRESS_DETAILS} element={<AddressDetailsPage />} />
-                        <Route path={"/payment"} element={<PaymentDemoPage />} />
 
                         {/* ASSETS START */}
                         <Route path={ROUTE_PATHS.ASSETS} element={<AssetsPage />} />

@@ -7,7 +7,8 @@ import {
     createAddressDetails,
     deleteAddressDetails,
     getUserDetailsByPhone,
-    checkUserExists
+    checkUserExists,
+    getUserIdByPhoneNumber
 } from "../services/userServices";
 import admin from "firebase-admin";
 
@@ -92,6 +93,16 @@ export const deleteAddressDetailsHandler = async (req: Request, res: Response) =
         res.status(400).json({ error: error.message });
     }
 };
+
+export const getUserIdByPhoneNumberHandler = async (req: Request, res: Response) => {
+    try {
+        const { phoneNumber } = req.params;
+        const result = await getUserIdByPhoneNumber(phoneNumber);
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
 // Get user details by phone number
 export const getUserDetailsByPhoneHandler = async (req: Request, res: Response) => {

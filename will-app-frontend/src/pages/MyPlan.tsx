@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { formattedCategoriesState, selectedCategoryState, selectedServicesState,} from "../atoms/serviceState";
+import { formattedCategoriesState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
 import { IFormattedServiceCategory, IWillService } from "../models/willService";
 import { getWillServices } from "../api/willService";
 import Header from "../components/Header";
@@ -15,6 +15,11 @@ import {
   FaTrash,
   FaInfoCircle,
 } from "react-icons/fa";
+import { createPaymentOrder } from "../api/payment";
+import Swal from "sweetalert2";
+import { userState } from "../atoms/UserDetailsState";
+import { getUserIdByPhoneNumber } from "../api/user";
+import { getCookie } from "typescript-cookie";
 
 const WILL_WITH_REGISTRATION_PRICE = parseInt(
   import.meta.env.VITE_WILL_WITH_REGISTRATION_PRICE || "19999",
@@ -34,6 +39,7 @@ const MyPlan: React.FC = () => {
   const [selectedServices, setSelectedServices] = useRecoilState(
     selectedServicesState
   );
+  const user = useRecoilValue(userState);
   const [step, setStep] = useState(initialStep);
   const [coupon, setCoupon] = useState("");
   const [visibleServices, setVisibleServices] = useState<string[]>([]);
@@ -105,16 +111,61 @@ const MyPlan: React.FC = () => {
     setVisibleServices((prev) => prev.filter((id) => id !== serviceId));
   };
 
-  const handleContinue = () => {
+  function loadScript(src: string) {
+    return new Promise((resolve) => {
+      const script = document.createElement('script')
+      script.src = src
+      script.onload = () => {
+        resolve(true)
+      }
+      script.onerror = () => {
+        resolve(false)
+      }
+      document.body.appendChild(script)
+    })
+  }
+
+  const handleContinue = async () => {
     if (step === 1 && selected) {
       setStep(2);
     } else if (step === 2) {
       setStep(3);
     } else if (step === 3) {
       //REDIRECT TO PAYMENTT..
+      await payNow();
       navigate("/payment-summary");
     }
   };
+
+  const payNow = async () => {
+    let res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+
+    if (!res) {
+      return
+    }
+
+    const phoneNumber = getCookie("phoneNumber");
+    const user = await getUserIdByPhoneNumber(phoneNumber ?? "");
+
+    // CREATE PAYMENT ORDER
+    var data = await createPaymentOrder(user, total)
+
+    const options = {
+      key: import.meta.env.VITE_RAZOR_PAY_ID,
+      currency: data.currency,
+      amount: data.amount,
+      order_id: data.id,
+      name: 'Payment',
+      description: 'Thank you for choosing Hamaara will.',
+      image: "",
+      handler: async function (response: any) {
+        Swal.fire("Your payment is successfull.")
+      }
+    }
+    const _window = window as any
+    const paymentObject = _window.Razorpay(options)
+    paymentObject.open()
+  }
 
   const handlePrevious = () => {
     if (step === 3) {
@@ -191,11 +242,10 @@ const MyPlan: React.FC = () => {
 
                   {/* Category Card */}
                   <motion.div
-                    className={`relative p-6 rounded-xl transition-all duration-300 border cursor-pointer ${
-                      selected === category.categoryId
-                        ? "border-green-500 bg-[#265e55] scale-105"
-                        : "border-gray-600 bg-[#265e55] hover:shadow-lg hover:scale-105"
-                    }`}
+                    className={`relative p-6 rounded-xl transition-all duration-300 border cursor-pointer ${selected === category.categoryId
+                      ? "border-green-500 bg-[#265e55] scale-105"
+                      : "border-gray-600 bg-[#265e55] hover:shadow-lg hover:scale-105"
+                      }`}
                     onClick={() => handleSelectCategory(category.categoryId)}
                     whileHover={{ scale: 1.05 }}
                   >
@@ -234,7 +284,7 @@ const MyPlan: React.FC = () => {
                     >
                       <FaInfoCircle size={18} />
                     </button>
-                    
+
                   </motion.div>
                 </div>
               ))
@@ -243,7 +293,7 @@ const MyPlan: React.FC = () => {
             )}
           </div>
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto translate-x-70">
-            <NextButton onClick={handleContinue} label="Continue"/>
+            <NextButton onClick={handleContinue} label="Continue" />
           </div>
         </div>
       )}
@@ -264,31 +314,29 @@ const MyPlan: React.FC = () => {
 
           {/* Services List */}
           <div
-            className={`grid grid-cols-3 gap-6 w-full max-w-4xl mt-8 ${
-              services.length === 1 ? "justify-center" : ""
-            }`}
+            className={`grid grid-cols-3 gap-6 w-full max-w-4xl mt-8 ${services.length === 1 ? "justify-center" : ""
+              }`}
           >
             {services.length > 0 ? (
               services.map((service) => (
                 <motion.div
                   key={service.serviceId}
-                  className={`relative p-6 rounded-xl transition-all duration-300 border cursor-pointer ${
-                    selectedServices.some(
-                      (s) => s.serviceId === service.serviceId
-                    )
-                      ? "border-green-400 bg-[#265e55] scale-105"
-                      : "border-gray-600 bg-[#265e55] hover:shadow-lg hover:scale-105"
-                  }`}
+                  className={`relative p-6 rounded-xl transition-all duration-300 border cursor-pointer ${selectedServices.some(
+                    (s) => s.serviceId === service.serviceId
+                  )
+                    ? "border-green-400 bg-[#265e55] scale-105"
+                    : "border-gray-600 bg-[#265e55] hover:shadow-lg hover:scale-105"
+                    }`}
                   onClick={() => handleSelectService(service)}
                   whileHover={{ scale: 1.05 }}
                 >
                   {selectedServices.some(
                     (s) => s.serviceId === service.serviceId
                   ) && (
-                    <div className="absolute top-2 right-2 bg-green-500 text-white p-2 rounded-full">
-                      <FaCheck size={14} />
-                    </div>
-                  )}
+                      <div className="absolute top-2 right-2 bg-green-500 text-white p-2 rounded-full">
+                        <FaCheck size={14} />
+                      </div>
+                    )}
 
                   <h3 className="text-lg font-semibold">
                     {service.serviceName}

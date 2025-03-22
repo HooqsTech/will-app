@@ -9,7 +9,7 @@ export const validUser = async (userId: string): Promise<boolean> => {
 };
 
 export const getUserByUserId = async (userId: string) => {
-    const user = await prisma.users.findUnique({ 
+    const user = await prisma.users.findUnique({
         where: { userid: userId },
         include: {
             addressdetails: true,
@@ -31,6 +31,17 @@ export const getUserByUserId = async (userId: string) => {
     return formatUserResponse(user);
 };
 
+export const getUserIdByPhoneNumber = async (phoneNumber: string) => {
+    const user = await prisma.users.findUnique({
+        where: { phonenumber: phoneNumber[0] == "+" ? phoneNumber : "+" + phoneNumber.trim() }
+    });
+
+    if (!user) {
+        return null;
+    }
+
+    return user.userid;
+};
 
 export const checkUserExists = async (phoneNumber: string) => {
     const user = await prisma.users.findUnique({

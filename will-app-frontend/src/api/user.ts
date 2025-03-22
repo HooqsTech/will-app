@@ -51,6 +51,19 @@ export const upsertUser = async (userData: IUserDetails): Promise<IUserDetails> 
   return user;
 };
 
+export const getUserIdByPhoneNumber = async (phoneNumber: string): Promise<string> => {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/userId/${phoneNumber}`, {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to get user");
+  }
+
+  const userId: string = await response.json();
+  return userId;
+};
+
 export const getUser = async (phoneNumber: string): Promise<IUserDetails> => {
   const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/GetbyPhoneNumber?phoneNumber=${phoneNumber}`, {
     method: "GET"
