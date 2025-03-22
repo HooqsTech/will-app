@@ -11,6 +11,7 @@ RUN npm install
 # Copy all source files
 COPY . .
 
+RUN npx prisma db pull
 RUN npx prisma generate
 
 # Compile TypeScript to JavaScript
