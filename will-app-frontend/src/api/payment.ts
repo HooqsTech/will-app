@@ -1,6 +1,6 @@
 import { IPaymentOrderResponse } from "../models/payment";
 
-export const createPaymentOrder = async (userId: string, amount: number): Promise<IPaymentOrderResponse> => {
+export const createPaymentOrder = async (userId: string, serviceIds: string[], willRegistration: number): Promise<IPaymentOrderResponse> => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/payments`, {
         method: "POST",
         headers: {
@@ -8,7 +8,8 @@ export const createPaymentOrder = async (userId: string, amount: number): Promis
         },
         body: JSON.stringify({
             userId: userId,
-            amount: amount
+            serviceIds: serviceIds,
+            willRegistration: willRegistration
         }),
     });
 

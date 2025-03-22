@@ -1,24 +1,25 @@
-import { motion } from "framer-motion";
-import React, { useEffect, useRef, useState } from "react";
-import {
-  FaCheck,
-  FaInfoCircle,
-  FaPlus,
-  FaTrash,
-} from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import Swal from "sweetalert2";
-import { getCookie } from "typescript-cookie";
-import { createPaymentOrder } from "../api/payment";
-import { getUserIdByPhoneNumber } from "../api/user";
-import { getWillServices } from "../api/willService";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, useLocation } from "react-router";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import { formattedCategoriesState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
-import BackButton from "../components/BackButton";
+import { IFormattedServiceCategory, IWillService } from "../models/willService";
+import { getWillServices } from "../api/willService";
 import Header from "../components/Header";
 import NextButton from "../components/NextButton";
+import BackButton from "../components/BackButton";
 import PaymentStepper from "../components/PaymentStepper";
-import { IFormattedServiceCategory, IWillService } from "../models/willService";
+import { motion } from "framer-motion";
+import {
+  FaCheck,
+  FaPlus,
+  FaTrash,
+  FaInfoCircle,
+} from "react-icons/fa";
+import { createPaymentOrder } from "../api/payment";
+import Swal from "sweetalert2";
+import { userState } from "../atoms/UserDetailsState";
+import { getUserIdByPhoneNumber } from "../api/user";
+import { getCookie } from "typescript-cookie";
 
 const WILL_WITH_REGISTRATION_PRICE = parseInt(
   import.meta.env.VITE_WILL_WITH_REGISTRATION_PRICE || "19999",
@@ -146,7 +147,8 @@ const MyPlan: React.FC = () => {
     const user = await getUserIdByPhoneNumber(phoneNumber ?? "");
 
     // CREATE PAYMENT ORDER
-    var data = await createPaymentOrder(user, total)
+    const selectedServiceIds = selectedServices.map((service) => service.serviceId);
+    var data = await createPaymentOrder(user, selectedServiceIds, commonService.serviceStandardPrice);
 
     const options = {
       key: import.meta.env.VITE_RAZOR_PAY_ID,
@@ -185,11 +187,11 @@ const MyPlan: React.FC = () => {
   };
 
   const total =
-    commonService.serviceStandardPrice +
-    selectedServices.reduce(
-      (sum, service) => sum + (service.serviceStandardPrice || 0),
-      0
-    );
+  commonService.serviceStandardPrice +
+  selectedServices.reduce(
+    (sum, service) => sum + (service.serviceDiscountPrice ?? service.serviceStandardPrice),
+    0
+  );
 
   return (
     <div className="relative flex flex-col items-center min-h-screen bg-white text-white p-6">
@@ -340,7 +342,7 @@ const MyPlan: React.FC = () => {
                     {service.serviceName}
                   </h3>
                   <p className="text-2xl font-bold text-green-400">
-                    ₹{service.serviceStandardPrice.toLocaleString()}.00
+                    ₹{service.serviceDiscountPrice?.toLocaleString() ? service.serviceDiscountPrice?.toLocaleString() : service.serviceStandardPrice.toLocaleString()}.00
                   </p>
                   <p className="text-gray-400 text-sm">One-time cost</p>
                 </motion.div>
@@ -409,7 +411,7 @@ const MyPlan: React.FC = () => {
                   {isSelected || isVisible ? (
                     <>
                       <span className="text-green-400 font-semibold">
-                        ₹{service.serviceStandardPrice.toLocaleString()}.00
+                        ₹{service.serviceDiscountPrice?.toLocaleString() ? service.serviceDiscountPrice?.toLocaleString() : service.serviceStandardPrice.toLocaleString()}.00
                       </span>
                       <button
                         onClick={() => handleRemoveService(service.serviceId)}

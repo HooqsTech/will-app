@@ -139,3 +139,28 @@ export const deleteServiceCategoryById = async (id: string) => {
 
     return { categoryId: id, message: "Service category deleted successfully" };
 };
+
+
+export const calculateTotalPrice = async (serviceIds: string[]) => {
+    if (serviceIds.length === 0) {
+        throw new Error("No service IDs provided.");
+    }
+
+    const services = await prisma.services.findMany({
+        where: {
+            id: { in: serviceIds },
+        },
+        select: {
+            discountedprice: true,
+        },
+    });
+
+    if (!services.length) {
+        throw new Error("No valid services found.");
+    }
+
+    // Convert Decimal to number and sum up the discounted prices
+    const totalPrice = services.reduce((sum, service) => sum + (service.discountedprice?.toNumber() ?? 0), 0);
+
+    return totalPrice;
+};

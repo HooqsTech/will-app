@@ -2,6 +2,7 @@ import { IRazorPaymentDetails } from "models/paymentDetails";
 import { Request, Response } from "express";
 import Razorpay from "razorpay";
 import { insertPaymentEvent, insertPaymentOrder, updateRazorIdToPaymentOrder } from "../services/paymentServices";
+import { calculateTotalPrice } from "../services/willService";
 
 export const recordPaymentEvent = async (req: Request, res: Response) => {
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
@@ -36,14 +37,23 @@ export const recordPaymentEvent = async (req: Request, res: Response) => {
 
 export const createPaymentOrder = async (req: Request, res: Response) => {
     try {
-        const { userId, amount }: { userId?: string, amount?: number } = req.body;
+        const { userId, serviceIds, willRegistration }: { userId?: string, serviceIds?: string[], willRegistration: number } = req.body;
 
         if (userId === undefined) {
             return res.status(400).json("user id is rerquired");
         }
 
-        if (amount === undefined) {
-            return res.status(400).json("price is rerquired");
+        if (!serviceIds || serviceIds.length === 0) {
+            return res.status(400).json({ error: "At least one service ID is required" });
+        }
+        console.log("service" + serviceIds)
+        
+        let  totalAmount = await calculateTotalPrice(serviceIds);
+
+        totalAmount += willRegistration;
+
+        if (totalAmount <= 0) {
+            return res.status(400).json({ error: "Total amount must be greater than zero" });
         }
 
         const razorpay = new Razorpay({
@@ -54,10 +64,10 @@ export const createPaymentOrder = async (req: Request, res: Response) => {
         const payment_capture = 1
 
         // CREATE PAYMENT ORDER
-        var paymentOrder = await insertPaymentOrder(userId, amount)
+        var paymentOrder = await insertPaymentOrder(userId, totalAmount)
 
         const options = {
-            amount: amount * 100,
+            amount: totalAmount * 100,
             currency: "INR",
             receipt: paymentOrder.orderid,
             payment_capture

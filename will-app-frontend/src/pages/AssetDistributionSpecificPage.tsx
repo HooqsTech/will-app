@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useRecoilValue } from "recoil";
+import React from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { IPropertiesState, propertiesState } from "../atoms/PropertiesState";
 import { bankDetailsState, IBankDetailsState } from "../atoms/BankDetailsState";
 import { fixedDepositsState, IFixedDepositState } from "../atoms/FixedDepositState";
@@ -22,6 +22,11 @@ import CustomAssetSelectBar from "../components/CustomAssetSelectBar";
 import NextButton from "../components/NextButton";
 import CustomSelectBar from "../components/CustomSelectBar";
 import { beneficiariesState, IBeneficiaryState } from "../atoms/BeneficiariesState";
+import { AssetDistributionSpecificState } from "../atoms/AssetDistributionSpecificState";
+import { userState } from "../atoms/UserDetailsState";
+import { saveSpecificAssetDistributionApi } from "../api/assetDistribution";
+import { useNavigate } from "react-router";
+import { ROUTE_PATHS } from "../constants";
 
 export interface IBeneficiaryDistribution{
     beneficiaryId: string;
@@ -39,13 +44,10 @@ export interface IAssetSelectionState{
 
 const AssetDistributionSpecificPage = () => {
     const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
-    const [assetSelectionList, setAssetSelectionList] = useState<IAssetSelectionState[]>([]);
-    const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
-    const [selectedBeneficiary, setSelectedBeneficiary] = useState<string[]>([]);
-    const [additionalInputs, setAdditionalInputs] = useState<Record<string, string>>({});
-    const [backupBeneficiary, setBackupBeneficiary] = useState<string[]>([]);
-    const [step, setStep] = useState(1);
-
+    const [assetDistribution, setAssetDistribution] = useRecoilState(AssetDistributionSpecificState);
+    const user = useRecoilValue(userState);
+    const navigate = useNavigate();
+    
     const properties = useRecoilValue(propertiesState);
     const bankAccounts = useRecoilValue(bankDetailsState);    
     const fixedDeposits = useRecoilValue(fixedDepositsState);
@@ -283,38 +285,38 @@ const AssetDistributionSpecificPage = () => {
                 isAssetDistributed: false
             }
         });
-
-        setAssetSelectionList([...propertiesList,...bankAccountsList,...fixedDepositsList,...insurancePoliciesList,...safetyDepositBoxesList,
-            ...dematAccountsList,...mutualFundsList,...providentFundsList,...pensionAccountsList,...businesssesList,...bondsList,
-            ...debenturesList,...escopsList,...jewelleriesList,...vehiclesList,...digitalAssetsList,...intellectualPropertiesList, ...customAssetsList      
-            ])
+        setAssetDistribution((prev) => ({
+            ...prev,
+            assetSelectionList: [...propertiesList,...bankAccountsList,...fixedDepositsList,...insurancePoliciesList,...safetyDepositBoxesList,
+                ...dematAccountsList,...mutualFundsList,...providentFundsList,...pensionAccountsList,...businesssesList,...bondsList,
+                ...debenturesList,...escopsList,...jewelleriesList,...vehiclesList,...digitalAssetsList,...intellectualPropertiesList, ...customAssetsList      
+                ]
+          }));
     }
 
     const handleSelectAssetChange = (value: string) => {
-        setSelectedAssets((prevSelected) =>
-          prevSelected.includes(value)
-            ? prevSelected.filter((option) => option !== value)
-            : [...prevSelected, value]
-        );
+        setAssetDistribution((prev) => ({
+            ...prev,
+            selectedAssets: prev.selectedAssets.includes(value) ? prev.selectedAssets.filter((option) => option !== value) : [...prev.selectedAssets, value]
+          }));
       };
 
     const handleSelectbeneficiaryChange = (value: string) => {
-        setSelectedBeneficiary((prevSelected) =>
-            prevSelected.includes(value)
-            ? prevSelected.filter((option) => option !== value)
-            : [...prevSelected, value]
-        );
+        setAssetDistribution((prev) => ({
+            ...prev,
+            selectedBeneficiary: prev.selectedBeneficiary.includes(value) ? prev.selectedBeneficiary.filter((option) => option !== value) : [...prev.selectedBeneficiary, value]
+          }));
     };
 
     const handleAssetPercentInputChange = (value: string, input: string) => {
-        setAdditionalInputs((prevInputs) => ({
-          ...prevInputs,
-          [value]: input,
-        }));
+        setAssetDistribution((prev) => ({
+            ...prev,
+            additionalInputs: {...prev.additionalInputs,[value]:input}
+          }));
       };
     const handleEditChange = (value: string) => {
     
-        let newInputs = assetSelectionList
+        let newInputs = assetDistribution.assetSelectionList
         .find(asset => asset.assetId === value)
         ?.beneficiarieslist?.reduce(
           (acc, { beneficiaryId, percentage }) => ({
@@ -323,62 +325,75 @@ const AssetDistributionSpecificPage = () => {
           }),
           {} as Record<string, string>
         ) || {};
-        setSelectedBeneficiary(Object.keys(newInputs));
-        setAdditionalInputs(newInputs);
-        setSelectedAssets([value]);
-        setStep(2);
+        setAssetDistribution((prev) => ({
+            ...prev,
+            selectedBeneficiary: Object.keys(newInputs),
+            additionalInputs: newInputs,
+            selectedAssets: [value],
+            step: 2
+          }));
     };
 
     const handleBackupBeneficiaryChange = (value: string) => {
-        setBackupBeneficiary([value]);
+        setAssetDistribution((prev) => ({
+            ...prev,
+            backupBeneficiary: [value]
+          }));
       };
     
     const handleNextStep = async () => {
-        if (step === 1) {
-            let areAllAssetsDistributed = assetSelectionList.every(asset => asset.isAssetDistributed);
+        if (assetDistribution.step === 1) {
+            let areAllAssetsDistributed = assetDistribution.assetSelectionList.every(asset => asset.isAssetDistributed);
             if (areAllAssetsDistributed) {
-                setStep(3);
-                console.log(assetSelectionList);
+                setAssetDistribution((prev) => ({
+                    ...prev,
+                    step: 3
+                  }));
+
             } else {
-                setStep(2);
+                setAssetDistribution((prev) => ({
+                    ...prev,
+                    step: 2
+                  }));
             }
         } 
-        else if(step === 2){
+        else if(assetDistribution.step === 2){
             let beneficiaryDistributionitem: IBeneficiaryDistribution[];
     
-            if (Object.keys(additionalInputs).length === 0) {
+            if (Object.keys(assetDistribution.additionalInputs).length === 0) {
                 beneficiaryDistributionitem = [
                     {
-                        beneficiaryId: selectedBeneficiary[0],
-                        beneficiaryName: beneficiaryOptionsFirst.find(b => b.value === selectedBeneficiary[0])?.label ?? "",
+                        beneficiaryId: assetDistribution.selectedBeneficiary[0],
+                        beneficiaryName: beneficiaryOptionsFirst.find(b => b.value === assetDistribution.selectedBeneficiary[0])?.label ?? "",
                         percentage: 100
                     }
                 ];
             } else {
-                beneficiaryDistributionitem = Object.entries(additionalInputs).map(([beneficiaryId, percentage]) => ({
+                beneficiaryDistributionitem = Object.entries(assetDistribution.additionalInputs).map(([beneficiaryId, percentage]) => ({
                     beneficiaryId,
                     beneficiaryName: beneficiaryOptionsFirst.find(b => b.value === beneficiaryId)?.label ?? "",
                     percentage: Number(percentage) || 0 // Convert percentage to number safely
                 }));
             }
     
-            // Update asset selection list: set isAssetDistributed to true for selected assets
-            setAssetSelectionList(prevList =>
-                prevList.map(asset =>
-                    selectedAssets.includes(asset.assetId)
+            
+            setAssetDistribution((prev) => ({
+                ...prev,
+                assetSelectionList: prev.assetSelectionList.map(asset =>
+                    prev.selectedAssets.includes(asset.assetId)
                         ? { ...asset, beneficiarieslist:beneficiaryDistributionitem, isAssetDistributed: true }
                         : asset
-                )
-            );
-    
-            // Reset states
-            setStep(1);
-            setAdditionalInputs({});
-            setSelectedBeneficiary([]);
-            setSelectedAssets([]);
+                ),
+                selectedBeneficiary: [],
+                additionalInputs: {},
+                selectedAssets: [],
+                step: 1
+              }));
         }
-        else if(step === 3){
-            //navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
+        else if(assetDistribution.step === 3){
+            const userId = user.userId;
+            await saveSpecificAssetDistributionApi(userId, assetDistribution.assetSelectionList);
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
             // save logic
         }
     };
@@ -387,27 +402,27 @@ const AssetDistributionSpecificPage = () => {
 
     return(
         <div className="flex flex-col justify-between px-6 w-full min-h-[calc(100vh-232px)] md:max-w-[560px] md:mx-auto">
-            {step === 1 && (
+            {assetDistribution.step === 1 && (
                 <>
                     <h2 className="text-xl font-bold mb-3">Select the assets you would like to assign a beneficiary</h2>
                     <p className="mb-2">Selecting multiple assets at once will allow you to distribute them together. (They will be sold and converted to cash or digital money and then distributed if multiple beneficiaries are chosen)</p>
                     <CustomAssetSelectBar
-                        assets={assetSelectionList}
+                        assets={assetDistribution.assetSelectionList}
                         onSelectChange={(value) => handleSelectAssetChange(value)}
                         multiple={true}
-                        selectedOptions={selectedAssets}
+                        selectedOptions={assetDistribution.selectedAssets}
                         onEdit= {handleEditChange}
                     />
                     <NextButton onClick={handleNextStep} label="Save & Continue" />
                 </>
             )}
-            {step === 2 && (
+            {assetDistribution.step === 2 && (
         <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
           <h2 className="text-xl font-bold mb-5">
             Who will be inheriting this asset?
           </h2>
-          {assetSelectionList
-            .filter(asset => selectedAssets.includes(asset.assetId)) // Filter only selected assets
+          {assetDistribution.assetSelectionList
+            .filter(asset => assetDistribution.selectedAssets.includes(asset.assetId)) // Filter only selected assets
             .map(asset => (
                 <div key={asset.assetId} className="flex flex-col gap-y-5 w-full">
                 {/* Header Section */}
@@ -427,9 +442,9 @@ const AssetDistributionSpecificPage = () => {
             onSelectChange={handleSelectbeneficiaryChange}
             onInputChange={handleAssetPercentInputChange}
             multiple={true}
-            selectedOptions={selectedBeneficiary}
+            selectedOptions={assetDistribution.selectedBeneficiary}
             showAdditionalInput={true}
-            onPercentageInput={additionalInputs}
+            onPercentageInput={assetDistribution.additionalInputs}
           />
           <div className="justify-between flex mt-10">
             <NextButton
@@ -439,7 +454,7 @@ const AssetDistributionSpecificPage = () => {
           </div>
         </div>
       )}
-      {step === 3 && (
+      {assetDistribution.step === 3 && (
         <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
           <h2 className="text-xl font-bold mb-5">
             If one of your beneficiaries passes away before you, who should inherit their share of the assets instead?
@@ -448,7 +463,7 @@ const AssetDistributionSpecificPage = () => {
             options={backupBeneficiaryOptions}
             onSelectChange={handleBackupBeneficiaryChange}
             multiple={false}
-            selectedOptions={backupBeneficiary}
+            selectedOptions={assetDistribution.backupBeneficiary}
           />
           <div className="justify-between flex mt-10">
             <NextButton
