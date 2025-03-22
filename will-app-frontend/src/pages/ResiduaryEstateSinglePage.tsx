@@ -6,6 +6,7 @@ import NextButton from "../components/NextButton";
 import { userState } from "../atoms/UserDetailsState";
 import { useNavigate } from "react-router";
 import { IResiduaryEstateSingleState, ResiduaryEstateSingleState } from "../atoms/ResiduaryEstateSingleState";
+import { saveResiduaryAssetDistributionAPI } from "../api/assetDistribution";
 
 const ResiduaryEstateSinglePage = () => {
     const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
@@ -15,21 +16,15 @@ const ResiduaryEstateSinglePage = () => {
 
     const [step, setStep] = useState(1);
 
-    // State for beneficiaries
-    const [primaryBeneficiary, setPrimaryBeneficiary] = useState<string[]>(distribution.primaryBeneficiary ? [distribution.primaryBeneficiary] : []);
-    const [primaryDonation, setPrimaryDonation] = useState<string[]>(distribution.donationItem ? [distribution.donationItem] : []);
-    const getFilteredOptions = () => 
-        beneficiaryState
-            .map(beneficiary => ({ value: beneficiary.id, label: beneficiary.fullName }));
+    // State for selected beneficiary and donation choice
+    const [primaryBeneficiary, setPrimaryBeneficiary] = useState<string | null>(distribution.primaryBeneficiary || null);
+    const [primaryDonation, setPrimaryDonation] = useState<string | null>(distribution.donationItem || null);
 
-    // Handle selections
-    const handleSelectChange = (value: string) => {
-        setPrimaryBeneficiary([value]);
-    };
-
-    const handleSelectDonationChange = (value: string) => {
-        setPrimaryDonation([value]);
-    };
+    const getFilteredOptions = () =>
+        beneficiaryState.map(beneficiary => ({
+            value: beneficiary.id,
+            label: beneficiary.fullName
+        }));
 
     const donationOptions = [
         { value: "already_pledged", label: "Already Pledged" },
@@ -37,27 +32,45 @@ const ResiduaryEstateSinglePage = () => {
         { value: "no_pledged", label: "No, I will think about it later" },
     ];
 
+    // Handle selections
+    const handleSelectChange = (value: string) => {
+        setPrimaryBeneficiary(value);
+    };
+
+    const handleSelectDonationChange = (value: string) => {
+        setPrimaryDonation(value);
+    };
+
     const saveWillDistributionAsync = async () => {
         try {
-               setDistribution(prev => ({
-                    ...prev,
-                    id: "",
-                    primaryBeneficiary:  primaryBeneficiary[0] || null
-                }));
-            
+            if (!primaryBeneficiary) return;
+
+            const userId = user.userId;
+            const updatedData = await saveResiduaryAssetDistributionAPI(userId, [{ id: primaryBeneficiary, percentage: 1001 }]);
+
+            setDistribution(prev => ({
+                ...prev,
+                primaryBeneficiary: primaryBeneficiary || null,
+                donationItem: primaryDonation || null
+            }));
         } catch (error) {
             console.error("Error saving beneficiary distribution:", error);
         }
     };
 
     const handleNextStep = async () => {
-        if ((step === 1 && !primaryBeneficiary.length)) {
+        if (step === 1) {
+            console.log("test 1")
+            if (!primaryBeneficiary) {
+                console.log("test 2")
+                return; 
+            }
             setStep(2);
-        }
-        else if (step === 2) {
+        } else if (step === 2) {
+            console.log("test 3")
             await saveWillDistributionAsync();
             navigate("/next-route");
-        } 
+        }
     };
 
     return (
@@ -67,9 +80,9 @@ const ResiduaryEstateSinglePage = () => {
                     <h2 className="text-xl font-bold mb-5">Who will be inheriting your entire residuary estate?</h2>
                     <CustomSelectBar
                         options={getFilteredOptions()}
-                        onSelectChange={(value) => handleSelectChange(value)}
+                        onSelectChange={handleSelectChange}
                         multiple={false}
-                        selectedOptions={primaryBeneficiary}
+                        selectedOptions={primaryBeneficiary ? [primaryBeneficiary] : []}
                     />
                     <NextButton onClick={handleNextStep} label="Save & Continue" />
                 </>
@@ -79,9 +92,9 @@ const ResiduaryEstateSinglePage = () => {
                     <h2 className="text-xl font-bold mb-5">Would you like to pledge your organs for donation?</h2>
                     <CustomSelectBar
                         options={donationOptions}
-                        onSelectChange={(value) => handleSelectDonationChange(value)}
+                        onSelectChange={handleSelectDonationChange}
                         multiple={false}
-                        selectedOptions={primaryDonation}
+                        selectedOptions={primaryDonation ? [primaryDonation] : []}
                     />
                     <NextButton onClick={handleNextStep} label="Save & Continue" />
                 </>

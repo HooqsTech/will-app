@@ -1,9 +1,11 @@
 import { useState } from "react";
 import CustomSelectBar from "../components/CustomSelectBar";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { beneficiariesState, IBeneficiaryState } from "../atoms/BeneficiariesState";
 import NextButton from "../components/NextButton";
 import { userState } from '../atoms/UserDetailsState';
+import { residuaryAssetDistributionState } from "../atoms/ResiduaryAssetDistribution";
+import { saveResiduaryAssetDistributionAPI } from "../api/assetDistribution";
 
 const ResiduaryEstatePercentPage = () => {
   const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
@@ -12,9 +14,8 @@ const ResiduaryEstatePercentPage = () => {
   const [step, setStep] = useState(1);
   const user = useRecoilValue(userState);
   const [primaryDonation, setPrimaryDonation] = useState<string[]>([]);
-    
-
-  
+  const [residuaryDistribution, setResiduaryDistribution] = useRecoilState(residuaryAssetDistributionState);
+  const [loading, setLoading] = useState(false);
 
   const beneficiaryOptionsFirst = beneficiaryState.map((beneficiary) => ({
     value: beneficiary.id,
@@ -44,16 +45,31 @@ const ResiduaryEstatePercentPage = () => {
     { value: "already_pledged", label: "Already Pledged" },
     { value: "yes_pledged", label: "Yes, I would like to pledge" },
     { value: "no_pledged", label: "No, I will think about it later" },
- ];
+  ];
 
   const handleNextStep = async () => {
     if (step === 1) {
       setStep(2);
     } else {
       try {
+        setLoading(true);
         const userId = user.userId;
+
+        // Prepare the beneficiary list with percentages
+        const beneficiariesWithPercentage = firstBeneficiary.map((id) => ({
+          id,
+          percentage: Number(additionalInputs[id] || 0),
+        }));
+
+        const updatedData = await saveResiduaryAssetDistributionAPI(userId, beneficiariesWithPercentage);
+
+        // Update Recoil state with API response
+        setResiduaryDistribution(updatedData);
+        console.log("Residuary distribution saved successfully!");
       } catch (error) {
-        console.log(error);
+        console.error("Failed to save residuary distribution.");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -91,7 +107,7 @@ const ResiduaryEstatePercentPage = () => {
               multiple={false}
               selectedOptions={primaryDonation}
           />
-          <NextButton onClick={handleNextStep} label="Save & Continue" />
+          <NextButton onClick={handleNextStep} label={loading ? "Saving..." : "Save & Continue"} />
         </>
       )}
     </div>
