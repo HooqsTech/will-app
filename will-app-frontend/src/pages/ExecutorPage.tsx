@@ -65,8 +65,7 @@ const ExecutorPage = () => {
 
     const handleBackClick = async () => {
         // NAVIGATE TO PREVIOUS ROUTE
-        let routeValue = routeState.find(s => s.nextPath == location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
+        navigate(ROUTE_PATHS.MY_PLAN);
     };
 
     const setPropertyValidationState = (index: number, key: keyof IExecutorValidationState, value: string) => {
