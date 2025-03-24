@@ -16,11 +16,18 @@ export interface IUserDetails {
   personalDetails: IPersonalDetails,
   addressDetails: IAddressDetails,
   selectedAssets: ISelectedAssets,
-  beneficiaries: IBeneficiaryDetails[]
+  beneficiaries: IBeneficiaryDetails[],
+  executors: IExecutorDetails[],
   assets: IAssetDetails[]
 }
 
 export interface IBeneficiaryDetails {
+  id: string,
+  type: string,
+  data: any
+}
+
+export interface IExecutorDetails {
   id: string,
   type: string,
   data: any

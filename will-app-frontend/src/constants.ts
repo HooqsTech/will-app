@@ -53,7 +53,8 @@ export const ROUTE_PATHS = {
     RESIDUARY_SELECTION: "/residuary_selection",
     RESIDUARY_SELECTION_SINGLE: "/residuary_selection_single",
     RESIDUARY_SELECTION_PERCENT: "/residuary_selection_percent",
-    MY_PLAN: "/my_plan"
+    MY_PLAN: "/my_plan",
+    EXECUTOR:"/executor"
 }
 
 export const BENEFICIARIES = "beneficiaries"

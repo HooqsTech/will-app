@@ -96,6 +96,9 @@ import ResiduaryEstateSinglePage from './ResiduaryEstateSinglePage';
 import SafetyDepositBoxesPage from './SafetyDepositBoxesPage';
 import VechicleLoanPage from './VehicleLoanPage';
 import VehiclesPage from './VehiclesPage';
+import ExecutorPage from './ExecutorPage';
+import { executorState, IExecutorState } from '../atoms/ExecutorState';
+import { emptyExecutorValidationState, executorValidationState } from '../atoms/validationStates/ExecutorValidationState';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -200,6 +203,10 @@ const YourWill: React.FC = () => {
     // BENEFICIARIES
     const setBeneficiaries = useSetRecoilState(beneficiariesState);
     const setBeneficiariesValidationState = useSetRecoilState(beneficiariesValidationState);
+
+    // BENEFICIARIES
+    const setExecutors = useSetRecoilState(executorState);
+    const setExecutorsValidationState = useSetRecoilState(executorValidationState);
 
     const setRouteState = useSetRecoilState(routesState);
 
@@ -385,6 +392,14 @@ const YourWill: React.FC = () => {
             }
         }
 
+        if (user.executors) {
+            // SET BENEFICIARIES
+            var executors: IExecutorState[] = user.executors.map((s) => ({ ...s.data, id: s.id }));
+            if (executors.length > 0) {
+                setExecutors(executors)
+                setExecutorsValidationState(executors.map(_ => ({ ...emptyExecutorValidationState })))
+            }
+        }
         if (user.beneficiaries) {
             // SET BENEFICIARIES
             var beneficiaries: IBeneficiaryState[] = user.beneficiaries.map((s) => ({ ...s.data, id: s.id }));
@@ -458,6 +473,7 @@ const YourWill: React.FC = () => {
                         <Route path={ROUTE_PATHS.RESIDUARY_SELECTION} element={<ResiduaryEstateSelectionPage />} />
                         <Route path={ROUTE_PATHS.RESIDUARY_SELECTION_SINGLE} element={<ResiduaryEstateSinglePage />} />
                         <Route path={ROUTE_PATHS.RESIDUARY_SELECTION_PERCENT} element={<ResiduaryEstatePercentPage />} />
+                        <Route path={ROUTE_PATHS.EXECUTOR} element={<ExecutorPage />} />
                     </Routes>
                 </div>
             </div>
