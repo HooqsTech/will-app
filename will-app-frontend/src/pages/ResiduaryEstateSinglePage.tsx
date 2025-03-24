@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import { IResiduaryEstateSingleState, ResiduaryEstateSingleState } from "../atoms/ResiduaryEstateSingleState";
 import { saveResiduaryAssetDistributionAPI } from "../api/assetDistribution";
 import { ROUTE_PATHS } from "../constants";
+import DistributionBeneficiary from "../components/DistributionBeneficiary";
 
 const ResiduaryEstateSinglePage = () => {
     const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
@@ -77,12 +78,15 @@ const ResiduaryEstateSinglePage = () => {
             {step === 1 && (
                 <>
                     <h2 className="text-xl font-bold mb-5">Who will be inheriting your entire residuary estate?</h2>
-                    <CustomSelectBar
-                        options={getFilteredOptions()}
-                        onSelectChange={handleSelectChange}
-                        multiple={false}
-                        selectedOptions={primaryBeneficiary ? [primaryBeneficiary] : []}
-                    />
+                    <div>
+                        <CustomSelectBar
+                            options={getFilteredOptions()}
+                            onSelectChange={handleSelectChange}
+                            multiple={false}
+                            selectedOptions={primaryBeneficiary ? [primaryBeneficiary] : []}
+                        />
+                        <DistributionBeneficiary />
+                    </div>
                     <NextButton onClick={handleNextStep} label="Save & Continue" />
                 </>
             )}

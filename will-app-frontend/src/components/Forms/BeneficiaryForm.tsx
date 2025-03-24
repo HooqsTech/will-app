@@ -27,10 +27,11 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
     const [needsGuardian, setNeedsGuardian] = useState(false);
 
     useEffect(() => {
-        if (item.dateOfBirth !== undefined) {
+        if (item.dateOfBirth !== undefined && item.dateOfBirth !== "") {
             var age = dayjs().diff(dayjs(item.dateOfBirth), "year");
             setNeedsGuardian(age <= 18)
         }
+        console.log('item.dateOfBirth', item.dateOfBirth)
     }, [])
 
 
@@ -98,7 +99,7 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
                         helperText={validationStateItem.dateOfBirth}
                         label="DOB" />
                     {
-                        !isGuardian && needsGuardian && (formState.findIndex(f => f.isGuardian === true) > -1) && (
+                        !isGuardian && needsGuardian && (
                             <CustomSelect
                                 label="Guardian"
                                 options={formState.filter(f => f.isGuardian).map(s => s.fullName)}
@@ -110,7 +111,7 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
                         )
                     }
                     {
-                        !isGuardian && needsGuardian && (<AddButton onClick={addGuardian!} label="Add Guardian" />)
+                        (!isGuardian && needsGuardian) && <AddButton onClick={addGuardian!} label="Add Guardian" />
                     }
                     <CustomTextBox
                         value={item.email}

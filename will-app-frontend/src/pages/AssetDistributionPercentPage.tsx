@@ -7,6 +7,7 @@ import { savePercentageAssetDistribution } from "../api/assetDistribution";
 import { userState } from '../atoms/UserDetailsState';
 import { useNavigate } from "react-router";
 import { ROUTE_PATHS } from "../constants";
+import DistributionBeneficiary from "../components/DistributionBeneficiary";
 
 const AssetDistributionPercentPage = () => {
   const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
@@ -61,7 +62,7 @@ const AssetDistributionPercentPage = () => {
         await savePercentageAssetDistribution(userId, { firstBeneficiary, additionalInputs, backupBeneficiary });
 
         navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
-        
+
       } catch (error) {
         console.log(error);
       }
@@ -75,15 +76,18 @@ const AssetDistributionPercentPage = () => {
           <h2 className="text-xl font-bold mb-5">
             In what percentage and to whom, do you want to divide your assets amongst your beneficiaries?
           </h2>
-          <CustomSelectBar
-            options={beneficiaryOptionsFirst}
-            onSelectChange={handleFirstSelectChange}
-            onInputChange={handleInputChange}
-            multiple={true}
-            selectedOptions={assetDistribution.firstBeneficiary}
-            showAdditionalInput={true}
-            onPercentageInput={assetDistribution.additionalInputs}
-          />
+          <div>
+            <CustomSelectBar
+              options={beneficiaryOptionsFirst}
+              onSelectChange={handleFirstSelectChange}
+              onInputChange={handleInputChange}
+              multiple={true}
+              selectedOptions={assetDistribution.firstBeneficiary}
+              showAdditionalInput={true}
+              onPercentageInput={assetDistribution.additionalInputs}
+            />
+            <DistributionBeneficiary />
+          </div>
           <div className="justify-between flex mt-10">
             <NextButton onClick={handleNextStep} label="Save & continue" />
           </div>

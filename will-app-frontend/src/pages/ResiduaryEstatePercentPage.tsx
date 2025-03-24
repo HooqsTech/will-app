@@ -8,6 +8,7 @@ import { residuaryAssetDistributionState } from "../atoms/ResiduaryAssetDistribu
 import { saveResiduaryAssetDistributionAPI } from "../api/assetDistribution";
 import { ROUTE_PATHS } from "../constants";
 import { useNavigate } from "react-router";
+import DistributionBeneficiary from "../components/DistributionBeneficiary";
 
 const ResiduaryEstatePercentPage = () => {
   const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
@@ -85,15 +86,18 @@ const ResiduaryEstatePercentPage = () => {
           <h2 className="text-xl font-bold mb-5">
             In what percentage and to whom, do you want to divide your assets amongst your beneficiaries?
           </h2>
-          <CustomSelectBar
-            options={beneficiaryOptionsFirst}
-            onSelectChange={handleFirstSelectChange}
-            onInputChange={handleInputChange}
-            multiple={true}
-            selectedOptions={firstBeneficiary}
-            showAdditionalInput={true}
-            onPercentageInput={additionalInputs}
-          />
+          <div>
+            <CustomSelectBar
+              options={beneficiaryOptionsFirst}
+              onSelectChange={handleFirstSelectChange}
+              onInputChange={handleInputChange}
+              multiple={true}
+              selectedOptions={firstBeneficiary}
+              showAdditionalInput={true}
+              onPercentageInput={additionalInputs}
+            />
+            <DistributionBeneficiary />
+          </div>
           <div className="justify-between flex mt-10">
             <NextButton
               onClick={handleNextStep}

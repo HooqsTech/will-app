@@ -27,17 +27,18 @@ import { userState } from "../atoms/UserDetailsState";
 import { saveSpecificAssetDistributionApi } from "../api/assetDistribution";
 import { useNavigate } from "react-router";
 import { ROUTE_PATHS } from "../constants";
+import DistributionBeneficiary from "../components/DistributionBeneficiary";
 
-export interface IBeneficiaryDistribution{
+export interface IBeneficiaryDistribution {
     beneficiaryId: string;
     beneficiaryName: string;
     percentage: number;
 }
-export interface IAssetSelectionState{
+export interface IAssetSelectionState {
     type: string;
     assetId: string;
     firstline: string;
-    secondline : string;
+    secondline: string;
     beneficiarieslist: IBeneficiaryDistribution[] | null;
     isAssetDistributed: boolean;
 }
@@ -47,9 +48,9 @@ const AssetDistributionSpecificPage = () => {
     const [assetDistribution, setAssetDistribution] = useRecoilState(AssetDistributionSpecificState);
     const user = useRecoilValue(userState);
     const navigate = useNavigate();
-    
+
     const properties = useRecoilValue(propertiesState);
-    const bankAccounts = useRecoilValue(bankDetailsState);    
+    const bankAccounts = useRecoilValue(bankDetailsState);
     const fixedDeposits = useRecoilValue(fixedDepositsState);
     const insurancePolicies = useRecoilValue(insurancePoliciesState);
     const safetyDepositBoxes = useRecoilValue(safetyDepositBoxesState);
@@ -66,281 +67,281 @@ const AssetDistributionSpecificPage = () => {
     const digitalAssets = useRecoilValue(digitalAssetsState);
     const intellectualProperties = useRecoilValue(intellectualPropertiesState);
     const customAssets = useRecoilValue(customAssetsState);
-       
-     React.useEffect(() => {
+
+    React.useEffect(() => {
         getAssetDetails();
-        }, [])
+    }, [])
 
     const beneficiaryOptionsFirst = beneficiaryState.map((beneficiary) => ({
         value: beneficiary.id,
         label: beneficiary.fullName,
-        }));
+    }));
 
     const backupBeneficiaryOptions = [
         { value: "spouse_children", label: "Their spouse and/or children" },
         { value: "equal_split", label: "Split between remaining beneficiaries equally" },
         { value: "percentage_split", label: "Split between remaining beneficiaries according to their previously mentioned percentages" },
-        ];
-        
+    ];
+
     const getAssetDetails = () => {
         let propertiesList = properties.filter((data: IPropertiesState) => data.id !== "")
-        .map((data:IPropertiesState,index:number) => {
-            return {
-                type: `Property ${index}`,
-                assetId: data.id,
-                firstline: data.address?.trim() || "",
-                secondline : [data.city?.trim(), data.pincode?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist: null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IPropertiesState, index: number) => {
+                return {
+                    type: `Property ${index}`,
+                    assetId: data.id,
+                    firstline: data.address?.trim() || "",
+                    secondline: [data.city?.trim(), data.pincode?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let bankAccountsList = bankAccounts.filter((data: IBankDetailsState) => data.id !== "")
-        .map((data:IBankDetailsState,index:number) => {
-            return {
-                type: `Bank Accounts ${index}`,
-                assetId: data.id,
-                firstline: data.bankName?.trim() || "",
-                secondline : [data.accountType?.trim(), data.accountNumber?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IBankDetailsState, index: number) => {
+                return {
+                    type: `Bank Accounts ${index}`,
+                    assetId: data.id,
+                    firstline: data.bankName?.trim() || "",
+                    secondline: [data.accountType?.trim(), data.accountNumber?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let fixedDepositsList = fixedDeposits.filter((data: IFixedDepositState) => data.id !== "")
-        .map((data:IFixedDepositState,index:number) => {
-            return {
-                type: `Fixed Deposits ${index}`,
-                assetId: data.id,
-                firstline: [data.bankName?.trim(), data.accountNumber?.trim()].filter(Boolean).join(" - "),
-                secondline : [data.branch?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IFixedDepositState, index: number) => {
+                return {
+                    type: `Fixed Deposits ${index}`,
+                    assetId: data.id,
+                    firstline: [data.bankName?.trim(), data.accountNumber?.trim()].filter(Boolean).join(" - "),
+                    secondline: [data.branch?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let insurancePoliciesList = insurancePolicies.filter((data: IInsurancePolicyState) => data.id !== "")
-        .map((data:IInsurancePolicyState,index:number) => {
-            return {
-                type: `Insurance Policies ${index}`,
-                assetId: data.id,
-                firstline: data.insuranceType?.trim() || "",
-                secondline : data.insuranceProvider.trim() || "",
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IInsurancePolicyState, index: number) => {
+                return {
+                    type: `Insurance Policies ${index}`,
+                    assetId: data.id,
+                    firstline: data.insuranceType?.trim() || "",
+                    secondline: data.insuranceProvider.trim() || "",
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let safetyDepositBoxesList = safetyDepositBoxes.filter((data: ISafetyDepositBoxState) => data.id !== "")
-        .map((data:ISafetyDepositBoxState,index:number) => {
-            return {
-                type: `Safety Deposit Boxes ${index}`,
-                assetId: data.id,
-                firstline: data.depositBoxType?.trim() || "",
-                secondline : [data.bankName?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: ISafetyDepositBoxState, index: number) => {
+                return {
+                    type: `Safety Deposit Boxes ${index}`,
+                    assetId: data.id,
+                    firstline: data.depositBoxType?.trim() || "",
+                    secondline: [data.bankName?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let dematAccountsList = dematAccounts.filter((data: IDematAccountState) => data.id !== "")
-        .map((data:IDematAccountState,index:number) => {
-            return {
-                type: `Demat Account ${index}`,
-                assetId: data.id,
-                firstline: data.accountNumber?.trim() || "",
-                secondline : [data.brokerName?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IDematAccountState, index: number) => {
+                return {
+                    type: `Demat Account ${index}`,
+                    assetId: data.id,
+                    firstline: data.accountNumber?.trim() || "",
+                    secondline: [data.brokerName?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let mutualFundsList = mutualFunds.filter((data: IMutualFundState) => data.id !== "")
-        .map((data:IMutualFundState,index:number) => {
-            return {
-                type: `Mutual Fund ${index}`,
-                assetId: data.id,
-                firstline: [data.fundName?.trim(), data.noOfHolders?.trim()].filter(Boolean).join(" - "),
-                secondline : "",
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IMutualFundState, index: number) => {
+                return {
+                    type: `Mutual Fund ${index}`,
+                    assetId: data.id,
+                    firstline: [data.fundName?.trim(), data.noOfHolders?.trim()].filter(Boolean).join(" - "),
+                    secondline: "",
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let providentFundsList = providentFunds.filter((data: IProvidentFundState) => data.id !== "")
-        .map((data:IProvidentFundState,index:number) => {
-            return {
-                type: `Provident Fund ${index}`,
-                assetId: data.id,
-                firstline: data.type?.trim() || "",
-                secondline : [data.bankName?.trim(), data.branch?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IProvidentFundState, index: number) => {
+                return {
+                    type: `Provident Fund ${index}`,
+                    assetId: data.id,
+                    firstline: data.type?.trim() || "",
+                    secondline: [data.bankName?.trim(), data.branch?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let pensionAccountsList = pensionAccounts.filter((data: IPensionAccountState) => data.id !== "")
-        .map((data:IPensionAccountState,index:number) => {
-            return {
-                type: `Pension Account ${index}`,
-                assetId: data.id,
-                firstline: data.bankName?.trim() || "",
-                secondline : [data.schemeName?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IPensionAccountState, index: number) => {
+                return {
+                    type: `Pension Account ${index}`,
+                    assetId: data.id,
+                    firstline: data.bankName?.trim() || "",
+                    secondline: [data.schemeName?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let businesssesList = businessses.filter((data: IBusinessState) => data.id !== "")
-        .map((data:IBusinessState,index:number) => {
-            return {
-                type: `Business ${index}`,
-                assetId: data.id,
-                firstline: [data.type?.trim(), data.holdingPercentage?.trim()].filter(Boolean).join(" - "),
-                secondline : [data.companyName?.trim(), data.address?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IBusinessState, index: number) => {
+                return {
+                    type: `Business ${index}`,
+                    assetId: data.id,
+                    firstline: [data.type?.trim(), data.holdingPercentage?.trim()].filter(Boolean).join(" - "),
+                    secondline: [data.companyName?.trim(), data.address?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let bondsList = bonds.filter((data: IBondState) => data.id !== "")
-        .map((data:IBondState,index:number) => {
-            return {
-                type: `Bond ${index}`,
-                assetId: data.id,
-                firstline: data.type?.trim() || "",
-                secondline : [data.financialServiceProviderName?.trim(), data.certificateNumber?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IBondState, index: number) => {
+                return {
+                    type: `Bond ${index}`,
+                    assetId: data.id,
+                    firstline: data.type?.trim() || "",
+                    secondline: [data.financialServiceProviderName?.trim(), data.certificateNumber?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let debenturesList = debentures.filter((data: IDebentureState) => data.id !== "")
-        .map((data:IDebentureState,index:number) => {
-            return {
-                type: `Pension Account ${index}`,
-                assetId: data.id,
-                firstline: data.type?.trim() || "",
-                secondline : [data.financialServiceProviderName?.trim(), data.certificateNumber?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IDebentureState, index: number) => {
+                return {
+                    type: `Pension Account ${index}`,
+                    assetId: data.id,
+                    firstline: data.type?.trim() || "",
+                    secondline: [data.financialServiceProviderName?.trim(), data.certificateNumber?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let escopsList = escops.filter((data: IEscopState) => data.id !== "")
-        .map((data:IEscopState,index:number) => {
-            return {
-                type: `ESCOP ${index}`,
-                assetId: data.id,
-                firstline: data.companyName?.trim() || "",
-                secondline : [
-                    data.noOfUnitGraged ? `Units Graded: ${data.noOfUnitGraged}` : "",
-                    data.noOfVestedEscops ? `Vested: ${data.noOfVestedEscops}` : "",
-                    data.noOfUnVestedEscops ? `Unvested: ${data.noOfUnVestedEscops}` : ""
-                ].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IEscopState, index: number) => {
+                return {
+                    type: `ESCOP ${index}`,
+                    assetId: data.id,
+                    firstline: data.companyName?.trim() || "",
+                    secondline: [
+                        data.noOfUnitGraged ? `Units Graded: ${data.noOfUnitGraged}` : "",
+                        data.noOfVestedEscops ? `Vested: ${data.noOfVestedEscops}` : "",
+                        data.noOfUnVestedEscops ? `Unvested: ${data.noOfUnVestedEscops}` : ""
+                    ].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let jewelleriesList = jewelleries.filter((data: IJewelleryState) => data.id !== "")
-        .map((data:IJewelleryState,index:number) => {
-            return {
-                type: `Jewellery ${index}`,
-                assetId: data.id,
-                firstline: data.description?.trim() || "",
-                secondline : "",
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IJewelleryState, index: number) => {
+                return {
+                    type: `Jewellery ${index}`,
+                    assetId: data.id,
+                    firstline: data.description?.trim() || "",
+                    secondline: "",
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let vehiclesList = vehicles.filter((data: IVehicleState) => data.id !== "")
-        .map((data:IVehicleState,index:number) => {
-            return {
-                type: `Vechicle ${index}`,
-                assetId: data.id,
-                firstline: data.brandOrModel?.trim() || "",
-                secondline : data.registrationNumber?.trim() || "",
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IVehicleState, index: number) => {
+                return {
+                    type: `Vechicle ${index}`,
+                    assetId: data.id,
+                    firstline: data.brandOrModel?.trim() || "",
+                    secondline: data.registrationNumber?.trim() || "",
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let digitalAssetsList = digitalAssets.filter((data: IDigitalAssetState) => data.id !== "")
-        .map((data:IDigitalAssetState,index:number) => {
-            return {
-                type: `Digital Asset ${index}`,
-                assetId: data.id,
-                firstline: data.type?.trim() || "",
-                secondline : data.walletAddress?.trim() || "",
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IDigitalAssetState, index: number) => {
+                return {
+                    type: `Digital Asset ${index}`,
+                    assetId: data.id,
+                    firstline: data.type?.trim() || "",
+                    secondline: data.walletAddress?.trim() || "",
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let intellectualPropertiesList = intellectualProperties.filter((data: IIntellectualPropertyState) => data.id !== "")
-        .map((data:IIntellectualPropertyState,index:number) => {
-            return {
-                type: `Intellectual Property ${index}`,
-                assetId: data.id,
-                firstline: data.type?.trim() || "",
-                secondline : [data.identificationNumber?.trim(), data.description?.trim()].filter(Boolean).join(" - "),
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: IIntellectualPropertyState, index: number) => {
+                return {
+                    type: `Intellectual Property ${index}`,
+                    assetId: data.id,
+                    firstline: data.type?.trim() || "",
+                    secondline: [data.identificationNumber?.trim(), data.description?.trim()].filter(Boolean).join(" - "),
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         let customAssetsList = customAssets.filter((data: ICustomAssetState) => data.id !== "")
-        .map((data:ICustomAssetState,index:number) => {
-            return {
-                type: `Custom Asset ${index}`,
-                assetId: data.id,
-                firstline: data.description?.trim() || "",
-                secondline : "",
-                beneficiarieslist:  null,
-                isAssetDistributed: false
-            }
-        });
+            .map((data: ICustomAssetState, index: number) => {
+                return {
+                    type: `Custom Asset ${index}`,
+                    assetId: data.id,
+                    firstline: data.description?.trim() || "",
+                    secondline: "",
+                    beneficiarieslist: null,
+                    isAssetDistributed: false
+                }
+            });
         setAssetDistribution((prev) => ({
             ...prev,
-            assetSelectionList: [...propertiesList,...bankAccountsList,...fixedDepositsList,...insurancePoliciesList,...safetyDepositBoxesList,
-                ...dematAccountsList,...mutualFundsList,...providentFundsList,...pensionAccountsList,...businesssesList,...bondsList,
-                ...debenturesList,...escopsList,...jewelleriesList,...vehiclesList,...digitalAssetsList,...intellectualPropertiesList, ...customAssetsList      
-                ]
-          }));
+            assetSelectionList: [...propertiesList, ...bankAccountsList, ...fixedDepositsList, ...insurancePoliciesList, ...safetyDepositBoxesList,
+            ...dematAccountsList, ...mutualFundsList, ...providentFundsList, ...pensionAccountsList, ...businesssesList, ...bondsList,
+            ...debenturesList, ...escopsList, ...jewelleriesList, ...vehiclesList, ...digitalAssetsList, ...intellectualPropertiesList, ...customAssetsList
+            ]
+        }));
     }
 
     const handleSelectAssetChange = (value: string) => {
         setAssetDistribution((prev) => ({
             ...prev,
             selectedAssets: prev.selectedAssets.includes(value) ? prev.selectedAssets.filter((option) => option !== value) : [...prev.selectedAssets, value]
-          }));
-      };
+        }));
+    };
 
     const handleSelectbeneficiaryChange = (value: string) => {
         setAssetDistribution((prev) => ({
             ...prev,
             selectedBeneficiary: prev.selectedBeneficiary.includes(value) ? prev.selectedBeneficiary.filter((option) => option !== value) : [...prev.selectedBeneficiary, value]
-          }));
+        }));
     };
 
     const handleAssetPercentInputChange = (value: string, input: string) => {
         setAssetDistribution((prev) => ({
             ...prev,
-            additionalInputs: {...prev.additionalInputs,[value]:input}
-          }));
-      };
+            additionalInputs: { ...prev.additionalInputs, [value]: input }
+        }));
+    };
     const handleEditChange = (value: string) => {
-    
+
         let newInputs = assetDistribution.assetSelectionList
-        .find(asset => asset.assetId === value)
-        ?.beneficiarieslist?.reduce(
-          (acc, { beneficiaryId, percentage }) => ({
-            ...acc,
-            [beneficiaryId]: String(percentage),
-          }),
-          {} as Record<string, string>
-        ) || {};
+            .find(asset => asset.assetId === value)
+            ?.beneficiarieslist?.reduce(
+                (acc, { beneficiaryId, percentage }) => ({
+                    ...acc,
+                    [beneficiaryId]: String(percentage),
+                }),
+                {} as Record<string, string>
+            ) || {};
         setAssetDistribution((prev) => ({
             ...prev,
             selectedBeneficiary: Object.keys(newInputs),
             additionalInputs: newInputs,
             selectedAssets: [value],
             step: 2
-          }));
+        }));
     };
 
     const handleBackupBeneficiaryChange = (value: string) => {
         setAssetDistribution((prev) => ({
             ...prev,
             backupBeneficiary: [value]
-          }));
-      };
-    
+        }));
+    };
+
     const handleNextStep = async () => {
         if (assetDistribution.step === 1) {
             let areAllAssetsDistributed = assetDistribution.assetSelectionList.every(asset => asset.isAssetDistributed);
@@ -348,18 +349,18 @@ const AssetDistributionSpecificPage = () => {
                 setAssetDistribution((prev) => ({
                     ...prev,
                     step: 3
-                  }));
+                }));
 
             } else {
                 setAssetDistribution((prev) => ({
                     ...prev,
                     step: 2
-                  }));
+                }));
             }
-        } 
-        else if(assetDistribution.step === 2){
+        }
+        else if (assetDistribution.step === 2) {
             let beneficiaryDistributionitem: IBeneficiaryDistribution[];
-    
+
             if (Object.keys(assetDistribution.additionalInputs).length === 0) {
                 beneficiaryDistributionitem = [
                     {
@@ -375,33 +376,34 @@ const AssetDistributionSpecificPage = () => {
                     percentage: Number(percentage) || 0 // Convert percentage to number safely
                 }));
             }
-    
-            
+
+
             setAssetDistribution((prev) => ({
                 ...prev,
                 assetSelectionList: prev.assetSelectionList.map(asset =>
                     prev.selectedAssets.includes(asset.assetId)
-                        ? { ...asset, beneficiarieslist:beneficiaryDistributionitem, isAssetDistributed: true }
+                        ? { ...asset, beneficiarieslist: beneficiaryDistributionitem, isAssetDistributed: true }
                         : asset
                 ),
                 selectedBeneficiary: [],
                 additionalInputs: {},
                 selectedAssets: [],
                 step: 1
-              }));
+            }));
         }
-        else if(assetDistribution.step === 3){
+        else if (assetDistribution.step === 3) {
             const userId = user.userId;
             await saveSpecificAssetDistributionApi(userId, assetDistribution.assetSelectionList);
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
             // save logic
         }
     };
-    
-    
 
-    return(
-        <div className="flex flex-col justify-between px-6 w-full min-h-[calc(100vh-232px)] md:max-w-[560px] md:mx-auto">
+
+
+    return (
+        <div className="flex flex-col justify-between px-6 
+        w-full min-h-[calc(100vh-232px)] md:max-w-[560px] md:mx-auto">
             {assetDistribution.step === 1 && (
                 <>
                     <h2 className="text-xl font-bold mb-3">Select the assets you would like to assign a beneficiary</h2>
@@ -411,67 +413,69 @@ const AssetDistributionSpecificPage = () => {
                         onSelectChange={(value) => handleSelectAssetChange(value)}
                         multiple={true}
                         selectedOptions={assetDistribution.selectedAssets}
-                        onEdit= {handleEditChange}
+                        onEdit={handleEditChange}
                     />
                     <NextButton onClick={handleNextStep} label="Save & Continue" />
                 </>
             )}
             {assetDistribution.step === 2 && (
-        <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
-          <h2 className="text-xl font-bold mb-5">
-            Who will be inheriting this asset?
-          </h2>
-          {assetDistribution.assetSelectionList
-            .filter(asset => assetDistribution.selectedAssets.includes(asset.assetId)) // Filter only selected assets
-            .map(asset => (
-                <div key={asset.assetId} className="flex flex-col gap-y-5 w-full">
-                {/* Header Section */}
-                <div className="flex flex-col items-start">
-                    <p className="header capitalize">{asset.type}</p>
-                    <div className="font-medium text-sm leading-[24px] text-[#848484]">
-                        <p>{asset.firstline}</p>
-                        <p>{asset.secondline}</p>
+                <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
+                    <h2 className="text-xl font-bold mb-5">
+                        Who will be inheriting this asset?
+                    </h2>
+                    {assetDistribution.assetSelectionList
+                        .filter(asset => assetDistribution.selectedAssets.includes(asset.assetId)) // Filter only selected assets
+                        .map(asset => (
+                            <div key={asset.assetId} className="flex flex-col gap-y-5 w-full">
+                                {/* Header Section */}
+                                <div className="flex flex-col items-start">
+                                    <p className="header capitalize">{asset.type}</p>
+                                    <div className="font-medium text-sm leading-[24px] text-[#848484]">
+                                        <p>{asset.firstline}</p>
+                                        <p>{asset.secondline}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    }
+                    <div>
+                        <CustomSelectBar
+                            options={beneficiaryOptionsFirst}
+                            onSelectChange={handleSelectbeneficiaryChange}
+                            onInputChange={handleAssetPercentInputChange}
+                            multiple={true}
+                            selectedOptions={assetDistribution.selectedBeneficiary}
+                            showAdditionalInput={true}
+                            onPercentageInput={assetDistribution.additionalInputs}
+                        />
+                        <DistributionBeneficiary />
+                    </div>
+                    <div className="justify-between flex mt-10">
+                        <NextButton
+                            onClick={handleNextStep}
+                            label="Save & continue"
+                        />
                     </div>
                 </div>
+            )}
+            {assetDistribution.step === 3 && (
+                <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
+                    <h2 className="text-xl font-bold mb-5">
+                        If one of your beneficiaries passes away before you, who should inherit their share of the assets instead?
+                    </h2>
+                    <CustomSelectBar
+                        options={backupBeneficiaryOptions}
+                        onSelectChange={handleBackupBeneficiaryChange}
+                        multiple={false}
+                        selectedOptions={assetDistribution.backupBeneficiary}
+                    />
+                    <div className="justify-between flex mt-10">
+                        <NextButton
+                            onClick={handleNextStep}
+                        />
+                    </div>
                 </div>
-            ))
-        }
-
-          <CustomSelectBar
-            options={beneficiaryOptionsFirst}
-            onSelectChange={handleSelectbeneficiaryChange}
-            onInputChange={handleAssetPercentInputChange}
-            multiple={true}
-            selectedOptions={assetDistribution.selectedBeneficiary}
-            showAdditionalInput={true}
-            onPercentageInput={assetDistribution.additionalInputs}
-          />
-          <div className="justify-between flex mt-10">
-            <NextButton
-              onClick={handleNextStep}
-              label="Save & continue"
-            />
-          </div>
-        </div>
-      )}
-      {assetDistribution.step === 3 && (
-        <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
-          <h2 className="text-xl font-bold mb-5">
-            If one of your beneficiaries passes away before you, who should inherit their share of the assets instead?
-          </h2>
-          <CustomSelectBar
-            options={backupBeneficiaryOptions}
-            onSelectChange={handleBackupBeneficiaryChange}
-            multiple={false}
-            selectedOptions={assetDistribution.backupBeneficiary}
-          />
-          <div className="justify-between flex mt-10">
-            <NextButton
-              onClick={handleNextStep}
-            />
-          </div>
-        </div>
-      )}
+            )}
         </div>
     )
 }

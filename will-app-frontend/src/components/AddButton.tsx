@@ -10,7 +10,11 @@ interface IAddButtonProps {
 
 const AddButton: React.FC<IAddButtonProps> = ({ onClick, loading, label }) => {
     return (
-        <Button startIcon={<AddIcon />} disableElevation onClick={onClick} loading={loading} variant="contained" className="mt-5 w-full bg-[#358477]">
+        <Button startIcon={<AddIcon />}
+            sx={{
+                borderRadius: 0
+            }}
+            disableElevation onClick={onClick} loading={loading} variant="contained" className="mt-5 w-full rounded-[0px] bg-[#358477]">
             {label}
         </Button>
     )

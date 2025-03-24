@@ -17,9 +17,16 @@ interface ICustomAccordionProps {
 const CustomAccordion: React.FC<ICustomAccordionProps> = ({ showShield, label, children, subTitle, onChange, expanded, defaultExpanded, error }) => {
     return (
         <div className='py-2'>
-            <Accordion expanded={expanded} defaultExpanded={defaultExpanded} className={`bg-red-50 ${error && 'border-1 border-red-300'} `} onChange={onChange}>
+            <Accordion disableGutters sx={{
+                borderRadius: 0
+            }} expanded={expanded} defaultExpanded={defaultExpanded}
+                className={`bg-red-50 ${error && 'border-1 border-red-300'} `}
+                onChange={onChange}>
                 <AccordionSummary
                     expandIcon={<ArrowDropDownIcon />}
+                    sx={{
+                        borderRadius: 0
+                    }}
                 >
                     <div className='flex flex-col items-start'>
                         <div className='flex'>
@@ -41,7 +48,9 @@ const CustomAccordion: React.FC<ICustomAccordionProps> = ({ showShield, label, c
                         }
                     </div>
                 </AccordionSummary>
-                <AccordionDetails>
+                <AccordionDetails sx={{
+                    borderRadius: 0
+                }}>
                     {children}
                 </AccordionDetails>
             </Accordion>

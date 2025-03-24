@@ -37,7 +37,7 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 px-10 md:px-0 md:grid-cols-3 max-w-7xl gap-10 m-auto justify-around">
+                <div className="grid grid-cols-1 px-10 pt-10 md:px-0 md:grid-cols-3 max-w-7xl gap-10 m-auto justify-around">
                     <div className="bg-will-green col-span-1 w-full p-5 space-y-2 text-white">
                         <img className="h-40" src="/assets/make-your-will.png" />
                         <p className="font-semibold text-xl">Make your will</p>

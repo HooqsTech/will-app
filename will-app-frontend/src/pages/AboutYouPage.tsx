@@ -53,11 +53,13 @@ const AboutYouPage = () => {
 
     return (
         <div className='flex flex-col items-start h-full'>
-            <div className='w-full rounded-lg bg-white max-w-fit shadow-md border-l-[20px] p-4 border-[#358477] shadow-gray-400 justify-center flex flex-col'>
+            <div className='w-full bg-white max-w-fit shadow-md border-l-[20px] p-4 
+            border-[#358477] shadow-gray-400 justify-center flex flex-col'>
                 <div className='flex justify-end'>
                     <CustomButton label={"Edit"} onClick={handleOnClick} />
                 </div>
-                <div className='flex w-full flex-col items-center justify-between p-6 text-md space-y-2 text-wrap'>
+                <div className='flex w-full flex-col items-center justify-between p-6 text-md 
+                space-y-2 text-wrap'>
                     <Item label={"Full Name"} text={personalDetails.fullName} />
                     <Item label={"Father Name"} text={personalDetails.fatherName} />
                     <Item label={"Gender"} text={personalDetails.gender} />

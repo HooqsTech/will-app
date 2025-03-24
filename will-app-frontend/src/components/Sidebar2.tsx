@@ -87,11 +87,13 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
   },
   '&:hover': {
     backgroundColor: "#358477",
+    borderRadius: 0,
     color: 'white',
   },
   [`&.Mui-focused, &.Mui-selected, &.Mui-selected, &.Mui-focused`]: {
     backgroundColor: "#358477",
     borderLeft: "4px solid white",
+    borderRadius: 0,
     color: 'white',
   },
 }));
@@ -410,7 +412,7 @@ export default function Sidebar2() {
         </div>
       </div>
 
-      <div className='w-full'>
+      <div className='w-full block md:hidden'>
         <button onClick={handleLogout} className='!bg-white !text-will-green w-full'>Log Out</button>
       </div>
     </div>

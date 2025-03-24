@@ -72,7 +72,7 @@ const BeneficiariesPage = () => {
         navigate(routeValue?.currentPath ?? "/");
     };
 
-    const setPropertyValidationState = (index: number, key: keyof IBeneficiaryValidationState, value: string) => {
+    const setBeneficiaryValidationState = (index: number, key: keyof IBeneficiaryValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
         );
@@ -85,47 +85,47 @@ const BeneficiariesPage = () => {
 
             if (!prop.isGuardian) {
                 if (IsEmptyString(prop.type)) {
-                    setPropertyValidationState(index, "type", "Beneficiary Type is required");
+                    setBeneficiaryValidationState(index, "type", "Beneficiary Type is required");
                     isValid = false;
                 }
                 if (prop.type == "Person" && IsEmptyString(prop.fullName)) {
-                    setPropertyValidationState(index, "fullName", "Name is required");
+                    setBeneficiaryValidationState(index, "fullName", "Name is required");
                     isValid = false;
                 }
                 if (prop.type == "Person" && IsEmptyString(prop.gender)) {
-                    setPropertyValidationState(index, "gender", "Gender is required");
+                    setBeneficiaryValidationState(index, "gender", "Gender is required");
                     isValid = false;
                 }
                 if (prop.type == "Person" && IsEmptyString(prop.dateOfBirth)) {
-                    setPropertyValidationState(index, "dateOfBirth", "DOB is required");
+                    setBeneficiaryValidationState(index, "dateOfBirth", "DOB is required");
                     isValid = false;
                 }
                 if (prop.type == "Person" && prop.dateOfBirth !== "" && age <= 18 && IsEmptyString(prop.guardian)) {
-                    setPropertyValidationState(index, "guardian", "guardian is required");
+                    setBeneficiaryValidationState(index, "guardian", "guardian is required");
                     isValid = false;
                 }
                 if (prop.type == "Person" && IsEmptyString(prop.email)) {
-                    setPropertyValidationState(index, "email", "Email is required");
+                    setBeneficiaryValidationState(index, "email", "Email is required");
                     isValid = false;
                 }
                 if (prop.type == "Person" && IsEmptyString(prop.phone)) {
-                    setPropertyValidationState(index, "phone", "Phone is required");
+                    setBeneficiaryValidationState(index, "phone", "Phone is required");
                     isValid = false;
                 }
                 if (prop.type == "Person" && IsEmptyString(prop.relationship)) {
-                    setPropertyValidationState(index, "relationship", "Relationship is required");
+                    setBeneficiaryValidationState(index, "relationship", "Relationship is required");
                     isValid = false;
                 }
                 if (prop.type == "Charity" && IsEmptyString(prop.charityType)) {
-                    setPropertyValidationState(index, "charityType", "Charity Type is required");
+                    setBeneficiaryValidationState(index, "charityType", "Charity Type is required");
                     isValid = false;
                 }
                 if (prop.type == "Charity" && IsEmptyString(prop.organization)) {
-                    setPropertyValidationState(index, "organization", "Organization is required");
+                    setBeneficiaryValidationState(index, "organization", "Organization is required");
                     isValid = false;
                 }
                 if (prop.type == "Charity" && IsEmptyNumber(prop.donationAmount)) {
-                    setPropertyValidationState(index, "donationAmount", "Donation Amount is required");
+                    setBeneficiaryValidationState(index, "donationAmount", "Donation Amount is required");
                     isValid = false;
                 }
             }
@@ -140,47 +140,47 @@ const BeneficiariesPage = () => {
         var age = dayjs().diff(dayjs(formState[index].dateOfBirth), "year");
 
         if (IsEmptyString(prop.type)) {
-            setPropertyValidationState(index, "type", "Beneficiary Type is required");
+            setBeneficiaryValidationState(index, "type", "Beneficiary Type is required");
             isValid = false;
         }
         if (prop.type == "Person" && IsEmptyString(prop.fullName)) {
-            setPropertyValidationState(index, "fullName", "Name is required");
+            setBeneficiaryValidationState(index, "fullName", "Name is required");
             isValid = false;
         }
         if (prop.type == "Person" && IsEmptyString(prop.gender)) {
-            setPropertyValidationState(index, "gender", "Gender is required");
+            setBeneficiaryValidationState(index, "gender", "Gender is required");
             isValid = false;
         }
         if (prop.type == "Person" && IsEmptyString(prop.dateOfBirth)) {
-            setPropertyValidationState(index, "dateOfBirth", "DOB is required");
+            setBeneficiaryValidationState(index, "dateOfBirth", "DOB is required");
             isValid = false;
         }
         if (prop.type == "Person" && prop.dateOfBirth !== "" && age <= 18 && prop.isGuardian) {
-            setPropertyValidationState(index, "dateOfBirth", "Guardian age must be greater than 18");
+            setBeneficiaryValidationState(index, "dateOfBirth", "Guardian age must be greater than 18");
             isValid = false;
         }
         if (prop.type == "Person" && IsEmptyString(prop.email)) {
-            setPropertyValidationState(index, "email", "Email is required");
+            setBeneficiaryValidationState(index, "email", "Email is required");
             isValid = false;
         }
         if (prop.type == "Person" && IsEmptyString(prop.phone)) {
-            setPropertyValidationState(index, "phone", "Phone is required");
+            setBeneficiaryValidationState(index, "phone", "Phone is required");
             isValid = false;
         }
         if (prop.type == "Person" && IsEmptyString(prop.relationship)) {
-            setPropertyValidationState(index, "relationship", "Relationship is required");
+            setBeneficiaryValidationState(index, "relationship", "Relationship is required");
             isValid = false;
         }
         if (prop.type == "Charity" && IsEmptyString(prop.charityType)) {
-            setPropertyValidationState(index, "charityType", "Charity Type is required");
+            setBeneficiaryValidationState(index, "charityType", "Charity Type is required");
             isValid = false;
         }
         if (prop.type == "Charity" && IsEmptyString(prop.organization)) {
-            setPropertyValidationState(index, "organization", "Organization is required");
+            setBeneficiaryValidationState(index, "organization", "Organization is required");
             isValid = false;
         }
         if (prop.type == "Charity" && IsEmptyNumber(prop.donationAmount)) {
-            setPropertyValidationState(index, "donationAmount", "Donation Amount is required");
+            setBeneficiaryValidationState(index, "donationAmount", "Donation Amount is required");
             isValid = false;
         }
 
@@ -263,6 +263,11 @@ const BeneficiariesPage = () => {
         setCurrentItem(formState.length)
     };
 
+    const removeGuardian = () => {
+        var newState = formState.slice(0, formState.length - 1);
+        setFormState(newState);
+    }
+
     const getSubTitle = (index: number) => {
         const { type, fullName, email, relationship, charityType, organization } = formState[index];
         if (type == "Person") {
@@ -298,7 +303,7 @@ const BeneficiariesPage = () => {
                                 <CustomAccordion key={index} expanded={shouldExpandAccordion(index)}
                                     error={showErrorBorder && Object.values(validationState[index]).some(s => s != undefined && s != null && s != "")}
                                     onChange={() => handleAccordionOnChange(index)}
-                                    label={`BENEFICIARIY ${index + 1}`}
+                                    label={`BENEFICIARY ${index + 1}`}
                                     showShield={formState[index].isGuardian}
                                     subTitle={
                                         currentItem !== index && !shouldExpandAccordion(index) ? getSubTitle(index) : ""
@@ -312,7 +317,6 @@ const BeneficiariesPage = () => {
                                     <ConfirmDelete onConfirm={() => deleteBeneficiaryAsync(index)} />
                                 )
                             }
-
                         </div>
                     ))
                 }
@@ -325,7 +329,7 @@ const BeneficiariesPage = () => {
             <Modal
                 className='flex flex-col justify-center w-full items-center'
                 open={isOpen}
-                onClose={() => setIsOpen(false)}
+                onClose={() => { setIsOpen(false); removeGuardian() }}
             >
                 <div className='bg-white p-6 max-w-lg flex flex-col w-full'>
                     <p className='pb-4'>Add Guardian</p>
@@ -333,7 +337,7 @@ const BeneficiariesPage = () => {
                     <CustomButton label='Save Guardian' onClick={() => saveGuardianAsync(formState.length - 1)} />
                 </div>
             </Modal>
-        </div>
+        </div >
     )
 }
 

@@ -62,16 +62,17 @@ const AssetDistributionSelectionPage = () => {
 
         if (distribution.distributionType == "Single")
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION_SINGLE);
-        else if(distribution.distributionType =="Percentage")
+        else if (distribution.distributionType == "Percentage")
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION_PERCENT);
-        else if (distribution.distributionType =="Specific")
+        else if (distribution.distributionType == "Specific")
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION_SPECIFIC);
         else
             navigate(routeValue?.nextPath ?? "/");
     };
 
     return (
-        <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
+        <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] 
+        md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
             <h2 className="text-xl font-bold mb-5">Select Distribution Method</h2>
             <CustomSelectBar
                 options={options}

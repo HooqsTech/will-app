@@ -27,7 +27,10 @@ const CustomTextBox: React.FC<ICustomTextBoxProps> = ({ label, type, onChange, v
     return (
         <div className="space-y-1">
             <TextField
-                className={`w-full text-sm p-2.5 focus:border-[#265e55] focus:outline-[##265e55]border-gray-300 text-gray-900 block rounded-lg`}
+                sx={{
+                    borderRadius: 0
+                }}
+                className={`w-full text-sm p-2.5 focus:border-[#265e55] focus:outline-[##265e55] border-gray-300 text-gray-900 block`}
                 type={type}
                 value={value}
                 label={label}
@@ -39,7 +42,8 @@ const CustomTextBox: React.FC<ICustomTextBoxProps> = ({ label, type, onChange, v
                 size="small"
                 slotProps={{
                     htmlInput: {
-                        maxLength: maxLength
+                        maxLength: maxLength,
+
                     }
                 }}
             />

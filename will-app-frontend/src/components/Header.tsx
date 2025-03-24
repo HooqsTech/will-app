@@ -33,7 +33,7 @@ const Header = () => {
                 <div className="hidden w-full md:block md:w-auto" id="navbar-default">
                     <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 items-center rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
                         <li>
-                            <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm md:p-0" aria-current="page">Dashboard</a>
+                            <a href="/home" className="block py-2 px-3 text-gray-900 rounded-sm md:p-0" aria-current="page">Dashboard</a>
                         </li>
                         <li>
                             <a href="/my_plan" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:border-0  md:p-0 ">My Plans</a>

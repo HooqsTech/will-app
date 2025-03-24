@@ -7,15 +7,15 @@ interface ICustomAssetSelectBarProps {
   onSelectChange: (value: string) => void;
   multiple: boolean;
   selectedOptions: string[];
-  onEdit:(value:string) => void;
+  onEdit: (value: string) => void;
 }
 
-const CustomAssetSelectBar: React.FC<ICustomAssetSelectBarProps> = ({ 
-  assets, 
-  onSelectChange, 
+const CustomAssetSelectBar: React.FC<ICustomAssetSelectBarProps> = ({
+  assets,
+  onSelectChange,
   selectedOptions,
-  onEdit, 
-  multiple = false 
+  onEdit,
+  multiple = false
 }) => {
   console.log(assets);
   console.log(selectedOptions);
@@ -29,9 +29,8 @@ const CustomAssetSelectBar: React.FC<ICustomAssetSelectBarProps> = ({
           <div key={asset.assetId} className="flex gap-x-4 justify-between items-center">
             {!asset.isAssetDistributed ? (
               <label
-                className={`bg-[#FCFCFC] box-border relative rounded-xl flex w-full justify-center items-center md:cursor-pointer shadow-[5px_5px_8px_0_#B4CBE280] overflow-hidden transition-colors duration-50 ease-linear border-2 ${
-                  selectedOptions.includes(asset.assetId) ? "border-blue" : "border-[#FFFFFF33]"
-                }`}
+                className={`bg-[#FCFCFC] box-border relative flex w-full justify-center items-center md:cursor-pointer shadow-[5px_5px_8px_0_#B4CBE280] overflow-hidden transition-colors duration-50 ease-linear border-2 ${selectedOptions.includes(asset.assetId) ? "border-blue" : "border-[#FFFFFF33]"
+                  }`}
               >
                 <input
                   type={multiple ? "checkbox" : "radio"}

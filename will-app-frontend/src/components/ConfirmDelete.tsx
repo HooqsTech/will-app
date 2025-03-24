@@ -40,7 +40,7 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({ onConfirm }) => {
   };
 
   return (
-    <button onClick={handleDeleteClick} className="p-2 h-full bg-will-green">
+    <button onClick={handleDeleteClick} className="p-2 h-full cursor-pointer bg-will-green">
       <DeleteIcon fontSize="small" className="text-white bg-will-green" />
     </button>
   );
