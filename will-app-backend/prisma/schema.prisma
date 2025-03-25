@@ -148,7 +148,7 @@ model personaldetails {
 }
 
 model selectedassets {
-  id        String    @id @db.Uuid
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userid    String    @unique(map: "uniqueuseridselectedassets") @db.Uuid
   data      Json
   createdat DateTime? @default(now()) @db.Timestamptz(6)
