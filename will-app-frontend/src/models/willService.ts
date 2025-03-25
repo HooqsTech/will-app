@@ -4,13 +4,21 @@ export interface IWillService {
     serviceStandardPrice: number;
     serviceDiscountPrice?: number | null;
   }
+
+  export interface ICategory {
+    categoryId: string;
+    categoryName: string;
+    categoryDescription: string;
+    categoryStandardPrice: number;
+    categoryDiscountPrice?: number| null;
+  }
   
   export interface IServiceCategory {
     categoryId: string;
     categoryName: string;
     categoryDescription: string;
     categoryStandardPrice: number;
-    categoryDiscountPrice: number;
+    categoryDiscountPrice?: number| null;
     services: IWillService[];
   }
   
@@ -19,6 +27,19 @@ export interface IWillService {
     categoryName: string;
     categoryDescription: string;
     categoryStandardPrice: number;
-    categoryDiscountPrice: number | null;
+    categoryDiscountPrice?: number | null;
     services: IWillService[];
   }
+
+  
+export interface ITransaction {
+  id: string;
+  orderid: string;
+  userid: string;
+  selectedServices: IWillService[];
+  selectedCategories: ICategory[];
+  paymentid: string;
+  createdat: string;
+  updatedat: string;
+  totalprice: string;
+}

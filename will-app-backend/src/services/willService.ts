@@ -141,11 +141,28 @@ export const deleteServiceCategoryById = async (id: string) => {
 };
 
 
-export const calculateTotalPrice = async (serviceIds: string[]) => {
-    if (serviceIds.length === 0) {
-        throw new Error("No service IDs provided.");
+export const calculateTotalPrice = async (categoryId: string, serviceIds?: string[]) => {
+    console.log("First Category "  + categoryId)
+    if (Array.isArray(categoryId)) {
+        categoryId = categoryId[0];
     }
 
+    console.log("Second Category "  + categoryId)
+
+    const category = await prisma.service_categories.findUnique({
+        where: { id: categoryId },
+        select: { discountedprice: true },
+    });
+
+    const categoryDiscount = category?.discountedprice?.toNumber() ?? 0;
+    
+    if (serviceIds?.length === 0) 
+    {
+        return categoryDiscount;
+    }
+
+    // Fetch all service prices
+    console.log(serviceIds);
     const services = await prisma.services.findMany({
         where: {
             id: { in: serviceIds },
@@ -159,8 +176,11 @@ export const calculateTotalPrice = async (serviceIds: string[]) => {
         throw new Error("No valid services found.");
     }
 
-    // Convert Decimal to number and sum up the discounted prices
-    const totalPrice = services.reduce((sum, service) => sum + (service.discountedprice?.toNumber() ?? 0), 0);
+    // Convert Decimal to number and sum up the discounted prices of services
+    const totalServicePrice = services.reduce((sum, service) => sum + (service.discountedprice?.toNumber() ?? 0), 0);
+
+    // Calculate final total price (service total + category discount)
+    const totalPrice = totalServicePrice + categoryDiscount;
 
     return totalPrice;
 };
