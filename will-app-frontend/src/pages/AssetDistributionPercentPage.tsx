@@ -23,7 +23,7 @@ const AssetDistributionPercentPage = () => {
 
   const beneficiaryOptionsFirst = beneficiaryState.map((beneficiary) => ({
     value: beneficiary.id,
-    label: beneficiary.fullName,
+    label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization,
   }));
 
   const handleFirstSelectChange = (value: string) => {
@@ -62,7 +62,7 @@ const AssetDistributionPercentPage = () => {
         await savePercentageAssetDistribution(userId, { firstBeneficiary, additionalInputs, backupBeneficiary });
 
         navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
-
+        setAssetDistribution((prev) => ({ ...prev, step: 1 }));
       } catch (error) {
         console.log(error);
       }

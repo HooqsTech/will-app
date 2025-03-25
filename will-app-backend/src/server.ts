@@ -9,7 +9,8 @@ import cors from 'cors';
 import admin from "firebase-admin";
 import path from "path";
 import pdfGeneratorRoutes from "./routes/pdfGeneratorRoutes";
-import willRoutes from "./routes/willRoutes"
+import willRoutes from "./routes/willRoutes";
+import executorRoutes from "./routes/executorRoutes";
 
 // Initialize Firebase Admin SDK
 const serviceAccount = require(path.join(__dirname, "../serviceAccountKey.json"));
@@ -31,6 +32,7 @@ app.use('/api', assetDistributionRoutes);
 app.use('/api', pdfGeneratorRoutes);
 app.use("/api", paymentRoutes)
 app.use("/api", willRoutes);
+app.use("/api", executorRoutes)
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

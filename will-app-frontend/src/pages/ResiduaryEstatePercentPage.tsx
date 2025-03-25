@@ -23,7 +23,7 @@ const ResiduaryEstatePercentPage = () => {
 
   const beneficiaryOptionsFirst = beneficiaryState.map((beneficiary) => ({
     value: beneficiary.id,
-    label: beneficiary.fullName,
+    label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization,
   }));
 
   const handleFirstSelectChange = (value: string) => {

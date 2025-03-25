@@ -18,7 +18,7 @@ const AssetDistributionSinglePage = () => {
     const getFilteredOptions = (excludedIds: string[]) =>
         beneficiaryState
             .filter(beneficiary => !excludedIds.includes(beneficiary.id))
-            .map(beneficiary => ({ value: beneficiary.id, label: beneficiary.fullName }));
+            .map(beneficiary => ({ value: beneficiary.id, label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization }));
 
     const handleSelectChange = (field: keyof IAssetDistributionSingleState, value: string) => {
         setDistribution(prev => ({ ...prev, [field]: value }));
@@ -53,6 +53,7 @@ const AssetDistributionSinglePage = () => {
         if (distribution.step === 3) {
             await saveWillDistributionAsync();
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
+            setDistribution(prev => ({ ...prev, step: 1 }));
         } else {
             setDistribution(prev => ({ ...prev, step: prev.step + 1 }));
         }
@@ -63,7 +64,7 @@ const AssetDistributionSinglePage = () => {
             {distribution.step === 1 && (
                 <>
                     <h2 className="text-xl font-bold mb-5">Who will inherit all of your assets?</h2>
-                    <div>
+                    <div className="mb-5">
                         <CustomSelectBar
                             options={getFilteredOptions([])}
                             onSelectChange={(value) => handleSelectChange("primaryBeneficiary", value)}
