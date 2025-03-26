@@ -74,7 +74,7 @@ const AssetDistributionSpecificPage = () => {
 
     const beneficiaryOptionsFirst = beneficiaryState.map((beneficiary) => ({
         value: beneficiary.id,
-        label: beneficiary.fullName,
+        label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization,
     }));
 
     const backupBeneficiaryOptions = [
@@ -396,6 +396,10 @@ const AssetDistributionSpecificPage = () => {
             await saveSpecificAssetDistributionApi(userId, assetDistribution.assetSelectionList);
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
             // save logic
+            setAssetDistribution((prev) => ({
+                ...prev,
+                step: 1
+            }));
         }
     };
 

@@ -14,7 +14,6 @@ export const getWillServices = async (): Promise<IFormattedServiceCategory[]> =>
   }
 
   const categories: IFormattedServiceCategory[] = await response.json();
-  console.log("Fetched Categories:", categories);
 
   const parsedCategories = categories.map(category => ({
     ...category,

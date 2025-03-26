@@ -1,8 +1,8 @@
 import { atom } from "recoil";
-import { IFormattedServiceCategory, IWillService} from "../models/willService"; // Ensure correct path
+import { IFormattedServiceCategory, IWillService, ICategory} from "../models/willService"; // Ensure correct path
 
 // Holds the selected category index
-export const selectedCategoryState = atom<string | null>({
+export const selectedCategoryState = atom<ICategory | null>({
   key: "selectedCategoryState",
   default: null,
 });

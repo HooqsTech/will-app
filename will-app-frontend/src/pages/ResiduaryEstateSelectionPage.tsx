@@ -69,8 +69,8 @@ const ResiduaryEstateSelectionPage = () => {
     return (
         <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
             <h1 className="text-xl font-bold mb-5">Residuary Estate</h1>
-            <p className="text-xl font-medium mb-5">Don’t worry if you have forgotten to assign any assets. These unlisted assets will be automatically added to your Residuary Estate.</p>
-            <p className="text-xl font-medium mb-5">Residuary Estate can include all assets that have not been specifically assigned to any particular beneficiaries. This also includes assets you may acquire after completing your Will.</p>
+            <p className="text-md font-medium mb-5">Don’t worry if you have forgotten to assign any assets. These unlisted assets will be automatically added to your Residuary Estate.</p>
+            <p className="text-md font-medium mb-5">Residuary Estate can include all assets that have not been specifically assigned to any particular beneficiaries. This also includes assets you may acquire after completing your Will.</p>
             <h2 className="text-xl font-bold mb-5">So, how would you like to distribute your residuary estate?</h2>
             <CustomSelectBar
                 options={options}

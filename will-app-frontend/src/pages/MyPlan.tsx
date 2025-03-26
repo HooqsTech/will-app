@@ -1,53 +1,46 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useLocation } from "react-router";
-import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { useNavigate } from "react-router";
+import { useRecoilState } from "recoil";
 import { formattedCategoriesState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
-import { IFormattedServiceCategory, IWillService } from "../models/willService";
+import { ICategory, IFormattedServiceCategory, IWillService } from "../models/willService";
 import { getWillServices } from "../api/willService";
 import Header from "../components/Header";
 import NextButton from "../components/NextButton";
 import BackButton from "../components/BackButton";
 import PaymentStepper from "../components/PaymentStepper";
 import { motion } from "framer-motion";
-import {
-  FaCheck,
-  FaPlus,
-  FaTrash,
-  FaInfoCircle,
-} from "react-icons/fa";
-import { createPaymentOrder } from "../api/payment";
+import { FaCheck, FaPlus, FaTrash, FaInfoCircle} from "react-icons/fa";
+import { createPaymentOrder, createOrUpdatePaymentTransaction } from "../api/payment";
 import Swal from "sweetalert2";
-import { userState } from "../atoms/UserDetailsState";
 import { getUserIdByPhoneNumber } from "../api/user";
 import { getCookie } from "typescript-cookie";
 
-const WILL_WITH_REGISTRATION_PRICE = parseInt(
-  import.meta.env.VITE_WILL_WITH_REGISTRATION_PRICE || "19999",
-  10
-);
-
 const MyPlan: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const initialStep = Number(queryParams.get("step")) || 1;
-
   const [categories, setCategories] = useRecoilState(formattedCategoriesState);
-  const setSelectedCategory = useSetRecoilState(selectedCategoryState);
+  const [selectedCategory, setSelectedCategory] = useRecoilState(selectedCategoryState);
+  const [loading, setLoading] = useState(true);
+
   const [selected, setSelected] = useState<string | null>(null);
-  const selectedCategory = useRecoilValue(selectedCategoryState);
   const [selectedServices, setSelectedServices] = useRecoilState(
     selectedServicesState
   );
-  const [step, setStep] = useState(initialStep);
+  const [step, setStep] = useState<number>(1);
   const [coupon, setCoupon] = useState("");
   const [visibleServices, setVisibleServices] = useState<string[]>([]);
   const [infoIndex, setInfoIndex] = useState<string | null>(null);
   const infoRef = useRef<HTMLDivElement | null>(null);
+  
+
+  useEffect(() => {
+    navigate(`/my_plan?step=${step}`, { replace: true });
+    //setTimeout(() => setLoading(false), 500);
+  }, [step, navigate]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        setLoading(true);
         const data: IFormattedServiceCategory[] = await getWillServices();
         const formattedData: IFormattedServiceCategory[] = data.map(
           (service) => ({
@@ -56,22 +49,18 @@ const MyPlan: React.FC = () => {
             categoryStandardPrice: service.categoryStandardPrice ?? 0,
             categoryDiscountPrice: service.categoryDiscountPrice ?? null,
             categoryDescription:
-              service.categoryDescription ?? "service.categoryName",
+              service.categoryDescription ?? null,
             services: service.services || [],
           })
         );
         setCategories(formattedData);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
     fetchCategories();
-    console.log(fetchCategories);
   }, [setCategories]);
-
-  useEffect(() => {
-    navigate(`/my_plan?step=${step}`, { replace: true });
-  }, [step, navigate]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -89,17 +78,17 @@ const MyPlan: React.FC = () => {
     };
   }, [infoIndex]);
 
-  const handleSelectCategory = (categoryId: string) => {
-    setSelected(categoryId);
-    setSelectedCategory(categoryId);
+  const handleSelectCategory = (category: ICategory) => {
+    setSelected(category.categoryId);
+    setSelectedCategory(category);
   };
 
   const handleSelectService = (service: IWillService) => {
     setSelectedServices(
       (prev) =>
         prev.some((s) => s.serviceId === service.serviceId)
-          ? prev.filter((s) => s.serviceId !== service.serviceId) // Remove if already selected
-          : [...prev, service] // Add if not selected
+          ? prev.filter((s) => s.serviceId !== service.serviceId)
+          : [...prev, service]
     );
     setVisibleServices((prev) => [...prev, service.serviceId]);
   };
@@ -125,14 +114,19 @@ const MyPlan: React.FC = () => {
   }
 
   const handleContinue = async () => {
-    if (step === 1 && selected) {
-      setStep(2);
+    if (step === 1) {
+      console.log(selectedCategory?.categoryName)
+      if (selectedCategory?.categoryName === "NRI Will") {
+        console.log(true)
+        setStep(3); 
+      } else if (selected) {
+        setStep(2);
+      }
     } else if (step === 2) {
       setStep(3);
     } else if (step === 3) {
-      //REDIRECT TO PAYMENTT..
+      // REDIRECT TO PAYMENT
       await payNow();
-      navigate("/payment-summary");
     }
   };
 
@@ -148,7 +142,8 @@ const MyPlan: React.FC = () => {
 
     // CREATE PAYMENT ORDER
     const selectedServiceIds = selectedServices.map((service) => service.serviceId);
-    var data = await createPaymentOrder(user, selectedServiceIds, commonService.serviceStandardPrice);
+
+    var data = await createPaymentOrder(user, selectedServiceIds, selectedCategory?.categoryId ?? "");
 
     const options = {
       key: import.meta.env.VITE_RAZOR_PAY_ID,
@@ -159,9 +154,31 @@ const MyPlan: React.FC = () => {
       description: 'Thank you for choosing Hamaara will.',
       image: "",
       handler: async function (_: any) {
+        if (!selectedCategory)
+        {
+          console.log(selectedCategory)
+          return;
+        }
+        const categoryData = {
+          categoryId: selectedCategory.categoryId,
+          categoryName: selectedCategory.categoryName,
+          categoryDescription: selectedCategory.categoryDescription,
+          categoryStandardPrice: selectedCategory.categoryStandardPrice,
+          categoryDiscountPrice: selectedCategory.categoryDiscountPrice,
+      };
+
+        await createOrUpdatePaymentTransaction(data.id, user, selectedServices, categoryData);
         Swal.fire("Your payment is successfull.")
+        navigate("/order_summary");
+      },
+      modal: {
+        ondismiss: function () {
+          Swal.fire("Payment cancelled.");
+          console.log("Payment Cancelled");
+        }
       }
     }
+
     const _window = window as any
     const paymentObject = _window.Razorpay(options)
     paymentObject.open()
@@ -169,25 +186,26 @@ const MyPlan: React.FC = () => {
 
   const handlePrevious = () => {
     if (step === 3) {
-      setStep(2);
+      if (selectedCategory?.categoryName === "NRI Will") {
+        setStep(1);
+      } else {
+        setStep(2);
+      }
     } else if (step === 2) {
       setStep(1);
     } else {
       navigate(-1);
     }
   };
-
   const selectedCategoryData = categories.find(
-    (cat) => cat.categoryId === String(selectedCategory)
+    (cat) => cat.categoryId === selectedCategory?.categoryId
   );
   const services = selectedCategoryData?.services ?? [];
-  const commonService = {
-    serviceName: "Will with Registration",
-    serviceStandardPrice: WILL_WITH_REGISTRATION_PRICE,
-  };
 
   const total =
-  commonService.serviceStandardPrice +
+  (selectedCategory
+    ? selectedCategory.categoryDiscountPrice ?? selectedCategory.categoryStandardPrice
+    : 0) +
   selectedServices.reduce(
     (sum, service) => sum + (service.serviceDiscountPrice ?? service.serviceStandardPrice),
     0
@@ -195,12 +213,18 @@ const MyPlan: React.FC = () => {
 
   return (
     <div className="relative flex flex-col items-center min-h-screen bg-white text-white p-6">
-      <div className="mt-24">
-        <PaymentStepper currentStep={step} />
-      </div>
-
       <div className="fixed top-0 left-0 w-full bg-[#265e55] z-50">
         <Header />
+      </div>
+      
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
+      
+      <div className="mt-24">
+        <PaymentStepper currentStep={step} />
       </div>
 
       {step === 1 && (
@@ -223,14 +247,17 @@ const MyPlan: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       className="absolute bottom-0 mb-3 -right-[100px] md:-right-[380px] transform -translate-x-1/2 w-64 bg-white rounded-lg p-4 border border-gray-600 z-40">
-                      <h4 className="text-md font-semibold text-[#265e55]">
-                        {category.categoryName}
-                      </h4>
-                      <ul className="text-sm text-gray-400 list-disc pl-4 mt-2">
-                        {category.services.map((service, i) => (
-                          <li key={i}>{service.serviceName}</li>
-                        ))}
-                      </ul>
+                     <h4 className="text-md font-semibold text-[#265e55]">
+                            {category.categoryName}
+                          </h4>
+                          <ul className="text-sm text-gray-400 list-disc pl-6 mt-2">
+                            {category.categoryDescription
+                              .split('.')
+                              .filter((point) => point.trim() !== '')
+                              .map((point, index) => (
+                                <li key={index}>{point.trim()}</li>
+                              ))}
+                          </ul>
                       <button
                         className="mt-3 text-[#265e55] text-sm hover:text-blue-300"
                         onClick={() => setInfoIndex(null)}
@@ -246,7 +273,7 @@ const MyPlan: React.FC = () => {
                       ? "border-green-500 bg-[#265e55] scale-105"
                       : "border-gray-600 bg-[#265e55] hover:shadow-lg hover:scale-105"
                       }`}
-                    onClick={() => handleSelectCategory(category.categoryId)}
+                    onClick={() => handleSelectCategory(category)}
                     whileHover={{ scale: 1.05 }}
                   >
                     {selected === category.categoryId && (
@@ -387,9 +414,9 @@ const MyPlan: React.FC = () => {
           {/* Service List Container */}
           <div className="w-[800px] mt-8 bg-[#265e55] p-6 rounded-xl shadow-lg">
             <div className="flex justify-between items-center py-3 border-b border-gray-600 font-bold text-lg">
-              <span>{commonService.serviceName}</span>
+              <span>{selectedCategory?.categoryName}</span>
               <span className="text-green-400">
-                ₹{commonService.serviceStandardPrice.toLocaleString()}.00
+                ₹{selectedCategory?.categoryDiscountPrice?.toLocaleString() ? selectedCategory?.categoryDiscountPrice.toLocaleString(): selectedCategory?.categoryStandardPrice.toLocaleString()}.00
               </span>
             </div>
 

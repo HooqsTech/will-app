@@ -25,7 +25,7 @@ const ResiduaryEstateSinglePage = () => {
     const getFilteredOptions = () =>
         beneficiaryState.map(beneficiary => ({
             value: beneficiary.id,
-            label: beneficiary.fullName
+            label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization
         }));
 
     const donationOptions = [
@@ -78,7 +78,7 @@ const ResiduaryEstateSinglePage = () => {
             {step === 1 && (
                 <>
                     <h2 className="text-xl font-bold mb-5">Who will be inheriting your entire residuary estate?</h2>
-                    <div>
+                    <div className="mb-5">
                         <CustomSelectBar
                             options={getFilteredOptions()}
                             onSelectChange={handleSelectChange}

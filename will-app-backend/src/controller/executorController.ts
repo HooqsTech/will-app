@@ -45,7 +45,7 @@ export const getExecutorsByUserId = async (req: Request, res: Response) => {
 
 export const upsertExecutor = async (req: Request, res: Response) => {
     try {
-        const { id, userId, type, data } = req.body;
+        const { id, userId, data } = req.body;
 
         if (!(await validateId(userId))) return res.status(400).json({ error: "Invalid User ID format." });
         if (!(await validUser(userId))) return res.status(400).json({ error: "Invalid User" });
