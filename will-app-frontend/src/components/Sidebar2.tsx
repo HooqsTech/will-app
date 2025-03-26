@@ -390,7 +390,7 @@ export default function Sidebar2() {
 
   return (
     <div className='flex flex-col justify-between h-full items-start'>
-      <div className='flex flex-col'>
+      <div className='flex flex-col w-full'>
         <div className='w-full py-6 border-b-slate-400 border-b-[1px]'>
           <img
             src={`/assets/hamara-logo-icon.png`}
