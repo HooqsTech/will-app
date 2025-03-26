@@ -12,7 +12,6 @@ import { TransitionProps } from '@mui/material/transitions';
 import { styled } from '@mui/system';
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import { treeItemClasses } from '@mui/x-tree-view/TreeItem';
-import { useTreeViewApiRef } from '@mui/x-tree-view/hooks';
 import {
   TreeItem2Checkbox,
   TreeItem2Content,
@@ -23,6 +22,7 @@ import {
 import { TreeItem2DragAndDropOverlay } from '@mui/x-tree-view/TreeItem2DragAndDropOverlay';
 import { TreeItem2Icon } from '@mui/x-tree-view/TreeItem2Icon';
 import { TreeItem2Provider } from '@mui/x-tree-view/TreeItem2Provider';
+import { useTreeViewApiRef } from '@mui/x-tree-view/hooks';
 import { TreeViewBaseItem } from '@mui/x-tree-view/models';
 import { useTreeItem2, UseTreeItem2Parameters } from '@mui/x-tree-view/useTreeItem2';
 import { animated, useSpring } from '@react-spring/web';
@@ -30,9 +30,9 @@ import clsx from 'clsx';
 import * as React from 'react';
 import { useNavigate } from 'react-router';
 import { useRecoilValue } from 'recoil';
+import { removeCookie } from 'typescript-cookie';
 import { routesState } from '../atoms/RouteState';
 import { ASSET_TYPES, ROUTE_PATHS } from '../constants';
-import { removeCookie } from 'typescript-cookie';
 
 type ExtendedTreeItemProps = {
   iconName?: string;
@@ -92,6 +92,7 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
   [`&.Mui-focused, &.Mui-selected, &.Mui-selected, &.Mui-focused`]: {
     backgroundColor: "#358477",
     borderLeft: "4px solid white",
+    borderRadius: 0,
     color: 'white',
   },
 }));
