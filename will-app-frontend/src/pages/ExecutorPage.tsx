@@ -5,8 +5,8 @@ import { userState } from '../atoms/UserDetailsState';
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
-import {  ROUTE_PATHS } from '../constants';
-import {  IsEmptyString } from '../utils';
+import { ROUTE_PATHS } from '../constants';
+import { IsEmptyString } from '../utils';
 import { useLocation, useNavigate } from 'react-router';
 import { Modal } from '@mui/material';
 import { guardianModalState } from '../atoms/GuardianModelState';
@@ -22,12 +22,10 @@ import { deleteExecutor, upsertExecutor } from '../api/executor';
 
 const ExecutorPage = () => {
     const [formState, setFormState] = useRecoilState<IExecutorState[]>(executorState);
-    const  setValidationState = useSetRecoilState<IExecutorValidationState[]>(executorValidationState);
+    const setValidationState = useSetRecoilState<IExecutorValidationState[]>(executorValidationState);
     const [currentItem, setCurrentItem] = useState<number>(1);
     const user = useRecoilValue(userState);
-    const routeState = useRecoilValue(routesState);
     const navigate = useNavigate();
-    const location = useLocation();
     const [isOpen, setIsOpen] = useRecoilState(guardianModalState);
 
     const saveExecutorAsync = async (property: IExecutorState, index: number) => {
@@ -63,11 +61,6 @@ const ExecutorPage = () => {
         );
     }
 
-    const handleBackClick = async () => {
-        // NAVIGATE TO PREVIOUS ROUTE
-        navigate(ROUTE_PATHS.MY_PLAN);
-    };
-
     const setPropertyValidationState = (index: number, key: keyof IExecutorValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -79,7 +72,7 @@ const ExecutorPage = () => {
         let isValid: boolean = true;
         let prop = formState[index];
         let age = dayjs().diff(dayjs(formState[index].dob), "year");
-        
+
         if (IsEmptyString(prop.fullName)) {
             setPropertyValidationState(index, "fullName", "Name is required");
             isValid = false;
@@ -92,7 +85,7 @@ const ExecutorPage = () => {
             setPropertyValidationState(index, "dob", "DOB is required");
             isValid = false;
         }
-        if (prop.dob !== "" && age <= 18 ) {
+        if (prop.dob !== "" && age <= 18) {
             setPropertyValidationState(index, "dob", "Executor age must be greater than 18");
             isValid = false;
         }
@@ -104,7 +97,7 @@ const ExecutorPage = () => {
             setPropertyValidationState(index, "phoneNumber", "Phone is required");
             isValid = false;
         }
-        
+
         return isValid;
     }
 
@@ -142,7 +135,7 @@ const ExecutorPage = () => {
         setIsOpen(true);
     };
 
-    const onEdit = (index:number) => {
+    const onEdit = (index: number) => {
         setCurrentItem(index);
         setIsOpen(true);
     }
@@ -152,35 +145,35 @@ const ExecutorPage = () => {
         <div className='flex flex-col justify-start text-center h-full space-y-3 w-xl m-auto'>
             <h1 className='text-2xl font-semibold'>Choose Your Will Executors</h1>
             <h2 className="text-md mb-5">
-            Ensure your wishes are followed accurately and minimise the possibility of objections, by choosing the right person to execute your Will.
+                Ensure your wishes are followed accurately and minimise the possibility of objections, by choosing the right person to execute your Will.
             </h2>
             <h2 className="text-md mb-5">
-            Please choose an executor that is a trusted relative, family friend, lawyer, CA, or any professional, and is above the age of 18.
+                Please choose an executor that is a trusted relative, family friend, lawyer, CA, or any professional, and is above the age of 18.
             </h2>
             <div>
                 {formState.filter(f => f.id != "").map((_, index) => (
-                <div key={formState[index].id} className="relative flex box-border my-3 p-6 border bg-[#FFFFFFB2] border-[#FFFFFF33] rounded-xl shadow-[3px_3px_6px_0_#B4CBE240]">
-                    <div className="flex flex-col gap-y-5">
-                        <div className="flex items-center">
-                        <p className="header first-letter:capitalize">{`Executor ${index + 1}`}</p>
+                    <div key={formState[index].id} className="relative flex box-border my-3 p-6 border bg-[#FFFFFFB2] border-[#FFFFFF33] rounded-xl shadow-[3px_3px_6px_0_#B4CBE240]">
+                        <div className="flex flex-col gap-y-5">
+                            <div className="flex items-center">
+                                <p className="header first-letter:capitalize">{`Executor ${index + 1}`}</p>
+                            </div>
+                            <div>
+                                <p className="desc">{formState[index].fullName}</p>
+                            </div>
                         </div>
-                        <div>
-                        <p className="desc">{formState[index].fullName}</p>
+                        {/* Edit and Delete Icons */}
+                        <div className="absolute bottom-[22px] right-6">
+                            <div className="inline-flex gap-x-8 justify-end items-center">
+                                <div className="inline-flex gap-x-2 items-center cursor-pointer">
+                                    <EditButton onClick={() => onEdit(index + 1)} className=" hover:bg-gray-200 rounded-full" />
+
+                                </div>
+                                <div className="inline-flex gap-x-2 items-center cursor-pointer">
+                                    <ConfirmDelete onConfirm={() => deleteExecutorAsync(index)} />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    {/* Edit and Delete Icons */}
-                    <div className="absolute bottom-[22px] right-6">
-                        <div className="inline-flex gap-x-8 justify-end items-center">
-                        <div className="inline-flex gap-x-2 items-center cursor-pointer">
-                            <EditButton onClick={() => onEdit(index + 1)} className=" hover:bg-gray-200 rounded-full" />
-                            
-                        </div>
-                        <div className="inline-flex gap-x-2 items-center cursor-pointer">
-                            <ConfirmDelete onConfirm={() => deleteExecutorAsync(index)} />
-                        </div>
-                        </div>
-                    </div>
-                </div>
                 ))}
                 <AddButton onClick={addExecutorItem} label={`EXECUTOR ${formState.length}`} />
             </div>
