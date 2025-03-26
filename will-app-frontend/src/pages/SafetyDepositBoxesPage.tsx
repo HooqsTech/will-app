@@ -57,12 +57,6 @@ const SafetyDepositBoxesPage = () => {
         );
     }
 
-    const handleBackClick = async () => {
-        // NAVIGATE TO PREVIOUS ROUTE
-        var routeValue = routeState.find(s => s.nextPath == location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    }
-
     const setSafetyDepositBoxValidationState = (index: number, key: keyof ISafetyDepositBoxValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -175,7 +169,7 @@ const SafetyDepositBoxesPage = () => {
                 <AddButton onClick={addProperty} label={`Safety Deposit Box / Locker ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>

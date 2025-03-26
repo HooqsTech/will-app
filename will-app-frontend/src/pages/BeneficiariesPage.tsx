@@ -66,12 +66,6 @@ const BeneficiariesPage = () => {
         );
     }
 
-    const handleBackClick = async () => {
-        // NAVIGATE TO PREVIOUS ROUTE
-        let routeValue = routeState.find(s => s.nextPath == location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    };
-
     const setBeneficiaryValidationState = (index: number, key: keyof IBeneficiaryValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -331,7 +325,7 @@ const BeneficiariesPage = () => {
                 <AddButton onClick={addBeneficiaryItem} label={`BENEFICIARY ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
             <Modal

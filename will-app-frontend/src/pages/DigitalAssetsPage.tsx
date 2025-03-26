@@ -57,11 +57,6 @@ const DigitalAssetsPage = () => {
         );
     };
 
-    const handleBackClick = async () => {
-        var routeValue = routeState.find(s => s.nextPath === location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    };
-
     const setDigitalAssetValidationState = (index: number, key: keyof IDigitalAssetValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -157,7 +152,7 @@ const DigitalAssetsPage = () => {
                 <AddButton onClick={addDigitalAsset} label={`Digital Asset ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>
