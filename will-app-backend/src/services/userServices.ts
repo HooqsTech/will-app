@@ -202,34 +202,37 @@ const formatUserResponse = (user: any) => ({
   addressDetails: user.addressdetails?.address || {},
   assets: Array.isArray(user.assets)
     ? user.assets.map((asset: any) => ({
-        id: asset.id,
-        type: asset.type,
-        subtype: asset.subtype,
-        data: asset.data,
-      }))
+      id: asset.id,
+      type: asset.type,
+      subtype: asset.subtype,
+      data: asset.data,
+    }))
     : [],
   beneficiaries: Array.isArray(user.beneficiaries)
     ? user.beneficiaries?.map((ben: any) => ({
-        id: ben.id,
-        type: ben.type,
-        data: ben.data,
-      }))
+      id: ben.id,
+      type: ben.type,
+      data: ben.data,
+    }))
     : [],
-executors: Array.isArray(user.executors)
+  executors: Array.isArray(user.executors)
     ? user.executors?.map((ben: any) => ({
-        id: ben.id,
-        data: ben.data,
-      }))
+      id: ben.id,
+      data: ben.data,
+    }))
     : [],
   excludedPersons: Array.isArray(user.excludedpersons)
-    ? user.excludedpersons?.map((ex: any) => ex.data)
+    ? user.excludedpersons?.map((ex: any) => ({
+      id: ex.id,
+      data: ex.data
+    }))
     : [],
   liabilities: Array.isArray(user.liabilities)
     ? user.liabilities?.map((liability: any) => ({
-        id: liability.id,
-        type: liability.type,
-        data: liability.data,
-      }))
+      id: liability.id,
+      type: liability.type,
+      data: liability.data,
+    }))
     : [],
   pets: Array.isArray(user.pets) ? user.pets?.map((pet: any) => pet.data) : [],
   selectedAssets: user.selectedassets?.data || {},

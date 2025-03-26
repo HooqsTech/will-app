@@ -1,24 +1,23 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { Modal } from '@mui/material';
+import dayjs from 'dayjs';
 import { useState } from 'react';
-import { routesState } from '../atoms/RouteState';
+import { useNavigate } from 'react-router';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { deleteExecutor, upsertExecutor } from '../api/executor';
+import { executorState, IExecutorState } from '../atoms/ExecutorState';
+import { guardianModalState } from '../atoms/GuardianModelState';
 import { userState } from '../atoms/UserDetailsState';
+import { emptyExecutorValidationState, executorValidationState, IExecutorValidationState } from '../atoms/validationStates/ExecutorValidationState';
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
+import ConfirmDelete from '../components/ConfirmDelete';
+import CustomButton from '../components/CustomButton';
+import EditButton from '../components/EditButton';
+import ExecutorForm from '../components/Forms/ExecutorForm';
 import NextButton from '../components/NextButton';
 import { ROUTE_PATHS } from '../constants';
-import { IsEmptyString } from '../utils';
-import { useLocation, useNavigate } from 'react-router';
-import { Modal } from '@mui/material';
-import { guardianModalState } from '../atoms/GuardianModelState';
-import CustomButton from '../components/CustomButton';
-import dayjs from 'dayjs';
-import { executorState, IExecutorState } from '../atoms/ExecutorState';
-import { emptyExecutorValidationState, executorValidationState, IExecutorValidationState } from '../atoms/validationStates/ExecutorValidationState';
-import ExecutorForm from '../components/Forms/ExecutorForm';
-import EditButton from '../components/EditButton';
-import ConfirmDelete from '../components/ConfirmDelete';
 import { IExecutor, IExecutorDeleteRequest } from '../models/executor';
-import { deleteExecutor, upsertExecutor } from '../api/executor';
+import { IsEmptyString } from '../utils';
 
 const ExecutorPage = () => {
     const [formState, setFormState] = useRecoilState<IExecutorState[]>(executorState);
@@ -140,6 +139,10 @@ const ExecutorPage = () => {
         setIsOpen(true);
     }
 
+    const removeLastItem = () => {
+        var newState = formState.slice(0, formState.length - 1);
+        setFormState(newState);
+    }
 
     return (
         <div className='flex flex-col justify-start text-center h-full space-y-3 w-xl m-auto'>
@@ -184,7 +187,7 @@ const ExecutorPage = () => {
             <Modal
                 className='flex flex-col justify-center w-full items-center'
                 open={isOpen}
-                onClose={() => setIsOpen(false)}
+                onClose={() => { setIsOpen(false); removeLastItem(); }}
             >
                 <div className='bg-white p-6 max-w-lg flex flex-col w-full'>
                     <p className='pb-4'>Executor</p>

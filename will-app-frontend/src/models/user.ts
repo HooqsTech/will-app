@@ -18,7 +18,8 @@ export interface IUserDetails {
   selectedAssets: ISelectedAssets,
   beneficiaries: IBeneficiaryDetails[],
   executors: IExecutorDetails[],
-  assets: IAssetDetails[]
+  assets: IAssetDetails[],
+  excludedPersons: IExcludedPersonDetails[]
 }
 
 export interface IBeneficiaryDetails {
@@ -28,6 +29,12 @@ export interface IBeneficiaryDetails {
 }
 
 export interface IExecutorDetails {
+  id: string,
+  type: string,
+  data: any
+}
+
+export interface IExcludedPersonDetails {
   id: string,
   type: string,
   data: any

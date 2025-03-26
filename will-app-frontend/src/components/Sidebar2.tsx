@@ -244,7 +244,7 @@ export default function Sidebar2() {
   const [menuItems, seTmenuItems] = React.useState<TreeViewBaseItem<ExtendedTreeItemProps>[]>([]);
   const [navSelectedItem, setNavSelectedItem] = React.useState<string>(ROUTE_PATHS.ASSETS);
   const [expandedItems, setExpandedItems] = React.useState<string[]>(["assets"]);
-  const  handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
+  const handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
     var item = apiRef.current?.getItem(itemId);
     setNavSelectedItem(itemId);
     navigate(ROUTE_PATHS.YOUR_WILL + (item.routePath ?? ""));
@@ -256,41 +256,41 @@ export default function Sidebar2() {
     setExpandedItems(itemIds);
     console.log(expandedItems);
   };
-  
-  const about_you = ['personal_details','address_details'];
-  const immovable_assets = ['immovable_assets','properties'];
-  const financial_assets = ['financial_assets','bank_accounts', 'fixed_deposits', 'insurance_policies', 'safe_deposit_boxes', 'demat_accounts','mutual_funds','provident_fund','pension_accounts']; 
-  const business_assets = ['business_assets','business', 'bonds','debentures','esops','other_investments'];
-  const other_assets = ['other_assets','vehicles','jewelleries','digital_assets','intellectual_property','custom_assets'];
-  const liabilities = ['liabilities','home_loans','personal_loans','vehicle_loans','education_loans','other_liabilities'];
-  
+
+  const about_you = ['personal_details', 'address_details'];
+  const immovable_assets = ['immovable_assets', 'properties'];
+  const financial_assets = ['financial_assets', 'bank_accounts', 'fixed_deposits', 'insurance_policies', 'safe_deposit_boxes', 'demat_accounts', 'mutual_funds', 'provident_fund', 'pension_accounts'];
+  const business_assets = ['business_assets', 'business', 'bonds', 'debentures', 'esops', 'other_investments'];
+  const other_assets = ['other_assets', 'vehicles', 'jewelleries', 'digital_assets', 'intellectual_property', 'custom_assets'];
+  const liabilities = ['liabilities', 'home_loans', 'personal_loans', 'vehicle_loans', 'education_loans', 'other_liabilities'];
+
   React.useEffect(() => {
     let nav = location.pathname.split('/').pop() ?? "";
     setNavSelectedItem(nav ?? "");
-    
+
     if (about_you.includes(nav)) {
       setExpandedItems(['about_you']);
     }
-    else if(immovable_assets.includes(nav)) {
+    else if (immovable_assets.includes(nav)) {
       setExpandedItems(["immovable_assets", "assets"]);
     }
-    else if(financial_assets.includes(nav)) {
+    else if (financial_assets.includes(nav)) {
       setExpandedItems(['financial_assets', 'assets']);
     }
-    else if(business_assets.includes(nav)) {
+    else if (business_assets.includes(nav)) {
       setExpandedItems(['business_assets', 'assets']);
     }
-    else if(financial_assets.includes(nav)) {
+    else if (financial_assets.includes(nav)) {
       setExpandedItems(['financial_assets', 'assets']);
     }
-    else if(other_assets.includes(nav)) {
+    else if (other_assets.includes(nav)) {
       setExpandedItems(['other_assets', 'assets']);
     }
-    else if(liabilities.includes(nav)) {
+    else if (liabilities.includes(nav)) {
       setExpandedItems(['liabilities']);
     }
 
-  },[location.pathname]);
+  }, [location.pathname]);
 
   React.useEffect(() => {
     const items: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
@@ -329,7 +329,7 @@ export default function Sidebar2() {
         label: 'Asset Distribution',
         iconName: 'pdf',
         routePath: ROUTE_PATHS.ASSET_DISTRIBUTION
-      }
+      },
     ];
 
     // SET ASSETS

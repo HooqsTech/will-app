@@ -79,7 +79,7 @@ const AssetDistributionSinglePage = () => {
             {distribution.step === 2 && (
                 <>
                     <h2 className="text-xl font-bold mb-5">If {distribution.primaryBeneficiary ? beneficiaryState.find(b => b.id === distribution.primaryBeneficiary)?.fullName : "your primary beneficiary"} passes away, who should inherit?</h2>
-                    <div>
+                    <div className="mb-5">
                         <CustomSelectBar
                             options={getFilteredOptions([distribution.primaryBeneficiary || ""])}
                             onSelectChange={(value) => handleSelectChange("secondaryBeneficiary", value)}

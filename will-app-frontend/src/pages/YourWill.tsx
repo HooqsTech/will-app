@@ -99,6 +99,9 @@ import VehiclesPage from './VehiclesPage';
 import ExecutorPage from './ExecutorPage';
 import { executorState, IExecutorState } from '../atoms/ExecutorState';
 import { emptyExecutorValidationState, executorValidationState } from '../atoms/validationStates/ExecutorValidationState';
+import ExcludedPersonsPage from './ExcludedPersonsPage';
+import { excludedPersonsState, IExcludedPersonState } from '../atoms/excludedPersonsState';
+import { emptyExcludedPersonValidationState, excludedPersonsValidationState } from '../atoms/validationStates/ExcludedPersonsValidationState';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -204,9 +207,13 @@ const YourWill: React.FC = () => {
     const setBeneficiaries = useSetRecoilState(beneficiariesState);
     const setBeneficiariesValidationState = useSetRecoilState(beneficiariesValidationState);
 
-    // BENEFICIARIES
+    // EXECUTORS
     const setExecutors = useSetRecoilState(executorState);
     const setExecutorsValidationState = useSetRecoilState(executorValidationState);
+
+    //EXCLUDED PERSONS
+    const setExcludedPersons = useSetRecoilState(excludedPersonsState);
+    const setExcludedPersonsValidationState = useSetRecoilState(excludedPersonsValidationState);
 
     const setRouteState = useSetRecoilState(routesState);
 
@@ -393,7 +400,6 @@ const YourWill: React.FC = () => {
         }
 
         if (user.executors) {
-            // SET BENEFICIARIES
             var executors: IExecutorState[] = user.executors.map((s) => ({ ...s.data, id: s.id }));
             if (executors.length > 0) {
                 setExecutors(executors)
@@ -401,11 +407,17 @@ const YourWill: React.FC = () => {
             }
         }
         if (user.beneficiaries) {
-            // SET BENEFICIARIES
             var beneficiaries: IBeneficiaryState[] = user.beneficiaries.map((s) => ({ ...s.data, id: s.id }));
             if (beneficiaries.length > 0) {
                 setBeneficiaries(beneficiaries)
                 setBeneficiariesValidationState(beneficiaries.map(_ => ({ ...emptyBeneficiariesValidationState })))
+            }
+        }
+        if (user.excludedPersons) {
+            var excludedPersons: IExcludedPersonState[] = user.excludedPersons.map((s) => ({ ...s.data, id: s.id }));
+            if (excludedPersons.length > 0) {
+                setExcludedPersons(excludedPersons)
+                setExcludedPersonsValidationState(excludedPersons.map(_ => ({ ...emptyExcludedPersonValidationState })))
             }
         }
 
@@ -474,6 +486,7 @@ const YourWill: React.FC = () => {
                         <Route path={ROUTE_PATHS.RESIDUARY_SELECTION_SINGLE} element={<ResiduaryEstateSinglePage />} />
                         <Route path={ROUTE_PATHS.RESIDUARY_SELECTION_PERCENT} element={<ResiduaryEstatePercentPage />} />
                         <Route path={ROUTE_PATHS.EXECUTOR} element={<ExecutorPage />} />
+                        <Route path={ROUTE_PATHS.EXECLUDED_PERSONS} element={<ExcludedPersonsPage />} />
                     </Routes>
                 </div>
             </div>
