@@ -185,7 +185,7 @@ const ExecutorPage = () => {
                 <AddButton onClick={addExecutorItem} label={`EXECUTOR ${formState.length}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
             <Modal

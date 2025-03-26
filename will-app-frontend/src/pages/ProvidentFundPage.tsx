@@ -58,6 +58,12 @@ const ProvidentFundpage = () => {
         );
     }
 
+    const handleBackClick = async () => {
+        // NAVIGATE TO PREVIOUS ROUTE
+        let routeValue = routeState.find(s => s.nextPath == location.pathname);
+        navigate(routeValue?.currentPath ?? "/");
+    };
+
     const setPropertyValidationState = (index: number, key: keyof IProvidentFundValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -71,16 +77,28 @@ const ProvidentFundpage = () => {
                 setPropertyValidationState(index, "type", "Type is required");
                 isValid = false;
             }
-            if (IsEmptyString(prop.bankName)) {
+            if (prop.type == "EPF" && IsEmptyString(prop.uanNumber)) {
+                setPropertyValidationState(index, "uanNumber", "UAN Number is required");
+                isValid = false;
+            }
+            if (prop.type == "PPF" && IsEmptyString(prop.bankName)) {
                 setPropertyValidationState(index, "bankName", "Bank Name is required");
                 isValid = false;
             }
-            if (IsEmptyString(prop.branch)) {
+            if (prop.type == "PPF" && IsEmptyString(prop.branch)) {
                 setPropertyValidationState(index, "branch", "Branch is required");
                 isValid = false;
             }
-            if (IsEmptyString(prop.city)) {
+            if (prop.type == "PPF" && IsEmptyString(prop.city)) {
                 setPropertyValidationState(index, "city", "City is required");
+                isValid = false;
+            }
+            if (prop.type == "GPF" && IsEmptyString(prop.state)) {
+                setPropertyValidationState(index, "state", "State is required");
+                isValid = false;
+            }
+            if (prop.type == "GPF" && IsEmptyString(prop.gpfNumber)) {
+                setPropertyValidationState(index, "gpfNumber", "GPF Number is required");
                 isValid = false;
             }
         });
@@ -110,7 +128,10 @@ const ProvidentFundpage = () => {
                 type: "",
                 bankName: "",
                 branch: "",
-                city: ""
+                city: "",
+                uanNumber: "",
+                state: "",
+                gpfNumber: "",
             },
         ]);
         setValidationState((prevState) => [
