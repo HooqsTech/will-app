@@ -5,7 +5,7 @@ import AddressDetailsForm from "../components/Forms/AddressDetailsForm";
 import { addAddressDetailsAsync } from "../api/user";
 import { useState } from "react";
 import { userState } from "../atoms/UserDetailsState";
-import { IsEmptyString } from "../utils";
+import { IsEmptyString, IsValidEmail } from "../utils";
 import { addressDetailsValidationState, IAddressDetailsValidationState } from "../atoms/validationStates/AddressDetailsValidationState";
 import NextButton from "../components/NextButton";
 import BackButton from "../components/BackButton";
@@ -56,6 +56,53 @@ const AddressDetailsPage = () => {
             isValid = false;
         }
 
+        if (!IsValidEmail(addressDetails.email)) {
+            handleValidation("email", "invalid email address");
+            isValid = false;
+        }
+
+        if (!addressDetails.sameAsPresentAddress) {
+            if (IsEmptyString(addressDetails.permAddress1)) {
+                handleValidation("permAddress1", "address 1 is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permAddress2)) {
+                handleValidation("permAddress2", "address 2 is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permPincode)) {
+                handleValidation("permPincode", "picode is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permCity)) {
+                handleValidation("permCity", "city is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permState)) {
+                handleValidation("permState", "state is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permPhoneNumber)) {
+                handleValidation("permPhoneNumber", "phone number is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permEmail)) {
+                handleValidation("permEmail", "email is required");
+                isValid = false;
+            }
+
+            if (!IsValidEmail(addressDetails.email)) {
+                handleValidation("email", "invalid email address");
+                isValid = false;
+            }
+        }
+
         return isValid;
     }
 
@@ -85,7 +132,7 @@ const AddressDetailsPage = () => {
             <div className="w-full md:w-lg space-y-8">
                 <AddressDetailsForm />
                 <div className="flex gap-2">
-                    <BackButton onClick={() => navigate("/personal_details")} label="Back" />
+                    <BackButton label="Back" />
                     <NextButton loading={loading} onClick={addUserDetails} />
                 </div>
             </div>

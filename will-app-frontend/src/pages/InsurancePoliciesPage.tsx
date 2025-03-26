@@ -57,12 +57,6 @@ const InsurancePoliciesPage = () => {
         );
     }
 
-    const handleBackClick = async () => {
-        // NAVIGATE TO PREVIOUS ROUTE
-        var routeValue = routeState.find(s => s.nextPath == location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    }
-
     const setInsurancePolicyValidationState = (index: number, key: keyof IInsurancePolicyValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -169,7 +163,7 @@ const InsurancePoliciesPage = () => {
                 <AddButton onClick={addInsurancePolicy} label={`Insurance Policy ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>

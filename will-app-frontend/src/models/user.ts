@@ -47,5 +47,13 @@ export interface IAddressDetails {
   city: string,
   state: string,
   phoneNumber: string,
-  email: string
+  email: string,
+  sameAsPresentAddress: boolean,
+  permAddress1: string,
+  permAddress2: string
+  permPincode: string,
+  permCity: string,
+  permState: string,
+  permPhoneNumber: string,
+  permEmail: string
 }

@@ -11,7 +11,7 @@ import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
 import { BENEFICIARIES, ROUTE_PATHS } from '../constants';
-import { IsEmptyNumber, IsEmptyString } from '../utils';
+import { IsEmptyNumber, IsEmptyString, IsValidEmail } from '../utils';
 import { beneficiariesValidationState, emptyBeneficiariesValidationState, IBeneficiaryValidationState } from '../atoms/validationStates/BeneficiariesValidationState';
 import { useLocation, useNavigate } from 'react-router';
 import ConfirmDelete from "../components/ConfirmDelete";
@@ -66,12 +66,6 @@ const BeneficiariesPage = () => {
         );
     }
 
-    const handleBackClick = async () => {
-        // NAVIGATE TO PREVIOUS ROUTE
-        let routeValue = routeState.find(s => s.nextPath == location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    };
-
     const setBeneficiaryValidationState = (index: number, key: keyof IBeneficiaryValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -106,6 +100,10 @@ const BeneficiariesPage = () => {
                 }
                 if (prop.type == "Person" && IsEmptyString(prop.email)) {
                     setBeneficiaryValidationState(index, "email", "Email is required");
+                    isValid = false;
+                }
+                if (prop.type == "Person" && !IsValidEmail(prop.email)) {
+                    setBeneficiaryValidationState(index, "email", "invalid email address");
                     isValid = false;
                 }
                 if (prop.type == "Person" && IsEmptyString(prop.phone)) {
@@ -161,6 +159,10 @@ const BeneficiariesPage = () => {
         }
         if (prop.type == "Person" && IsEmptyString(prop.email)) {
             setBeneficiaryValidationState(index, "email", "Email is required");
+            isValid = false;
+        }
+        if (prop.type == "Person" && !IsValidEmail(prop.email)) {
+            setBeneficiaryValidationState(index, "email", "invalid email address");
             isValid = false;
         }
         if (prop.type == "Person" && IsEmptyString(prop.phone)) {
@@ -323,7 +325,7 @@ const BeneficiariesPage = () => {
                 <AddButton onClick={addBeneficiaryItem} label={`BENEFICIARY ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
             <Modal

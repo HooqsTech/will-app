@@ -41,7 +41,7 @@ const PersonalDetailsPage = () => {
         }
 
         if (IsEmptyString(personalDetails.aadhaarNumber)) {
-            handleValidation("aadhaarNumber", "aaadhaar number is required");
+            handleValidation("aadhaarNumber", "aadhaar number is required");
             isValid = false;
         }
 
@@ -64,7 +64,7 @@ const PersonalDetailsPage = () => {
     const navigate = useNavigate();
 
     const addUserDetails = async () => {
-        if (validate() == false) return;
+        if (!validate()) return;
 
         // SAVE PERSONAL DETAILS
         setLoading(true);

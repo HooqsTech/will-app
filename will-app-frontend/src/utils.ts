@@ -3,5 +3,10 @@ export const IsEmptyString = (value?: string) => {
 }
 
 export const IsEmptyNumber = (value: number | undefined | null) => {
-    return  value === null || value === undefined;
+    return value === null || value === undefined;
+}
+
+export const IsValidEmail = (value: string) => {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(value);
 }

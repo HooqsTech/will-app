@@ -58,12 +58,6 @@ const FixedDepositsPage = () => {
 
     }
 
-    const handleBackClick = async () => {
-        // NAVIGATE TO PREVIOUS ROUTE
-        var routeValue = routeState.find(s => s.nextPath == location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    }
-
     const setFixedDepositValidationState = (index: number, key: keyof IFixedDepositValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -173,7 +167,7 @@ const FixedDepositsPage = () => {
                             </div>
                             {
                                 !shouldExpandAccordion(index) && (
-                                     <ConfirmDelete onConfirm={() => deleteFixedDeposit(index)} />
+                                    <ConfirmDelete onConfirm={() => deleteFixedDeposit(index)} />
                                 )
                             }
 
@@ -183,7 +177,7 @@ const FixedDepositsPage = () => {
                 <AddButton onClick={addProperty} label={`Fixed Deposit ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>

@@ -422,8 +422,8 @@ const YourWill: React.FC = () => {
         <div>
             <Header />
             <div className='grid grid-cols-12 w-full m-auto'>
-                <div className='bg-[#265e55] md:block hidden col-span-3'>
-                    <div className='top-14 max-h-screen h-full sticky'>
+                <div className='bg-[#265e55] hidden md:block col-span-3'>
+                    <div className='top-14 min-h-screen sticky'>
                         <Sidebar2 />
                     </div>
                 </div>

@@ -107,12 +107,6 @@ const VehiclesPage = () => {
         navigate(ROUTE_PATHS.YOUR_WILL + (routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES));
     };
 
-    const handleBackClick = async () => {
-        // NAVIGATE TO PREVIOUS ROUTE
-        var routeValue = routeState.find(s => s.nextPath == location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    }
-
     const handleAccordionOnChange = (index: number) => {
         setCurrentItem((prevItem) => (prevItem === index ? -1 : index));
         setShowErrorBorder(false);
@@ -156,7 +150,7 @@ const VehiclesPage = () => {
                 <AddButton onClick={addItem} label={`Vehicles ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>

@@ -57,11 +57,6 @@ const JewelleriesPage = () => {
         );
     }
 
-    const handleBackClick = async () => {
-        var routeValue = routeState.find(s => s.nextPath == location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    };
-
     const setJewelleryValidationState = (index: number, key: keyof IJewelleriesValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -161,7 +156,7 @@ const JewelleriesPage = () => {
                 <AddButton onClick={addJewellery} label={`Jewellery ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>

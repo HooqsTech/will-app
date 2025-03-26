@@ -87,7 +87,6 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
   },
   '&:hover': {
     backgroundColor: "#358477",
-    borderRadius: 0,
     color: 'white',
   },
   [`&.Mui-focused, &.Mui-selected, &.Mui-selected, &.Mui-focused`]: {
@@ -244,18 +243,13 @@ export default function Sidebar2() {
   const routeState = useRecoilValue(routesState);
   const [menuItems, seTmenuItems] = React.useState<TreeViewBaseItem<ExtendedTreeItemProps>[]>([]);
   const [navSelectedItem, setNavSelectedItem] = React.useState<string>(ROUTE_PATHS.ASSETS);
+  
   const  handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
-    var item = apiRef.current?.getItem(itemId)
-    // setDrawerState(false);
+    var item = apiRef.current?.getItem(itemId);
     setNavSelectedItem(itemId);
     navigate(ROUTE_PATHS.YOUR_WILL + (item.routePath ?? ""));
   };
 
-  const handleLogout = () => {
-    removeCookie('idToken'); // Removes the 'idToken' cookie
-    removeCookie('phoneNumber');
-    navigate('/login');
-  };
   React.useEffect(() => {
     setNavSelectedItem(location.pathname.split('/').pop() ?? "");
   },[location.pathname]);
@@ -348,7 +342,7 @@ export default function Sidebar2() {
         assetsItem.children.push({
           id: "immovable_assets",
           label: "Immovable Assets",
-          routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.IMMOVABLE_ASSETS,
+          routePath: ROUTE_PATHS.IMMOVABLE_ASSETS,
           iconName: "pdf",
           children: [...immovalbleAssets]
         });
@@ -394,9 +388,15 @@ export default function Sidebar2() {
 
   const apiRef = useTreeViewApiRef();
 
+  const handleLogout = () => {
+    removeCookie('idToken'); // Removes the 'idToken' cookie
+    removeCookie('phoneNumber');
+    navigate('/login');
+  };
+
   return (
-    <div className='flex flex-col justify-between items-start h-screen'>
-      <div className='flex flex-col items-start w-full'>
+    <div className='flex flex-col justify-between h-full items-start'>
+      <div className='flex flex-col w-full'>
         <div className='w-full py-6 border-b-slate-400 border-b-[1px]'>
           <img
             src={`/assets/hamara-logo-icon.png`}
@@ -416,11 +416,9 @@ export default function Sidebar2() {
           />
         </div>
       </div>
-
-      <div className='w-full block md:hidden'>
+      <div className='w-full bottom-0 absolute md:hidden'>
         <button onClick={handleLogout} className='!bg-white !text-will-green w-full'>Log Out</button>
       </div>
     </div>
-
   );
 }

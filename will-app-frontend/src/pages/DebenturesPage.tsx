@@ -27,11 +27,6 @@ const DebenturesPage = () => {
 
     const shouldExpandAccordion = (index: number) => currentItem === index;
 
-    const handleBackClick = () => {
-        var routeValue = routeState.find(s => s.nextPath === location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    };
-
     const addItem = () => {
         setFormState((prevState) => [
             ...prevState,
@@ -152,7 +147,7 @@ const DebenturesPage = () => {
                 <AddButton onClick={addItem} label={`Debenture ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>

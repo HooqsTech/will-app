@@ -51,11 +51,6 @@ const BondsPage = () => {
         );
     };
 
-    const handleBackClick = () => {
-        var routeValue = routeState.find(s => s.nextPath === location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    };
-
     const deleteBondAsync = async (index: number) => {
         if (formState[index].id !== ""
             && formState[index].id !== undefined
@@ -149,7 +144,7 @@ const BondsPage = () => {
                 <AddButton onClick={addBond} label={`Bond ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>

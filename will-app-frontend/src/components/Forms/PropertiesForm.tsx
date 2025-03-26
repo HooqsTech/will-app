@@ -45,8 +45,10 @@ const PropertiesForm: React.FC<IPropertiesFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.address}
                 helperText={validationStateItem.address}
+                multiline
                 required
                 onChange={(e) => handleChange(index, "address", e)}
+                maxLength={100}
                 label="Address"
                 type="text" />
             <CustomTextBox
@@ -62,6 +64,7 @@ const PropertiesForm: React.FC<IPropertiesFormProps> = ({ index }) => {
                 value={item.city}
                 required
                 helperText={validationStateItem.city}
+                maxLength={25}
                 onChange={(e) => handleChange(index, "city", e)}
                 label="City"
                 type="text" />
