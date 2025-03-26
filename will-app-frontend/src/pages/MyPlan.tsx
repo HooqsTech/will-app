@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate } from "react-router";
 import { useRecoilState } from "recoil";
 import { formattedCategoriesState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
 import { ICategory, IFormattedServiceCategory, IWillService } from "../models/willService";
@@ -17,25 +17,30 @@ import { getCookie } from "typescript-cookie";
 
 const MyPlan: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const initialStep = Number(queryParams.get("step")) || 1;
   const [categories, setCategories] = useRecoilState(formattedCategoriesState);
   const [selectedCategory, setSelectedCategory] = useRecoilState(selectedCategoryState);
+  const [loading, setLoading] = useState(true);
 
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useRecoilState(
     selectedServicesState
   );
-  const [step, setStep] = useState(initialStep);
+  const [step, setStep] = useState<number>(1);
   const [coupon, setCoupon] = useState("");
   const [visibleServices, setVisibleServices] = useState<string[]>([]);
   const [infoIndex, setInfoIndex] = useState<string | null>(null);
   const infoRef = useRef<HTMLDivElement | null>(null);
+  
+
+  useEffect(() => {
+    navigate(`/my_plan?step=${step}`, { replace: true });
+    //setTimeout(() => setLoading(false), 500);
+  }, [step, navigate]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        setLoading(true);
         const data: IFormattedServiceCategory[] = await getWillServices();
         const formattedData: IFormattedServiceCategory[] = data.map(
           (service) => ({
@@ -49,16 +54,13 @@ const MyPlan: React.FC = () => {
           })
         );
         setCategories(formattedData);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
     fetchCategories();
   }, [setCategories]);
-
-  useEffect(() => {
-    navigate(`/my_plan?step=${step}`, { replace: true });
-  }, [step, navigate]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -211,12 +213,18 @@ const MyPlan: React.FC = () => {
 
   return (
     <div className="relative flex flex-col items-center min-h-screen bg-white text-white p-6">
-      <div className="mt-24">
-        <PaymentStepper currentStep={step} />
-      </div>
-
       <div className="fixed top-0 left-0 w-full bg-[#265e55] z-50">
         <Header />
+      </div>
+      
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
+      
+      <div className="mt-24">
+        <PaymentStepper currentStep={step} />
       </div>
 
       {step === 1 && (
