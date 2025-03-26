@@ -336,7 +336,7 @@ export default function Sidebar2() {
         assetsItem.children.push({
           id: "immovable_assets",
           label: "Immovable Assets",
-          routePath: ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.IMMOVABLE_ASSETS,
+          routePath: ROUTE_PATHS.IMMOVABLE_ASSETS,
           iconName: "pdf",
           children: [...immovalbleAssets]
         });
