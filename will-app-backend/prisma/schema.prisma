@@ -148,7 +148,7 @@ model personaldetails {
 }
 
 model selectedassets {
-  id        String    @id @db.Uuid
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userid    String    @unique(map: "uniqueuseridselectedassets") @db.Uuid
   data      Json
   createdat DateTime? @default(now()) @db.Timestamptz(6)
@@ -204,15 +204,4 @@ model executors {
   createdat DateTime? @default(now()) @db.Timestamptz(6)
   updatedat DateTime? @default(now()) @db.Timestamptz(6)
   users     users?    @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
-}
-
-model payment_transactions {
-  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  orderid          String    @unique @db.VarChar(255)
-  userid           String    @db.Uuid
-  selectedservices Json
-  paymentid        String?   @unique @db.VarChar(255)
-  totalprice       Decimal?  @db.Decimal
-  createdat        DateTime? @default(now()) @db.Timestamptz(6)
-  updatedat        DateTime? @default(now()) @db.Timestamptz(6)
 }

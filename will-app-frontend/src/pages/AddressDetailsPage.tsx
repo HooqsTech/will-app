@@ -56,6 +56,43 @@ const AddressDetailsPage = () => {
             isValid = false;
         }
 
+        if (!addressDetails.sameAsPresentAddress) {
+            if (IsEmptyString(addressDetails.permAddress1)) {
+                handleValidation("permAddress1", "address 1 is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permAddress2)) {
+                handleValidation("permAddress2", "address 2 is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permPincode)) {
+                handleValidation("permPincode", "picode is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permCity)) {
+                handleValidation("permCity", "city is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permState)) {
+                handleValidation("permState", "state is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permPhoneNumber)) {
+                handleValidation("permPhoneNumber", "phone number is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(addressDetails.permEmail)) {
+                handleValidation("permEmail", "email is required");
+                isValid = false;
+            }
+        }
+
         return isValid;
     }
 

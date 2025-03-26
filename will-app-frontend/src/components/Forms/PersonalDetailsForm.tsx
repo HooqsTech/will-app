@@ -30,12 +30,14 @@ const PersonalDetailsForm = () => {
                 value={formState.fullName}
                 onChange={(e) => handleChange("fullName", e)}
                 label="Full Name"
+                maxLength={50}
                 helperText={validationState.fullName}
                 type="text" />
             <CustomTextBox
                 required
                 value={formState.fatherName}
                 onChange={(e) => handleChange("fatherName", e)}
+                maxLength={50}
                 helperText={validationState.fatherName}
                 label="Father Name" type="text" />
             <CustomSelect

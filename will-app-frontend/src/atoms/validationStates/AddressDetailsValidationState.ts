@@ -7,7 +7,14 @@ export interface IAddressDetailsValidationState {
     city: string,
     state: string,
     phoneNumber: string,
-    email: string
+    email: string,
+    permAddress1: string,
+    permAddress2: string
+    permPincode: string,
+    permCity: string,
+    permState: string,
+    permPhoneNumber: string,
+    permEmail: string
 }
 
 export const addressDetailsValidationState = atom<IAddressDetailsValidationState>({
@@ -19,6 +26,13 @@ export const addressDetailsValidationState = atom<IAddressDetailsValidationState
         city: "",
         state: "",
         phoneNumber: "",
-        email: ""
+        email: "",
+        permAddress1: "",
+        permAddress2: "",
+        permPincode: "",
+        permCity: "",
+        permState: "",
+        permPhoneNumber: "",
+        permEmail: ""
     }
 });
