@@ -12,6 +12,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { styled } from '@mui/system';
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import { treeItemClasses } from '@mui/x-tree-view/TreeItem';
+import { useTreeViewApiRef } from '@mui/x-tree-view/hooks';
 import {
   TreeItem2Checkbox,
   TreeItem2Content,
@@ -22,7 +23,6 @@ import {
 import { TreeItem2DragAndDropOverlay } from '@mui/x-tree-view/TreeItem2DragAndDropOverlay';
 import { TreeItem2Icon } from '@mui/x-tree-view/TreeItem2Icon';
 import { TreeItem2Provider } from '@mui/x-tree-view/TreeItem2Provider';
-import { useTreeViewApiRef } from '@mui/x-tree-view/hooks';
 import { TreeViewBaseItem } from '@mui/x-tree-view/models';
 import { useTreeItem2, UseTreeItem2Parameters } from '@mui/x-tree-view/useTreeItem2';
 import { animated, useSpring } from '@react-spring/web';
@@ -30,9 +30,9 @@ import clsx from 'clsx';
 import * as React from 'react';
 import { useNavigate } from 'react-router';
 import { useRecoilValue } from 'recoil';
-import { removeCookie } from 'typescript-cookie';
 import { routesState } from '../atoms/RouteState';
 import { ASSET_TYPES, ROUTE_PATHS } from '../constants';
+import { removeCookie } from 'typescript-cookie';
 
 type ExtendedTreeItemProps = {
   iconName?: string;
@@ -87,13 +87,11 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
   },
   '&:hover': {
     backgroundColor: "#358477",
-    borderRadius: 0,
     color: 'white',
   },
   [`&.Mui-focused, &.Mui-selected, &.Mui-selected, &.Mui-focused`]: {
     backgroundColor: "#358477",
     borderLeft: "4px solid white",
-    borderRadius: 0,
     color: 'white',
   },
 }));
@@ -246,14 +244,7 @@ export default function Sidebar2() {
 
   const handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
     var item = apiRef.current?.getItem(itemId)
-    // setDrawerState(false);
     navigate(ROUTE_PATHS.YOUR_WILL + (item.routePath ?? ""));
-  };
-
-  const handleLogout = () => {
-    removeCookie('idToken'); // Removes the 'idToken' cookie
-    removeCookie('phoneNumber');
-    navigate('/login');
   };
 
   React.useEffect(() => {
@@ -390,9 +381,15 @@ export default function Sidebar2() {
 
   const apiRef = useTreeViewApiRef();
 
+  const handleLogout = () => {
+    removeCookie('idToken'); // Removes the 'idToken' cookie
+    removeCookie('phoneNumber');
+    navigate('/login');
+  };
+
   return (
-    <div className='flex flex-col justify-between items-start h-screen'>
-      <div className='flex flex-col items-start w-full'>
+    <div className='flex flex-col justify-between h-full items-start'>
+      <div className='flex flex-col'>
         <div className='w-full py-6 border-b-slate-400 border-b-[1px]'>
           <img
             src={`/assets/hamara-logo-icon.png`}
@@ -411,11 +408,9 @@ export default function Sidebar2() {
           />
         </div>
       </div>
-
-      <div className='w-full block md:hidden'>
+      <div className='w-full bottom-0 absolute md:hidden'>
         <button onClick={handleLogout} className='!bg-white !text-will-green w-full'>Log Out</button>
       </div>
     </div>
-
   );
 }
