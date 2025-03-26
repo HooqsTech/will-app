@@ -129,7 +129,7 @@ export const assetRoutesMap: Record<keyof ISelectedAssetsState, IRoutePathWithOr
     routePath: ROUTE_PATHS.ESCOPS,
     id: "esops",
     type: ASSET_TYPES.BUSINESS_ASSETS,
-    label: "ESCOPS"
+    label: "ESOPS"
   },
   otherInvestments: {
     order: 14,

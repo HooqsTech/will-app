@@ -11,7 +11,7 @@ import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
 import { BENEFICIARIES, ROUTE_PATHS } from '../constants';
-import { IsEmptyNumber, IsEmptyString } from '../utils';
+import { IsEmptyNumber, IsEmptyString, IsValidEmail } from '../utils';
 import { beneficiariesValidationState, emptyBeneficiariesValidationState, IBeneficiaryValidationState } from '../atoms/validationStates/BeneficiariesValidationState';
 import { useLocation, useNavigate } from 'react-router';
 import ConfirmDelete from "../components/ConfirmDelete";
@@ -108,6 +108,10 @@ const BeneficiariesPage = () => {
                     setBeneficiaryValidationState(index, "email", "Email is required");
                     isValid = false;
                 }
+                if (prop.type == "Person" && !IsValidEmail(prop.email)) {
+                    setBeneficiaryValidationState(index, "email", "invalid email address");
+                    isValid = false;
+                }
                 if (prop.type == "Person" && IsEmptyString(prop.phone)) {
                     setBeneficiaryValidationState(index, "phone", "Phone is required");
                     isValid = false;
@@ -161,6 +165,10 @@ const BeneficiariesPage = () => {
         }
         if (prop.type == "Person" && IsEmptyString(prop.email)) {
             setBeneficiaryValidationState(index, "email", "Email is required");
+            isValid = false;
+        }
+        if (prop.type == "Person" && !IsValidEmail(prop.email)) {
+            setBeneficiaryValidationState(index, "email", "invalid email address");
             isValid = false;
         }
         if (prop.type == "Person" && IsEmptyString(prop.phone)) {

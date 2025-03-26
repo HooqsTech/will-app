@@ -5,7 +5,7 @@ import AddressDetailsForm from "../components/Forms/AddressDetailsForm";
 import { addAddressDetailsAsync } from "../api/user";
 import { useState } from "react";
 import { userState } from "../atoms/UserDetailsState";
-import { IsEmptyString } from "../utils";
+import { IsEmptyString, IsValidEmail } from "../utils";
 import { addressDetailsValidationState, IAddressDetailsValidationState } from "../atoms/validationStates/AddressDetailsValidationState";
 import NextButton from "../components/NextButton";
 import BackButton from "../components/BackButton";
@@ -56,6 +56,11 @@ const AddressDetailsPage = () => {
             isValid = false;
         }
 
+        if (!IsValidEmail(addressDetails.email)) {
+            handleValidation("email", "invalid email address");
+            isValid = false;
+        }
+
         if (!addressDetails.sameAsPresentAddress) {
             if (IsEmptyString(addressDetails.permAddress1)) {
                 handleValidation("permAddress1", "address 1 is required");
@@ -89,6 +94,11 @@ const AddressDetailsPage = () => {
 
             if (IsEmptyString(addressDetails.permEmail)) {
                 handleValidation("permEmail", "email is required");
+                isValid = false;
+            }
+
+            if (!IsValidEmail(addressDetails.email)) {
+                handleValidation("email", "invalid email address");
                 isValid = false;
             }
         }

@@ -5,20 +5,39 @@ import CustomTextBox from "../CustomTextBox";
 import { Dayjs } from "dayjs";
 import { addressDetailsValidationState } from "../../atoms/validationStates/AddressDetailsValidationState";
 import CustomCheckbox from "../CustomCheckbox";
+import { flushSync } from "react-dom";
 
 const AddressDetailsForm = () => {
     const [formState, setFormState] = useRecoilState(addressDetailsState);
     const [validationState, setValidationState] = useRecoilState(addressDetailsValidationState);
 
     const handleChange = (key: keyof IAddressDetailsState, value: string | Dayjs | null | boolean) => {
-        changeState(key, value)
+        flushSync(() => {
+            changeState(key, value)
+        })
 
-        if (formState.sameAsPresentAddress === true) {
-            setPermanentAddressFromPresentAddress()
-        }
-
-        if (key === "sameAsPresentAddress" && value === true) {
-            setPermanentAddressFromPresentAddress()
+        if (formState.sameAsPresentAddress) {
+            if (key === "address1") {
+                changeState("permAddress1", value);
+            }
+            else if (key === "address2") {
+                changeState("permAddress2", value);
+            }
+            else if (key === "email") {
+                changeState("permEmail", value);
+            }
+            else if (key === "phoneNumber") {
+                changeState("permPhoneNumber", value);
+            }
+            else if (key === "city") {
+                changeState("permCity", value);
+            }
+            else if (key === "state") {
+                changeState("permState", value);
+            }
+            else if (key === "pincode") {
+                changeState("permPincode", value);
+            }
         }
     }
 
@@ -50,7 +69,7 @@ const AddressDetailsForm = () => {
                 <p className="font-semibold">Present Address</p>
                 <CustomTextBox
                     value={formState.address1}
-                    onChange={(e) => handleChange("address1", e)}
+                    onChange={(e) => { handleChange("address1", e); }}
                     required
                     maxLength={100}
                     helperText={validationState.address1}
@@ -109,6 +128,9 @@ const AddressDetailsForm = () => {
             <div>
                 <CustomCheckbox onChange={() => {
                     handleChange("sameAsPresentAddress", !formState.sameAsPresentAddress);
+                    if (!formState.sameAsPresentAddress) {
+                        setPermanentAddressFromPresentAddress()
+                    }
                 }} checked={formState.sameAsPresentAddress ?? false} label="Same as present address?" />
             </div>
             <div className="flex flex-col gap-4">

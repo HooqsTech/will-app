@@ -10,10 +10,11 @@ interface ICustomTextBoxProps {
     helperText?: string,
     maxLength?: number,
     restrictAlphabets?: boolean,
-    disabled?: boolean
+    disabled?: boolean,
+    multiline?: boolean
 }
 
-const CustomTextBox: React.FC<ICustomTextBoxProps> = ({ disabled, label, type, onChange, value, required, helperText, maxLength, restrictAlphabets }) => {
+const CustomTextBox: React.FC<ICustomTextBoxProps> = ({ multiline, disabled, label, type, onChange, value, required, helperText, maxLength, restrictAlphabets }) => {
 
     const handleOnChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         // FORWARD VALUE
@@ -33,6 +34,7 @@ const CustomTextBox: React.FC<ICustomTextBoxProps> = ({ disabled, label, type, o
                 }}
                 className={`w-full text-sm p-2.5 focus:border-[#265e55] focus:outline-[##265e55] border-gray-300 text-gray-900 block`}
                 type={type}
+                multiline={multiline}
                 value={value}
                 label={label}
                 error={helperText !== undefined && helperText.length > 0}
