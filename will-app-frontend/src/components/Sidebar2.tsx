@@ -243,15 +243,53 @@ export default function Sidebar2() {
   const routeState = useRecoilValue(routesState);
   const [menuItems, seTmenuItems] = React.useState<TreeViewBaseItem<ExtendedTreeItemProps>[]>([]);
   const [navSelectedItem, setNavSelectedItem] = React.useState<string>(ROUTE_PATHS.ASSETS);
-  
+  const [expandedItems, setExpandedItems] = React.useState<string[]>(["assets"]);
   const  handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
     var item = apiRef.current?.getItem(itemId);
     setNavSelectedItem(itemId);
     navigate(ROUTE_PATHS.YOUR_WILL + (item.routePath ?? ""));
   };
-
+  const handleExpandedItemsChange = (
+    _: React.SyntheticEvent,
+    itemIds: string[],
+  ) => {
+    setExpandedItems(itemIds);
+    console.log(expandedItems);
+  };
+  
+  const about_you = ['personal_details','address_details'];
+  const immovable_assets = ['immovable_assets','properties'];
+  const financial_assets = ['financial_assets','bank_accounts', 'fixed_deposits', 'insurance_policies', 'safe_deposit_boxes', 'demat_accounts','mutual_funds','provident_fund','pension_accounts']; 
+  const business_assets = ['business_assets','business', 'bonds','debentures','esops','other_investments'];
+  const other_assets = ['other_assets','vehicles','jewelleries','digital_assets','intellectual_property','custom_assets'];
+  const liabilities = ['liabilities','home_loans','personal_loans','vehicle_loans','education_loans','other_liabilities'];
+  
   React.useEffect(() => {
-    setNavSelectedItem(location.pathname.split('/').pop() ?? "");
+    let nav = location.pathname.split('/').pop() ?? "";
+    setNavSelectedItem(nav ?? "");
+    
+    if (about_you.includes(nav)) {
+      setExpandedItems(['about_you']);
+    }
+    else if(immovable_assets.includes(nav)) {
+      setExpandedItems(["immovable_assets", "assets"]);
+    }
+    else if(financial_assets.includes(nav)) {
+      setExpandedItems(['financial_assets', 'assets']);
+    }
+    else if(business_assets.includes(nav)) {
+      setExpandedItems(['business_assets', 'assets']);
+    }
+    else if(financial_assets.includes(nav)) {
+      setExpandedItems(['financial_assets', 'assets']);
+    }
+    else if(other_assets.includes(nav)) {
+      setExpandedItems(['other_assets', 'assets']);
+    }
+    else if(liabilities.includes(nav)) {
+      setExpandedItems(['liabilities']);
+    }
+
   },[location.pathname]);
 
   React.useEffect(() => {
@@ -413,6 +451,8 @@ export default function Sidebar2() {
             slots={{ item: CustomTreeItem }}
             onItemClick={(e, itemId) => handleSelectedItemChange(e, itemId)}
             selectedItems={navSelectedItem}
+            expandedItems={expandedItems}
+            onExpandedItemsChange={handleExpandedItemsChange}
           />
         </div>
       </div>
