@@ -34,27 +34,56 @@ const ProvidentFundForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
                 helperText={validationStateItem.type}
                 required
                 onChange={(e) => handleChange(index, "type", e)} />
-            <CustomTextBox
-                value={item.bankName}
-                helperText={validationStateItem.bankName}
-                required
-                onChange={(e) => handleChange(index, "bankName", e)}
-                label="Bank Name"
-                type="text" />
-            <CustomTextBox
-                value={item.branch}
-                helperText={validationStateItem.branch}
-                required
-                onChange={(e) => handleChange(index, "branch", e)}
-                label="Branch"
-                type="text" />
-            <CustomTextBox
-                value={item.city}
-                helperText={validationStateItem.city}
-                required
-                onChange={(e) => handleChange(index, "city", e)}
-                label="City"
-                type="text" />
+            {item.type == "EPF" && <>
+                <CustomTextBox
+                    value={item.uanNumber}
+                    helperText={validationStateItem.uanNumber}
+                    required
+                    onChange={(e) => handleChange(index, "uanNumber", e)}
+                    label="Universal Account Number (UAN)"
+                    type="text" />
+            </>}
+            {item.type == "PPF" && <>
+                <CustomTextBox
+                    value={item.bankName}
+                    helperText={validationStateItem.bankName}
+                    required
+                    onChange={(e) => handleChange(index, "bankName", e)}
+                    label="Bank Name"
+                    type="text" />
+                <CustomTextBox
+                    value={item.branch}
+                    helperText={validationStateItem.branch}
+                    required
+                    onChange={(e) => handleChange(index, "branch", e)}
+                    label="Branch"
+                    type="text" />
+                <CustomTextBox
+                    value={item.city}
+                    helperText={validationStateItem.city}
+                    required
+                    onChange={(e) => handleChange(index, "city", e)}
+                    label="City"
+                    type="text" />
+            </>}
+            {item.type == "GPF" && <>
+                <CustomTextBox
+                    value={item.state}
+                    helperText={validationStateItem.state}
+                    required
+                    onChange={(e) => handleChange(index, "state", e)}
+                    label="State"
+                    type="text" />
+                <CustomTextBox
+                    value={item.gpfNumber}
+                    helperText={validationStateItem.gpfNumber}
+                    required
+                    onChange={(e) => handleChange(index, "gpfNumber", e)}
+                    label="GPF Number"
+                    type="text" />
+            </>}
+            
+                
         </CustomFormContainer>
     )
 }

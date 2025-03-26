@@ -6,6 +6,9 @@ export interface IProvidentFundValidationState {
     bankName: string;
     branch: string;
     city: string;
+    uanNumber: string;
+    state:string;
+    gpfNumber: string;
 }
 
 export const providentFundValidationState = atom<IProvidentFundValidationState[]>({
@@ -15,7 +18,10 @@ export const providentFundValidationState = atom<IProvidentFundValidationState[]
         type: "",
         bankName: "",
         branch: "",
-        city: ""
+        city: "",
+        uanNumber: "",
+        state: "",
+        gpfNumber: "",
     }]
 });
 
@@ -24,5 +30,8 @@ export const emptyProvidentFundValidationState: IProvidentFundValidationState = 
     type: "",
     bankName: "",
     branch: "",
-    city: ""
+    city: "",
+    uanNumber: "",
+    state: "",
+    gpfNumber: "",
 }

@@ -243,10 +243,11 @@ export default function Sidebar2() {
 
   const routeState = useRecoilValue(routesState);
   const [menuItems, seTmenuItems] = React.useState<TreeViewBaseItem<ExtendedTreeItemProps>[]>([]);
-
-  const handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
+  const [navSelectedItem, setNavSelectedItem] = React.useState<string>(ROUTE_PATHS.ASSETS);
+  const  handleSelectedItemChange = (_: React.SyntheticEvent, itemId: string) => {
     var item = apiRef.current?.getItem(itemId)
     // setDrawerState(false);
+    setNavSelectedItem(itemId);
     navigate(ROUTE_PATHS.YOUR_WILL + (item.routePath ?? ""));
   };
 
@@ -255,6 +256,9 @@ export default function Sidebar2() {
     removeCookie('phoneNumber');
     navigate('/login');
   };
+  React.useEffect(() => {
+    setNavSelectedItem(location.pathname.split('/').pop() ?? "");
+  },[location.pathname]);
 
   React.useEffect(() => {
     const items: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
@@ -408,6 +412,7 @@ export default function Sidebar2() {
             items={menuItems}
             slots={{ item: CustomTreeItem }}
             onItemClick={(e, itemId) => handleSelectedItemChange(e, itemId)}
+            selectedItems={navSelectedItem}
           />
         </div>
       </div>

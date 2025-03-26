@@ -6,6 +6,9 @@ export interface IProvidentFundState {
     bankName: string;
     branch: string;
     city: string;
+    uanNumber: string;
+    state:string;
+    gpfNumber: string;
 }
 
 export const providentFundsState = atom<IProvidentFundState[]>({
@@ -15,6 +18,9 @@ export const providentFundsState = atom<IProvidentFundState[]>({
         type: "",
         bankName: "",
         branch: "",
-        city: ""
+        city: "",
+        uanNumber: "",
+        state: "",
+        gpfNumber: ""
     }]
 });
