@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: default
+  annotations:
+    cloud.google.com/load-balancer-type: "External"
+spec:
+  selector:
+    app: back-end
+  type: NodePort
+  ports:
+    - name: https
+      protocol: TCP
+      port: 5000       # Expose on HTTPS
+      targetPort: 5000  # Forward traffic to backend app
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: kubeissuer
+  namespace: default
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: poornakumar.c@gmail.com
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: kubeissuer
+    # Enable the HTTP-01 challenge provider
+    solvers:
+    - http01:
+        ingress:
+          class: nginx          
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kubecert
+  namespace: default
+spec:
+  secretName: demo
+  issuerRef:
+    name: kubeissuer
+    kind: ClusterIssuer
+  commonName: app.hamarawill.com
+  dnsNames:
+  - app.hamarawill.com 

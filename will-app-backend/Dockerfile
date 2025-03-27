@@ -23,7 +23,7 @@ RUN npx prisma generate
 RUN npx tsc
 
 # Expose the port
-EXPOSE 3000
+EXPOSE 5000
 
 # Start the app
 CMD ["node", "dist/server.js"]

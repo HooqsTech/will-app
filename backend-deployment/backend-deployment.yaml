@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: back-end
+  namespace: default
+  labels:
+    app: back-end
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-end
+  template:
+    metadata:
+      labels:
+        app: back-end
+    spec:
+      containers:
+      - name: back-end
+        image: gcr.io/haramawill/back-end:v5.0
+        ports:
+        - containerPort: 5000

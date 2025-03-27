@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: managed-cert-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: kubeissuer
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: app.hamarawill.com
+    http:
+      paths:
+      - path: /backend
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 5000
+  tls:
+  - hosts:
+    - app.hamarawill.com
+    secretName: demo  # Ensure Cert-Manager has permissions to manage this secret
