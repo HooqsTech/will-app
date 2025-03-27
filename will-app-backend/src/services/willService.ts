@@ -141,46 +141,63 @@ export const deleteServiceCategoryById = async (id: string) => {
 };
 
 
-export const calculateTotalPrice = async (categoryId: string, serviceIds?: string[]) => {
-    console.log("First Category "  + categoryId)
-    if (Array.isArray(categoryId)) {
-        categoryId = categoryId[0];
-    }
-
-    console.log("Second Category "  + categoryId)
-
-    const category = await prisma.service_categories.findUnique({
-        where: { id: categoryId },
-        select: { discountedprice: true },
-    });
-
-    const categoryDiscount = category?.discountedprice?.toNumber() ?? 0;
-    
-    if (serviceIds?.length === 0) 
-    {
-        return categoryDiscount;
-    }
-
-    // Fetch all service prices
-    console.log(serviceIds);
-    const services = await prisma.services.findMany({
-        where: {
-            id: { in: serviceIds },
-        },
-        select: {
-            discountedprice: true,
-        },
-    });
-
-    if (!services.length) {
-        throw new Error("No valid services found.");
-    }
-
-    // Convert Decimal to number and sum up the discounted prices of services
-    const totalServicePrice = services.reduce((sum, service) => sum + (service.discountedprice?.toNumber() ?? 0), 0);
-
-    // Calculate final total price (service total + category discount)
-    const totalPrice = totalServicePrice + categoryDiscount;
-
-    return totalPrice;
-};
+export const calculateTotalPrice = async (
+    categoryId: string | null, 
+    serviceIds?: string[], 
+    isNewTransaction?: boolean
+  ) => {
+      console.log("Received Category ID:", categoryId);
+  
+      let categoryTotal = 0; // Initialize categoryTotal
+  
+      // Ensure categoryId is a string (avoid treating an array as an ID)
+      if (Array.isArray(categoryId)) {
+          categoryId = categoryId[0];
+      }
+  
+      console.log("Processed Category ID:", categoryId);
+  
+      // If categoryId is not null, fetch the category price
+      if (categoryId) {
+          const category = await prisma.service_categories.findUnique({
+              where: { id: categoryId },
+              select: { discountedprice: true, standardprice: true },
+          });
+  
+          const categoryPrice = category?.discountedprice?.toNumber() ?? category?.standardprice?.toNumber() ?? 0;
+          console.log("Category Price:", categoryPrice);
+  
+          categoryTotal = isNewTransaction ? categoryPrice : 0;
+          console.log("Category Total:", categoryTotal);
+      }
+      
+      if (!serviceIds || serviceIds.length === 0) {
+          return categoryTotal;
+      }
+  
+      console.log("Service IDs:", serviceIds);
+  
+      // Fetch all service prices
+      const services = await prisma.services.findMany({
+          where: {
+              id: { in: serviceIds },
+          },
+          select: {
+              discountedprice: true,
+          },
+      });
+  
+      if (!services.length) {
+          console.log("No valid services found.");
+          return categoryTotal;
+      }
+  
+      // Convert Decimal to number and sum up the discounted prices of services
+      const totalServicePrice = services.reduce((sum, service) => sum + (service.discountedprice?.toNumber() ?? 0), 0);
+  
+      // Calculate final total price (service total + category discount)
+      const totalPrice = totalServicePrice + categoryTotal;
+  
+      console.log("Total Price:", totalPrice);
+      return totalPrice;
+  };

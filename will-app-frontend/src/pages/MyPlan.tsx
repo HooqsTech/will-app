@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router";
-import { useRecoilState } from "recoil";
+import { useNavigate, useSearchParams  } from "react-router";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { formattedCategoriesState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
 import { ICategory, IFormattedServiceCategory, IWillService } from "../models/willService";
 import { getWillServices } from "../api/willService";
 import Header from "../components/Header";
-import NextButton from "../components/NextButton";
-import BackButton from "../components/BackButton";
 import PaymentStepper from "../components/PaymentStepper";
 import { motion } from "framer-motion";
 import { FaCheck, FaPlus, FaTrash, FaInfoCircle} from "react-icons/fa";
@@ -14,27 +12,29 @@ import { createPaymentOrder, createOrUpdatePaymentTransaction } from "../api/pay
 import Swal from "sweetalert2";
 import { getUserIdByPhoneNumber } from "../api/user";
 import { getCookie } from "typescript-cookie";
+import { TransactionSummaryState } from "../atoms/TransactionSummaryState";
+import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 
 const MyPlan: React.FC = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useRecoilState(formattedCategoriesState);
   const [selectedCategory, setSelectedCategory] = useRecoilState(selectedCategoryState);
   const [loading, setLoading] = useState(true);
-
+  const [params] = useSearchParams(); 
+  const initialStep = Number(params.get("step")) || 1; 
+  //const initialStep =  1; 
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useRecoilState(
     selectedServicesState
   );
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<number>(initialStep);
   const [coupon, setCoupon] = useState("");
-  const [visibleServices, setVisibleServices] = useState<string[]>([]);
   const [infoIndex, setInfoIndex] = useState<string | null>(null);
   const infoRef = useRef<HTMLDivElement | null>(null);
-  
+  const transactionState = useRecoilValue(TransactionSummaryState); 
 
   useEffect(() => {
-    navigate(`/my_plan?step=${step}`, { replace: true });
-    //setTimeout(() => setLoading(false), 500);
+        navigate(`/my_plan?step=${step}`, { replace: true });
   }, [step, navigate]);
 
   useEffect(() => {
@@ -42,25 +42,66 @@ const MyPlan: React.FC = () => {
       try {
         setLoading(true);
         const data: IFormattedServiceCategory[] = await getWillServices();
-        const formattedData: IFormattedServiceCategory[] = data.map(
-          (service) => ({
+  
+        let formattedData: IFormattedServiceCategory[];
+  
+        if (!transactionState || transactionState.length === 0) {
+          formattedData = data.map((service) => ({
             categoryId: service.categoryId,
             categoryName: service.categoryName,
             categoryStandardPrice: service.categoryStandardPrice ?? 0,
             categoryDiscountPrice: service.categoryDiscountPrice ?? null,
-            categoryDescription:
-              service.categoryDescription ?? null,
+            categoryDescription: service.categoryDescription ?? null,
             services: service.services || [],
-          })
-        );
+          }));
+        } else {
+          setSelectedServices([]);
+  
+          const selectedCategoryIds: string[] = transactionState.flatMap((t) => {
+            const selectedCategories = t.selectedcategories as
+              | { categoryId: string }[]
+              | { categoryId: string }
+              | null
+              | undefined;
+          
+            if (Array.isArray(selectedCategories)) {
+              return selectedCategories.map((c) => c.categoryId);
+            } else if (selectedCategories && typeof selectedCategories === "object") {
+              return [selectedCategories.categoryId];
+            }
+            return [];
+          });
+
+          const selectedServiceIds = //new Set(
+            transactionState.flatMap((t) => 
+              Array.isArray(t.selectedservices) ? t.selectedservices.map((s) => s.serviceId) : []
+            );
+          //);
+
+          formattedData = data
+            .filter((category) => selectedCategoryIds.includes(category.categoryId))
+            .map((category) => ({
+              ...category,
+              services: category.services.filter(
+                (s) => !selectedServiceIds.includes(s.serviceId)
+              ),
+            }));
+
+          if (formattedData.length > 0) {
+            setSelected(formattedData[0].categoryId);
+            setSelectedCategory(formattedData[0]);
+          }
+        }
+
         setCategories(formattedData);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
+
     fetchCategories();
-  }, [setCategories]);
+  }, [setCategories, transactionState]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -84,19 +125,21 @@ const MyPlan: React.FC = () => {
   };
 
   const handleSelectService = (service: IWillService) => {
-    setSelectedServices(
-      (prev) =>
-        prev.some((s) => s.serviceId === service.serviceId)
-          ? prev.filter((s) => s.serviceId !== service.serviceId)
-          : [...prev, service]
-    );
-    setVisibleServices((prev) => [...prev, service.serviceId]);
+    setSelectedServices((prev) => {
+      const isAlreadySelected = prev.some((s) => s.serviceId === service.serviceId);
+  
+      if (isAlreadySelected) {
+        return prev.filter((s) => s.serviceId !== service.serviceId);
+      } else {
+        return [...prev, service];
+      }
+    });
   };
+
   const handleRemoveService = (serviceId: string) => {
     setSelectedServices((prev) =>
       prev.filter((s) => s.serviceId !== serviceId)
     );
-    setVisibleServices((prev) => prev.filter((id) => id !== serviceId));
   };
 
   function loadScript(src: string) {
@@ -115,6 +158,21 @@ const MyPlan: React.FC = () => {
 
   const handleContinue = async () => {
     if (step === 1) {
+      if (!selectedCategory) {
+        Swal.fire({
+          title: "No Category Selected!",
+          text: "Please select a category before proceeding.",
+          icon: "warning",
+          confirmButtonColor: "var(--color-will-green)",
+          customClass: {
+            popup: "swal-sm",
+            title: "swal-title",
+            confirmButton: "swal-confirm-btn",
+          },
+        });
+        return;
+      }
+
       console.log(selectedCategory?.categoryName)
       if (selectedCategory?.categoryName === "NRI Will") {
         console.log(true)
@@ -125,6 +183,21 @@ const MyPlan: React.FC = () => {
     } else if (step === 2) {
       setStep(3);
     } else if (step === 3) {
+      console.log("Magesh" +!selectedCategory)
+      if (selectedServices.length === 0 && !selectedCategory) {
+        Swal.fire({
+          title: "Neither Service nor Category has been Selected!",
+          text: "Please select at least one service before proceeding.",
+          icon: "warning",
+          confirmButtonColor: "var(--color-will-green)",
+          customClass: {
+            popup: "swal-sm",
+            title: "swal-title",
+            confirmButton: "swal-confirm-btn",
+          },
+        });
+        return;
+      }
       // REDIRECT TO PAYMENT
       await payNow();
     }
@@ -143,7 +216,12 @@ const MyPlan: React.FC = () => {
     // CREATE PAYMENT ORDER
     const selectedServiceIds = selectedServices.map((service) => service.serviceId);
 
-    var data = await createPaymentOrder(user, selectedServiceIds, selectedCategory?.categoryId ?? "");
+    var data = await createPaymentOrder(
+      user, 
+      selectedServiceIds, 
+      selectedCategory?.categoryId ?? "", 
+      transactionState === null
+    );
 
     const options = {
       key: import.meta.env.VITE_RAZOR_PAY_ID,
@@ -167,7 +245,7 @@ const MyPlan: React.FC = () => {
           categoryDiscountPrice: selectedCategory.categoryDiscountPrice,
       };
 
-        await createOrUpdatePaymentTransaction(data.id, user, selectedServices, categoryData);
+        await createOrUpdatePaymentTransaction(data.id, user, selectedServices, categoryData, transactionState === null);
         Swal.fire("Your payment is successfull.")
         navigate("/order_summary");
       },
@@ -192,7 +270,12 @@ const MyPlan: React.FC = () => {
         setStep(2);
       }
     } else if (step === 2) {
-      setStep(1);
+      console.log(transactionState)
+      if (transactionState) {
+        navigate("/order_summary");
+      } else {
+        setStep(1);
+      }
     } else {
       navigate(-1);
     }
@@ -201,9 +284,8 @@ const MyPlan: React.FC = () => {
     (cat) => cat.categoryId === selectedCategory?.categoryId
   );
   const services = selectedCategoryData?.services ?? [];
-
   const total =
-  (selectedCategory
+  (transactionState === null && selectedCategory
     ? selectedCategory.categoryDiscountPrice ?? selectedCategory.categoryStandardPrice
     : 0) +
   selectedServices.reduce(
@@ -320,8 +402,13 @@ const MyPlan: React.FC = () => {
             )}
           </div>
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto translate-x-70">
-            <NextButton onClick={handleContinue} label="Continue" />
-          </div>
+              <button
+                onClick={handleContinue}
+                className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+              >
+                <FaArrowRight className="mr-2" /> Next
+              </button>
+            </div>
         </div>
       )}
 
@@ -396,8 +483,19 @@ const MyPlan: React.FC = () => {
           </div>
 
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto">
-            <BackButton onClick={handlePrevious} label="Previous" />
-            <NextButton onClick={handleContinue} />
+            <button
+              onClick={handlePrevious}
+              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+            >
+              <FaArrowLeft className="mr-2" /> Previous
+            </button>
+
+            <button
+              onClick={handleContinue}
+              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+            >
+              <FaArrowRight className="mr-2" /> Next
+            </button>
           </div>
         </div>
       )}
@@ -413,19 +511,20 @@ const MyPlan: React.FC = () => {
 
           {/* Service List Container */}
           <div className="w-[800px] mt-8 bg-[#265e55] p-6 rounded-xl shadow-lg">
+            {transactionState === null && (
             <div className="flex justify-between items-center py-3 border-b border-gray-600 font-bold text-lg">
               <span>{selectedCategory?.categoryName}</span>
               <span className="text-green-400">
                 ₹{selectedCategory?.categoryDiscountPrice?.toLocaleString() ? selectedCategory?.categoryDiscountPrice.toLocaleString(): selectedCategory?.categoryStandardPrice.toLocaleString()}.00
               </span>
             </div>
+            )}
 
             {/* Other Services */}
             {services.map((service) => {
               const isSelected = selectedServices.some(
                 (s) => s.serviceId === service.serviceId
               );
-              const isVisible = visibleServices.includes(service.serviceId);
 
               return (
                 <div
@@ -434,8 +533,7 @@ const MyPlan: React.FC = () => {
                 >
                   <span className="flex-1">{service.serviceName}</span>
 
-                  {/* Show price only if service is selected or made visible */}
-                  {isSelected || isVisible ? (
+                  {isSelected ? (
                     <>
                       <span className="text-green-400 font-semibold">
                         ₹{service.serviceDiscountPrice?.toLocaleString() ? service.serviceDiscountPrice?.toLocaleString() : service.serviceStandardPrice.toLocaleString()}.00
@@ -469,8 +567,19 @@ const MyPlan: React.FC = () => {
           </div>
 
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto">
-            <BackButton onClick={handlePrevious} label="Previous" />
-            <NextButton onClick={handleContinue} />
+          <button
+              onClick={handlePrevious}
+              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+            >
+              <FaArrowLeft className="mr-2" /> Previous
+            </button>
+
+            <button
+              onClick={handleContinue}
+              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+            >
+              <FaArrowRight className="mr-2" /> Next
+            </button>
           </div>
         </div>
       )}
