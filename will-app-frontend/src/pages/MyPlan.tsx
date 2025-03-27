@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams  } from "react-router";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { formattedCategoriesState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
+import { formattedCategoriesState, pathState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
 import { ICategory, IFormattedServiceCategory, IWillService } from "../models/willService";
 import { getWillServices } from "../api/willService";
 import Header from "../components/Header";
@@ -31,12 +31,18 @@ const MyPlan: React.FC = () => {
   const [coupon, setCoupon] = useState("");
   const [infoIndex, setInfoIndex] = useState<string | null>(null);
   const infoRef = useRef<HTMLDivElement | null>(null);
-  const transactionState = useRecoilValue(TransactionSummaryState); 
+  const transactionState = useRecoilValue(TransactionSummaryState);
+  const pathStateValue = useRecoilValue(pathState); 
 
+  // useEffect(() => {
+  //       navigate(`/my_plan?step=${step}`, { replace: true });
+  // }, [step, navigate]);
   useEffect(() => {
-        navigate(`/my_plan?step=${step}`, { replace: true });
-  }, [step, navigate]);
-
+    if(pathStateValue.path == ""){
+      navigate(`/order_summary`);
+    }
+          
+    }, []);
   useEffect(() => {
     const fetchCategories = async () => {
       try {

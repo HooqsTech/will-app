@@ -12,12 +12,14 @@ import { ITransaction } from "../models/willService";
 import { IFormattedServiceCategory } from "../models/willService";
 import { getWillServices } from "../api/willService";
 import Swal from "sweetalert2";
+import { pathState } from "../atoms/serviceState";
 
 const OrderSummary = () => {
   const navigate = useNavigate();
   const [payment, setPayment] = useRecoilState(TransactionSummaryState);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useRecoilState(userState);
+  const [, setPath] = useRecoilState(pathState);
   const [selectedOrder, setSelectedOrder] = useState<ITransaction | null>(null);
   const [serviceCounts, setServiceCounts] = useState<{ categoryId: string; categoryName: string; serviceCount: number }[]>([]);
 
@@ -33,6 +35,7 @@ const OrderSummary = () => {
 
     if (hasValidService) {
       console.log("Redirecting to My Plan - Step 2");
+      setPath({path:"findPlan"});
       navigate("/my_plan?step=2");
     } else {
       Swal.fire({
@@ -51,6 +54,7 @@ const OrderSummary = () => {
 
   const handleFindPlan = () => {
     console.log("Redirecting to Find Plan");
+    setPath({path:"findPlan"});
     navigate("/my_plan");
   };
 

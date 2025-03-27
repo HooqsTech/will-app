@@ -43,3 +43,7 @@ export interface ITransaction {
   updatedat?: string;
   totalprice: string;
 }
+
+export interface IPath {
+  path: string;
+}
