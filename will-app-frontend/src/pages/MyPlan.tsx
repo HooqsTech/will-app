@@ -189,7 +189,7 @@ const MyPlan: React.FC = () => {
     } else if (step === 2) {
       setStep(3);
     } else if (step === 3) {
-      if (selectedServices.length === 0 || total===0) {
+      if (selectedServices.length === 0 && total===0) {
         Swal.fire({
           title: "Neither Service nor Category has been Selected!",
           text: "Please select at least one service before proceeding.",
@@ -583,7 +583,7 @@ const MyPlan: React.FC = () => {
               onClick={handleContinue}
               className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
             >
-              <FaArrowRight className="mr-2" /> Next
+              <FaArrowRight className="mr-2" /> Pay Now
             </button>
           </div>
         </div>

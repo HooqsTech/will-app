@@ -168,10 +168,10 @@ const OrderSummary = () => {
 
   const hasItems = payment?.some(
     (transaction) =>
-      (transaction.selectedcategories && transaction.selectedcategories.length > 0) ||
+      (transaction.selectedcategories && transaction.selectedcategories) ||
       (transaction.selectedservices && transaction.selectedservices.length > 0)
   );
-
+  
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100">
   <div className="fixed top-0 left-0 w-full bg-[#265e55] z-50 shadow-md">
