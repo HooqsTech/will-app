@@ -189,8 +189,7 @@ const MyPlan: React.FC = () => {
     } else if (step === 2) {
       setStep(3);
     } else if (step === 3) {
-      console.log("Magesh" +!selectedCategory)
-      if (selectedServices.length === 0 && !selectedCategory) {
+      if (selectedServices.length === 0 || total===0) {
         Swal.fire({
           title: "Neither Service nor Category has been Selected!",
           text: "Please select at least one service before proceeding.",
