@@ -439,7 +439,7 @@ const YourWill: React.FC = () => {
                         <Sidebar2 />
                     </div>
                 </div>
-                <div className='h-full px-2.5 overflow-hidden flex col-span-12 md:col-span-9 items-center md:p-10 justify-center'>
+                <div className='h-full bg-[#ccdcdc] px-2.5 overflow-hidden flex col-span-12 md:col-span-9 items-center md:p-10 justify-center'>
                     <Routes>
                         <Route path={ROUTE_PATHS.ABOUT_YOU} element={<AboutYouPage />} />
                         <Route path={ROUTE_PATHS.PERSONAL_DETAILS} element={<PersonalDetailsPage />} />
