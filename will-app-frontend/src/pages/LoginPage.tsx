@@ -11,6 +11,8 @@ import { getCookie, setCookie } from 'typescript-cookie';
 import { useLocation, useNavigate } from 'react-router';
 import CustomSnackBar, { TAlertType } from '../components/CustomSnackBar';
 import CustomButton from '../components/CustomButton';
+import Lottie from 'lottie-react';
+import animationData from '../../public/assets/login-lottie.json';
 
 const LoginPage = () => {
     const [formState, setFormState] = useRecoilState<ILoginState>(loginState);
@@ -152,10 +154,9 @@ const LoginPage = () => {
         setLoading(false);
     };
     return (
-        <div className="p-4 h-screen bg-white border border-gray-200 shadow-sm sm:p-6 md:p-8">
-            <div className="flex flex-col m-2 h-full w-full bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row max-w-none">
-
-                <div className="flex flex-col items-center p-4  w-full">
+        <div className="p-4 h-screen bg-white sm:p-6 md:p-8">
+            <div className="flex-col m-2 grid grid-cols-2 h-full w-full bg-white rounded-lg md:flex-row max-w-none">
+                <div className="flex col-span-2 lg:col-span-1 flex-col items-center p-4 w-full">
                     <div className="flex items-center mt-8 space-x-3">
                         <img src="/assets/hamara-logo-icon.png" className="h-10" alt="Flowbite Logo" />
                         <span className="self-center text-5xl text-will-green whitespace-nowrap uppercase">Hamara Will</span>
@@ -215,11 +216,7 @@ const LoginPage = () => {
                     </div>}
                     <div id="recaptcha-container"></div>
                 </div>
-                <img
-                    className="object-cover w-full rounded-tr-lg rounded-br-lg h-auto"
-                    src="https://picsum.photos/200/300"
-                    alt="Descriptive Alt Text"
-                />
+                <Lottie className='col-span-1 hidden lg:block' animationData={animationData} loop autoplay />
             </div>
             {showAlert && <CustomSnackBar alertType={alertType} message={alertMessage} open={showAlert} onClose={alertOnClose} />}
         </div>
