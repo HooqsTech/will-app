@@ -33,13 +33,17 @@ export interface IWillService {
 
   
 export interface ITransaction {
-  id: string;
+  id?: string;
   orderid: string;
   userid: string;
-  selectedServices: IWillService[];
-  selectedCategories: ICategory[];
-  paymentid: string;
-  createdat: string;
-  updatedat: string;
+  selectedservices: IWillService[];
+  selectedcategories: ICategory[];
+  paymentid?: string;
+  createdat?: string;
+  updatedat?: string;
   totalprice: string;
+}
+
+export interface IPath {
+  path: string;
 }

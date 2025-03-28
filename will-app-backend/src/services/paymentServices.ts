@@ -38,7 +38,8 @@ export const upsertPaymentTransaction = async (
     userId: string,
     selectedServices: any,
     totalPrice: number,
-    selectedCategories: any
+    selectedCategories: any,
+    isNewTransaction: boolean
 ) => {
     return await prisma.payment_transactions.upsert({
         where: { orderid: orderId },
@@ -46,23 +47,23 @@ export const upsertPaymentTransaction = async (
             selectedservices: selectedServices, 
             updatedat: new Date(),
             totalprice: totalPrice,
-            selectedcategories: selectedCategories
+            selectedcategories: isNewTransaction ? selectedCategories : null
         },
         create: {
             orderid: orderId, 
             userid: userId, 
             selectedservices: selectedServices,
             totalprice: totalPrice,
-            selectedcategories: selectedCategories
+            selectedcategories:  isNewTransaction ? selectedCategories : null
         }
     });
 };
 
 export const getPaymentTransactionsByUserId = async (userId: string) => {
-    return await prisma.payment_transactions.findFirst({
+    return await prisma.payment_transactions.findMany({
         where: { userid: userId },
         orderBy: {
-            createdat: "desc",
+            createdat: "desc", 
         },
         select: {
             id: true,
@@ -76,3 +77,4 @@ export const getPaymentTransactionsByUserId = async (userId: string) => {
         }
     });
 };
+

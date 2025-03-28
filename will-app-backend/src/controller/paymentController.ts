@@ -37,19 +37,16 @@ export const recordPaymentEvent = async (req: Request, res: Response) => {
 
 export const createPaymentOrder = async (req: Request, res: Response) => {
     try {
-        const { userId, serviceIds, categoryId }: 
-        { userId?: string, serviceIds?: string[], categoryId?: string } = req.body;
+        const { userId, serviceIds, categoryId, isNewTransaction }: 
+        { userId?: string, serviceIds?: string[], categoryId?: string, isNewTransaction?: boolean } = req.body;
+
 
         if (!userId) {
             return res.status(400).json({ error: "User ID is required" });
         }
 
-        if (!categoryId) {
-            return res.status(400).json({ error: "Category ID is required" });
-        }
-
         // Calculate total price with category discount
-        let totalAmount = await calculateTotalPrice(categoryId, serviceIds );
+        let totalAmount = await calculateTotalPrice(categoryId ?? "", serviceIds , isNewTransaction);
 
         if (totalAmount <= 0) {
             return res.status(400).json({ error: "Total amount must be greater than zero" });
@@ -94,8 +91,8 @@ export const createPaymentOrder = async (req: Request, res: Response) => {
 
 export const createOrUpdatePaymentTransaction = async (req: Request, res: Response) => {
     try {
-        const { orderId, userId, selectedServices, selectedCategories }:
-        { orderId?: string, userId?: string, selectedServices?: any, selectedCategories?: any } = req.body;
+        const { orderId, userId, selectedServices, selectedCategories, isNewTransaction }:
+        { orderId?: string, userId?: string, selectedServices?: any, selectedCategories?: any, isNewTransaction?: boolean } = req.body;
 
         if (!orderId) {
             return res.status(400).json({ error: "Order ID is required" });
@@ -105,19 +102,15 @@ export const createOrUpdatePaymentTransaction = async (req: Request, res: Respon
             return res.status(400).json({ error: "User ID is required" });
         }
 
-        if (!selectedCategories) {
-            return res.status(400).json({ error: "Category ID is required" });
-        }
-
         // Extract service IDs from selectedServices
         const selectedServiceIds = selectedServices.map((service: any) => service.serviceId);
 
-        const categoryId = selectedCategories?.categoryId;
+        const categoryId = isNewTransaction ? selectedCategories?.categoryId : null;
         // Calculate total price including category discount
-        const totalPrice = await calculateTotalPrice(categoryId, selectedServiceIds);
+        const totalPrice = await calculateTotalPrice(categoryId, selectedServiceIds, isNewTransaction);
 
         // Perform upsert operation
-        const transaction = await upsertPaymentTransaction(orderId, userId, selectedServices, totalPrice, selectedCategories);
+        const transaction = await upsertPaymentTransaction(orderId, userId, selectedServices, totalPrice, selectedCategories, isNewTransaction ?? false);
 
         res.status(201).json({
             transaction
