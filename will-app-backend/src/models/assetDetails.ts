@@ -21,14 +21,14 @@ export type AssetSubtype =
     | "esops"
     | "other_investments"
     | "vehicles"
-    | "jewellery"
+    | "jewelleries"
     | "digital_assets"
-    | "intellectual_properties"
+    | "intellectual_property"
     | "custom_assets"
-    | "home_loans"
-    | "vehicle_loans"
-    | "education_loans"
-    | "personal_loans"
+    | "home_loan"
+    | "vehicle_loan"
+    | "education_loan"
+    | "personal_loan"
     | "other_liabilities";
 
 // Asset Interfaces
@@ -125,9 +125,9 @@ export interface DebentureAsset {
 export interface ESOPAsset {
     id: number;
     companyName: string;
-    vestedEsops: number;
-    unitsGranted: number;
-    unvestedEsops: number;
+    noOfVestedEscops: number;
+    noOfUnitGranted: number;
+    noOfUnVestedEscops: number;
 }
 
 export interface VehicleAsset {
@@ -209,9 +209,7 @@ export interface OtherLiabilityAsset {
     remainingAmount: number;
 }
 
-/**
- * Parses an array of assets from JSON data.
- */
+
 export function parseAssets(assetsData: any[]): IAsset[] {
     return assetsData.map((asset: any) => ({
         id: asset.id,
@@ -241,16 +239,15 @@ function parseAssetData(subtype: string, data: any): any {
         case "debentures": return data as DebentureAsset[];
         case "esops": return data as ESOPAsset[];
         case "vehicles": return data as VehicleAsset[];
-        case "jewellery": return data as JewelryAsset[];
+        case "intellectual_property": return data as JewelryAsset[];
         case "digitalAssets": return data as DigitalAsset[];
         case "intellectualProperties": return data as IntellectualPropertyAsset[];
         case "customAssets": return data as CustomAsset[];
         case "other_investments": return data as OtherInvestmentAsset[];
-
-        case "homeLoans": return data as HomeLoanAsset[];
-        case "vehicleLoans": return data as VehicleLoanAsset[];
-        case "educationLoans": return data as EducationLoanAsset[];
-        case "personalLoans": return data as PersonalLoanAsset[];
+        case "homeLoan": return data as HomeLoanAsset[];
+        case "vehicleLoan": return data as VehicleLoanAsset[];
+        case "educationLoan": return data as EducationLoanAsset[];
+        case "personalLoan": return data as PersonalLoanAsset[];
         case "otherLiabilities": return data as OtherLiabilityAsset[];
         default: return data;
     }

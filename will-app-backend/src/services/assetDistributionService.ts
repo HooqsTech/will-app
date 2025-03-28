@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import { DistributionType } from '../models/enums';
 import { UUID } from 'crypto';
+import { IAsset, ISplit, IUserAssetsPercentage, IUserAssetsSingle, IUserAssetsSpecific, IUserResiduaryAssets } from '../models/distributionDetails';
+import { JsonValue } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
@@ -91,7 +93,9 @@ export const createWillDistributionService = async (
     });
 };
 
-export const getSingleBeneficiaryByUserIdService = async (userId: string) => {
+export const getSingleBeneficiaryByUserIdService = async (
+    userId: string
+    ): Promise<IUserAssetsSingle | null> => {
     return prisma.single_beneficiary_distribution.findUnique({
         where: { userid: userId },
     });
@@ -131,12 +135,31 @@ export const createSingleBeneficiaryService = async (
     });
 };
 
-export const getPercentageAssetDistributionService = async (userId: string) => {
-    return prisma.percentage_distribution.findFirst({
+export const getPercentageAssetDistributionService = async (
+    userId: string
+): Promise<IUserAssetsPercentage | null> => {
+    const result = await prisma.percentage_distribution.findFirst({
         where: { userid: userId },
     });
-};
 
+    if (!result) {
+        return null;
+    }
+
+    const split: ISplit[] = Array.isArray(result.beneficiaries)
+        ? (result.beneficiaries as JsonValue[]).map((beneficiary: any) => ({
+              percentage: beneficiary.percentage,
+              beneficiary_id: beneficiary.beneficiary_id,
+          }))
+        : [];
+
+    return {
+        userid: result.userid,
+        split: split,
+        createdat: result.createdat ? result.createdat : null,
+        updatedat: result.updatedat ? result.updatedat : null,
+    };
+};
 // ✅ Update Percentage Asset Distribution
 export const updatePercentageAssetDistributionService = async (userId: string, beneficiaryData: any) => {
     return prisma.percentage_distribution.update({
@@ -159,11 +182,35 @@ export const createPercentageAssetDistributionService = async (userId: string, b
     });
 };
 
-// ✅ Get Specific Asset Distribution by User ID
-export const getSpecificAssetDistributionService = async (userId: string) => {
-    return prisma.specific_asset_distribution.findFirst({
+export const getSpecificAssetDistributionService = async (
+    userId: string
+): Promise<IUserAssetsSpecific | null> => {
+    const result = await prisma.specific_asset_distribution.findFirst({
         where: { userid: userId },
     });
+
+    if (!result) {
+        return null;
+    }
+
+    const assets: IAsset[] = Array.isArray(result.assets)
+        ? (result.assets as JsonValue[]).map((asset: any) => ({
+              asset_id: asset.asset_id,
+              split: Array.isArray(asset.split)
+                  ? asset.split.map((split: any) => ({
+                        percentage: split.percentage,
+                        beneficiary_id: split.beneficiary_id,
+                    }))
+                  : [],
+          }))
+        : [];
+
+    return {
+        userid: result.userid,
+        assets: assets,
+        createdat: result.createdat ? result.createdat : null,
+        updatedat: result.updatedat ? result.updatedat : null,
+    };
 };
 
 // ✅ Update Specific Asset Distribution
@@ -188,11 +235,30 @@ export const createSpecificAssetDistributionService = async (userId: string, ass
     });
 };
 
-// ✅ Get Residuary Asset Distribution by User ID
-export const getResiduaryAssetDistributionService = async (userId: string) => {
-    return prisma.residuary_asset_distribution.findFirst({
+export const getResiduaryAssetDistributionService = async (
+    userId: string
+): Promise<IUserResiduaryAssets | null> => {
+    const result = await prisma.residuary_asset_distribution.findFirst({
         where: { userid: userId },
     });
+
+    if (!result) {
+        return null;
+    }
+
+    const beneficiaries: ISplit[] = Array.isArray(result.beneficiaries)
+        ? (result.beneficiaries as JsonValue[]).map((beneficiary: any) => ({
+              percentage: beneficiary.percentage,
+              beneficiary_id: beneficiary.beneficiary_id,
+          }))
+        : [];
+
+    return {
+        userid: result.userid,
+        split: beneficiaries,
+        createdat: result.createdat,
+        updatedat: result.updatedat,
+    };
 };
 
 // ✅ Update Residuary Asset Distribution

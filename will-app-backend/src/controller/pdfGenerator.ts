@@ -1,4 +1,6 @@
 import PDFDocument, { font, fontSize } from "pdfkit";
+import PdfPrinter from "pdfmake";
+import { TDocumentDefinitions, Content } from "pdfmake/interfaces";
 import { Response, Request } from "express";
 import { PrismaClient } from '@prisma/client';
 import { UUID } from "crypto";
@@ -11,8 +13,10 @@ import { DistributionType } from "../models/enums";
 import { IAddressDetails, IPersonalDetails } from "../models/userDetails";
 import { AssetSubtype, IAsset, parseAssets } from "../models/assetDetails";
 import { IBeneficiary, parseBeneficiaries } from "../models/beneficiaryDetails";
-import { IAssetDistributionDetails, parseAssetDistributionDetails } from "../models/distributionDetails";
-import { title } from "process";
+import { IAssetDistributionDetails, IUserAssetsSingle, parseAssetDistributionDetails, parseIUserAssetsSingle } from "../models/distributionDetails";
+import fs from "fs";
+import { getExecutorsByUserIdService } from "../services/executorService";
+import { ExecutorData, IExecutor, parseExecutors } from "../models/executorDetails";
 
 const prisma = new PrismaClient();
 
@@ -32,7 +36,6 @@ function safeParse(json: any) {
     }
 }
 
-
 export const generatePDF = async (req: Request, res: Response) => {
     try {
         const {userId} = req.body;
@@ -40,29 +43,26 @@ export const generatePDF = async (req: Request, res: Response) => {
         if(!(await validUser(userId))){
             return res.status(400).json({ error: "Invalid User" });
         }
-
-
         var userDetails = await getUserByUserId(userId);
         const personalDetails : IPersonalDetails = safeParse(userDetails?.personalDetails);
         const assetDetails: IAsset[] = parseAssets(userDetails?.assets || []);
-        var benefeciaryDetails : IBeneficiary[] = parseBeneficiaries(userDetails?.beneficiaries || []);
+        var beneficiaryDetails : IBeneficiary[] = parseBeneficiaries(userDetails?.beneficiaries || []);
         var assetDistributionDetails : IAssetDistributionDetails = parseAssetDistributionDetails(userDetails?.will_distribution || []);
         var addressDetails : IAddressDetails = safeParse(userDetails?.addressDetails);
+        var executor : IExecutor[] = parseExecutors(await getExecutorsByUserIdService(userId));
         var petDetails = userDetails?.pets;
         var excludedPersons = userDetails?.excludedPersons;
-
-
-        let distributionDetails;
-        let residuaryDistributionDetails;
+        let distributionDetails: any = null; 
+        let residuaryDistributionDetails: any = null;
 
         //Get distribution data from corresponding table based on the type of distribution
         switch (assetDistributionDetails?.distributionType) {
             case DistributionType.SINGLE:
-                distributionDetails = await getSingleBeneficiaryByUserIdService(userId);
+                distributionDetails = await getSingleBeneficiaryByUserIdService(userId) || [];
                 break;
         
             case DistributionType.SPECIFIC:
-                distributionDetails = await getSpecificAssetDistributionService(userId);
+                distributionDetails  =  await getSpecificAssetDistributionService(userId);
                 break;
         
             case DistributionType.PERCENTAGE:
@@ -74,77 +74,77 @@ export const generatePDF = async (req: Request, res: Response) => {
         }
         residuaryDistributionDetails = await getResiduaryAssetDistributionService(userId);
 
-        const PDFDocument = require("pdfkit-table");
-        const doc = new PDFDocument({ margin: 50 });
+        console.log(distributionDetails.primarybeneficiaryid);
+        console.log(residuaryDistributionDetails);
 
-        let salutaion = personalDetails?.gender == "Male" ? "Mr." : "Mrs.";
+        const fonts = {
+        Times: {
+            normal: "Times-Roman",
+            bold: "Times-Bold",
+            italics: "Times-Italic",
+            bolditalics: "Times-BoldItalic",
+        },
+        };
+
+        const printer = new PdfPrinter(fonts);
+
+        const honorific = personalDetails?.gender === "Male" ? "Mr." : "Mrs.";
         const dob = new Date(personalDetails.dob);
 
-        res.setHeader("Content-Disposition", 'inline; filename="LastWillAndTestament.pdf"');
-        res.setHeader("Content-Type", "application/pdf");
-        doc.pipe(res);
-
-        doc.font("Times-Bold").fontSize(20).text("LAST WILL AND TESTAMENT OF", { align: "center",});
-        doc.moveDown(1);
-        doc.font("Times-Bold").fontSize(22).text(`${personalDetails?.fullName}`, { align: "center",  underline: true });
-        doc.moveDown(2);
-
-        doc.font("Times-Bold").fontSize(20).text(`PART-I: SELF DECLARATION`, { align: "center" });
-        doc.moveDown(1);
-        doc.font("Times-Roman").fontSize(16).text(`I, ${salutaion} ${personalDetails?.fullName}, S/o Mr. ${personalDetails?.fatherName}, born on ${dob.toLocaleString("en-US", { month: "long" })} ${dob.getDate()}, ${dob.getFullYear()}, holding Aadhaar Number as ${personalDetails?.aadhaarNumber}, Mobile Number as ${addressDetails?.phoneNumber} and currently residing at ${addressDetails?.address1}, ${addressDetails?.address2}, ${addressDetails?.city}, ${addressDetails?.state}, ${addressDetails?.pincode}, being of sound mind and memory, do hereby make, publish, and declare this to be my LAST WILL AND TESTAMENT for my assets in India and thereby revoking and making null and void any and all other last Will and Testaments and/or codicils to last Will and testaments heretofore made by me.`, { align: "left" });
-        doc.font("Times-Roman").fontSize(16).text(`This Will shall be governed by the laws of India.`);
-        doc.font("Times-Roman").fontSize(16).text(`All references herein to "this Will" refer only to this last Will and testament.`);
-        doc.moveDown(2);
-
-        doc.font("Times-Bold").fontSize(20).text(`PART-II: FAMILY`, { align: "center" });
-        doc.moveDown(1);
-        let wife = benefeciaryDetails?.find(b => b.data.relationship == "Wife") ?? "None";
-        doc.font("Times-Roman").fontSize(16).text(`At the time of writing this Will, I am married to ${wife}, and I have following members in my family, whose details are as follows:`);
-
-        doc.moveDown(1);
-        let table = {
-            headers: ["Name", "Relationship", "Date of Birth"],
-            rows: benefeciaryDetails.map((b) => [
-              b.data.fullName,
-              b.data.relationship,
-              new Date(b.data.dateOfBirth).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
-            ]),
-          };
-
-          doc.table(table, { 
-            width: 500, 
-            fontSize: 12, // Ensure fontSize is recognized
-            cellPadding: 5, // Adjust cell padding for better spacing
-            prepareHeader: () => doc.font("Times-Bold").fontSize(16), // Bold headers
-            prepareRow: () => {
-                doc.font("Times-Roman").fontSize(16); // Set font for rows
+        const content : any []= [
+            { text: "LAST WILL AND TESTAMENT OF\n\n", style: "header", alignment: "center" },
+            { text: personalDetails?.fullName, style: "title", alignment: "center", decoration: "underline" },
+            { text: "\n\nPART-I: SELF DECLARATION\n", style: "subheader", alignment: "center" },
+            {
+            text: `I, ${honorific} ${personalDetails?.fullName}, S/o Mr. ${personalDetails?.fatherName}, born on ${dob.toLocaleString(
+                "en-US",
+                { month: "long" }
+            )} ${dob.getDate()}, ${dob.getFullYear()}, holding Aadhaar Number as ${
+                personalDetails?.aadhaarNumber
+            }, Mobile Number as ${
+                addressDetails?.phoneNumber
+            } and currently residing at ${addressDetails?.address1}, ${addressDetails?.address2}, ${
+                addressDetails?.city
+            }, ${addressDetails?.state}, ${addressDetails?.pincode}, being of sound mind and memory, do hereby make, publish, and declare this to be my LAST WILL AND TESTAMENT for my assets in India and thereby revoking and making null and void any and all other last Will and Testaments and/or codicils to last Will and testaments heretofore made by me.`,
+            style: "text",
             },
-            columns: [
-                { width: 180 }, // Adjust widths as needed
-                { width: 180 },
-                { width: 140 }
-            ],
-            border: { 
-                width: 1, 
-                color: "#000000" // Set border color to black
-            }
-        });
-        
+            { text: "This Will shall be governed by the laws of India.", style: "text" },
+            { text: "\n\nPART-II: FAMILY\n", style: "subheader", alignment: "center" },
+            {
+            text: `At the time of writing this Will, I am married to ${
+                beneficiaryDetails?.find((b) => b.data.relationship === "Wife")?.data.fullName ?? "None"
+            }, and I have following members in my family, whose details are as follows:`,
+            style: "text",
+            },
+            {
+                table: {
+                  headerRows: 1,
+                  widths: ["*", "*", "*"], 
+                  body: [
+                    
+                    ["Name", "Relationship", "Date of Birth"],
+                    ...beneficiaryDetails.map((b) => [
+                      b.data.fullName,
+                      b.data.relationship,
+                      new Date(b.data.dateOfBirth).toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      }),
+                    ]),
+                  ],
+                },
+                style: "table",
+              },
+            { text: "\n\nPART-III: APPOINTMENT OF EXECUTOR\n", style: "subheader", alignment: "center" },
+            {
+            text: `The powers and elective rights conferred by law or by any other provision of this Will and by me be exercised as often as required and without application to or approval by any court. I hereby appoint ${executor[0].data.gender == "Male"? "Mr.": "Mrs."} ${executor[0].data.fullName} as my Primary Executor for all means and purposes with regards to the Will. He has his Mobile No. as ${executor[0].data.phoneNumber} and Email ID as ${executor[0].data.email}.`,
+            style: "text",
+            },
+            { text: "\n\nPART-IV: MOVABLE & IMMOVABLE ASSET DETAILS\n", style: "subheader", alignment: "center" },
 
-
-        doc.moveDown(2);
-        doc.addPage();
-        doc.font("Times-Bold").fontSize(20).text(`PART-III: APPOINTMENT OF EXECUTOR`, { align: "center" });
-        doc.moveDown(1);
-        doc.font("Times-Roman").fontSize(16).text(`The powers and elective rights conferred by law or by any other provision of this Will and by me be exercised as often as required and without application to or approval by any court. I hereby appoint Mr. {} as my Primary Executor for all means and purposes with regards to the Will. He has his Mobile No. as {} and Email ID as {}.`);
-
-        doc.moveDown(2);
-
-        doc.font("Times-Bold").fontSize(20).text(`PART-IV: MOVABLE & IMMOVABLE ASSET DETAILS`, { align: "center" });
-        doc.moveDown(1);
-
-        let assets;
-        const assetSubtypes = [
+            ...[
+            // Iterate over all subtypes and dynamically generate sections
             "properties",
             "bank_accounts",
             "fixed_deposits",
@@ -160,144 +160,174 @@ export const generatePDF = async (req: Request, res: Response) => {
             "esops",
             "other_investments",
             "vehicles",
-            "jewellery",
+            "jewelleries",
             "digital_assets",
-            "intellectual_properties",
+            "intellectual_property",
             "custom_assets"
-        ]
-        
-        const subtypeHeaders = {
-            bank_accounts: ["S. No", "Name of Bank", "Description"],
-            fixed_deposits: ["S. No", "Name of Bank", "Description"],
-            mutual_funds: ["S. No", "Name of Organisation", "Description"],
-            provident_funds: ["S. No", "Type of Account", "Description"],
-            vehicles: ["S. No", "Type of Vehicle", "Registration Details"],
-            properties: ["S. No", "Type Of Property", "Address"],
-            jewellery: ["S. No", "Type", "Quantity", "Description"],
-            custom_assets: ["S. No", "Description"],
-            default: ["S. No", "Category", "Details"]
+            ].map((subtype) => {
+            // Filter the assets for the current subtype
+            const filteredAssets = assetDetails.filter((a) => a.subtype === subtype);
+
+            if (filteredAssets.length === 0) return null; // Skip if no assets for this subtype
+            // Get headers and row generation logic for the subtype
+            const headers = getHeadersForSubtype(subtype);
+            const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index));
+
+            return [
+                { text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`, style: "subheader", alignment: "center" },
+                {
+                table: {
+                    headerRows: 1,
+                    widths: headers.map(() => "*"), // Dynamic width based on number of columns
+                    body: [headers, ...rows],
+                },
+                style: "table",
+                },
+            ];
+            }).flat().filter(Boolean) // Flatten and filter out nulls
+
+            ,
+            { text: "\n\nPART-V: SPECIFIC DEVOLVEMENT OF ASSETS\n", style: "subheader", alignment: "center" },
+            { text: "All the above-mentioned immovable and movable properties and the current assets listed in this Will of mine will cover the assets owned by me at the time of writing this Will, shall be devolved as:", style: "text" },
+            ...[
+              // Iterate over all subtypes and dynamically generate sections
+              "Single",
+              "Specific",
+              "Percentage"
+              ].map((distributionType) => {
+                  if(assetDistributionDetails.distributionType !== distributionType) return null;
+                    // Define headers
+                  const headers = ["Sl. No.", "Name Of Asset", "Share Description"];
+
+                  // Generate rows dynamically
+                  const rows =
+                    distributionType === "Single"
+                      ? getRowsForSingleDistribution(distributionDetails, assetDetails)
+                      : distributionType === "Specific"
+                      ? []//getRowsForSpecificDistribution(distributionDetails)
+                      : [];//getRowsForPercentageDistribution(distributionDetails);
+                  if(distributionType == "Single")
+                    return [
+                      {
+                        table: {
+                          headerRows: 1,
+                          widths: ["*", "*", "*"], // Adjust widths as needed
+                          body: [headers, ...rows],
+                        },
+                        style: "table",
+                      },
+                    ];
+                  })
+                    .flat()
+                    .filter(Boolean)
+           ,
+                  
+            { text: "\n\nPART-VI: PRIMARY REMAINDER BENEFICIARIES\n", style: "subheader", alignment: "center" },
+            { text: "I, hereby, bequeath to the persons my residue and the remainder of my property and estate, tangible and intangible, immovable and movable, real, personal and mixed, of whatever nature and wherever situated, including all property. ", style: "text" },
+            { text: "\nOr, I may acquire or receive or inherit any assets in future after writing this Will, shall be bequeathed in the following manner and proportions:", style: "text" },
+
+            { text: "\n\nPART-VII: LIABILITIES\n", style: "subheader", alignment: "center" },
+            ...[
+                // Iterate over all subtypes and dynamically generate sections
+                "home_loan",
+                "personal_loan",
+                "vechicle_loan",
+                "education_loan",
+                "other_liabilities"
+                ].map((subtype) => {
+                    try{
+                        // Filter the assets for the current subtype
+                        const filteredAssets = assetDetails.filter((a) => a.subtype === subtype);
+                            
+                        if (filteredAssets.length === 0) return null; // Skip if no assets for this subtype
+
+                        // Get headers and row generation logic for the subtype
+                        const headers = getHeadersForSubtype(subtype);
+                        const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index));
+
+                        return [
+                            { text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`, style: "subheader", alignment: "center" },
+                            {
+                            table: {
+                                headerRows: 1,
+                                widths: headers.map(() => "*"), // Dynamic width based on number of columns
+                                body: [headers, ...rows],
+                            },
+                            style: "table",
+                            },
+                        ];
+                    }
+                    catch(error){
+                        console.log(subtype);
+                        console.log(error);
+                    }
+                
+                }).flat().filter(Boolean) // Flatten and filter out nulls
+            ,
+            {text: "\n\n"},
+            {text: "IN WITNESS WHEREOF, I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence."},
+            {text: "\n\n"},
+            {
+            text: "______________________________",
+            margin: [250, 20, 0, 0],
+            alignment: "left",
+            },
+            { text: "Signature", margin: [250, 5, 0, 0], alignment: "left", style: "text" },
+            { text: `(${honorific} ${personalDetails?.fullName})`, margin: [250, 5, 0, 0], alignment: "left", style: "text" },
+
+            {
+                text: "Date: ______________________",
+                margin: [250, 20, 0, 0],
+                alignment: "left",
+                },
+            {
+                text: "Place: ______________________",
+                margin: [250, 20, 0, 0],
+                alignment: "left",
+                },
+            { text: "", pageBreak: "after" },
+            { text: "ATTESTATION BY WITNESSES\n", style: "subheader", alignment: "center" },
+            { text: `This last Will and testament, which has been separately signed by ${honorific} ${personalDetails.fullName}, the testator, as on the date indicated below signed and declared by the above-named testator as his last Will and testament in the presence of each of us. We, in the presence of the testator and each other, at the testator's request, under penalty of perjury, hereby subscribe our names as witnesses to the declaration and execution of the last Will and testament by the testator, and we declare that, to the best of our knowledge, said testator is eighteen years of age or older, of sound mind and memory and under no constraint or undue influence.`},
+            { text: "\n\nWITNESSES 1\n\n", alignment: "center", bold: true},
+            { text: "Full Name of the Witness as per Aadhar/PAN Card:\n\n\n\n", alignment: "left"},
+            { text: "Signature of Witness:\n\n\n\n", alignment: "left"},
+            { text: "Date:\n\n\n\n", alignment: "left"},
+            { text: "Address:\n\n\n\n", alignment: "left"},
+
+            { text: "\n\n\nWITNESSES 2\n\n", alignment: "center", bold: true},   
+            { text: "Full Name of the Witness as per Aadhar/PAN Card:\n\n\n\n", alignment: "left"},
+            { text: "Signature of Witness:\n\n\n\n", alignment: "left"},
+            { text: "Date:\n\n\n\n", alignment: "left"},
+            { text: "Address:\n\n\n\n", alignment: "left"},
+        ];
+
+        const docDefinition: TDocumentDefinitions = {
+            content,
+
+        styles: {
+            header: { fontSize: 18, bold: true },
+            title: { fontSize: 20, bold: true },
+            subheader: { fontSize: 16, bold: true, margin: [0, 10, 0, 10] },
+            text: { fontSize: 12 },
+            table: { margin: [0, 5, 0, 15] }
+        },
+        defaultStyle: {
+            font: "Times",
+        },
         };
         
-        const subtypeColumnSizes = {
-            custom_assets: [50, 450],
-            jewellery: [50, 75, 75, 300],
-            default: [50, 150, 300]
-        };
-        
-        assetSubtypes.forEach((subtype) => {
-            let assets = assetDetails?.filter(a => a.subtype === subtype);
-            if (assets && assets.length > 0) {
-                doc.font("Times-Bold").fontSize(20).text(subtype.replace(/_/g, " ").toUpperCase(), { align: "center" });
-                doc.moveDown(1);
-        
-                let headers = subtypeHeaders[subtype as keyof typeof subtypeHeaders] || subtypeHeaders.default;
-                let columnsSize = subtypeColumnSizes[subtype as keyof typeof subtypeColumnSizes] || subtypeColumnSizes.default;
+        const pdfDoc = printer.createPdfKitDocument(docDefinition);
 
-        
-                let table = {
-                    headers,
-                    rows:  assets.map((a, index) => formatRowData(a, index, subtype))
-                };
-        
-                doc.table(table, { 
-                    width: 500, 
-                    fontSize: 12, 
-                    cellPadding: 5,
-                    prepareHeader: () => doc.font("Times-Bold").fontSize(16), 
-                    prepareRow: () => doc.font("Times-Roman").fontSize(16),
-                    columnsSize,
-                    border: { width: 1, color: "#000000" }
-                });
-        
-                doc.moveDown(2);
-                doc.addPage();
+        res.setHeader("Content-Disposition", 'inline; filename="LastWillAndTestament.pdf"');
+        res.setHeader("Content-Type", "application/pdf");
 
-            }
-        });        
+        pdfDoc.pipe(res);
+        const filePath = "./LastWillAndTestament.pdf";
 
+        const writeStream = fs.createWriteStream(filePath);
+        pdfDoc.pipe(writeStream);
+        pdfDoc.end();
 
-        doc.font("Times-Bold").fontSize(20).text(`PART-V: SPECIFIC DEVOLVEMENT OF ASSETS`, { align: "center" });
-        doc.moveDown(1);
-        doc.font("Times-Roman").fontSize(16).text(`All the above-mentioned immovable and movable properties and the current assets listed in this Will of mine will cover the assets owned by me at the time of writing this Will, shall be devolved as:`);
-
-        //TODO
-        doc.moveDown(2);
-        doc.font("Times-Bold").fontSize(20).text(`PART-VI: PRIMARY REMAINDER BENEFICIARIES`, { align: "center" });
-        doc.moveDown(1);
-        //TODO
-        
-        doc.font("Times-Roman").fontSize(16).text(`I, hereby, bequeath to the persons my residue and the remainder of my property and estate, tangible and intangible, immovable and movable, real, personal and mixed, of whatever nature and wherever situated, including all property. `);
-        doc.moveDown(1);
-        doc.font("Times-Roman").fontSize(16).text(`Or, I may acquire or receive or inherit any assets in future after writing this Will, shall be bequeathed in the following manner and proportions:`);
-
-        doc.moveDown(2);
-        doc.font("Times-Bold").fontSize(20).text(`PART-VII: LIABILITIES`, { align: "center" });
-        //TODO
-        
-
-
-        doc.moveDown(3);
-        doc.font("Times-Roman").fontSize(16);
-        doc.text("______________________________", { align: "left", indent: 250 });
-        doc.text("Signature", { align: "left", indent: 250 });
-        doc.text(`()`, { align: "left", indent: 250 });
-        doc.text("Date: __________________", { align: "left", indent: 250 });
-        doc.text("Place: __________________", { align: "left", indent: 250 });
-
-        doc.addPage();
-        doc.font("Times-Bold").fontSize(20).text(`ATTESTATION BY WITNESSES`, { align: "center" });
-        doc.moveDown(1);
-        doc.font("Times-Roman").fontSize(16).text(`This last Will and testament, which has been separately signed by ${salutaion} ${personalDetails.fullName}, the testator, as on the date indicated below signed and declared by the above-named testator as his last Will and testament in the presence of each of us. We, in the presence of the testator and each other, at the testator's request, under penalty of perjury, hereby subscribe our names as witnesses to the declaration and execution of the last Will and testament by the testator, and we declare that, to the best of our knowledge, said testator is eighteen years of age or older, of sound mind and memory and under no constraint or undue influence.`);
-
-        const witnessTable = {
-            headers: [
-                "Full Name of the Witness as per Aadhar/PAN Card", 
-                "Signature of Witness", 
-                "Date", 
-                "Address"
-            ],
-            rows: [
-            ]
-        };
-        doc.moveDown(2);
-
-        
-        doc.table(witnessTable, { 
-            title: "Witness 1",
-            width: 500,
-            fontSize: 14,
-            cellPadding: 5,
-            prepareHeader: () => doc.font("Times-Bold").fontSize(14),
-            prepareRow: () => doc.font("Times-Roman").fontSize(14),
-            columns: [
-                { width: 180 },
-                { width: 120 },
-                { width: 80 },
-                { width: 180 }
-            ]
-        });
-
-        doc.moveDown(5);
-
-        doc.table(witnessTable, { 
-            title: "Witness 2",
-            width: 500,
-            fontSize: 14,
-            cellPadding: 5,
-            prepareHeader: () => doc.font("Times-Bold").fontSize(14),
-            prepareRow: () => doc.font("Times-Roman").fontSize(14),
-            columns: [
-                { width: 180 },
-                { width: 120 },
-                { width: 80 },
-                { width: 180 }
-            ]
-        });
-        doc.moveDown(5);
-
-        
-
-        doc.end();
 
     } catch (err) {
         console.error("Error generating PDF:", err);
@@ -305,157 +335,6 @@ export const generatePDF = async (req: Request, res: Response) => {
     }
 };
 
-function centerText(doc: PDFKit.PDFDocument, text: string, fontSize: number) {
-    const pageWidth = doc.page.width;
-    const textWidth = doc.widthOfString(text);
-    const xPosition = (pageWidth - textWidth) / 2;
-    doc.font("Times-Bold").fontSize(fontSize).text(text, xPosition, doc.y);
-}
-
-
-
-function addPageNumber(doc: PDFKit.PDFDocument) {
-    const pageNumber = doc.bufferedPageRange().count;
-    doc.font("Times-Roman").fontSize(10).text(`Page ${pageNumber}`, doc.page.width / 2 - 20, doc.page.height - 50);
-}
-
-
-const formatRowData = (a: any, index: number, subtype: string): any[] => {
-    switch (subtype) {
-        case "bank_accounts":
-            return [
-                index + 1,
-                a.data.bankName || "N/A", 
-                `${a.data.accountType} Account, Account Number: ${maskAccountNumber(a.data.accountNumber)};\nBranch Address: ${a.data.branch}, ${a.data.city}`
-            ];
-        
-        case "properties":
-            return [
-                index + 1,
-                a.data.propertyType || "N/A",
-                a.data.address || "N/A"
-            ];
-
-        case "vehicles":
-            return [
-                index + 1,
-                a.data.type || "N/A",
-                `${a.data.brandOrModel} with Registration Number: ${a.data.registrationNumber}`
-            ];
-
-        case "jewellery":
-            return [
-                index + 1,
-                a.data.type || "N/A",
-                a.data.weightInGrams || "N/A",
-                `${a.data.description}`
-            ];
-
-        case "insurance_policies":
-            return [
-                index + 1,
-                a.data.type || "N/A",
-                `Company: ${a.data.insuranceProvider}, Policy Number: ${maskAccountNumber(a.data.policyNumber)}`
-            ];
-
-        case "mutual_funds":
-            return [
-                index + 1,
-                a.data.fundName || "N/A",
-                `${a.data.noOfHolders} Holder(s)`
-            ];
-
-        case "demat_accounts":
-            return [
-                index + 1,
-                a.data.brokerName || "N/A",
-                `Account Number: ${a.data.accountNumber}`
-            ];
-
-        case "digital_assets":
-            return [
-                index + 1,
-                a.data.type || "N/A",
-                `Wallet: ${a.data.walletAddress}`
-            ];
-
-        case "provident_funds":
-            return [
-                index + 1,
-                a.data.type || "N/A",
-                `Account Number: ${a.data.accountNumber}\nBranch Address: ${a.data.bankName},${a.data.branch},${a.data.city}`
-            ];
-
-        case "fixed_deposits":
-            return [
-                index + 1,
-                a.data.bankName || "N/A",
-                `${a.data.noOfHolders} Holder(s), Account number: ${maskAccountNumber(a.data.accountNumber)};\nBranch Address: ${a.data.branch},${a.data.city}`
-            ];
-
-        case "safety_deposit_boxes":
-            return [
-                index + 1,
-                a.data.depositBoxType || "N/A",
-                `${a.data.bankName},\nBranch Address: ${a.data.branch},${a.data.city}`
-            ];
-        
-        case "pension_accounts":
-            return [
-                index + 1,
-                a.data.bankName || "N/A",
-                `Scheme Name: ${a.data.schemeName}`
-            ];
-
-        case "businesses":
-            return [
-                index + 1,
-                a.data.type || "N/A",
-                `Company Name: ${a.data.companyName},\nAddress: ${a.data.address}`
-            ];
-
-        case "bonds":
-            return [
-                index + 1,
-                a.data.financialServiceProviderName || "N/A",
-                `Ownership type: ${a.data.type},\nFolio Number: ${a.data.certificateNumber}`
-            ];
-
-        case "debentures":
-            return [
-                index + 1,
-                a.data.type || "N/A",
-                `Financial Provider: ${a.data.financialServiceProviderName},\nFolio Number: ${a.data.certificateNumber}`
-            ];
-
-            case "esops":
-            return [
-                index + 1,
-                a.data.companyName || "N/A",
-                `Vested: ${a.data.vestedEsops},\nUnvested: ${a.data.unvestedEsops}\n Units Granted: ${a.data.unitsGranted}`
-            ];
-
-        case "other_investments":
-            return [
-                index + 1,
-                a.data.type || "N/A",
-                `Financial Provider: ${a.data.financialServiceProviderName},\nFolio Number: ${a.data.certificateNumber}`
-            ];
-
-        case "custom_assets":
-            return [
-                index + 1,
-                a.data.description || "N/A"
-            ];
-
-        default:
-            return [
-                index + 1,
-                a.data.assetName || "N/A",
-                a.data.details || "N/A"
-            ];
-    }
-};
 
 function maskAccountNumber(accountNumber: string): string {
     if (!accountNumber || accountNumber.length < 4) {
@@ -463,3 +342,213 @@ function maskAccountNumber(accountNumber: string): string {
     }
     return accountNumber.slice(-4).padStart(accountNumber.length, "x");
 }
+
+function getHeadersForSubtype(subtype: string): string[] {
+    const headersMap = {
+      bank_accounts: ["S. No", "Name of Bank", "Description"],
+      fixed_deposits: ["S. No", "Name of Bank", "Description"],
+      mutual_funds: ["S. No", "Name of Organisation", "Description"],
+      provident_funds: ["S. No", "Type of Account", "Description"],
+      vehicles: ["S. No", "Type of Vehicle", "Registration Details"],
+      properties: ["S. No", "Type Of Property", "Address"],
+      jewelleries: ["S. No", "Type", "Quantity", "Description"],
+      custom_assets: ["S. No", "Description"],
+      home_loan: ["S. No", "Name of Bank", "Amount", "Description"],
+      vechicle_loan: ["S. No", "Name of Bank", "Amount", "Description"],
+      personal_loan: ["S. No", "Name of Bank", "Amount", "Description"],
+      education_loan: ["S. No", "Name of Bank", "Amount"],
+      other_liabilities: ["S. No", "Amount", "Description"],
+      default: ["S. No", "Category", "Details"]
+    };
+  
+    return headersMap[subtype as keyof typeof headersMap] || headersMap.default;
+  }
+  
+  
+  // Returns the table row for each subtype
+  function getRowForSubtype(subtype: string, asset: any, index: number): any[] {
+    switch (subtype) {
+      case "bank_accounts":
+        return [
+          index + 1,
+          asset.data.bankName || "N/A",
+          `${asset.data.accountType} Account, Account Number: ${maskAccountNumber(asset.data.accountNumber)};\nBranch Address: ${asset.data.branch}, ${asset.data.city}`,
+        ];
+      case "properties":
+        return [
+          index + 1,
+          asset.data.propertyType || "N/A",
+          asset.data.address || "N/A",
+        ];
+      case "vehicles":
+        return [
+          index + 1,
+          asset.data.type || "N/A",
+          `${asset.data.brandOrModel} with Registration Number: ${asset.data.registrationNumber}`,
+        ];
+      case "jewelleries":
+        return [
+          index + 1,
+          asset.data.type || "N/A",
+          asset.data.weightInGrams || "N/A",
+          asset.data.description || "N/A",
+        ];
+      case "insurance_policies":
+        return [
+          index + 1,
+          asset.data.type || "N/A",
+          `Company: ${asset.data.insuranceProvider}, Policy Number: ${maskAccountNumber(asset.data.policyNumber)}`,
+        ];
+      case "mutual_funds":
+        return [
+          index + 1,
+          asset.data.fundName || "N/A",
+          `${asset.data.noOfHolders} Holder(s)`,
+        ];
+      case "demat_accounts":
+        return [
+          index + 1,
+          asset.data.brokerName || "N/A",
+          `Account Number: ${asset.data.accountNumber}`,
+        ];
+      case "digital_assets":
+        return [
+          index + 1,
+          asset.data.type || "N/A",
+          `Wallet: ${asset.data.walletAddress}`,
+        ];
+      case "provident_funds":
+        return [
+          index + 1,
+          asset.data.type || "N/A",
+          `Account Number: ${asset.data.accountNumber}\nBranch Address: ${asset.data.bankName},${asset.data.branch},${asset.data.city}`,
+        ];
+      case "fixed_deposits":
+        return [
+          index + 1,
+          asset.data.bankName || "N/A",
+          `${asset.data.noOfHolders} Holder(s), Account number: ${maskAccountNumber(asset.data.accountNumber)};\nBranch Address: ${asset.data.branch},${asset.data.city}`,
+        ];
+      case "safety_deposit_boxes":
+        return [
+          index + 1,
+          asset.data.depositBoxType || "N/A",
+          `${asset.data.bankName},\nBranch Address: ${asset.data.branch},${asset.data.city}`,
+        ];
+      case "pension_accounts":
+        return [
+          index + 1,
+          asset.data.bankName || "N/A",
+          `Scheme Name: ${asset.data.schemeName}`,
+        ];
+      case "businesses":
+        return [
+          index + 1,
+          asset.data.type || "N/A",
+          `Company Name: ${asset.data.companyName},\nAddress: ${asset.data.address}`,
+        ];
+      case "bonds":
+        return [
+          index + 1,
+          asset.data.financialServiceProviderName || "N/A",
+          `Ownership type: ${asset.data.type},\nFolio Number: ${asset.data.certificateNumber}`,
+        ];
+      case "debentures":
+        return [
+          index + 1,
+          asset.data.type || "N/A",
+          `Financial Provider: ${asset.data.financialServiceProviderName},\nFolio Number: ${asset.data.certificateNumber}`,
+        ];
+      case "esops":
+        return [
+          index + 1,
+          asset.data.companyName || "N/A",
+          `Vested: ${asset.data.noOfVestedEscops},\nUnvested: ${asset.data.noOfUnVestedEscops}\nUnits Granted: ${asset.data.noOfUnitGranted}`,
+        ];
+      case "other_investments":
+        return [
+          index + 1,
+          asset.data.type || "N/A",
+          `Financial Provider: ${asset.data.financialServiceProviderName},\nFolio Number: ${asset.data.certificateNumber}`,
+        ];
+      case "intellectual_property":
+        return [
+          index + 1,
+          asset.data.type || "N/A",
+          `ID: ${asset.data.identificationNumber},\nDescription: ${asset.data.description}`,
+        ];
+
+    case "custom_assets":
+        return [index + 1, asset.data.description || "N/A"];
+        case "personal_loan":
+            return [
+                index + 1, 
+                asset.data.nameOfBank || "N/A",
+                asset.data.loanAmount || "N/A",
+                `Account Number: ${asset.data.description}` || "N/A",
+            ];
+    case "home_loan":
+      return [
+          index + 1, 
+          asset.data.nameOfBank || "N/A",
+          asset.data.loanAmount || "N/A",
+          `Account Number: ${asset.data.accountNumber}` || "N/A",
+      ];
+    case "vechicle_loan":
+        return [
+            index + 1, 
+            asset.data.nameOfBank || "N/A",
+            asset.data.loanAmount || "N/A",
+            `Account Number: ${asset.data.accountNumber}` || "N/A",
+        ];
+    case "education_loan":
+        return [
+            index + 1, 
+            asset.data.nameOfBank || "N/A",
+            `Account Number: ${asset.data.loanAmount}` || "N/A"
+        ];
+    case "other_liabilities":
+        return [
+            index + 1, 
+            asset.data.loanAmount || "N/A",
+            `Lender Name: ${asset.data.nameOfBank} Account Number: ${asset.data.loanAmount}\n ${asset.data.description}`  || "N/A",
+        ];
+
+      default:
+        return [index + 1, asset.subtype || "N/A", "N/A"];
+    }
+  }
+
+  function getRowsForSingleDistribution(
+    distributionDetails: any,
+    assets: IAsset []
+  ): (string | number)[][] {
+    if (!assets || !distributionDetails.primaryBeneficiaryId) {
+      return [];
+    }
+  
+    return assets
+      .filter((asset) => asset.type !== "liabilities") // Exclude liabilities
+      .map((asset, index) => [
+        index + 1, // Sl. No.
+        asset.id, // Asset ID
+        `${distributionDetails.primaryBeneficiaryId} 100%`, // Share Description
+      ]);
+  }
+  function getRowsForSpecificDistribution(distributionDetails :any, assets : any) {
+    // Generate rows for "Specific" type
+    return distributionDetails.assets.map((asset: { name: any; specificDetails: any; }, index: number) => [
+      index + 1, // Sl. No.
+      asset.name, // Name Of Asset
+      asset.specificDetails, 
+    ]);
+  }
+  
+  function getRowsForPercentageDistribution(distributionDetails : any, assets : any) {
+    // Generate rows for "Percentage" type
+    return distributionDetails.split.map((split: any, index: number) => [
+      index + 1, 
+      assets.assetName, 
+      `${split.percentage}% share assigned to ${split.beneficiaryId}`, // Share Description
+    ]);
+  }

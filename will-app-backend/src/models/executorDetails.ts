@@ -11,7 +11,7 @@ export interface IExecutor {
     data: ExecutorData;
 }
 
-export function parseBeneficiaries(executorsData: any[]): IExecutor[] {
+export function parseExecutors(executorsData: any[]): IExecutor[] {
     return executorsData.map((executor: IExecutor) => ({
         id: executor.id || "",
         data: {
