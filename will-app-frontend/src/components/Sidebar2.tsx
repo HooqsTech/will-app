@@ -29,6 +29,7 @@ import { GiReceiveMoney, GiThreeFriends } from 'react-icons/gi';
 import { IoBusinessOutline } from 'react-icons/io5';
 import { IconType } from 'react-icons/lib';
 import { MdAddHomeWork, MdHealthAndSafety, MdLockOutline, MdOutlineAccountBalance, MdOutlineDirectionsCar } from 'react-icons/md';
+import { TbFriendsOff } from 'react-icons/tb';
 import { PiHandWithdraw } from 'react-icons/pi';
 import { SiAltiumdesigner } from 'react-icons/si';
 import { useNavigate } from 'react-router';
@@ -184,16 +185,7 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
 
   const item = publicAPI.getItem(itemId);
   const expandable = isExpandable(children);
-  // if (expandable) {
-  //   icon = FolderRounded;
-  // }
-  // if (item.icon) {
   let icon = item.icon
-  // }
-  // else if (item.iconName) {
-  //   icon = getIconFromFileType(item.iconName);
-  // }
-
   return (
     <TreeItem2Provider itemId={itemId}>
       <StyledTreeItemRoot {...getRootProps(other)}>
@@ -372,6 +364,12 @@ export default function Sidebar2() {
         label: 'Asset Distribution',
         icon: MdOutlineAccountBalance,
         routePath: ROUTE_PATHS.ASSET_DISTRIBUTION
+      },
+      {
+        id: 'excludedPersons',
+        label: 'Excluded Persons',
+        icon: TbFriendsOff,
+        routePath: ROUTE_PATHS.EXECLUDED_PERSONS
       },
     ];
 
