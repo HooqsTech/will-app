@@ -56,11 +56,6 @@ const CustomAssetsPage = () => {
         );
     };
 
-    const handleBackClick = () => {
-        var routeValue = routeState.find(s => s.nextPath === location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    };
-
     const setCustomAssetValidationState = (index: number, key: keyof ICustomAssetValidationState, value: string) => {
         setValidationState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -141,7 +136,7 @@ const CustomAssetsPage = () => {
                 <AddButton onClick={addCustomAsset} label={`Custom Asset ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>

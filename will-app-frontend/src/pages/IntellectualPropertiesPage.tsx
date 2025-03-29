@@ -36,11 +36,6 @@ const IntellectualPropertiesPage = () => {
         setCurrentItem(formState.length);
     };
 
-    const handleBackClick = async () => {
-        var routeValue = routeState.find(s => s.nextPath == location.pathname);
-        navigate(routeValue?.currentPath ?? "/");
-    };
-
     const savePropertyAsync = async (property: IIntellectualPropertyState, index: number) => {
         const data = {
             id: property.id,
@@ -154,7 +149,7 @@ const IntellectualPropertiesPage = () => {
                 <AddButton onClick={addProperty} label={`Intellectual Property ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back' onClick={handleBackClick} />
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>

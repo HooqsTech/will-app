@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil";
-import { excludedPersonsState, IExcludedPersonState } from "../../atoms/excludedPersonsState";
+import { excludedPersonsState, IExcludedPersonState } from "../../atoms/ExcludedPersonsState";
 import { excludedPersonsValidationState, IExcludedPersonValidationState } from "../../atoms/validationStates/ExcludedPersonsValidationState";
 import CustomFormContainer from "../CustomFormContainer";
 import CustomTextBox from "../CustomTextBox";

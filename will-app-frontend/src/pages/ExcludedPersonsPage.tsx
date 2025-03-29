@@ -13,7 +13,7 @@ import NextButton from '../components/NextButton';
 import { ROUTE_PATHS } from '../constants';
 import { IExcludedPerson, IExcludedPersonDeleteRequest } from '../models/excludedPerson';
 import { IsEmptyString } from '../utils';
-import { excludedPersonsState, IExcludedPersonState } from '../atoms/excludedPersonsState';
+import { excludedPersonsState, IExcludedPersonState } from '../atoms/ExcludedPersonsState';
 
 const ExcludedPersonsPage = () => {
     const [formState, setFormState] = useRecoilState<IExcludedPersonState[]>(excludedPersonsState);

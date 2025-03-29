@@ -100,7 +100,7 @@ import ExecutorPage from './ExecutorPage';
 import { executorState, IExecutorState } from '../atoms/ExecutorState';
 import { emptyExecutorValidationState, executorValidationState } from '../atoms/validationStates/ExecutorValidationState';
 import ExcludedPersonsPage from './ExcludedPersonsPage';
-import { excludedPersonsState, IExcludedPersonState } from '../atoms/excludedPersonsState';
+import { excludedPersonsState, IExcludedPersonState } from '../atoms/ExcludedPersonsState';
 import { emptyExcludedPersonValidationState, excludedPersonsValidationState } from '../atoms/validationStates/ExcludedPersonsValidationState';
 
 const YourWill: React.FC = () => {
