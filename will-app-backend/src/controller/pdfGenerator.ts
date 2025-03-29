@@ -1,25 +1,19 @@
-import PDFDocument, { font, fontSize } from "pdfkit";
 import PdfPrinter from "pdfmake";
 import { TDocumentDefinitions, Content } from "pdfmake/interfaces";
 import { Response, Request } from "express";
 import { PrismaClient } from '@prisma/client';
-import { UUID } from "crypto";
-import { getUserByUserId, getUserDetailsByPhone, validUser } from "../services/userServices";
-import { getAssetsByUserId } from "../services/assetService";
-import { getBeneficiariesByUserIdService } from "../services/beneficiaryService";
-import { getLiabilitiesByUserIdService } from "../services/liabilityService";
-import { getPercentageAssetDistributionService, getResiduaryAssetDistributionService, getSingleBeneficiaryByUserIdService, getSpecificAssetDistributionService, getWillDistributionByUserIdService } from "../services/assetDistributionService";
+import { getUserByUserId, validUser } from "../services/userServices";
+import { getPercentageAssetDistributionService, getResiduaryAssetDistributionService, getSingleBeneficiaryByUserIdService, getSpecificAssetDistributionService } from "../services/assetDistributionService";
 import { DistributionType } from "../models/enums";
 import { IAddressDetails, IPersonalDetails } from "../models/userDetails";
-import { AssetSubtype, IAsset, parseAssets } from "../models/assetDetails";
+import { IAsset, parseAssets } from "../models/assetDetails";
 import { IBeneficiary, parseBeneficiaries } from "../models/beneficiaryDetails";
-import { IAssetDistributionDetails, ISplit, IUserAssetsPercentage, IUserAssetsSingle, IUserAssetsSpecific, parseAssetDistributionDetails, parseIUserAssetsSingle, parseUserAssetsPercentage } from "../models/distributionDetails";
+import { IAssetDistributionDetails, ISplit, IUserAssetsPercentage, IUserAssetsSingle, IUserAssetsSpecific, parseAssetDistributionDetails } from "../models/distributionDetails";
 import fs from "fs";
 import { getExecutorsByUserIdService } from "../services/executorService";
-import { ExecutorData, IExecutor, parseExecutors } from "../models/executorDetails";
+import { IExecutor, parseExecutors } from "../models/executorDetails";
 import { getPDFVersioningByUserId, upsertPDFVersioning } from "../services/pdfVersioningService";
 import { uploadFile } from "../services/uploadService";
-import { Readable } from "stream";
 
 const prisma = new PrismaClient();
 
@@ -142,9 +136,9 @@ export const generatePDF = async (req: Request, res: Response) => {
                     { text: "Relationship", bold: true },
                     { text: "Date of Birth", bold: true }
                   ],
-                  // Rows with indexing
+                  
                   ...beneficiaryDetails.map((b, index) => [
-                    index + 1, // S. No.
+                    index + 1, 
                     b.data.fullName,
                     b.data.relationship,
                     new Date(b.data.dateOfBirth).toLocaleDateString("en-US", {
@@ -198,7 +192,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                 {
                 table: {
                     headerRows: 1,
-                    widths: headers.map(() => "*"), // Dynamic width based on number of columns
+                    widths: ["10%", ...headers.slice(1).map(() => "*")],
                     body: [headers, ...rows],
                 },
                 style: "table",
@@ -258,7 +252,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                   {
                     table: {
                       headerRows: 1,
-                      widths: ["20%", "50%", "30%"], 
+                      widths: ["10%", "50%", "40%"], 
                       body: [headers, ...rows],
                     },
                     style: "table",
@@ -276,7 +270,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                   {
                     table: {
                       headerRows: 1,
-                      widths: ["20%", "40%", "40%"], 
+                      widths: ["10%", "40%", "50%"], 
                       body: [headers, ...rows],
                     },
                     style: "table",
@@ -306,13 +300,10 @@ export const generatePDF = async (req: Request, res: Response) => {
               ]);
           
               return [
-                  { 
-                      text: "All the above mentioned assets will be assigned to the following beneficiaries in the mentioned percentage of distribution." 
-                  },
                   {
                       table: {
                           headerRows: 1,
-                          widths: ["20%", "50%", "30%"],
+                          widths: ["10%", "50%", "40%"],
                           body: [headers, ...rows],
                       },
                       style: "table",
@@ -321,7 +312,6 @@ export const generatePDF = async (req: Request, res: Response) => {
           })(),
             { text: "\n\nPART-VII: LIABILITIES\n", style: "subheader", alignment: "center" },
             ...[
-                // Iterate over all subtypes and dynamically generate sections
                 "home_loan",
                 "personal_loan",
                 "vechicle_loan",
@@ -329,12 +319,10 @@ export const generatePDF = async (req: Request, res: Response) => {
                 "other_liabilities"
                 ].map((subtype) => {
                     try{
-                        // Filter the assets for the current subtype
                         const filteredAssets = assetDetails.filter((a) => a.subtype === subtype);
                             
-                        if (filteredAssets.length === 0) return null; // Skip if no assets for this subtype
+                        if (filteredAssets.length === 0) return null;
 
-                        // Get headers and row generation logic for the subtype
                         const headers = getHeadersForSubtype(subtype).map(header => ({ text: header, bold: true })); 
                         const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index));
 
@@ -343,7 +331,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                             {
                             table: {
                                 headerRows: 1,
-                                widths: headers.map(() => "*"), // Dynamic width based on number of columns
+                                widths: ["10%", ...headers.slice(1).map(() => "*")],
                                 body: [headers, ...rows],
                             },
                             style: "table",
@@ -355,7 +343,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                         console.log(error);
                     }
                 
-                }).flat().filter(Boolean) // Flatten and filter out nulls
+                }).flat().filter(Boolean)
             ,
             {text: "\n\n"},
             {text: "IN WITNESS WHEREOF, I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence."},
@@ -418,70 +406,49 @@ export const generatePDF = async (req: Request, res: Response) => {
         };
         
         const pdfDoc = printer.createPdfKitDocument(docDefinition);
-        
-        let currentVersion = 1; 
-        const pdfVersioning = await getPDFVersioningByUserId(userId);
-        if (pdfVersioning) {
-            currentVersion = pdfVersioning.latestversion + 1; // Increment the current version
-        }
-        const fileName = `${userDetails?.personalDetails?.fullName}_V${currentVersion}.pdf`;
-        const filePath = `./${fileName}`;
 
-        res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
-        res.setHeader("Content-Type", "application/pdf");
+      let currentVersion = 1; 
+      const pdfVersioning = await getPDFVersioningByUserId(userId);
+      if (pdfVersioning) {
+          currentVersion = pdfVersioning.latestversion + 1; 
+      }
 
-        pdfDoc.pipe(res);
+      const fileName = `${userDetails?.personalDetails?.fullName}_V${currentVersion}.pdf`;
+      const filePath = `./${fileName}`;
 
+      // Write the PDF to a temporary file
+      const bufferStream = fs.createWriteStream(filePath);
+      pdfDoc.pipe(bufferStream);
+      pdfDoc.end();
 
-        const writeStream = fs.createWriteStream(filePath);
-        pdfDoc.pipe(writeStream);
-        pdfDoc.end();
-
-        writeStream.on("finish", async () => {
-          await upsertPDFVersioning(userId, filePath);
-      });
-
-    //   let currentVersion = 1; // Default version
-    //   const pdfVersioning = await getPDFVersioningByUserId(userId);
-    //   if (pdfVersioning) {
-    //       currentVersion = pdfVersioning.latestversion + 1; // Increment the version
-    //   }
-
-    //   const fileName = `${userDetails?.personalDetails?.fullName}_V${currentVersion}.pdf`;
-    //   const filePath = `./${fileName}`;
-
-    //   // Write the PDF to a temporary file
-    //   const bufferStream = fs.createWriteStream(filePath);
-    //   pdfDoc.pipe(bufferStream);
-    //   pdfDoc.end();
-
-    //   // Wait for the file stream to finish writing
-    //   await new Promise<void>((resolve, reject) => {
-    //     bufferStream.on("finish", () => resolve());
-    //     bufferStream.on("error", (err) => reject(err));
-    // });
+      // Wait for the file stream to finish writing
+      await new Promise<void>((resolve, reject) => {
+        bufferStream.on("finish", () => resolve());
+        bufferStream.on("error", (err) => reject(err));
+    });
     
 
-    //   const publicUrl = await uploadFile(userId, fileName, fs.createReadStream(filePath));
+      const publicUrl = await uploadFile(userId, fileName, fs.createReadStream(filePath));
 
-    //   await upsertPDFVersioning(userId, publicUrl);
+      await upsertPDFVersioning(userId, publicUrl);
 
-    //   console.log("File uploaded:", publicUrl);
+      console.log("File uploaded:", publicUrl);
 
-    //   res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
-    //   res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
+      res.setHeader("Content-Type", "application/pdf");
 
-    //   const readStream = fs.createReadStream(filePath);
-    //   readStream.pipe(res);
+      const readStream = fs.createReadStream(filePath);
+      readStream.pipe(res);
 
-    //   readStream.on("end", () => {
-    //       fs.unlinkSync(filePath);
-    //   });
+      readStream.on("end", () => {
+          fs.unlinkSync(filePath);
+      });
 
-    //   readStream.on("error", (err) => {
-    //       console.error("Error reading file:", err);
-    //       fs.unlinkSync(filePath); // Ensure cleanup on error
-    //   });
+      readStream.on("error", (err) => {
+          console.error("Error reading file:", err);
+          fs.unlinkSync(filePath); // Ensure cleanup on error
+      });
+
 
 
     } catch (err) {

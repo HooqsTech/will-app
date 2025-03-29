@@ -48,7 +48,7 @@ const ResiduaryEstateSinglePage = () => {
             if (!primaryBeneficiary) return;
 
             const userId = user.userId;
-            await saveResiduaryAssetDistributionAPI(userId, [{ id: primaryBeneficiary, percentage: 1001 }]);
+            await saveResiduaryAssetDistributionAPI(userId, [{ id: primaryBeneficiary, percentage: 100 }]);
 
             setDistribution(prev => ({
                 ...prev,
