@@ -489,14 +489,14 @@ const MyPlan: React.FC = () => {
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto">
             <button
               onClick={handlePrevious}
-              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
             >
               <FaArrowLeft className="mr-2" /> Previous
             </button>
 
             <button
               onClick={handleContinue}
-              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
             >
               <FaArrowRight className="mr-2" /> Next
             </button>
@@ -544,7 +544,7 @@ const MyPlan: React.FC = () => {
                       </span>
                       <button
                         onClick={() => handleRemoveService(service.serviceId)}
-                        className="ml-4 bg-red-600 text-white px-3 py-1 rounded-full shadow-md hover:bg-red-700 transition"
+                        className="ml-4 bg-red-600 cursor-pointer text-white px-3 py-1 rounded-full shadow-md hover:bg-red-700 transition"
                       >
                         <FaTrash />
                       </button>
@@ -552,7 +552,7 @@ const MyPlan: React.FC = () => {
                   ) : (
                     <button
                       onClick={() => handleSelectService(service)}
-                      className="ml-4 bg-green-600 text-white px-3 py-1 rounded-full shadow-md hover:bg-green-700 transition"
+                      className="ml-4 bg-green-600 cursor-pointer text-white px-3 py-1 rounded-full shadow-md hover:bg-green-700 transition"
                     >
                       <FaPlus />
                     </button>
@@ -573,14 +573,14 @@ const MyPlan: React.FC = () => {
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto">
             <button
               onClick={handlePrevious}
-              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
             >
               <FaArrowLeft className="mr-2" /> Previous
             </button>
 
             <button
               onClick={handleContinue}
-              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
             >
               <FaArrowRight className="mr-2" /> Pay Now
             </button>
