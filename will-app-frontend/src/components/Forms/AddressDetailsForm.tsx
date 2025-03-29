@@ -126,12 +126,18 @@ const AddressDetailsForm = () => {
                     type="text" />
             </div>
             <div>
-                <CustomCheckbox onChange={() => {
-                    handleChange("sameAsPresentAddress", !formState.sameAsPresentAddress);
+            <CustomCheckbox
+                onChange={() => {
+                    flushSync(() => {
+                        handleChange("sameAsPresentAddress", !formState.sameAsPresentAddress);
+                    });
                     if (!formState.sameAsPresentAddress) {
-                        setPermanentAddressFromPresentAddress()
+                        setPermanentAddressFromPresentAddress();
                     }
-                }} checked={formState.sameAsPresentAddress ?? false} label="Same as present address?" />
+                }}
+                checked={formState.sameAsPresentAddress ?? false}
+                label="Same as present address?"
+            />
             </div>
             <div className="flex flex-col gap-4">
                 <p className="font-semibold">Permanent Address</p>
