@@ -70,7 +70,7 @@ const ResiduaryEstatePercentPage = () => {
         // Update Recoil state with API response
         setResiduaryDistribution(updatedData);
 
-        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECUTOR);
+        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECLUDED_PERSONS);
       } catch (error) {
         console.error("Failed to save residuary distribution.");
       } finally {

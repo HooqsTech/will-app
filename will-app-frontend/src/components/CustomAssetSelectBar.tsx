@@ -29,7 +29,7 @@ const CustomAssetSelectBar: React.FC<ICustomAssetSelectBarProps> = ({
           <div key={asset.assetId} className="flex gap-x-4 justify-between items-center">
             {!asset.isAssetDistributed ? (
               <label
-                className={`bg-[#FCFCFC] box-border relative flex w-full justify-center items-center md:cursor-pointer shadow-[5px_5px_8px_0_#B4CBE280] overflow-hidden transition-colors duration-50 ease-linear border-2 ${selectedOptions.includes(asset.assetId) ? "border-blue" : "border-[#FFFFFF33]"
+                className={`bg-[#FCFCFC] box-border relative justify-start px-10 flex w-full items-center md:cursor-pointer shadow-[5px_5px_8px_0_#B4CBE280] overflow-hidden transition-colors duration-50 ease-linear border-2 ${selectedOptions.includes(asset.assetId) ? "border-blue" : "border-[#FFFFFF33]"
                   }`}
               >
                 <input
@@ -40,7 +40,7 @@ const CustomAssetSelectBar: React.FC<ICustomAssetSelectBarProps> = ({
                   onChange={() => onSelectChange(asset.assetId)}
                   className="peer absolute opacity-0"
                 />
-                <div className="py-[20px]">
+                <div className="py-[20px] w-fit">
                   <p className="first-letter:capitalize font-semibold text-base text-dark_grey_text ">
                     {asset.type}
                   </p>

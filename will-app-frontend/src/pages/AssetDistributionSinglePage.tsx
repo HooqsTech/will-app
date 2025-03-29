@@ -8,6 +8,7 @@ import CustomSelectBar from "../components/CustomSelectBar";
 import DistributionBeneficiary from "../components/DistributionBeneficiary";
 import NextButton from "../components/NextButton";
 import { ROUTE_PATHS } from "../constants";
+import Swal from "sweetalert2";
 
 const AssetDistributionSinglePage = () => {
     const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
@@ -46,7 +47,19 @@ const AssetDistributionSinglePage = () => {
         if ((distribution.step === 1 && !distribution.primaryBeneficiary) ||
             (distribution.step === 2 && !distribution.secondaryBeneficiary) ||
             (distribution.step === 3 && !distribution.tertiaryBeneficiary)) {
-            alert("Please select a beneficiary before proceeding.");
+
+            Swal.fire({
+                                  title: "Select beneficiary",
+                                  text: "Please select a beneficiary before proceeding.",
+                                  icon: "warning",
+                                  confirmButtonColor: "var(--color-will-green)",
+                                  customClass: {
+                                    popup: "swal-sm",
+                                    title: "swal-title",
+                                    confirmButton: "swal-confirm-btn",
+                                  },
+                                });
+
             return;
         }
 

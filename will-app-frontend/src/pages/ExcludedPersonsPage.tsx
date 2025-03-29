@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { deleteExcludedPerson, upsertExcludedPerson } from '../api/excludedPerson';
-import { excludedPersonsState, IExcludedPersonState } from '../atoms/excludedPersonsState';
-import { routesState } from '../atoms/RouteState';
 import { userState } from '../atoms/UserDetailsState';
 import { emptyExcludedPersonValidationState, excludedPersonsValidationState, IExcludedPersonValidationState } from '../atoms/validationStates/ExcludedPersonsValidationState';
 import AddButton from '../components/AddButton';
@@ -15,15 +13,14 @@ import NextButton from '../components/NextButton';
 import { ROUTE_PATHS } from '../constants';
 import { IExcludedPerson, IExcludedPersonDeleteRequest } from '../models/excludedPerson';
 import { IsEmptyString } from '../utils';
+import { excludedPersonsState, IExcludedPersonState } from '../atoms/excludedPersonsState';
 
 const ExcludedPersonsPage = () => {
     const [formState, setFormState] = useRecoilState<IExcludedPersonState[]>(excludedPersonsState);
     const [validationState, setValidationState] = useRecoilState<IExcludedPersonValidationState[]>(excludedPersonsValidationState);
     const [currentItem, setCurrentItem] = useState<number>(-1);
-    const routeState = useRecoilValue(routesState);
     const user = useRecoilValue(userState);
     const navigate = useNavigate();
-    const location = useLocation();
     const [showErrorBorder, setShowErrorBorder] = useState(false);
 
     const saveExcludedPersonAsync = async (property: IExcludedPersonState, index: number) => {
@@ -93,8 +90,7 @@ const ExcludedPersonsPage = () => {
             await saveExcludedPersonAsync(person, index);
         });
 
-        let routeValue = routeState.find(s => location.pathname.includes(s.currentPath));
-        navigate(ROUTE_PATHS.YOUR_WILL + (routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES));
+        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECUTOR);
     };
 
     const addDigitalAsset = () => {

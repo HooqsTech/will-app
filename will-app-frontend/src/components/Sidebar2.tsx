@@ -1,10 +1,3 @@
-import ArticleIcon from '@mui/icons-material/Article';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
-import FolderRounded from '@mui/icons-material/FolderRounded';
-import ImageIcon from '@mui/icons-material/Image';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
@@ -28,14 +21,28 @@ import { useTreeItem2, UseTreeItem2Parameters } from '@mui/x-tree-view/useTreeIt
 import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
+import { AiOutlineGold } from 'react-icons/ai';
+import { BiLogoCreativeCommons } from 'react-icons/bi';
+import { CiBank, CiBitcoin } from 'react-icons/ci';
+import { FaRegAddressBook, FaRegAddressCard, FaRegUser } from 'react-icons/fa';
+import { LiaMoneyBillWaveSolid, LiaUsersCogSolid, LiaHandHoldingUsdSolid } from 'react-icons/lia';
+import { GiReceiveMoney, GiThreeFriends } from 'react-icons/gi';
+import { IoBusinessOutline, IoDocumentTextOutline } from 'react-icons/io5';
+import { IconType } from 'react-icons/lib';
+import { MdOutlineAddHomeWork, MdOutlineHealthAndSafety, MdLockOutline, MdOutlineAccountBalance, MdOutlineDirectionsCar } from 'react-icons/md';
+import { TbFriendsOff } from 'react-icons/tb';
+import { PiHandWithdraw } from 'react-icons/pi';
+import { SiAltiumdesigner } from 'react-icons/si';
 import { useNavigate } from 'react-router';
 import { useRecoilValue } from 'recoil';
 import { removeCookie } from 'typescript-cookie';
 import { routesState } from '../atoms/RouteState';
 import { ASSET_TYPES, ROUTE_PATHS } from '../constants';
+import { HiOutlineChartPie } from 'react-icons/hi2'
+import { PiPiggyBank } from 'react-icons/pi'
 
 type ExtendedTreeItemProps = {
-  iconName?: string;
+  icon?: IconType;
   routePath: string;
   id: string;
   label: string;
@@ -117,7 +124,7 @@ const StyledTreeItemLabelText = styled(Typography)({
 
 interface CustomLabelProps {
   children: React.ReactNode;
-  icon?: React.ElementType;
+  icon?: IconType;
   expandable?: boolean;
 }
 
@@ -157,27 +164,6 @@ const isExpandable = (reactChildren: React.ReactNode) => {
   return Boolean(reactChildren);
 };
 
-const getIconFromFileType = (fileType: any) => {
-  switch (fileType) {
-    case 'image':
-      return ImageIcon;
-    case 'pdf':
-      return PictureAsPdfIcon;
-    case 'doc':
-      return ArticleIcon;
-    case 'video':
-      return VideoCameraBackIcon;
-    case 'folder':
-      return FolderRounded;
-    case 'pinned':
-      return FolderOpenIcon;
-    case 'trash':
-      return DeleteIcon;
-    default:
-      return ArticleIcon;
-  }
-};
-
 interface CustomTreeItemProps
   extends Omit<UseTreeItem2Parameters, 'rootRef'>,
   Omit<React.HTMLAttributes<HTMLLIElement>, 'onFocus'> { }
@@ -202,13 +188,7 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
 
   const item = publicAPI.getItem(itemId);
   const expandable = isExpandable(children);
-  let icon;
-  if (expandable) {
-    icon = FolderRounded;
-  } else if (item.iconName) {
-    icon = getIconFromFileType(item.iconName);
-  }
-
+  let icon = item.icon
   return (
     <TreeItem2Provider itemId={itemId}>
       <StyledTreeItemRoot {...getRootProps(other)}>
@@ -293,21 +273,81 @@ export default function Sidebar2() {
   }, [location.pathname]);
 
   React.useEffect(() => {
+
+    const getIcons = (routePath: string) => {
+      switch (routePath) {
+        case ROUTE_PATHS.PROPERTIES:
+          return MdOutlineAddHomeWork
+        case ROUTE_PATHS.BANK_ACCOUNTS:
+          return CiBank
+        case ROUTE_PATHS.FIXED_DEPOSITS:
+          return CiBank
+        case ROUTE_PATHS.INSURANCE_POLICIES:
+          return MdOutlineHealthAndSafety
+        case ROUTE_PATHS.SAFE_DEPOSIT_BOXES:
+          return MdLockOutline
+        case ROUTE_PATHS.DEMAT_ACCOUNTS:
+          return CiBank
+        case ROUTE_PATHS.MUTUAL_FUNDS:
+          return HiOutlineChartPie
+        case ROUTE_PATHS.PROVIDENT_FUND:
+          return PiPiggyBank
+        case ROUTE_PATHS.PENSION_ACCOUNTS:
+          return GiReceiveMoney
+        case ROUTE_PATHS.BUSINESS_ASSETS:
+          return IoBusinessOutline
+        case ROUTE_PATHS.BUSINESS:
+          return IoBusinessOutline
+        case ROUTE_PATHS.BONDS:
+          return IoDocumentTextOutline
+        case ROUTE_PATHS.DEBENTURES:
+          return IoBusinessOutline
+        case ROUTE_PATHS.ESCOPS:
+          return LiaUsersCogSolid
+        case ROUTE_PATHS.OTHER_INVESTMENTS:
+          return LiaHandHoldingUsdSolid
+        case ROUTE_PATHS.OTHER_ASSETS:
+          return MdOutlineDirectionsCar
+        case ROUTE_PATHS.VEHICLES:
+          return MdOutlineDirectionsCar
+        case ROUTE_PATHS.JEWELLERIES:
+          return AiOutlineGold
+        case ROUTE_PATHS.DIGITAL_ASSETS:
+          return CiBitcoin
+        case ROUTE_PATHS.INTELLECTUAL_PROPERTY:
+          return SiAltiumdesigner
+        case ROUTE_PATHS.CUSTOM_ASSETS:
+          return BiLogoCreativeCommons
+        case ROUTE_PATHS.HOME_LOANS:
+          return PiHandWithdraw
+        case ROUTE_PATHS.PERSONAL_LOANS:
+          return PiHandWithdraw
+        case ROUTE_PATHS.VEHICLE_LOANS:
+          return PiHandWithdraw
+        case ROUTE_PATHS.EDUCATION_LOANS:
+          return PiHandWithdraw
+        case ROUTE_PATHS.OTHER_LIABILITIES:
+          return PiHandWithdraw
+        default:
+          break;
+      }
+    }
+
     const items: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
       {
         id: 'about_you',
         label: 'About You',
-        iconName: 'pdf',
+        icon: FaRegAddressBook,
         routePath: ROUTE_PATHS.ABOUT_YOU,
         children: [
-          { id: 'personal_details', label: 'Personal Details', iconName: 'pdf', routePath: ROUTE_PATHS.PERSONAL_DETAILS },
-          { id: 'address_details', label: 'Address Details', iconName: 'pdf', routePath: ROUTE_PATHS.ADDRESS_DETAILS }
+          { id: 'personal_details', label: 'Personal Details', icon: FaRegUser, routePath: ROUTE_PATHS.PERSONAL_DETAILS },
+          { id: 'address_details', label: 'Address Details', icon: FaRegAddressCard, routePath: ROUTE_PATHS.ADDRESS_DETAILS }
         ]
       },
       {
         id: 'assets',
         label: 'Asset',
-        iconName: 'pdf',
+        icon: IoBusinessOutline,
         routePath: ROUTE_PATHS.ASSETS,
         children: [],
       },
@@ -315,20 +355,26 @@ export default function Sidebar2() {
         id: 'liabilities',
         label: 'Liabilities',
         routePath: ROUTE_PATHS.LIABILITIES,
-        iconName: 'pdf',
+        icon: PiHandWithdraw,
         children: [],
       },
       {
         id: 'beneficiaries',
         label: 'Beneficiaries',
-        iconName: 'pdf',
+        icon: GiThreeFriends,
         routePath: ROUTE_PATHS.BENEFICIARIES
       },
       {
         id: 'assetDistribution',
         label: 'Asset Distribution',
-        iconName: 'pdf',
+        icon: MdOutlineAccountBalance,
         routePath: ROUTE_PATHS.ASSET_DISTRIBUTION
+      },
+      {
+        id: 'excludedPersons',
+        label: 'Excluded Persons',
+        icon: TbFriendsOff,
+        routePath: ROUTE_PATHS.EXECLUDED_PERSONS
       },
     ];
 
@@ -338,6 +384,7 @@ export default function Sidebar2() {
         id: s.id,
         label: s.label,
         iconName: "pdf",
+        icon: getIcons(s.currentPath),
         routePath: s.currentPath
       }))
 
@@ -346,6 +393,7 @@ export default function Sidebar2() {
         id: s.id,
         label: s.label,
         iconName: "pdf",
+        icon: getIcons(s.currentPath),
         routePath: s.currentPath
       }))
 
@@ -354,6 +402,7 @@ export default function Sidebar2() {
         id: s.id,
         label: s.label,
         iconName: "pdf",
+        icon: getIcons(s.currentPath),
         routePath: s.currentPath
       }))
 
@@ -361,6 +410,7 @@ export default function Sidebar2() {
       .map(s => ({
         id: s.id,
         label: s.label,
+        icon: getIcons(s.currentPath),
         iconName: "pdf",
         routePath: s.currentPath
       }))
@@ -371,6 +421,7 @@ export default function Sidebar2() {
         id: s.id,
         label: s.label,
         iconName: "pdf",
+        icon: getIcons(s.currentPath),
         routePath: s.currentPath
       }))
 
@@ -381,7 +432,7 @@ export default function Sidebar2() {
           id: "immovable_assets",
           label: "Immovable Assets",
           routePath: ROUTE_PATHS.IMMOVABLE_ASSETS,
-          iconName: "pdf",
+          icon: MdOutlineAddHomeWork,
           children: [...immovalbleAssets]
         });
 
@@ -390,7 +441,7 @@ export default function Sidebar2() {
           id: "financial_assets",
           label: "Financial Assets",
           routePath: ROUTE_PATHS.FINANCIAL_ASSETS,
-          iconName: "pdf",
+          icon: LiaMoneyBillWaveSolid,
           children: [...financialAssets]
         });
 
@@ -399,7 +450,7 @@ export default function Sidebar2() {
           id: "business_assets",
           label: "Business Assets",
           routePath: ROUTE_PATHS.BUSINESS_ASSETS,
-          iconName: "pdf",
+          icon: IoBusinessOutline,
           children: [...businessAssets]
         });
 
@@ -408,7 +459,7 @@ export default function Sidebar2() {
           id: "other_assets",
           label: "Other Assets",
           routePath: ROUTE_PATHS.OTHER_ASSETS,
-          iconName: "pdf",
+          icon: MdOutlineDirectionsCar,
           children: [...otherAssets]
         });
     }

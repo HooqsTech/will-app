@@ -87,7 +87,7 @@ const AssetDistributionSpecificPage = () => {
         let propertiesList = properties.filter((data: IPropertiesState) => data.id !== "")
             .map((data: IPropertiesState, index: number) => {
                 return {
-                    type: `Property ${index}`,
+                    type: `Property ${index + 1}`,
                     assetId: data.id,
                     firstline: data.address?.trim() || "",
                     secondline: [data.city?.trim(), data.pincode?.trim()].filter(Boolean).join(" - "),
@@ -98,7 +98,7 @@ const AssetDistributionSpecificPage = () => {
         let bankAccountsList = bankAccounts.filter((data: IBankDetailsState) => data.id !== "")
             .map((data: IBankDetailsState, index: number) => {
                 return {
-                    type: `Bank Accounts ${index}`,
+                    type: `Bank Accounts ${index + 1}`,
                     assetId: data.id,
                     firstline: data.bankName?.trim() || "",
                     secondline: [data.accountType?.trim(), data.accountNumber?.trim()].filter(Boolean).join(" - "),
@@ -109,7 +109,7 @@ const AssetDistributionSpecificPage = () => {
         let fixedDepositsList = fixedDeposits.filter((data: IFixedDepositState) => data.id !== "")
             .map((data: IFixedDepositState, index: number) => {
                 return {
-                    type: `Fixed Deposits ${index}`,
+                    type: `Fixed Deposits ${index + 1}`,
                     assetId: data.id,
                     firstline: [data.bankName?.trim(), data.accountNumber?.trim()].filter(Boolean).join(" - "),
                     secondline: [data.branch?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
@@ -120,7 +120,7 @@ const AssetDistributionSpecificPage = () => {
         let insurancePoliciesList = insurancePolicies.filter((data: IInsurancePolicyState) => data.id !== "")
             .map((data: IInsurancePolicyState, index: number) => {
                 return {
-                    type: `Insurance Policies ${index}`,
+                    type: `Insurance Policies ${index + 1}`,
                     assetId: data.id,
                     firstline: data.insuranceType?.trim() || "",
                     secondline: data.insuranceProvider.trim() || "",
@@ -131,7 +131,7 @@ const AssetDistributionSpecificPage = () => {
         let safetyDepositBoxesList = safetyDepositBoxes.filter((data: ISafetyDepositBoxState) => data.id !== "")
             .map((data: ISafetyDepositBoxState, index: number) => {
                 return {
-                    type: `Safety Deposit Boxes ${index}`,
+                    type: `Safety Deposit Boxes ${index + 1}`,
                     assetId: data.id,
                     firstline: data.depositBoxType?.trim() || "",
                     secondline: [data.bankName?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
@@ -142,7 +142,7 @@ const AssetDistributionSpecificPage = () => {
         let dematAccountsList = dematAccounts.filter((data: IDematAccountState) => data.id !== "")
             .map((data: IDematAccountState, index: number) => {
                 return {
-                    type: `Demat Account ${index}`,
+                    type: `Demat Account ${index + 1}`,
                     assetId: data.id,
                     firstline: data.accountNumber?.trim() || "",
                     secondline: [data.brokerName?.trim()].filter(Boolean).join(" - "),
@@ -153,7 +153,7 @@ const AssetDistributionSpecificPage = () => {
         let mutualFundsList = mutualFunds.filter((data: IMutualFundState) => data.id !== "")
             .map((data: IMutualFundState, index: number) => {
                 return {
-                    type: `Mutual Fund ${index}`,
+                    type: `Mutual Fund ${index + 1}`,
                     assetId: data.id,
                     firstline: [data.fundName?.trim(), data.noOfHolders?.trim()].filter(Boolean).join(" - "),
                     secondline: "",
@@ -164,7 +164,7 @@ const AssetDistributionSpecificPage = () => {
         let providentFundsList = providentFunds.filter((data: IProvidentFundState) => data.id !== "")
             .map((data: IProvidentFundState, index: number) => {
                 return {
-                    type: `Provident Fund ${index}`,
+                    type: `Provident Fund ${index + 1}`,
                     assetId: data.id,
                     firstline: data.type?.trim() || "",
                     secondline: [data.bankName?.trim(), data.branch?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
@@ -175,7 +175,7 @@ const AssetDistributionSpecificPage = () => {
         let pensionAccountsList = pensionAccounts.filter((data: IPensionAccountState) => data.id !== "")
             .map((data: IPensionAccountState, index: number) => {
                 return {
-                    type: `Pension Account ${index}`,
+                    type: `Pension Account ${index + 1}`,
                     assetId: data.id,
                     firstline: data.bankName?.trim() || "",
                     secondline: [data.schemeName?.trim()].filter(Boolean).join(" - "),
@@ -186,7 +186,7 @@ const AssetDistributionSpecificPage = () => {
         let businesssesList = businessses.filter((data: IBusinessState) => data.id !== "")
             .map((data: IBusinessState, index: number) => {
                 return {
-                    type: `Business ${index}`,
+                    type: `Business ${index + 1}`,
                     assetId: data.id,
                     firstline: [data.type?.trim(), data.holdingPercentage?.trim()].filter(Boolean).join(" - "),
                     secondline: [data.companyName?.trim(), data.address?.trim()].filter(Boolean).join(" - "),
@@ -197,7 +197,7 @@ const AssetDistributionSpecificPage = () => {
         let bondsList = bonds.filter((data: IBondState) => data.id !== "")
             .map((data: IBondState, index: number) => {
                 return {
-                    type: `Bond ${index}`,
+                    type: `Bond ${index + 1}`,
                     assetId: data.id,
                     firstline: data.type?.trim() || "",
                     secondline: [data.financialServiceProviderName?.trim(), data.certificateNumber?.trim()].filter(Boolean).join(" - "),
@@ -208,7 +208,7 @@ const AssetDistributionSpecificPage = () => {
         let debenturesList = debentures.filter((data: IDebentureState) => data.id !== "")
             .map((data: IDebentureState, index: number) => {
                 return {
-                    type: `Pension Account ${index}`,
+                    type: `Pension Account ${index + 1}`,
                     assetId: data.id,
                     firstline: data.type?.trim() || "",
                     secondline: [data.financialServiceProviderName?.trim(), data.certificateNumber?.trim()].filter(Boolean).join(" - "),
@@ -219,7 +219,7 @@ const AssetDistributionSpecificPage = () => {
         let escopsList = escops.filter((data: IEscopState) => data.id !== "")
             .map((data: IEscopState, index: number) => {
                 return {
-                    type: `ESCOP ${index}`,
+                    type: `ESOP ${index + 1}`,
                     assetId: data.id,
                     firstline: data.companyName?.trim() || "",
                     secondline: [
@@ -234,7 +234,7 @@ const AssetDistributionSpecificPage = () => {
         let jewelleriesList = jewelleries.filter((data: IJewelleryState) => data.id !== "")
             .map((data: IJewelleryState, index: number) => {
                 return {
-                    type: `Jewellery ${index}`,
+                    type: `Jewellery ${index + 1}`,
                     assetId: data.id,
                     firstline: data.description?.trim() || "",
                     secondline: "",
@@ -245,7 +245,7 @@ const AssetDistributionSpecificPage = () => {
         let vehiclesList = vehicles.filter((data: IVehicleState) => data.id !== "")
             .map((data: IVehicleState, index: number) => {
                 return {
-                    type: `Vechicle ${index}`,
+                    type: `Vechicle ${index + 1}`,
                     assetId: data.id,
                     firstline: data.brandOrModel?.trim() || "",
                     secondline: data.registrationNumber?.trim() || "",
@@ -256,7 +256,7 @@ const AssetDistributionSpecificPage = () => {
         let digitalAssetsList = digitalAssets.filter((data: IDigitalAssetState) => data.id !== "")
             .map((data: IDigitalAssetState, index: number) => {
                 return {
-                    type: `Digital Asset ${index}`,
+                    type: `Digital Asset ${index + 1}`,
                     assetId: data.id,
                     firstline: data.type?.trim() || "",
                     secondline: data.walletAddress?.trim() || "",
@@ -267,7 +267,7 @@ const AssetDistributionSpecificPage = () => {
         let intellectualPropertiesList = intellectualProperties.filter((data: IIntellectualPropertyState) => data.id !== "")
             .map((data: IIntellectualPropertyState, index: number) => {
                 return {
-                    type: `Intellectual Property ${index}`,
+                    type: `Intellectual Property ${index + 1}`,
                     assetId: data.id,
                     firstline: data.type?.trim() || "",
                     secondline: [data.identificationNumber?.trim(), data.description?.trim()].filter(Boolean).join(" - "),
@@ -278,7 +278,7 @@ const AssetDistributionSpecificPage = () => {
         let customAssetsList = customAssets.filter((data: ICustomAssetState) => data.id !== "")
             .map((data: ICustomAssetState, index: number) => {
                 return {
-                    type: `Custom Asset ${index}`,
+                    type: `Custom Asset ${index + 1}`,
                     assetId: data.id,
                     firstline: data.description?.trim() || "",
                     secondline: "",

@@ -17,7 +17,7 @@ import ExecutorForm from '../components/Forms/ExecutorForm';
 import NextButton from '../components/NextButton';
 import { ROUTE_PATHS } from '../constants';
 import { IExecutor, IExecutorDeleteRequest } from '../models/executor';
-import { IsEmptyString } from '../utils';
+import { IsEmptyString, IsValidEmail } from '../utils';
 
 const ExecutorPage = () => {
     const [formState, setFormState] = useRecoilState<IExecutorState[]>(executorState);
@@ -92,6 +92,10 @@ const ExecutorPage = () => {
             setPropertyValidationState(index, "email", "Email is required");
             isValid = false;
         }
+        if (!IsValidEmail(prop.email)) {
+            setPropertyValidationState(index, "email", "Email is invalid");
+            isValid = false;
+        }
         if (IsEmptyString(prop.phoneNumber)) {
             setPropertyValidationState(index, "phoneNumber", "Phone is required");
             isValid = false;
@@ -101,7 +105,7 @@ const ExecutorPage = () => {
     }
 
     const handleNextClick = async () => {
-        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION);
+        navigate(ROUTE_PATHS.ORDER_SUMMARY);
     }
 
     const handleSaveExecutorAsync = async (index: number) => {

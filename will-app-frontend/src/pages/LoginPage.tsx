@@ -12,7 +12,6 @@ import { useLocation, useNavigate } from 'react-router';
 import CustomSnackBar, { TAlertType } from '../components/CustomSnackBar';
 import CustomButton from '../components/CustomButton';
 import Lottie from 'lottie-react';
-import animationData from '../../public/assets/login-lottie.json';
 
 const LoginPage = () => {
     const [formState, setFormState] = useRecoilState<ILoginState>(loginState);
@@ -25,6 +24,14 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [loading, setLoading] = useState(false);
+
+    const [animationData, setAnimationData] = useState(null);
+
+    useEffect(() => {
+        fetch("/assets/login-lottie.json")
+            .then((response) => response.json())
+            .then((data) => setAnimationData(data));
+    }, []);
 
     useEffect(() => {
         if (!recaptchaVerifier) {

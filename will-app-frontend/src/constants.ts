@@ -12,6 +12,7 @@ export const COLORS: { PRIMARY_GREEN: string } = {
 
 export const ROUTE_PATHS = {
     YOUR_WILL: "/your_will",
+    ORDER_SUMMARY: "/order_summary",
     BENEFICIARIES: "/beneficiaries",
     OTHER_LIABILITIES: "/other_liabilities",
     EDUCATION_LOANS: "/education_loans",

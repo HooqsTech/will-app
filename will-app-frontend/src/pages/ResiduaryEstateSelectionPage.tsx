@@ -7,6 +7,7 @@ import { userState } from '../atoms/UserDetailsState';
 import { IWillDistributionState, willDistributionState } from "../atoms/WillDistributionState";
 import { upsertWillDistribution } from "../api/assetDistribution";
 import { ROUTE_PATHS } from "../constants";
+import Swal from "sweetalert2";
 
 const ResiduaryEstateSelectionPage = () => {
     const [distribution, setDistribution] = useRecoilState(willDistributionState);
@@ -23,27 +24,62 @@ const ResiduaryEstateSelectionPage = () => {
     // Handle Distribution Type Change
 
     const handleSelectChange = (value: string) => {
-        if (["Single", "Percentage"].includes(value)) {
-            setDistribution((prevState) => ({
-                ...prevState,
-                residuaryDistributionType: value as "Single" | "Percentage",
-            }));
-        }
+        setDistribution((prevState) => {
+            if (value !== null && value !== prevState.residuaryDistributionType) {
+                Swal.fire({
+                    title: "Confirm Edit",
+                    text: "Are you sure you want to change the residuary distribution type?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "var(--color-will-green)",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    customClass: {
+                        popup: "swal-sm",
+                        title: "swal-title",
+                        confirmButton: "swal-confirm-btn",
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (["Single", "Percentage"].includes(value)) {
+                            setDistribution({
+                                ...prevState,
+                                residuaryDistributionType: value as "Single" | "Percentage",
+                            });
+                        }
+                    }
+                });
+            }
+            return prevState;
+        });
     };
 
     // Handle Next Button Click
     const handleNextClick = async () => {
         if (!distribution) {
-            alert("Please select a distribution type before proceeding.");
+
+            Swal.fire({
+                title: "Select Distribution Type",
+                text: "Please select a distribution type before proceeding.",
+                icon: "warning",
+                confirmButtonColor: "var(--color-will-green)",
+                customClass: {
+                    popup: "swal-sm",
+                    title: "swal-title",
+                    confirmButton: "swal-confirm-btn",
+                },
+            });
+
             return;
         }
         await saveWillDistributionAsync(distribution)
-        
+
         const routeValue = routeState.find(s => s.currentPath === location.pathname);
-        
+
         if (distribution.residuaryDistributionType == "Single")
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION_SINGLE);
-        else if(distribution.residuaryDistributionType =="Percentage")
+        else if (distribution.residuaryDistributionType == "Percentage")
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION_PERCENT);
         else
             navigate(routeValue?.nextPath ?? "/");
@@ -57,14 +93,14 @@ const ResiduaryEstateSelectionPage = () => {
             residuaryDistributionType: will.residuaryDistributionType,
             fallbackRule: will.fallbackRule
         };
-    
-            const upsertedWillDistribution = await upsertWillDistribution(data);
-    
-            setDistribution((prevState) => ({
-                ...prevState,
-                id: upsertedWillDistribution.id
-            }));
-        };
+
+        const upsertedWillDistribution = await upsertWillDistribution(data);
+
+        setDistribution((prevState) => ({
+            ...prevState,
+            id: upsertedWillDistribution.id
+        }));
+    };
 
     return (
         <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
