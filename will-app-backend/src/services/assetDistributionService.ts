@@ -138,6 +138,7 @@ export const createSingleBeneficiaryService = async (
 export const getPercentageAssetDistributionService = async (
     userId: string
 ): Promise<IUserAssetsPercentage | null> => {
+    // Fetch data from the database
     const result = await prisma.percentage_distribution.findFirst({
         where: { userid: userId },
     });
@@ -146,20 +147,33 @@ export const getPercentageAssetDistributionService = async (
         return null;
     }
 
-    const split: ISplit[] = Array.isArray(result.beneficiaries)
-        ? (result.beneficiaries as JsonValue[]).map((beneficiary: any) => ({
-              percentage: beneficiary.percentage,
-              beneficiary_id: beneficiary.beneficiary_id,
-          }))
-        : [];
+    let beneficiarieslist: ISplit[] = [];
+    if (result.beneficiaries && typeof result.beneficiaries === "object") {
+        console.log("Inside array");
+        console.log("result.beneficiaries: ", JSON.stringify(result.beneficiaries));
+
+        const additionalInputs = (result.beneficiaries as any).additionalInputs;
+
+        if (additionalInputs && typeof additionalInputs === "object") {
+            Object.entries(additionalInputs).forEach(([beneficiaryId, percentage]) => {
+                beneficiarieslist.push({
+                    percentage: Number(percentage), 
+                    beneficiaryId,                 
+                    beneficiaryName: ""            
+                });
+            });
+        }
+    }
 
     return {
         userid: result.userid,
-        split: split,
+        split: beneficiarieslist,
         createdat: result.createdat ? result.createdat : null,
         updatedat: result.updatedat ? result.updatedat : null,
     };
 };
+
+
 // ✅ Update Percentage Asset Distribution
 export const updatePercentageAssetDistributionService = async (userId: string, beneficiaryData: any) => {
     return prisma.percentage_distribution.update({
@@ -193,23 +207,26 @@ export const getSpecificAssetDistributionService = async (
         return null;
     }
 
+    // Parse assets from the result
     const assets: IAsset[] = Array.isArray(result.assets)
-        ? (result.assets as JsonValue[]).map((asset: any) => ({
-              asset_id: asset.asset_id,
-              split: Array.isArray(asset.split)
-                  ? asset.split.map((split: any) => ({
-                        percentage: split.percentage,
-                        beneficiary_id: split.beneficiary_id,
+        ? result.assets.map((asset: any) => ({
+              asset_id: asset.assetId,
+              beneficiarieslist: Array.isArray(asset.beneficiarieslist)
+                  ? asset.beneficiarieslist.map((beneficiary: any) => ({
+                        percentage: beneficiary.percentage,
+                        beneficiaryId: beneficiary.beneficiaryId,
+                        beneficiaryName: beneficiary.beneficiaryName,
                     }))
                   : [],
           }))
         : [];
 
+    // Construct the final object
     return {
         userid: result.userid,
         assets: assets,
-        createdat: result.createdat ? result.createdat : null,
-        updatedat: result.updatedat ? result.updatedat : null,
+        createdat: result.createdat || null,
+        updatedat: result.updatedat || null,
     };
 };
 
@@ -246,16 +263,17 @@ export const getResiduaryAssetDistributionService = async (
         return null;
     }
 
-    const beneficiaries: ISplit[] = Array.isArray(result.beneficiaries)
+    const beneficiarieslist: ISplit[] = Array.isArray(result.beneficiaries)
         ? (result.beneficiaries as JsonValue[]).map((beneficiary: any) => ({
               percentage: beneficiary.percentage,
-              beneficiary_id: beneficiary.beneficiary_id,
+              beneficiaryId: beneficiary.id,
+              beneficiaryName: beneficiary.beneficiaryName
           }))
         : [];
 
     return {
         userid: result.userid,
-        split: beneficiaries,
+        split: beneficiarieslist,
         createdat: result.createdat,
         updatedat: result.updatedat,
     };

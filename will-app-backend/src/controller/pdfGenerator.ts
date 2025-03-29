@@ -13,7 +13,7 @@ import { DistributionType } from "../models/enums";
 import { IAddressDetails, IPersonalDetails } from "../models/userDetails";
 import { AssetSubtype, IAsset, parseAssets } from "../models/assetDetails";
 import { IBeneficiary, parseBeneficiaries } from "../models/beneficiaryDetails";
-import { IAssetDistributionDetails, IUserAssetsSingle, parseAssetDistributionDetails, parseIUserAssetsSingle } from "../models/distributionDetails";
+import { IAssetDistributionDetails, ISplit, IUserAssetsPercentage, IUserAssetsSingle, IUserAssetsSpecific, parseAssetDistributionDetails, parseIUserAssetsSingle, parseUserAssetsPercentage } from "../models/distributionDetails";
 import fs from "fs";
 import { getExecutorsByUserIdService } from "../services/executorService";
 import { ExecutorData, IExecutor, parseExecutors } from "../models/executorDetails";
@@ -55,28 +55,40 @@ export const generatePDF = async (req: Request, res: Response) => {
         let distributionDetails: any = null; 
         let residuaryDistributionDetails: any = null;
 
-        //Get distribution data from corresponding table based on the type of distribution
         switch (assetDistributionDetails?.distributionType) {
-            case DistributionType.SINGLE:
-                distributionDetails = await getSingleBeneficiaryByUserIdService(userId) || [];
-                break;
+          case DistributionType.SINGLE:
+            const singleResult = await getSingleBeneficiaryByUserIdService(userId);
+            if (singleResult && Array.isArray(singleResult) && singleResult.length === 0) {
+              console.error("Service returned an empty array instead of an object.");
+            } else {
+              distributionDetails = singleResult as IUserAssetsSingle; 
+            }
+            break;
         
-            case DistributionType.SPECIFIC:
-                distributionDetails  =  await getSpecificAssetDistributionService(userId);
-                break;
-        
-            case DistributionType.PERCENTAGE:
-                distributionDetails = await getPercentageAssetDistributionService(userId);
-                break;
-        
-            default:
-                throw new Error("Invalid distribution type");
+          case DistributionType.SPECIFIC:
+              const specificResult = await getSpecificAssetDistributionService(userId);
+            if (specificResult && Array.isArray(specificResult) && specificResult.length === 0) {
+              console.error("Service returned an empty array instead of an object.");
+            } else {
+              distributionDetails = specificResult as IUserAssetsSpecific; 
+            }
+            break;
+      
+          case DistributionType.PERCENTAGE:
+              const percentageResult = await getPercentageAssetDistributionService(userId);
+            if (percentageResult && Array.isArray(percentageResult) && percentageResult.length === 0) {
+              console.error("Service returned an empty array instead of an object.");
+            } else {
+              distributionDetails = percentageResult as IUserAssetsPercentage;
+            }
+            break;
+      
+          default:
+              throw new Error("Invalid distribution type");
         }
         residuaryDistributionDetails = await getResiduaryAssetDistributionService(userId);
-
-        console.log(distributionDetails.primarybeneficiaryid);
-        console.log(residuaryDistributionDetails);
-
+        console.log(residuaryDistributionDetails)
+        
         const fonts = {
         Times: {
             normal: "Times-Roman",
@@ -117,25 +129,32 @@ export const generatePDF = async (req: Request, res: Response) => {
             style: "text",
             },
             {
-                table: {
-                  headerRows: 1,
-                  widths: ["*", "*", "*"], 
-                  body: [
-                    
-                    ["Name", "Relationship", "Date of Birth"],
-                    ...beneficiaryDetails.map((b) => [
-                      b.data.fullName,
-                      b.data.relationship,
-                      new Date(b.data.dateOfBirth).toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      }),
-                    ]),
+              table: {
+                headerRows: 1,
+                widths: ["10%", "*", "*", "*"], // Adjust column widths as needed
+                body: [
+                  // Headers with bold styling
+                  [
+                    { text: "S. No.", bold: true },
+                    { text: "Name", bold: true },
+                    { text: "Relationship", bold: true },
+                    { text: "Date of Birth", bold: true }
                   ],
-                },
-                style: "table",
+                  // Rows with indexing
+                  ...beneficiaryDetails.map((b, index) => [
+                    index + 1, // S. No.
+                    b.data.fullName,
+                    b.data.relationship,
+                    new Date(b.data.dateOfBirth).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    }),
+                  ]),
+                ],
               },
+              style: "table",
+            },
             { text: "\n\nPART-III: APPOINTMENT OF EXECUTOR\n", style: "subheader", alignment: "center" },
             {
             text: `The powers and elective rights conferred by law or by any other provision of this Will and by me be exercised as often as required and without application to or approval by any court. I hereby appoint ${executor[0].data.gender == "Male"? "Mr.": "Mrs."} ${executor[0].data.fullName} as my Primary Executor for all means and purposes with regards to the Will. He has his Mobile No. as ${executor[0].data.phoneNumber} and Email ID as ${executor[0].data.email}.`,
@@ -144,7 +163,6 @@ export const generatePDF = async (req: Request, res: Response) => {
             { text: "\n\nPART-IV: MOVABLE & IMMOVABLE ASSET DETAILS\n", style: "subheader", alignment: "center" },
 
             ...[
-            // Iterate over all subtypes and dynamically generate sections
             "properties",
             "bank_accounts",
             "fixed_deposits",
@@ -170,11 +188,11 @@ export const generatePDF = async (req: Request, res: Response) => {
 
             if (filteredAssets.length === 0) return null; // Skip if no assets for this subtype
             // Get headers and row generation logic for the subtype
-            const headers = getHeadersForSubtype(subtype);
+            const headers = getHeadersForSubtype(subtype).map(header => ({ text: header, bold: true })); 
             const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index));
 
             return [
-                { text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`, style: "subheader", alignment: "center" },
+                { text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`, style: "tableTitle", alignment: "center" },
                 {
                 table: {
                     headerRows: 1,
@@ -189,43 +207,113 @@ export const generatePDF = async (req: Request, res: Response) => {
             ,
             { text: "\n\nPART-V: SPECIFIC DEVOLVEMENT OF ASSETS\n", style: "subheader", alignment: "center" },
             { text: "All the above-mentioned immovable and movable properties and the current assets listed in this Will of mine will cover the assets owned by me at the time of writing this Will, shall be devolved as:", style: "text" },
-            ...[
+            [
               // Iterate over all subtypes and dynamically generate sections
               "Single",
               "Specific",
               "Percentage"
-              ].map((distributionType) => {
-                  if(assetDistributionDetails.distributionType !== distributionType) return null;
-                    // Define headers
-                  const headers = ["Sl. No.", "Name Of Asset", "Share Description"];
+            ].map((distributionType) => {
+              if (assetDistributionDetails.distributionType !== distributionType) return null;
+            
+              if (distributionType === "Single") {
+                return [
+                  {
+                    text: `All the mentioned assets are assigned to ${beneficiaryDetails.find(
+                      (b) => b.id === distributionDetails.primarybeneficiaryid
+                    )?.data.fullName || "Unknown"} (100%).`,
+                    style: "text",
+                  },
+                  {
+                    text: `In case the above nominee is deceased, all the mentioned assets are assigned to ${beneficiaryDetails.find(
+                      (b) => b.id === distributionDetails.secondarybeneficiaryid
+                    )?.data.fullName || "Unknown"} (100%).`,
+                    style: "text",
+                  },
+                  {
+                    text: `In case the above nominee is deceased, all the mentioned assets are assigned to ${beneficiaryDetails.find(
+                      (b) => b.id === distributionDetails.tertiarybeneficiaryid
+                    )?.data.fullName || "Unknown"} (100%).`,
+                    style: "text",
+                  },
+                ];
+              } else if (distributionType === "Percentage") {
+                
+                const headers = [
+                  { text: "Sl. No.", bold: true }, 
+                  { text: "Beneficiary Name", bold: true }, 
+                  { text: "Percentage Share", bold: true }
+              ];
+                const rows = distributionDetails.split.map((split: ISplit, index: number) => [
+                  index + 1,
+                  beneficiaryDetails.find((b) => b.id === split.beneficiaryId)?.data.fullName || "Unknown",
+                  `${split.percentage} %`,
+                ]);
 
-                  // Generate rows dynamically
-                  const rows =
-                    distributionType === "Single"
-                      ? getRowsForSingleDistribution(distributionDetails, assetDetails)
-                      : distributionType === "Specific"
-                      ? []//getRowsForSpecificDistribution(distributionDetails)
-                      : [];//getRowsForPercentageDistribution(distributionDetails);
-                  if(distributionType == "Single")
-                    return [
-                      {
-                        table: {
-                          headerRows: 1,
-                          widths: ["*", "*", "*"], // Adjust widths as needed
-                          body: [headers, ...rows],
-                        },
-                        style: "table",
-                      },
-                    ];
-                  })
-                    .flat()
-                    .filter(Boolean)
-           ,
-                  
+                return [
+                  {
+                    text :  `All the above mentioned assets will be assigned to the following beneficiaries in the mentioned percentage of distribution.`
+                  },
+                  {
+                    table: {
+                      headerRows: 1,
+                      widths: ["20%", "50%", "30%"], 
+                      body: [headers, ...rows],
+                    },
+                    style: "table",
+                  },
+                ];
+              } else if (distributionType === "Specific") {
+                // For Specific, call a method to get rows dynamically
+                const headers = ["Sl. No.", "Name Of Asset", "Share Description"];
+                const rows = getRowsForSpecificDistribution(distributionDetails, assetDetails, beneficiaryDetails);
+            
+                return [
+                  {
+                    table: {
+                      headerRows: 1,
+                      widths: ["20%", "40%", "40%"], 
+                      body: [headers, ...rows],
+                    },
+                    style: "table",
+                  },
+                ];
+              }
+            
+              return null;
+            })
+              .flat()
+              .filter(Boolean)
+                  ,
             { text: "\n\nPART-VI: PRIMARY REMAINDER BENEFICIARIES\n", style: "subheader", alignment: "center" },
             { text: "I, hereby, bequeath to the persons my residue and the remainder of my property and estate, tangible and intangible, immovable and movable, real, personal and mixed, of whatever nature and wherever situated, including all property. ", style: "text" },
             { text: "\nOr, I may acquire or receive or inherit any assets in future after writing this Will, shall be bequeathed in the following manner and proportions:", style: "text" },
-
+            { text : "\n"},
+            (() => {
+              const headers = [
+                { text: "Sl. No.", bold: true }, 
+                { text: "Beneficiary Name", bold: true }, 
+                { text: "Percentage Share", bold: true }
+            ];              
+              const rows = residuaryDistributionDetails.split.map((split: ISplit, index: number) => [
+                  index + 1,
+                  beneficiaryDetails.find((b) => b.id === split.beneficiaryId)?.data.fullName || "Unknown",
+                  `${split.percentage} %`,
+              ]);
+          
+              return [
+                  { 
+                      text: "All the above mentioned assets will be assigned to the following beneficiaries in the mentioned percentage of distribution." 
+                  },
+                  {
+                      table: {
+                          headerRows: 1,
+                          widths: ["20%", "50%", "30%"],
+                          body: [headers, ...rows],
+                      },
+                      style: "table",
+                  },
+              ];
+          })(),
             { text: "\n\nPART-VII: LIABILITIES\n", style: "subheader", alignment: "center" },
             ...[
                 // Iterate over all subtypes and dynamically generate sections
@@ -242,11 +330,11 @@ export const generatePDF = async (req: Request, res: Response) => {
                         if (filteredAssets.length === 0) return null; // Skip if no assets for this subtype
 
                         // Get headers and row generation logic for the subtype
-                        const headers = getHeadersForSubtype(subtype);
+                        const headers = getHeadersForSubtype(subtype).map(header => ({ text: header, bold: true })); 
                         const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index));
 
                         return [
-                            { text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`, style: "subheader", alignment: "center" },
+                            { text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`, style: "tableTitle", alignment: "center" },
                             {
                             table: {
                                 headerRows: 1,
@@ -288,13 +376,13 @@ export const generatePDF = async (req: Request, res: Response) => {
             { text: "", pageBreak: "after" },
             { text: "ATTESTATION BY WITNESSES\n", style: "subheader", alignment: "center" },
             { text: `This last Will and testament, which has been separately signed by ${honorific} ${personalDetails.fullName}, the testator, as on the date indicated below signed and declared by the above-named testator as his last Will and testament in the presence of each of us. We, in the presence of the testator and each other, at the testator's request, under penalty of perjury, hereby subscribe our names as witnesses to the declaration and execution of the last Will and testament by the testator, and we declare that, to the best of our knowledge, said testator is eighteen years of age or older, of sound mind and memory and under no constraint or undue influence.`},
-            { text: "\n\nWITNESSES 1\n\n", alignment: "center", bold: true},
+            { text: "\n\nWITNESSES 1\n\n\n", alignment: "center", bold: true},
             { text: "Full Name of the Witness as per Aadhar/PAN Card:\n\n\n\n", alignment: "left"},
             { text: "Signature of Witness:\n\n\n\n", alignment: "left"},
             { text: "Date:\n\n\n\n", alignment: "left"},
             { text: "Address:\n\n\n\n", alignment: "left"},
 
-            { text: "\n\n\nWITNESSES 2\n\n", alignment: "center", bold: true},   
+            { text: "\n\n\nWITNESSES 2\n\n\n", alignment: "center", bold: true},   
             { text: "Full Name of the Witness as per Aadhar/PAN Card:\n\n\n\n", alignment: "left"},
             { text: "Signature of Witness:\n\n\n\n", alignment: "left"},
             { text: "Date:\n\n\n\n", alignment: "left"},
@@ -308,11 +396,19 @@ export const generatePDF = async (req: Request, res: Response) => {
             header: { fontSize: 18, bold: true },
             title: { fontSize: 20, bold: true },
             subheader: { fontSize: 16, bold: true, margin: [0, 10, 0, 10] },
+            tableTitle: { fontSize: 14, bold: true, margin: [0, 10, 0, 10] },
             text: { fontSize: 12 },
             table: { margin: [0, 5, 0, 15] }
         },
         defaultStyle: {
             font: "Times",
+        },
+        footer: function (currentPage, pageCount) {
+          return {
+            text: `Page ${currentPage} of ${pageCount}`,
+            alignment: "right",
+            margin: [0, 10, 0, 0],
+          };
         },
         };
         
@@ -519,36 +615,119 @@ function getHeadersForSubtype(subtype: string): string[] {
     }
   }
 
-  function getRowsForSingleDistribution(
-    distributionDetails: any,
-    assets: IAsset []
+  function getRowsForSpecificDistribution(
+    distributionDetails: IUserAssetsSpecific,
+    assets: IAsset[],
+    beneficiaries: IBeneficiary[]
   ): (string | number)[][] {
-    if (!assets || !distributionDetails.primaryBeneficiaryId) {
+    if (!assets || !distributionDetails) {
       return [];
     }
   
     return assets
       .filter((asset) => asset.type !== "liabilities") // Exclude liabilities
-      .map((asset, index) => [
-        index + 1, // Sl. No.
-        asset.id, // Asset ID
-        `${distributionDetails.primaryBeneficiaryId} 100%`, // Share Description
-      ]);
-  }
-  function getRowsForSpecificDistribution(distributionDetails :any, assets : any) {
-    // Generate rows for "Specific" type
-    return distributionDetails.assets.map((asset: { name: any; specificDetails: any; }, index: number) => [
-      index + 1, // Sl. No.
-      asset.name, // Name Of Asset
-      asset.specificDetails, 
-    ]);
+      .map((asset, index) => {
+        // Find the split details for the current asset
+        const assetSplitDetails = distributionDetails.assets.find(
+          (distAsset) => distAsset.asset_id === asset.id
+        );
+
+        //console.log("distributionDetails  ", distributionDetails)
+        //console.log("assetSplitDetails  ", assetSplitDetails)
+
+  
+        // Get beneficiary details with percentages
+        const beneficiaryDetails = assetSplitDetails?.beneficiarieslist
+          .map((splitDetail) => {
+            const beneficiary = beneficiaries.find((b) => b.id === splitDetail.beneficiaryId);
+            return beneficiary
+              ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
+              : "Unknown Beneficiary";
+          })
+          .join(", ") || "No Beneficiaries Assigned";
+  
+        // Handle asset data based on subtype
+        let assetDetails: string;
+        switch (asset.subtype) {
+          case "properties":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.propertyType || "N/A"}`;
+            break;
+        
+          case "vehicles":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            break;
+        
+          case "jewelleries":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            break;
+        
+          case "insurance_policies":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            break;
+        
+          case "mutual_funds":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.fundName || "N/A"}`;
+            break;
+        
+          case "demat_accounts":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.brokerName || "N/A"}`;
+            break;
+        
+          case "digital_assets":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            break;
+        
+          case "provident_funds":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            break;
+        
+          case "fixed_deposits":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.bankName || "N/A"}`;
+            break;
+        
+          case "safety_deposit_boxes":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.depositBoxType || "N/A"}`;
+            break;
+        
+          case "pension_accounts":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.bankName || "N/A"}`;
+            break;
+        
+          case "businesses":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            break;
+        
+          case "bonds":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.financialServiceProviderName || "N/A"}`;
+            break;
+        
+          case "debentures":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            break;
+        
+          case "esops":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.companyName || "N/A"}`;
+            break;
+        
+          case "other_investments":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            break;
+        
+          case "intellectual_property":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            break;
+        
+          case "custom_assets":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.description || "N/A"}`;
+            break;
+        
+          default:
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: N/A`;
+            break;
+        }
+        // Construct the row
+        return [index + 1, assetDetails, beneficiaryDetails];
+      });
   }
   
-  function getRowsForPercentageDistribution(distributionDetails : any, assets : any) {
-    // Generate rows for "Percentage" type
-    return distributionDetails.split.map((split: any, index: number) => [
-      index + 1, 
-      assets.assetName, 
-      `${split.percentage}% share assigned to ${split.beneficiaryId}`, // Share Description
-    ]);
-  }
+

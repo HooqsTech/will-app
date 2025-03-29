@@ -20,11 +20,12 @@ export function parseAssetDistributionDetails(data: any): IAssetDistributionDeta
 
 export interface ISplit {
     percentage: number; 
-    beneficiary_id: string; 
+    beneficiaryId: string; 
+    beneficiaryName: string;
   }
-  
+
 export  interface IAsset {
-    split: ISplit[]; 
+    beneficiarieslist: ISplit[]; 
     asset_id: string; 
   }
   
@@ -105,7 +106,7 @@ export function parseUserResiduaryAssets(jsonString: string): IUserResiduaryAsse
 }
 
 // Function to parse JSON string into IUserAssetsPercentage
-export function parseUserAssetsPercentage(jsonString: string): IUserAssetsPercentage {
+export function parseUserAssetsPercentage(jsonString: string ): IUserAssetsPercentage {
   try {
     const parsedObject = JSON.parse(jsonString);
 
