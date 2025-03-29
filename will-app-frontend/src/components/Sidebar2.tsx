@@ -21,14 +21,15 @@ import { useTreeItem2, UseTreeItem2Parameters } from '@mui/x-tree-view/useTreeIt
 import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
-import { AiTwotoneGold } from 'react-icons/ai';
+import { AiOutlineGold } from 'react-icons/ai';
 import { BiLogoCreativeCommons } from 'react-icons/bi';
 import { CiBank, CiBitcoin } from 'react-icons/ci';
-import { FaAddressBook, FaAddressCard, FaChartPie, FaHandHoldingUsd, FaMoneyBillWave, FaPiggyBank, FaUser, FaUsersCog } from 'react-icons/fa';
+import { FaRegAddressBook, FaRegAddressCard, FaRegUser } from 'react-icons/fa';
+import { LiaMoneyBillWaveSolid, LiaUsersCogSolid, LiaHandHoldingUsdSolid } from 'react-icons/lia';
 import { GiReceiveMoney, GiThreeFriends } from 'react-icons/gi';
-import { IoBusinessOutline } from 'react-icons/io5';
+import { IoBusinessOutline, IoDocumentTextOutline } from 'react-icons/io5';
 import { IconType } from 'react-icons/lib';
-import { MdAddHomeWork, MdHealthAndSafety, MdLockOutline, MdOutlineAccountBalance, MdOutlineDirectionsCar } from 'react-icons/md';
+import { MdOutlineAddHomeWork, MdOutlineHealthAndSafety, MdLockOutline, MdOutlineAccountBalance, MdOutlineDirectionsCar } from 'react-icons/md';
 import { TbFriendsOff } from 'react-icons/tb';
 import { PiHandWithdraw } from 'react-icons/pi';
 import { SiAltiumdesigner } from 'react-icons/si';
@@ -37,6 +38,8 @@ import { useRecoilValue } from 'recoil';
 import { removeCookie } from 'typescript-cookie';
 import { routesState } from '../atoms/RouteState';
 import { ASSET_TYPES, ROUTE_PATHS } from '../constants';
+import { HiOutlineChartPie } from 'react-icons/hi2'
+import { PiPiggyBank } from 'react-icons/pi'
 
 type ExtendedTreeItemProps = {
   icon?: IconType;
@@ -274,39 +277,41 @@ export default function Sidebar2() {
     const getIcons = (routePath: string) => {
       switch (routePath) {
         case ROUTE_PATHS.PROPERTIES:
-          return MdAddHomeWork
+          return MdOutlineAddHomeWork
         case ROUTE_PATHS.BANK_ACCOUNTS:
           return CiBank
         case ROUTE_PATHS.FIXED_DEPOSITS:
           return CiBank
         case ROUTE_PATHS.INSURANCE_POLICIES:
-          return MdHealthAndSafety
+          return MdOutlineHealthAndSafety
         case ROUTE_PATHS.SAFE_DEPOSIT_BOXES:
           return MdLockOutline
         case ROUTE_PATHS.DEMAT_ACCOUNTS:
           return CiBank
         case ROUTE_PATHS.MUTUAL_FUNDS:
-          return FaChartPie
+          return HiOutlineChartPie
         case ROUTE_PATHS.PROVIDENT_FUND:
-          return FaPiggyBank
+          return PiPiggyBank
         case ROUTE_PATHS.PENSION_ACCOUNTS:
           return GiReceiveMoney
         case ROUTE_PATHS.BUSINESS_ASSETS:
           return IoBusinessOutline
-        case ROUTE_PATHS.BONDS:
+        case ROUTE_PATHS.BUSINESS:
           return IoBusinessOutline
+        case ROUTE_PATHS.BONDS:
+          return IoDocumentTextOutline
         case ROUTE_PATHS.DEBENTURES:
           return IoBusinessOutline
         case ROUTE_PATHS.ESCOPS:
-          return FaUsersCog
+          return LiaUsersCogSolid
         case ROUTE_PATHS.OTHER_INVESTMENTS:
-          return FaHandHoldingUsd
+          return LiaHandHoldingUsdSolid
         case ROUTE_PATHS.OTHER_ASSETS:
           return MdOutlineDirectionsCar
         case ROUTE_PATHS.VEHICLES:
           return MdOutlineDirectionsCar
         case ROUTE_PATHS.JEWELLERIES:
-          return AiTwotoneGold
+          return AiOutlineGold
         case ROUTE_PATHS.DIGITAL_ASSETS:
           return CiBitcoin
         case ROUTE_PATHS.INTELLECTUAL_PROPERTY:
@@ -332,11 +337,11 @@ export default function Sidebar2() {
       {
         id: 'about_you',
         label: 'About You',
-        icon: FaAddressBook,
+        icon: FaRegAddressBook,
         routePath: ROUTE_PATHS.ABOUT_YOU,
         children: [
-          { id: 'personal_details', label: 'Personal Details', icon: FaUser, routePath: ROUTE_PATHS.PERSONAL_DETAILS },
-          { id: 'address_details', label: 'Address Details', icon: FaAddressCard, routePath: ROUTE_PATHS.ADDRESS_DETAILS }
+          { id: 'personal_details', label: 'Personal Details', icon: FaRegUser, routePath: ROUTE_PATHS.PERSONAL_DETAILS },
+          { id: 'address_details', label: 'Address Details', icon: FaRegAddressCard, routePath: ROUTE_PATHS.ADDRESS_DETAILS }
         ]
       },
       {
@@ -427,7 +432,7 @@ export default function Sidebar2() {
           id: "immovable_assets",
           label: "Immovable Assets",
           routePath: ROUTE_PATHS.IMMOVABLE_ASSETS,
-          icon: MdAddHomeWork,
+          icon: MdOutlineAddHomeWork,
           children: [...immovalbleAssets]
         });
 
@@ -436,7 +441,7 @@ export default function Sidebar2() {
           id: "financial_assets",
           label: "Financial Assets",
           routePath: ROUTE_PATHS.FINANCIAL_ASSETS,
-          icon: FaMoneyBillWave,
+          icon: LiaMoneyBillWaveSolid,
           children: [...financialAssets]
         });
 
