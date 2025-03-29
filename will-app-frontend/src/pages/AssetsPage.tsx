@@ -92,7 +92,7 @@ const AssetsPage = () => {
                 </CustomAccordion>
                 <CustomAccordion defaultExpanded label="Other Assets">
                     <div className="flex flex-col gap-2">
-                        <CheckboxContainer checked={selectedAssets?.vehicles} label="vehicles" onChange={() => handleChange("vehicles")} />
+                        <CheckboxContainer checked={selectedAssets?.vehicles} label="Vehicles" onChange={() => handleChange("vehicles")} />
                         <CheckboxContainer checked={selectedAssets?.jewellery} label="Jewellery" onChange={() => handleChange("jewellery")} />
                         <CheckboxContainer checked={selectedAssets?.digitalAssets} label="Digital Assets" onChange={() => handleChange("digitalAssets")} />
                         <CheckboxContainer checked={selectedAssets?.intellectualProperties} label="Intellectual Properties" onChange={() => handleChange("intellectualProperties")} />

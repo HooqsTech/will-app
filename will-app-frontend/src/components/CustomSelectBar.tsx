@@ -20,7 +20,7 @@ const CustomSelectBar: React.FC<ICustomSelectBarProps> = ({ options, onSelectCha
   return (
     <div className="flex flex-col gap-7 mb-10">
 
-      {options.map((option, index) => (
+      {options.map((option, _) => (
         <div key={option.value} className="flex gap-x-4 justify-between items-center">
           <label
             key={option.value}
@@ -48,12 +48,13 @@ const CustomSelectBar: React.FC<ICustomSelectBarProps> = ({ options, onSelectCha
                     e.preventDefault(); // Block non-numeric keys
                   }
                 }}
+                maxLength={3}
                 placeholder="%"
                 value={onPercentageInput?.[option.value] ?? ""}
                 onChange={(e) =>
                   handleInputChange(option.value, e.target.value)
                 }
-                className="text-input  border border-light_blue !h-[64px] !w-[84px] !text-center"
+                className="text-input bg-white border border-light_blue !h-[64px] !w-[84px] !text-center"
               />
             </div>
           )}
