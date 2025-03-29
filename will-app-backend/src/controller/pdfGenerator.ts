@@ -17,6 +17,9 @@ import { IAssetDistributionDetails, ISplit, IUserAssetsPercentage, IUserAssetsSi
 import fs from "fs";
 import { getExecutorsByUserIdService } from "../services/executorService";
 import { ExecutorData, IExecutor, parseExecutors } from "../models/executorDetails";
+import { getPDFVersioningByUserId, upsertPDFVersioning } from "../services/pdfVersioningService";
+import { uploadFile } from "../services/uploadService";
+import { Readable } from "stream";
 
 const prisma = new PrismaClient();
 
@@ -87,7 +90,6 @@ export const generatePDF = async (req: Request, res: Response) => {
               throw new Error("Invalid distribution type");
         }
         residuaryDistributionDetails = await getResiduaryAssetDistributionService(userId);
-        console.log(residuaryDistributionDetails)
         
         const fonts = {
         Times: {
@@ -263,8 +265,11 @@ export const generatePDF = async (req: Request, res: Response) => {
                   },
                 ];
               } else if (distributionType === "Specific") {
-                // For Specific, call a method to get rows dynamically
-                const headers = ["Sl. No.", "Name Of Asset", "Share Description"];
+                const headers = [
+                  { text: "Sl. No.", bold: true }, 
+                  { text: "Beneficiary Name", bold: true }, 
+                  { text: "Percentage Share", bold: true }
+              ];
                 const rows = getRowsForSpecificDistribution(distributionDetails, assetDetails, beneficiaryDetails);
             
                 return [
@@ -406,23 +411,77 @@ export const generatePDF = async (req: Request, res: Response) => {
         footer: function (currentPage, pageCount) {
           return {
             text: `Page ${currentPage} of ${pageCount}`,
-            alignment: "right",
+            alignment: "center",
             margin: [0, 10, 0, 0],
           };
         },
         };
         
         const pdfDoc = printer.createPdfKitDocument(docDefinition);
+        
+        let currentVersion = 1; 
+        const pdfVersioning = await getPDFVersioningByUserId(userId);
+        if (pdfVersioning) {
+            currentVersion = pdfVersioning.latestversion + 1; // Increment the current version
+        }
+        const fileName = `${userDetails?.personalDetails?.fullName}_V${currentVersion}.pdf`;
+        const filePath = `./${fileName}`;
 
-        res.setHeader("Content-Disposition", 'inline; filename="LastWillAndTestament.pdf"');
+        res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
         res.setHeader("Content-Type", "application/pdf");
 
         pdfDoc.pipe(res);
-        const filePath = "./LastWillAndTestament.pdf";
+
 
         const writeStream = fs.createWriteStream(filePath);
         pdfDoc.pipe(writeStream);
         pdfDoc.end();
+
+        writeStream.on("finish", async () => {
+          await upsertPDFVersioning(userId, filePath);
+      });
+
+    //   let currentVersion = 1; // Default version
+    //   const pdfVersioning = await getPDFVersioningByUserId(userId);
+    //   if (pdfVersioning) {
+    //       currentVersion = pdfVersioning.latestversion + 1; // Increment the version
+    //   }
+
+    //   const fileName = `${userDetails?.personalDetails?.fullName}_V${currentVersion}.pdf`;
+    //   const filePath = `./${fileName}`;
+
+    //   // Write the PDF to a temporary file
+    //   const bufferStream = fs.createWriteStream(filePath);
+    //   pdfDoc.pipe(bufferStream);
+    //   pdfDoc.end();
+
+    //   // Wait for the file stream to finish writing
+    //   await new Promise<void>((resolve, reject) => {
+    //     bufferStream.on("finish", () => resolve());
+    //     bufferStream.on("error", (err) => reject(err));
+    // });
+    
+
+    //   const publicUrl = await uploadFile(userId, fileName, fs.createReadStream(filePath));
+
+    //   await upsertPDFVersioning(userId, publicUrl);
+
+    //   console.log("File uploaded:", publicUrl);
+
+    //   res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
+    //   res.setHeader("Content-Type", "application/pdf");
+
+    //   const readStream = fs.createReadStream(filePath);
+    //   readStream.pipe(res);
+
+    //   readStream.on("end", () => {
+    //       fs.unlinkSync(filePath);
+    //   });
+
+    //   readStream.on("error", (err) => {
+    //       console.error("Error reading file:", err);
+    //       fs.unlinkSync(filePath); // Ensure cleanup on error
+    //   });
 
 
     } catch (err) {
@@ -632,11 +691,6 @@ function getHeadersForSubtype(subtype: string): string[] {
           (distAsset) => distAsset.asset_id === asset.id
         );
 
-        //console.log("distributionDetails  ", distributionDetails)
-        //console.log("assetSplitDetails  ", assetSplitDetails)
-
-  
-        // Get beneficiary details with percentages
         const beneficiaryDetails = assetSplitDetails?.beneficiarieslist
           .map((splitDetail) => {
             const beneficiary = beneficiaries.find((b) => b.id === splitDetail.beneficiaryId);
@@ -650,79 +704,79 @@ function getHeadersForSubtype(subtype: string): string[] {
         let assetDetails: string;
         switch (asset.subtype) {
           case "properties":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.propertyType || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.propertyType || "N/A"}`;
             break;
         
           case "vehicles":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
             break;
         
           case "jewelleries":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
             break;
         
           case "insurance_policies":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
             break;
         
           case "mutual_funds":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.fundName || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.fundName || "N/A"}`;
             break;
         
           case "demat_accounts":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.brokerName || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.brokerName || "N/A"}`;
             break;
         
           case "digital_assets":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
             break;
         
           case "provident_funds":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
             break;
         
           case "fixed_deposits":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.bankName || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.bankName || "N/A"}`;
             break;
         
           case "safety_deposit_boxes":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.depositBoxType || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.depositBoxType || "N/A"}`;
             break;
         
           case "pension_accounts":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.bankName || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.bankName || "N/A"}`;
             break;
         
           case "businesses":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
             break;
         
           case "bonds":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.financialServiceProviderName || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.financialServiceProviderName || "N/A"}`;
             break;
         
           case "debentures":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
             break;
         
           case "esops":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.companyName || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.companyName || "N/A"}`;
             break;
         
           case "other_investments":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
             break;
         
           case "intellectual_property":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.type || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
             break;
         
           case "custom_assets":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: ${asset.data.description || "N/A"}`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.description || "N/A"}`;
             break;
         
           default:
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toUpperCase()}: N/A`;
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: N/A`;
             break;
         }
         // Construct the row

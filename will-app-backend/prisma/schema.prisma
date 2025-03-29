@@ -216,3 +216,11 @@ model payment_transactions {
   createdat          DateTime? @default(now()) @db.Timestamptz(6)
   updatedat          DateTime? @default(now()) @db.Timestamptz(6)
 }
+
+model pdfversioning {
+  userid        String    @id @db.Uuid
+  createdate    DateTime? @default(now()) @db.Timestamp(6)
+  updatedate    DateTime? @default(now()) @db.Timestamp(6)
+  latestversion Int       @default(1)
+  folderpath    String    @db.VarChar(255)
+}
