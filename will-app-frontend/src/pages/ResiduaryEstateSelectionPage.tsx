@@ -60,26 +60,26 @@ const ResiduaryEstateSelectionPage = () => {
         if (!distribution) {
 
             Swal.fire({
-                                    title: "Select Distribution Type",
-                                    text: "Please select a distribution type before proceeding.",
-                                    icon: "warning",
-                                    confirmButtonColor: "var(--color-will-green)",
-                                    customClass: {
-                                    popup: "swal-sm",
-                                    title: "swal-title",
-                                    confirmButton: "swal-confirm-btn",
-                                    },
-                                });
+                title: "Select Distribution Type",
+                text: "Please select a distribution type before proceeding.",
+                icon: "warning",
+                confirmButtonColor: "var(--color-will-green)",
+                customClass: {
+                    popup: "swal-sm",
+                    title: "swal-title",
+                    confirmButton: "swal-confirm-btn",
+                },
+            });
 
             return;
         }
         await saveWillDistributionAsync(distribution)
-        
+
         const routeValue = routeState.find(s => s.currentPath === location.pathname);
-        
+
         if (distribution.residuaryDistributionType == "Single")
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION_SINGLE);
-        else if(distribution.residuaryDistributionType =="Percentage")
+        else if (distribution.residuaryDistributionType == "Percentage")
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION_PERCENT);
         else
             navigate(routeValue?.nextPath ?? "/");
@@ -93,14 +93,14 @@ const ResiduaryEstateSelectionPage = () => {
             residuaryDistributionType: will.residuaryDistributionType,
             fallbackRule: will.fallbackRule
         };
-    
-            const upsertedWillDistribution = await upsertWillDistribution(data);
-    
-            setDistribution((prevState) => ({
-                ...prevState,
-                id: upsertedWillDistribution.id
-            }));
-        };
+
+        const upsertedWillDistribution = await upsertWillDistribution(data);
+
+        setDistribution((prevState) => ({
+            ...prevState,
+            id: upsertedWillDistribution.id
+        }));
+    };
 
     return (
         <div className="flex flex-col justify-between px-[30px] w-full min-h-[calc(100dvh-232px)] md:max-w-[560px] md:min-h-auto md:mx-auto md:px-0">
