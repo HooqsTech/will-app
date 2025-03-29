@@ -433,13 +433,13 @@ const YourWill: React.FC = () => {
     return (
         <div>
             <Header />
-            <div className='grid grid-cols-12 w-full m-auto'>
+            <div className='grid grid-cols-12 bg-[#ccdcdc] h-screen w-full m-auto'>
                 <div className='bg-[#265e55] hidden md:block col-span-3'>
                     <div className='top-14 min-h-screen sticky'>
                         <Sidebar2 />
                     </div>
                 </div>
-                <div className='h-full bg-[#ccdcdc] px-2.5 overflow-hidden flex col-span-12 md:col-span-9 items-center md:p-10 justify-center'>
+                <div className='h-full bg-[#ccdcdc] px-2.5 flex col-span-12 md:col-span-9 items-center md:p-10 justify-center'>
                     <Routes>
                         <Route path={ROUTE_PATHS.ABOUT_YOU} element={<AboutYouPage />} />
                         <Route path={ROUTE_PATHS.PERSONAL_DETAILS} element={<PersonalDetailsPage />} />
