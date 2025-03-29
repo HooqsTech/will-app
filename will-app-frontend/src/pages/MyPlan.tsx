@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useSearchParams  } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { formattedCategoriesState, pathState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
 import { ICategory, IFormattedServiceCategory, IWillService } from "../models/willService";
@@ -7,7 +7,7 @@ import { getWillServices } from "../api/willService";
 import Header from "../components/Header";
 import PaymentStepper from "../components/PaymentStepper";
 import { motion } from "framer-motion";
-import { FaCheck, FaPlus, FaTrash, FaInfoCircle} from "react-icons/fa";
+import { FaCheck, FaPlus, FaTrash, FaInfoCircle } from "react-icons/fa";
 import { createPaymentOrder, createOrUpdatePaymentTransaction } from "../api/payment";
 import Swal from "sweetalert2";
 import { getUserIdByPhoneNumber } from "../api/user";
@@ -20,8 +20,8 @@ const MyPlan: React.FC = () => {
   const [categories, setCategories] = useRecoilState(formattedCategoriesState);
   const [selectedCategory, setSelectedCategory] = useRecoilState(selectedCategoryState);
   const [loading, setLoading] = useState(true);
-  const [params] = useSearchParams(); 
-  const initialStep = Number(params.get("step")) || 1; 
+  const [params] = useSearchParams();
+  const initialStep = Number(params.get("step")) || 1;
   //const initialStep =  1; 
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useRecoilState(
@@ -32,25 +32,25 @@ const MyPlan: React.FC = () => {
   const [infoIndex, setInfoIndex] = useState<string | null>(null);
   const infoRef = useRef<HTMLDivElement | null>(null);
   const transactionState = useRecoilValue(TransactionSummaryState);
-  const pathStateValue = useRecoilValue(pathState); 
+  const pathStateValue = useRecoilValue(pathState);
 
   // useEffect(() => {
   //       navigate(`/my_plan?step=${step}`, { replace: true });
   // }, [step, navigate]);
   useEffect(() => {
-    if(pathStateValue.path == ""){
+    if (pathStateValue.path == "") {
       navigate(`/order_summary`);
     }
-          
-    }, []);
+
+  }, []);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         setLoading(true);
         const data: IFormattedServiceCategory[] = await getWillServices();
-  
+
         let formattedData: IFormattedServiceCategory[];
-  
+
         if (!transactionState || transactionState.length === 0) {
           formattedData = data.map((service) => ({
             categoryId: service.categoryId,
@@ -62,14 +62,14 @@ const MyPlan: React.FC = () => {
           }));
         } else {
           setSelectedServices([]);
-  
+
           const selectedCategoryIds: string[] = transactionState.flatMap((t) => {
             const selectedCategories = t.selectedcategories as
               | { categoryId: string }[]
               | { categoryId: string }
               | null
               | undefined;
-          
+
             if (Array.isArray(selectedCategories)) {
               return selectedCategories.map((c) => c.categoryId);
             } else if (selectedCategories && typeof selectedCategories === "object") {
@@ -79,7 +79,7 @@ const MyPlan: React.FC = () => {
           });
 
           const selectedServiceIds = //new Set(
-            transactionState.flatMap((t) => 
+            transactionState.flatMap((t) =>
               Array.isArray(t.selectedservices) ? t.selectedservices.map((s) => s.serviceId) : []
             );
           //);
@@ -133,7 +133,7 @@ const MyPlan: React.FC = () => {
   const handleSelectService = (service: IWillService) => {
     setSelectedServices((prev) => {
       const isAlreadySelected = prev.some((s) => s.serviceId === service.serviceId);
-  
+
       if (isAlreadySelected) {
         return prev.filter((s) => s.serviceId !== service.serviceId);
       } else {
@@ -182,14 +182,14 @@ const MyPlan: React.FC = () => {
       console.log(selectedCategory?.categoryName)
       if (selectedCategory?.categoryName === "NRI Will") {
         console.log(true)
-        setStep(3); 
+        setStep(3);
       } else if (selected) {
         setStep(2);
       }
     } else if (step === 2) {
       setStep(3);
     } else if (step === 3) {
-      if (selectedServices.length === 0 && total===0) {
+      if (selectedServices.length === 0 && total === 0) {
         Swal.fire({
           title: "Neither Service nor Category has been Selected!",
           text: "Please select at least one service before proceeding.",
@@ -222,9 +222,9 @@ const MyPlan: React.FC = () => {
     const selectedServiceIds = selectedServices.map((service) => service.serviceId);
 
     var data = await createPaymentOrder(
-      user, 
-      selectedServiceIds, 
-      selectedCategory?.categoryId ?? "", 
+      user,
+      selectedServiceIds,
+      selectedCategory?.categoryId ?? "",
       transactionState === null
     );
 
@@ -237,8 +237,7 @@ const MyPlan: React.FC = () => {
       description: 'Thank you for choosing Hamaara will.',
       image: "",
       handler: async function (_: any) {
-        if (!selectedCategory)
-        {
+        if (!selectedCategory) {
           console.log(selectedCategory)
           return;
         }
@@ -248,7 +247,7 @@ const MyPlan: React.FC = () => {
           categoryDescription: selectedCategory.categoryDescription,
           categoryStandardPrice: selectedCategory.categoryStandardPrice,
           categoryDiscountPrice: selectedCategory.categoryDiscountPrice,
-      };
+        };
 
         await createOrUpdatePaymentTransaction(data.id, user, selectedServices, categoryData, transactionState === null);
         Swal.fire("Your payment is successfull.")
@@ -290,26 +289,26 @@ const MyPlan: React.FC = () => {
   );
   const services = selectedCategoryData?.services ?? [];
   const total =
-  (transactionState === null && selectedCategory
-    ? selectedCategory.categoryDiscountPrice ?? selectedCategory.categoryStandardPrice
-    : 0) +
-  selectedServices.reduce(
-    (sum, service) => sum + (service.serviceDiscountPrice ?? service.serviceStandardPrice),
-    0
-  );
+    (transactionState === null && selectedCategory
+      ? selectedCategory.categoryDiscountPrice ?? selectedCategory.categoryStandardPrice
+      : 0) +
+    selectedServices.reduce(
+      (sum, service) => sum + (service.serviceDiscountPrice ?? service.serviceStandardPrice),
+      0
+    );
 
   return (
     <div className="relative flex flex-col items-center min-h-screen bg-white text-white p-6">
       <div className="fixed top-0 left-0 w-full bg-[#265e55] z-50">
         <Header />
       </div>
-      
+
       {loading && (
         <div className="loading-overlay">
           <div className="spinner"></div>
         </div>
       )}
-      
+
       <div className="mt-24">
         <PaymentStepper currentStep={step} />
       </div>
@@ -334,17 +333,17 @@ const MyPlan: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       className="absolute bottom-0 mb-3 -right-[100px] md:-right-[380px] transform -translate-x-1/2 w-64 bg-white rounded-lg p-4 border border-gray-600 z-40">
-                     <h4 className="text-md font-semibold text-[#265e55]">
-                            {category.categoryName}
-                          </h4>
-                          <ul className="text-sm text-gray-400 list-disc pl-6 mt-2">
-                            {category.categoryDescription
-                              .split('.')
-                              .filter((point) => point.trim() !== '')
-                              .map((point, index) => (
-                                <li key={index}>{point.trim()}</li>
-                              ))}
-                          </ul>
+                      <h4 className="text-md font-semibold text-[#265e55]">
+                        {category.categoryName}
+                      </h4>
+                      <ul className="text-sm text-gray-400 list-disc pl-6 mt-2">
+                        {category.categoryDescription
+                          .split('.')
+                          .filter((point) => point.trim() !== '')
+                          .map((point, index) => (
+                            <li key={index}>{point.trim()}</li>
+                          ))}
+                      </ul>
                       <button
                         className="mt-3 text-[#265e55] text-sm hover:text-blue-300"
                         onClick={() => setInfoIndex(null)}
@@ -407,13 +406,13 @@ const MyPlan: React.FC = () => {
             )}
           </div>
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto translate-x-70">
-              <button
-                onClick={handleContinue}
-                className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
-              >
-                <FaArrowRight className="mr-2" /> Next
-              </button>
-            </div>
+            <button
+              onClick={handleContinue}
+              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+            >
+              <FaArrowRight className="mr-2" /> Next
+            </button>
+          </div>
         </div>
       )}
 
@@ -433,7 +432,7 @@ const MyPlan: React.FC = () => {
 
           {/* Services List */}
           <div
-            className={`grid grid-cols-3 gap-6 w-full max-w-4xl mt-8 ${services.length === 1 ? "justify-center" : ""
+            className={`grid md:grid-cols-3 gap-6 w-full max-w-4xl mt-8 ${services.length === 1 ? "justify-center" : ""
               }`}
           >
             {services.length > 0 ? (
@@ -515,14 +514,14 @@ const MyPlan: React.FC = () => {
           </div>
 
           {/* Service List Container */}
-          <div className="w-[800px] mt-8 bg-[#265e55] p-6 rounded-xl shadow-lg">
+          <div className="lg:w-[800px] md:w-[600px] mt-8 mx-10 bg-[#265e55] p-6 rounded-xl shadow-lg">
             {transactionState === null && (
-            <div className="flex justify-between items-center py-3 border-b border-gray-600 font-bold text-lg">
-              <span>{selectedCategory?.categoryName}</span>
-              <span className="text-green-400">
-                ₹{selectedCategory?.categoryDiscountPrice?.toLocaleString() ? selectedCategory?.categoryDiscountPrice.toLocaleString(): selectedCategory?.categoryStandardPrice.toLocaleString()}.00
-              </span>
-            </div>
+              <div className="flex justify-between items-center py-3 border-b border-gray-600 font-bold text-lg">
+                <span>{selectedCategory?.categoryName}</span>
+                <span className="text-green-400">
+                  ₹{selectedCategory?.categoryDiscountPrice?.toLocaleString() ? selectedCategory?.categoryDiscountPrice.toLocaleString() : selectedCategory?.categoryStandardPrice.toLocaleString()}.00
+                </span>
+              </div>
             )}
 
             {/* Other Services */}
@@ -572,7 +571,7 @@ const MyPlan: React.FC = () => {
           </div>
 
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto">
-          <button
+            <button
               onClick={handlePrevious}
               className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
             >
