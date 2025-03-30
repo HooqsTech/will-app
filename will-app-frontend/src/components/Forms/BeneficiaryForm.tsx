@@ -29,7 +29,9 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
     useEffect(() => {
         if (item.dateOfBirth !== undefined && item.dateOfBirth !== "") {
             var age = dayjs().diff(dayjs(item.dateOfBirth), "year");
-            setNeedsGuardian(age <= 18)
+            if (!item.isGuardian) {
+                setNeedsGuardian(age <= 18)
+            }
         }
     }, [])
 
@@ -44,7 +46,9 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
 
         if (key === "dateOfBirth") {
             var age = dayjs().diff(dayjs(value), "year");
-            setNeedsGuardian(age <= 18)
+            if (!item.isGuardian) {
+                setNeedsGuardian(age <= 18)
+            }
         }
     };
 
