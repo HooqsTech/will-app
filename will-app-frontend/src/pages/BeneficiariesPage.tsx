@@ -74,59 +74,8 @@ const BeneficiariesPage = () => {
 
     const validateAll = () => {
         let isValid: boolean = true;
-        formState.forEach((prop, index) => {
-            var age = dayjs().diff(dayjs(prop.dateOfBirth), "year");
-
-            if (!prop.isGuardian) {
-                if (IsEmptyString(prop.type)) {
-                    setBeneficiaryValidationState(index, "type", "Beneficiary Type is required");
-                    isValid = false;
-                }
-                if (prop.type == "Person" && IsEmptyString(prop.fullName)) {
-                    setBeneficiaryValidationState(index, "fullName", "Name is required");
-                    isValid = false;
-                }
-                if (prop.type == "Person" && IsEmptyString(prop.gender)) {
-                    setBeneficiaryValidationState(index, "gender", "Gender is required");
-                    isValid = false;
-                }
-                if (prop.type == "Person" && IsEmptyString(prop.dateOfBirth)) {
-                    setBeneficiaryValidationState(index, "dateOfBirth", "DOB is required");
-                    isValid = false;
-                }
-                if (prop.type == "Person" && prop.dateOfBirth !== "" && age <= 18 && IsEmptyString(prop.guardian)) {
-                    setBeneficiaryValidationState(index, "guardian", "guardian is required");
-                    isValid = false;
-                }
-                if (prop.type == "Person" && IsEmptyString(prop.email)) {
-                    setBeneficiaryValidationState(index, "email", "Email is required");
-                    isValid = false;
-                }
-                if (prop.type == "Person" && !IsValidEmail(prop.email)) {
-                    setBeneficiaryValidationState(index, "email", "invalid email address");
-                    isValid = false;
-                }
-                if (prop.type == "Person" && IsEmptyString(prop.phone)) {
-                    setBeneficiaryValidationState(index, "phone", "Phone is required");
-                    isValid = false;
-                }
-                if (prop.type == "Person" && IsEmptyString(prop.relationship)) {
-                    setBeneficiaryValidationState(index, "relationship", "Relationship is required");
-                    isValid = false;
-                }
-                if (prop.type == "Charity" && IsEmptyString(prop.charityType)) {
-                    setBeneficiaryValidationState(index, "charityType", "Charity Type is required");
-                    isValid = false;
-                }
-                if (prop.type == "Charity" && IsEmptyString(prop.organization)) {
-                    setBeneficiaryValidationState(index, "organization", "Organization is required");
-                    isValid = false;
-                }
-                if (prop.type == "Charity" && IsEmptyNumber(prop.donationAmount)) {
-                    setBeneficiaryValidationState(index, "donationAmount", "Donation Amount is required");
-                    isValid = false;
-                }
-            }
+        formState.forEach((_, index) => {
+            isValid = validate(index);
         });
         setShowErrorBorder(!isValid);
         return isValid;
@@ -141,51 +90,59 @@ const BeneficiariesPage = () => {
             setBeneficiaryValidationState(index, "type", "Beneficiary Type is required");
             isValid = false;
         }
-        if (prop.type == "Person" && IsEmptyString(prop.fullName)) {
-            setBeneficiaryValidationState(index, "fullName", "Name is required");
-            isValid = false;
+        if (prop.type === "Person") {
+            if (IsEmptyString(prop.fullName)) {
+                setBeneficiaryValidationState(index, "fullName", "Name is required");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.gender)) {
+                setBeneficiaryValidationState(index, "gender", "Gender is required");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.dateOfBirth)) {
+                setBeneficiaryValidationState(index, "dateOfBirth", "DOB is required");
+                isValid = false;
+            }
+            if (prop.dateOfBirth !== "" && age <= 18 && prop.isGuardian) {
+                setBeneficiaryValidationState(index, "dateOfBirth", "Guardian age must be greater than 18");
+                isValid = false;
+            }
+            if (prop.dateOfBirth !== "" && age <= 18 && IsEmptyString(prop.guardian) && !prop.isGuardian) {
+                setBeneficiaryValidationState(index, "guardian", "guardian is required");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.email)) {
+                setBeneficiaryValidationState(index, "email", "Email is required");
+                isValid = false;
+            }
+            if (!IsValidEmail(prop.email)) {
+                setBeneficiaryValidationState(index, "email", "invalid email address");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.phone)) {
+                setBeneficiaryValidationState(index, "phone", "Phone is required");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.relationship)) {
+                setBeneficiaryValidationState(index, "relationship", "Relationship is required");
+                isValid = false;
+            }
         }
-        if (prop.type == "Person" && IsEmptyString(prop.gender)) {
-            setBeneficiaryValidationState(index, "gender", "Gender is required");
-            isValid = false;
-        }
-        if (prop.type == "Person" && IsEmptyString(prop.dateOfBirth)) {
-            setBeneficiaryValidationState(index, "dateOfBirth", "DOB is required");
-            isValid = false;
-        }
-        if (prop.type == "Person" && prop.dateOfBirth !== "" && age <= 18 && prop.isGuardian) {
-            setBeneficiaryValidationState(index, "dateOfBirth", "Guardian age must be greater than 18");
-            isValid = false;
-        }
-        if (prop.type == "Person" && IsEmptyString(prop.email)) {
-            setBeneficiaryValidationState(index, "email", "Email is required");
-            isValid = false;
-        }
-        if (prop.type == "Person" && !IsValidEmail(prop.email)) {
-            setBeneficiaryValidationState(index, "email", "invalid email address");
-            isValid = false;
-        }
-        if (prop.type == "Person" && IsEmptyString(prop.phone)) {
-            setBeneficiaryValidationState(index, "phone", "Phone is required");
-            isValid = false;
-        }
-        if (prop.type == "Person" && IsEmptyString(prop.relationship)) {
-            setBeneficiaryValidationState(index, "relationship", "Relationship is required");
-            isValid = false;
-        }
-        if (prop.type == "Charity" && IsEmptyString(prop.charityType)) {
-            setBeneficiaryValidationState(index, "charityType", "Charity Type is required");
-            isValid = false;
-        }
-        if (prop.type == "Charity" && IsEmptyString(prop.organization)) {
-            setBeneficiaryValidationState(index, "organization", "Organization is required");
-            isValid = false;
-        }
-        if (prop.type == "Charity" && IsEmptyNumber(prop.donationAmount)) {
-            setBeneficiaryValidationState(index, "donationAmount", "Donation Amount is required");
-            isValid = false;
-        }
+        if (prop.type === "Charity") {
 
+            if (IsEmptyString(prop.charityType)) {
+                setBeneficiaryValidationState(index, "charityType", "Charity Type is required");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.organization)) {
+                setBeneficiaryValidationState(index, "organization", "Organization is required");
+                isValid = false;
+            }
+            if (IsEmptyNumber(prop.donationAmount)) {
+                setBeneficiaryValidationState(index, "donationAmount", "Donation Amount is required");
+                isValid = false;
+            }
+        }
         setShowErrorBorder(!isValid);
         return isValid;
     }

@@ -12,10 +12,10 @@ interface IJewelleryFormProps {
 const JewelleryForm: React.FC<IJewelleryFormProps> = ({ index }) => {
     const [formState, setFormState] = useRecoilState<IJewelleryState[]>(jewelleriesState);
     const [validationState, setValidationState] = useRecoilState<IJewelleriesValidationState[]>(jewelleriesValidationState);
-    
+
     const item = formState[index];
     const validationStateItem = validationState[index];
-    
+
     const handleChange = (index: number, key: keyof IJewelleryState, value: string) => {
         setFormState((prevState) =>
             prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
@@ -45,6 +45,7 @@ const JewelleryForm: React.FC<IJewelleryFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.preciousMetalInWeight}
                 helperText={validationStateItem.preciousMetalInWeight}
+                restrictAlphabets
                 required
                 onChange={(e) => handleChange(index, "preciousMetalInWeight", e)}
                 label="Precious Metal Weight in Grams"
