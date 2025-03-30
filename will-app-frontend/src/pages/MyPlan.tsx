@@ -250,12 +250,20 @@ const MyPlan: React.FC = () => {
         };
 
         await createOrUpdatePaymentTransaction(data.id, user, selectedServices, categoryData, transactionState === null);
-        Swal.fire("Your payment is successfull.")
+        Swal.fire({
+          title: "Your payment is successfull.",
+          confirmButtonText: "Okay",
+          confirmButtonColor: "var(--color-will-green)",
+        });
         navigate("/order_summary");
       },
       modal: {
         ondismiss: function () {
-          Swal.fire("Payment cancelled.");
+          Swal.fire({
+            title: "Payment cancelled.",
+            confirmButtonText: "Okay",
+            confirmButtonColor: "var(--color-will-green)",
+          });
           console.log("Payment Cancelled");
         }
       }

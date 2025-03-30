@@ -102,14 +102,25 @@ import { emptyExecutorValidationState, executorValidationState } from '../atoms/
 import ExcludedPersonsPage from './ExcludedPersonsPage';
 import { excludedPersonsState, IExcludedPersonState } from '../atoms/ExcludedPersonsState';
 import { emptyExcludedPersonValidationState, excludedPersonsValidationState } from '../atoms/validationStates/ExcludedPersonsValidationState';
+import { Modal } from '@mui/material';
+import Lottie from 'lottie-react';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
 
     const setUser = useSetRecoilState(userState);
     const setPersonalDetails = useSetRecoilState(personalDetailsState);
     const setAddressDetails = useSetRecoilState(addressDetailsState);
     const setSelectedAssets = useSetRecoilState(selectedAssetsState);
+
+    const [animationData, setAnimationData] = React.useState(null);
+
+    React.useEffect(() => {
+        fetch("/assets/loading-lottie.json")
+            .then((response) => response.json())
+            .then((data) => setAnimationData(data));
+    }, []);
 
     // PROPERTIES
     const setProperties = useSetRecoilState(propertiesState);
@@ -222,6 +233,7 @@ const YourWill: React.FC = () => {
     }, [])
 
     const getUserAndSetState = async () => {
+        setIsModalOpen(true);
         const phoneNumber = getCookie('phoneNumber');
         const user = await getUser(phoneNumber ?? "/");
 
@@ -423,6 +435,7 @@ const YourWill: React.FC = () => {
 
         // DYNAMIC ROUTE MAPPING
         generateRouteDataFromSelectedAssets(user.selectedAssets);
+        setIsModalOpen(false);
     }
 
     const generateRouteDataFromSelectedAssets = (selectedAssets: ISelectedAssetsState) => {
@@ -490,6 +503,9 @@ const YourWill: React.FC = () => {
                     </Routes>
                 </div>
             </div>
+            <Modal className='h-screen flex flex-col items-center justify-center' open={isModalOpen}>
+                <Lottie animationData={animationData} />
+            </Modal>
         </div>
     )
 }

@@ -5,16 +5,13 @@ import CustomTextBox from "../CustomTextBox";
 import { Dayjs } from "dayjs";
 import { addressDetailsValidationState } from "../../atoms/validationStates/AddressDetailsValidationState";
 import CustomCheckbox from "../CustomCheckbox";
-import { flushSync } from "react-dom";
 
 const AddressDetailsForm = () => {
     const [formState, setFormState] = useRecoilState(addressDetailsState);
     const [validationState, setValidationState] = useRecoilState(addressDetailsValidationState);
 
     const handleChange = (key: keyof IAddressDetailsState, value: string | Dayjs | null | boolean) => {
-        flushSync(() => {
-            changeState(key, value)
-        })
+        changeState(key, value)
 
         if (formState.sameAsPresentAddress) {
             if (key === "address1") {
@@ -125,22 +122,18 @@ const AddressDetailsForm = () => {
                     label="Phone Number"
                     type="text" />
             </div>
-            <div>
-            <CustomCheckbox
-                onChange={() => {
-                    flushSync(() => {
-                        handleChange("sameAsPresentAddress", !formState.sameAsPresentAddress);
-                    });
-                    if (!formState.sameAsPresentAddress) {
-                        setPermanentAddressFromPresentAddress();
-                    }
-                }}
-                checked={formState.sameAsPresentAddress ?? false}
-                label="Same as present address?"
-            />
-            </div>
             <div className="flex flex-col gap-4">
                 <p className="font-semibold">Permanent Address</p>
+                <CustomCheckbox
+                    onChange={() => {
+                        handleChange("sameAsPresentAddress", !formState.sameAsPresentAddress);
+                        if (!formState.sameAsPresentAddress) {
+                            setPermanentAddressFromPresentAddress();
+                        }
+                    }}
+                    checked={formState.sameAsPresentAddress ?? false}
+                    label="Same as present address?"
+                />
                 <CustomTextBox
                     value={formState.permAddress1}
                     onChange={(e) => handleChange("permAddress1", e)}
