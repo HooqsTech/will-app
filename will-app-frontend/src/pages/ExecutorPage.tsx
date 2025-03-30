@@ -108,8 +108,8 @@ const ExecutorPage = () => {
 
     const handleNextClick = async () => {
         if (!validate()) return;
-
-        if(formState.length > 1)
+        console.log(formState.length)
+        if(formState.length >= 1)
         {
             setError(false);
             formState.forEach(async (person, index) => {
