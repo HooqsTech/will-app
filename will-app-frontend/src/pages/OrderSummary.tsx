@@ -170,7 +170,7 @@ const OrderSummary = () => {
         <Header />
       </div>
 
-      <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-lg mt-40">
+      <div className="bg-white shadow-lg rounded-none p-6 w-full max-w-lg mt-40">
         {!hasItems ? (
           <div className="flex flex-col items-center justify-center text-center min-h-96">
             <p className="text-lg font-semibold text-gray-700 mb-4">
@@ -178,7 +178,7 @@ const OrderSummary = () => {
             </p>
             <button
               onClick={handleFindPlan}
-              className="bg-[#265e55] text-white px-6 py-3 rounded-lg hover:bg-[#1f4a43] transition"
+              className="bg-[#265e55] text-white px-6 py-3 rounded-none hover:bg-[#1f4a43] transition"
             >
               Find Plan
             </button>
@@ -246,10 +246,10 @@ const OrderSummary = () => {
                 <div className="mt-5 border-t pt-4 text-center">
                   <div className="text-lg font-semibold text-gray-800">Total: ₹{selectedOrder.totalprice}</div>
                   <div className="flex justify-center mt-5 gap-10">
-                    <Button onClick={handleDownload} loading={isPdfDownloading} className="flex cursor-pointer items-center !bg-[#265e55] !text-white !px-4 py-2 !rounded-lg">
+                    <Button onClick={handleDownload} loading={isPdfDownloading} className="flex cursor-pointer items-center !bg-[#265e55] !text-white !px-4 py-2 !rounded-none">
                       <FaDownload className="mr-2" /> Generate Will
                     </Button>
-                    <Button onClick={handleEdit} className="flex items-center cursor-pointer !bg-[#265e55] !text-white !px-4 py-2 !rounded-lg">
+                    <Button onClick={handleEdit} className="flex items-center cursor-pointer !bg-[#265e55] !text-white !px-4 py-2 !rounded-none">
                       <FaEdit className="mr-2" /> Buy Additional Service
                     </Button>
                   </div>

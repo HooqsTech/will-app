@@ -335,7 +335,7 @@ const MyPlan: React.FC = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute bottom-0 mb-3 -right-[100px] md:-right-[380px] transform -translate-x-1/2 w-64 bg-white rounded-lg p-4 border border-gray-600 z-40">
+                      className="absolute bottom-0 mb-3 -right-[100px] md:-right-[380px] transform -translate-x-1/2 w-64 bg-white rounded-none p-4 border border-gray-600 z-40">
                       <h4 className="text-md font-semibold text-[#265e55]">
                         {category.categoryName}
                       </h4>
@@ -358,12 +358,12 @@ const MyPlan: React.FC = () => {
 
                   {/* Category Card */}
                   <motion.div
-                    className={`relative p-6 rounded-xl transition-all duration-300 border cursor-pointer ${selected === category.categoryId
+                    className={`relative p-6 rounded-none transition-all duration-300 border cursor-pointer ${selected === category.categoryId
                       ? "border-green-500 bg-[#265e55] scale-105"
                       : "border-gray-600 bg-[#265e55] hover:shadow-lg hover:scale-105"
                       }`}
                     onClick={() => handleSelectCategory(category)}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ transition: { duration: 0.2 } }}
                   >
                     {selected === category.categoryId && (
                       <div className="absolute top-2 right-2 bg-green-500 text-white p-2 rounded-full">
@@ -411,7 +411,7 @@ const MyPlan: React.FC = () => {
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto translate-x-70">
             <button
               onClick={handleContinue}
-              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-none hover:bg-[#1e4a42] transition"
             >
               <FaArrowRight className="mr-2" /> Next
             </button>
@@ -442,14 +442,14 @@ const MyPlan: React.FC = () => {
               services.map((service) => (
                 <motion.div
                   key={service.serviceId}
-                  className={`relative p-6 rounded-xl transition-all duration-300 border cursor-pointer ${selectedServices.some(
+                  className={`relative p-6 rounded-none transition-all duration-300 border cursor-pointer ${selectedServices.some(
                     (s) => s.serviceId === service.serviceId
                   )
                     ? "border-green-400 bg-[#265e55] scale-105"
                     : "border-gray-600 bg-[#265e55] hover:shadow-lg hover:scale-105"
                     }`}
                   onClick={() => handleSelectService(service)}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ transition: { duration: 0.2 } }}
                 >
                   {selectedServices.some(
                     (s) => s.serviceId === service.serviceId
@@ -492,14 +492,14 @@ const MyPlan: React.FC = () => {
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto">
             <button
               onClick={handlePrevious}
-              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-none hover:bg-[#1e4a42] transition"
             >
               <FaArrowLeft className="mr-2" /> Previous
             </button>
 
             <button
               onClick={handleContinue}
-              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-none hover:bg-[#1e4a42] transition"
             >
               <FaArrowRight className="mr-2" /> Next
             </button>
@@ -517,7 +517,7 @@ const MyPlan: React.FC = () => {
           </div>
 
           {/* Service List Container */}
-          <div className="lg:w-[800px] md:w-[600px] mt-8 mx-10 bg-[#265e55] p-6 rounded-xl shadow-lg">
+          <div className="lg:w-[800px] md:w-[600px] mt-8 mx-10 bg-[#265e55] p-6 rounded-none shadow-lg">
             {transactionState === null && (
               <div className="flex justify-between items-center py-3 border-b border-gray-600 font-bold text-lg">
                 <span>{selectedCategory?.categoryName}</span>
@@ -576,14 +576,14 @@ const MyPlan: React.FC = () => {
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto">
             <button
               onClick={handlePrevious}
-              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-none hover:bg-[#1e4a42] transition"
             >
               <FaArrowLeft className="mr-2" /> Previous
             </button>
 
             <button
               onClick={handleContinue}
-              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-lg hover:bg-[#1e4a42] transition"
+              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-none hover:bg-[#1e4a42] transition"
             >
               <FaArrowRight className="mr-2" /> Pay Now
             </button>
