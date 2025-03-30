@@ -241,6 +241,8 @@ const YourWill: React.FC = () => {
             userId: user.userId
         })
 
+        console.log('user.userId', user.userId)
+
         setPersonalDetails(user.personalDetails);
         setAddressDetails(user.addressDetails);
 

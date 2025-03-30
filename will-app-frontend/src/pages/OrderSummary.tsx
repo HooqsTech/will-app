@@ -13,6 +13,8 @@ import { IFormattedServiceCategory } from "../models/willService";
 import { getWillServices } from "../api/willService";
 import Swal from "sweetalert2";
 import { pathState } from "../atoms/serviceState";
+import { downloadPDFFile } from "../api/pdf";
+import { Button } from "@mui/material";
 
 const OrderSummary = () => {
   const navigate = useNavigate();
@@ -22,9 +24,12 @@ const OrderSummary = () => {
   const [, setPath] = useRecoilState(pathState);
   const [selectedOrder, setSelectedOrder] = useState<ITransaction | null>(null);
   const [serviceCounts, setServiceCounts] = useState<{ categoryId: string; categoryName: string; serviceCount: number }[]>([]);
+  const [isPdfDownloading, setIsPdfDownloading] = useState(false);
 
-  const handleDownload = () => {
-    console.log("We need to handle this download part");
+  const handleDownload = async () => {
+    setIsPdfDownloading(true);
+    await downloadPDFFile(userId.userId)
+    setIsPdfDownloading(false);
   };
 
   const handleEdit = () => {
@@ -254,12 +259,12 @@ const OrderSummary = () => {
                 <div className="mt-5 border-t pt-4 text-center">
                   <div className="text-lg font-semibold text-gray-800">Total: ₹{selectedOrder.totalprice}</div>
                   <div className="flex justify-center mt-5 gap-10">
-                    <button onClick={handleDownload} className="flex cursor-pointer items-center bg-[#265e55] text-white px-4 py-2 rounded-lg">
+                    <Button onClick={handleDownload} loading={isPdfDownloading} className="flex cursor-pointer items-center !bg-[#265e55] !text-white !px-4 py-2 !rounded-lg">
                       <FaDownload className="mr-2" /> Generate Will
-                    </button>
-                    <button onClick={handleEdit} className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-lg">
+                    </Button>
+                    <Button onClick={handleEdit} className="flex items-center cursor-pointer !bg-[#265e55] !text-white !px-4 py-2 !rounded-lg">
                       <FaEdit className="mr-2" /> Buy Additional Service
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </>
