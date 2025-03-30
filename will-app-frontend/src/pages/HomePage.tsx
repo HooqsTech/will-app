@@ -6,7 +6,7 @@ import { ROUTE_PATHS } from "../constants";
 const HomePage = () => {
     const navigate = useNavigate();
     const handleGetStartedClick = () => {
-        navigate(ROUTE_PATHS.YOUR_WILL)
+        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ABOUT_YOU)
     }
 
     return (
