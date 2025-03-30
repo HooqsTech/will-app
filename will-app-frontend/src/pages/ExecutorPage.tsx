@@ -1,32 +1,34 @@
-import { Modal } from '@mui/material';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { deleteExecutor, upsertExecutor } from '../api/executor';
 import { executorState, IExecutorState } from '../atoms/ExecutorState';
-import { guardianModalState } from '../atoms/GuardianModelState';
 import { userState } from '../atoms/UserDetailsState';
 import { emptyExecutorValidationState, executorValidationState, IExecutorValidationState } from '../atoms/validationStates/ExecutorValidationState';
 import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
 import ConfirmDelete from '../components/ConfirmDelete';
-import CustomButton from '../components/CustomButton';
-import EditButton from '../components/EditButton';
 import ExecutorForm from '../components/Forms/ExecutorForm';
 import NextButton from '../components/NextButton';
 import { ROUTE_PATHS } from '../constants';
 import { IExecutor, IExecutorDeleteRequest } from '../models/executor';
 import { IsEmptyString, IsValidEmail } from '../utils';
+import CustomAccordion from '../components/CustomAccordion';
 
 const ExecutorPage = () => {
     const [formState, setFormState] = useRecoilState<IExecutorState[]>(executorState);
-    const setValidationState = useSetRecoilState<IExecutorValidationState[]>(executorValidationState);
-    const [currentItem, setCurrentItem] = useState<number>(1);
+    const [validationState, setValidationState] = useRecoilState<IExecutorValidationState[]>(executorValidationState);
+    const [currentItem, setCurrentItem] = useState<number>(-1);
     const user = useRecoilValue(userState);
     const navigate = useNavigate();
-    const [isOpen, setIsOpen] = useRecoilState(guardianModalState);
+    const [error, setError] = useState<boolean>(false);
+    const [showErrorBorder, setShowErrorBorder] = useState(false);
 
+    useEffect(() => {
+            setCurrentItem(formState.length+1)
+        }, [])
+        
     const saveExecutorAsync = async (property: IExecutorState, index: number) => {
         let data: IExecutor = {
             id: property.id,
@@ -67,11 +69,10 @@ const ExecutorPage = () => {
     };
 
 
-    const validate = (index: number) => {
+    const validate = () => {
         let isValid: boolean = true;
-        let prop = formState[index];
-        let age = dayjs().diff(dayjs(formState[index].dob), "year");
-
+        formState.forEach((prop, index) => {
+        let age = dayjs().diff(dayjs(prop.dob), "year");
         if (IsEmptyString(prop.fullName)) {
             setPropertyValidationState(index, "fullName", "Name is required");
             isValid = false;
@@ -100,23 +101,28 @@ const ExecutorPage = () => {
             setPropertyValidationState(index, "phoneNumber", "Phone is required");
             isValid = false;
         }
-
+    });
+        setShowErrorBorder(!isValid);
         return isValid;
     }
 
     const handleNextClick = async () => {
-        navigate(ROUTE_PATHS.ORDER_SUMMARY);
+        if (!validate()) return;
+
+        if(formState.length > 1)
+        {
+            setError(false);
+            formState.forEach(async (person, index) => {
+                await saveExecutorAsync(person, index);
+            });
+            navigate(ROUTE_PATHS.ORDER_SUMMARY);
+        }
+        else
+        {
+            setError(true);
+        }
+        
     }
-
-    const handleSaveExecutorAsync = async (index: number) => {
-        // VALIDATE
-        if (!validate(index)) return;
-
-        await saveExecutorAsync(formState[index], index);
-
-        setIsOpen(false);
-    }
-
 
     const addExecutorItem = () => {
         setFormState((prevState) => [
@@ -135,18 +141,24 @@ const ExecutorPage = () => {
             emptyExecutorValidationState
         ])
         setCurrentItem(formState.length);
-        setIsOpen(true);
+        setError(false);
     };
 
-    const onEdit = (index: number) => {
-        setCurrentItem(index);
-        setIsOpen(true);
-    }
+    
 
-    const removeLastItem = () => {
-        var newState = formState.slice(0, formState.length - 1);
-        setFormState(newState);
-    }
+    const getSubTitle = (index: number) => {
+        const { fullName, email } = formState[index];
+        return [fullName?.trim(), email?.trim()].filter(Boolean).join(" - ");
+    };
+
+    const shouldExpandAccordion = (index: number) => {
+        return currentItem === index;
+    };
+
+    const handleAccordionOnChange = (index: number) => {
+        setCurrentItem((prevItem) => prevItem === index ? -1 : index);
+        setShowErrorBorder(false);
+    };
 
     return (
         <div className='flex flex-col justify-start text-center h-full space-y-3 w-xl m-auto'>
@@ -158,47 +170,37 @@ const ExecutorPage = () => {
                 Please choose an executor that is a trusted relative, family friend, lawyer, CA, or any professional, and is above the age of 18.
             </h2>
             <div>
-                {formState.filter(f => f.id != "").map((_, index) => (
-                    <div key={formState[index].id} className="relative flex box-border my-3 p-6 border bg-[#FFFFFFB2] border-[#FFFFFF33] rounded-xl shadow-[3px_3px_6px_0_#B4CBE240]">
-                        <div className="flex flex-col gap-y-5">
-                            <div className="flex items-center">
-                                <p className="header first-letter:capitalize">{`Executor ${index + 1}`}</p>
+                {
+                    formState.map((_, index) => (
+                        <div key={formState[index].id} className='flex w-full justify-between items-center space-x-1 h-fit'>
+                            <div className='w-full h-full'>
+                                <CustomAccordion key={index} expanded={shouldExpandAccordion(index)}
+                                    error={showErrorBorder && Object.values(validationState[index]).some(s => s != undefined && s != null && s != "")}
+                                    onChange={() => handleAccordionOnChange(index)}
+                                    label={`Executor ${index + 1}`}
+                                    subTitle={
+                                        currentItem !== index && !shouldExpandAccordion(index) ? getSubTitle(index) : ""
+                                    }
+                                >
+                                    <ExecutorForm index={index} />
+                                </CustomAccordion>
                             </div>
-                            <div>
-                                <p className="desc">{formState[index].fullName}</p>
-                            </div>
-                        </div>
-                        {/* Edit and Delete Icons */}
-                        <div className="absolute bottom-[22px] right-6">
-                            <div className="inline-flex gap-x-8 justify-end items-center">
-                                <div className="inline-flex gap-x-2 items-center cursor-pointer">
-                                    <EditButton onClick={() => onEdit(index + 1)} className=" hover:bg-gray-200 rounded-full" />
-
-                                </div>
-                                <div className="inline-flex gap-x-2 items-center cursor-pointer">
+                            {
+                                !shouldExpandAccordion(index) && (
                                     <ConfirmDelete onConfirm={() => deleteExecutorAsync(index)} />
-                                </div>
-                            </div>
+                                )
+                            }
+
                         </div>
-                    </div>
-                ))}
-                <AddButton onClick={addExecutorItem} label={`EXECUTOR ${formState.length}`} />
+                    ))
+                }
+                <AddButton onClick={addExecutorItem} label={`EXECUTOR ${formState.length + 1}`} />
             </div>
+            {error && <p className="mt-3  text-red-500">Please add executor before proceeding to next step.</p>}
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
-            <Modal
-                className='flex flex-col justify-center w-full items-center'
-                open={isOpen}
-                onClose={() => { setIsOpen(false); removeLastItem(); }}
-            >
-                <div className='bg-white p-6 max-w-lg flex flex-col w-full'>
-                    <p className='pb-4'>Executor</p>
-                    <ExecutorForm index={currentItem - 1} />
-                    <CustomButton label='Save Executor' onClick={() => handleSaveExecutorAsync(currentItem - 1)} />
-                </div>
-            </Modal>
         </div>
     )
 }
