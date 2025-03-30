@@ -1,12 +1,11 @@
-import CustomButton from "./CustomButton"
-import { useNavigate } from 'react-router';
-import { removeCookie } from 'typescript-cookie';
-import Sidebar2 from "./Sidebar2";
 import { Drawer } from "@mui/material";
-import { useRecoilState } from "recoil";
-import { drawerState } from "../atoms/drawerState";
 import { BiHome } from "react-icons/bi";
-import { FaHome } from "react-icons/fa";
+import { useNavigate } from 'react-router';
+import { useRecoilState } from "recoil";
+import { removeCookie } from 'typescript-cookie';
+import { drawerState } from "../atoms/drawerState";
+import CustomButton from "./CustomButton";
+import Sidebar2 from "./Sidebar2";
 
 const Header = () => {
     const navigate = useNavigate();
@@ -27,7 +26,7 @@ const Header = () => {
                     <span className="self-center text-2xl text-will-green whitespace-nowrap uppercase">Hamara Will</span>
                 </a>
                 <div className="flex items-center text-gray-500 space-x-3">
-                    <a href="/home">
+                    <a href="/home" className="md:hidden">
                         <BiHome className="text-2xl" />
                     </a>
                     <button onClick={() => setIsDrawerOpen(true)} data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="navbar-default" aria-expanded="false">
