@@ -8,9 +8,15 @@ import { upsertWillDistribution } from "../api/assetDistribution";
 import { userState } from '../atoms/UserDetailsState';
 import { ROUTE_PATHS } from "../constants";
 import Swal from "sweetalert2";
+import { AssetDistributionPercentState } from "../atoms/AssetDistributionPercentState";
+import { AssetDistributionSingleState } from "../atoms/AssetDistributionSingleState";
+import { AssetDistributionSpecificState } from "../atoms/AssetDistributionSpecificState";
 
 const AssetDistributionSelectionPage = () => {
     const [distribution, setDistribution] = useRecoilState(willDistributionState);
+    const [_, setAssetDistributionPercent] = useRecoilState(AssetDistributionPercentState);
+    const [__, setAssetDistributionSingle] = useRecoilState(AssetDistributionSingleState);
+    const [___, setAssetDistributionSpecific] = useRecoilState(AssetDistributionSpecificState);
     const routeState = useRecoilValue(routesState);
     const navigate = useNavigate();
     const location = useLocation();
@@ -24,35 +30,32 @@ const AssetDistributionSelectionPage = () => {
 
     // Handle Distribution Type Change
     const handleSelectChange = (value: string) => {
-        setDistribution((prevState) => {
-            if (value !== null && value !== prevState.distributionType) {
-                Swal.fire({
-                    title: "Confirm Edit",
-                    text: "Are you sure you want to change the distribution type?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "var(--color-will-green)",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes",
-                    cancelButtonText: "No",
-                    customClass: {
-                        popup: "swal-sm",
-                        title: "swal-title",
-                        confirmButton: "swal-confirm-btn",
-                    },
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        if (["Single", "Specific", "Percentage"].includes(value)) {
-                            setDistribution({
-                                ...prevState,
-                                distributionType: value as "Single" | "Specific" | "Percentage"
-                            });
-                        }
+        if (value !== null && value !== distribution.distributionType) {
+            Swal.fire({
+                title: "Confirm Edit",
+                text: "Are you sure you want to change the distribution type?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "var(--color-will-green)",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                customClass: {
+                    popup: "swal-sm",
+                    title: "swal-title",
+                    confirmButton: "swal-confirm-btn",
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (["Single", "Specific", "Percentage"].includes(value)) {
+                        setDistribution((prevState) => ({
+                            ...prevState,
+                            distributionType: value as "Single" | "Specific" | "Percentage"
+                        }));
                     }
-                });
-            }
-            return prevState;
-        });
+                }
+            });
+        }
     };
 
     // Save Will Distribution Data
@@ -77,16 +80,16 @@ const AssetDistributionSelectionPage = () => {
     const handleNextClick = async () => {
         if (!distribution.distributionType) {
             Swal.fire({
-                title: "Select Distribution Type",
-                text: "Please select a distribution type before proceeding.",
-                icon: "warning",
-                confirmButtonColor: "var(--color-will-green)",
-                customClass: {
-                    popup: "swal-sm",
-                    title: "swal-title",
-                    confirmButton: "swal-confirm-btn",
-                },
-            });
+                      title: "Select Distribution Type",
+                      text: "Please select a distribution type before proceeding.",
+                      icon: "warning",
+                      confirmButtonColor: "var(--color-will-green)",
+                      customClass: {
+                        popup: "swal-sm",
+                        title: "swal-title",
+                        confirmButton: "swal-confirm-btn",
+                      },
+                    });
             return;
         }
 
@@ -95,11 +98,30 @@ const AssetDistributionSelectionPage = () => {
         const routeValue = routeState.find(s => s.currentPath === location.pathname);
 
         if (distribution.distributionType == "Single")
+        {
+            setAssetDistributionSingle((prev) => ({
+                ...prev,
+                step: 1
+              }));
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION_SINGLE);
-        else if (distribution.distributionType == "Percentage")
+        }
+         else if (distribution.distributionType == "Percentage")
+        {
+            setAssetDistributionPercent((prev) => ({
+                ...prev,
+                step: 1
+              }));
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION_PERCENT);
+        }
         else if (distribution.distributionType == "Specific")
+        {
+            setAssetDistributionSpecific((prev) => ({
+                ...prev,
+                step: 1
+              }));
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSET_DISTRIBUTION_SPECIFIC);
+            
+        }
         else
             navigate(routeValue?.nextPath ?? "/");
     };

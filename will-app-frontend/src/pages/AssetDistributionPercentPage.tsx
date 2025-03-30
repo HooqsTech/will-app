@@ -8,11 +8,13 @@ import { userState } from '../atoms/UserDetailsState';
 import { useNavigate } from "react-router";
 import { ROUTE_PATHS } from "../constants";
 import DistributionBeneficiary from "../components/DistributionBeneficiary";
+import { useState } from "react";
 
 const AssetDistributionPercentPage = () => {
   const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
   const user = useRecoilValue(userState);
   const [assetDistribution, setAssetDistribution] = useRecoilState(AssetDistributionPercentState);
+  const [error,setError] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const backupBeneficiaryOptions = [
@@ -43,6 +45,7 @@ const AssetDistributionPercentPage = () => {
         [value]: input,
       },
     }));
+    
   };
 
   const handleBackupBeneficiaryChange = (value: string) => {
@@ -54,7 +57,19 @@ const AssetDistributionPercentPage = () => {
 
   const handleNextStep = async () => {
     if (assetDistribution.step === 1) {
-      setAssetDistribution((prev) => ({ ...prev, step: 2 }));
+      let toatlamount = 0;
+      for (let key in assetDistribution.additionalInputs) {
+        toatlamount += parseInt(assetDistribution.additionalInputs[key]);
+      }
+      if(toatlamount!= 100 && assetDistribution.firstBeneficiary.length > 1)
+      {
+        setError(true);
+      }
+      else
+      {
+        setAssetDistribution((prev) => ({ ...prev, step: 2 }));
+      }
+      
     } else {
       try {
         const userId = user.userId;
@@ -88,6 +103,7 @@ const AssetDistributionPercentPage = () => {
             />
             <DistributionBeneficiary />
           </div>
+          {error && <p className="mt-3  text-red-500">Please make sure the sum of percentages add up to 100%</p>}
           <div className="justify-between flex mt-10">
             <NextButton onClick={handleNextStep} label="Save & continue" />
           </div>

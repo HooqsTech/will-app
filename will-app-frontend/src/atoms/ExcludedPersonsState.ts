@@ -9,10 +9,5 @@ export interface IExcludedPersonState {
 
 export const excludedPersonsState = atom<IExcludedPersonState[]>({
     key: 'excludedPersonsState',
-    default: [{
-        id: "",
-        fullName: "",
-        relationship: "",
-        reason: ""
-    }]
+    default: []
 });

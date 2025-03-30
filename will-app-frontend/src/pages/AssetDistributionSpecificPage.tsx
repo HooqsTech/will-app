@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { IPropertiesState, propertiesState } from "../atoms/PropertiesState";
 import { bankDetailsState, IBankDetailsState } from "../atoms/BankDetailsState";
@@ -46,6 +46,7 @@ export interface IAssetSelectionState {
 const AssetDistributionSpecificPage = () => {
     const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
     const [assetDistribution, setAssetDistribution] = useRecoilState(AssetDistributionSpecificState);
+    const [error,setError] = useState<boolean>(false);
     const user = useRecoilValue(userState);
     const navigate = useNavigate();
 
@@ -359,37 +360,48 @@ const AssetDistributionSpecificPage = () => {
             }
         }
         else if (assetDistribution.step === 2) {
-            let beneficiaryDistributionitem: IBeneficiaryDistribution[];
-
-            if (Object.keys(assetDistribution.additionalInputs).length === 0) {
-                beneficiaryDistributionitem = [
-                    {
-                        beneficiaryId: assetDistribution.selectedBeneficiary[0],
-                        beneficiaryName: beneficiaryOptionsFirst.find(b => b.value === assetDistribution.selectedBeneficiary[0])?.label ?? "",
-                        percentage: 100
-                    }
-                ];
-            } else {
-                beneficiaryDistributionitem = Object.entries(assetDistribution.additionalInputs).map(([beneficiaryId, percentage]) => ({
-                    beneficiaryId,
-                    beneficiaryName: beneficiaryOptionsFirst.find(b => b.value === beneficiaryId)?.label ?? "",
-                    percentage: Number(percentage) || 0 // Convert percentage to number safely
-                }));
+            let toatlamount = 0;
+            for (let key in assetDistribution.additionalInputs) {
+                toatlamount += parseInt(assetDistribution.additionalInputs[key]);
             }
+            if(toatlamount!= 100 && assetDistribution.selectedBeneficiary.length > 1)
+            {
+                setError(true);
+            }
+            else
+            {
+                let beneficiaryDistributionitem: IBeneficiaryDistribution[];
+
+                if (Object.keys(assetDistribution.additionalInputs).length === 0) {
+                    beneficiaryDistributionitem = [
+                        {
+                            beneficiaryId: assetDistribution.selectedBeneficiary[0],
+                            beneficiaryName: beneficiaryOptionsFirst.find(b => b.value === assetDistribution.selectedBeneficiary[0])?.label ?? "",
+                            percentage: 100
+                        }
+                    ];
+                } else {
+                    beneficiaryDistributionitem = Object.entries(assetDistribution.additionalInputs).map(([beneficiaryId, percentage]) => ({
+                        beneficiaryId,
+                        beneficiaryName: beneficiaryOptionsFirst.find(b => b.value === beneficiaryId)?.label ?? "",
+                        percentage: Number(percentage) || 0 // Convert percentage to number safely
+                    }));
+                }
 
 
-            setAssetDistribution((prev) => ({
-                ...prev,
-                assetSelectionList: prev.assetSelectionList.map(asset =>
-                    prev.selectedAssets.includes(asset.assetId)
-                        ? { ...asset, beneficiarieslist: beneficiaryDistributionitem, isAssetDistributed: true }
-                        : asset
-                ),
-                selectedBeneficiary: [],
-                additionalInputs: {},
-                selectedAssets: [],
-                step: 1
-            }));
+                setAssetDistribution((prev) => ({
+                    ...prev,
+                    assetSelectionList: prev.assetSelectionList.map(asset =>
+                        prev.selectedAssets.includes(asset.assetId)
+                            ? { ...asset, beneficiarieslist: beneficiaryDistributionitem, isAssetDistributed: true }
+                            : asset
+                    ),
+                    selectedBeneficiary: [],
+                    additionalInputs: {},
+                    selectedAssets: [],
+                    step: 1
+                }));
+            }  
         }
         else if (assetDistribution.step === 3) {
             const userId = user.userId;
@@ -454,6 +466,7 @@ const AssetDistributionSpecificPage = () => {
                         />
                         <DistributionBeneficiary />
                     </div>
+                    {error && <p className="mt-3  text-red-500">Please make sure the sum of percentages add up to 100%</p>}
                     <div className="justify-between flex mt-10">
                         <NextButton
                             onClick={handleNextStep}

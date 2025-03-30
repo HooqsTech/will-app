@@ -26,12 +26,12 @@ import { BiLogoCreativeCommons } from 'react-icons/bi';
 import { CiBank, CiBitcoin } from 'react-icons/ci';
 import { FaRegAddressBook, FaRegAddressCard, FaRegUser } from 'react-icons/fa';
 import { LiaMoneyBillWaveSolid, LiaUsersCogSolid, LiaHandHoldingUsdSolid } from 'react-icons/lia';
-import { GiReceiveMoney, GiThreeFriends } from 'react-icons/gi';
+import { GiReceiveMoney, GiThreeFriends, } from 'react-icons/gi';
 import { IoBusinessOutline, IoDocumentTextOutline } from 'react-icons/io5';
 import { IconType } from 'react-icons/lib';
 import { MdOutlineAddHomeWork, MdOutlineHealthAndSafety, MdLockOutline, MdOutlineAccountBalance, MdOutlineDirectionsCar } from 'react-icons/md';
 import { TbFriendsOff } from 'react-icons/tb';
-import { PiHandWithdraw } from 'react-icons/pi';
+import { PiHandWithdraw,PiGavelLight } from 'react-icons/pi';
 import { SiAltiumdesigner } from 'react-icons/si';
 import { useNavigate } from 'react-router';
 import { useRecoilValue } from 'recoil';
@@ -375,6 +375,12 @@ export default function Sidebar2() {
         icon: TbFriendsOff,
         routePath: ROUTE_PATHS.EXECLUDED_PERSONS
       },
+      {
+        id: 'executor',
+        label: 'Executors',
+        icon: PiGavelLight,
+        routePath: ROUTE_PATHS.EXECUTOR
+      }
     ];
 
     // SET ASSETS
