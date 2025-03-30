@@ -476,7 +476,7 @@ const MyPlan: React.FC = () => {
           </div>
 
           {/* Coupon Code Input */}
-          <div className="mt-6 w-full max-w-md flex">
+          {/* <div className="mt-6 w-full max-w-md flex">
             <input
               type="text"
               placeholder="Enter coupon code or referral code"
@@ -487,7 +487,7 @@ const MyPlan: React.FC = () => {
             <button className="bg-[#265e55] text-white px-4 py-2 rounded-r-lg">
               Apply
             </button>
-          </div>
+          </div> */}
 
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto">
             <button
