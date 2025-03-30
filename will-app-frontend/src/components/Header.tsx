@@ -45,7 +45,7 @@ const Header = () => {
                         <li>
                             <a href="/order_summary" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:border-0  md:p-0 ">My Plans</a>
                         </li>
-                        <li>
+                        <li className="hidden">
                             <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:border-0  md:p-0 ">Contact Us</a>
                         </li>
                         <li>
