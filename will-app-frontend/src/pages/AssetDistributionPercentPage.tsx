@@ -64,7 +64,7 @@ const AssetDistributionPercentPage = () => {
         navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
         setAssetDistribution((prev) => ({ ...prev, step: 1 }));
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   };

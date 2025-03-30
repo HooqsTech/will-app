@@ -17,9 +17,6 @@ const CustomAssetSelectBar: React.FC<ICustomAssetSelectBarProps> = ({
   onEdit,
   multiple = false
 }) => {
-  console.log(assets);
-  console.log(selectedOptions);
-
   return (
     <div className="flex flex-col gap-7 mb-10">
       {assets.map((asset) => {

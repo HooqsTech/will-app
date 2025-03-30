@@ -24,9 +24,7 @@ const AssetDistributionSelectionPage = () => {
 
     // Handle Distribution Type Change
     const handleSelectChange = (value: string) => {
-        console.log(value)
         setDistribution((prevState) => {
-            console.log(prevState.distributionType)
             if (value !== null && value !== prevState.distributionType) {
                 Swal.fire({
                     title: "Confirm Edit",
@@ -79,16 +77,16 @@ const AssetDistributionSelectionPage = () => {
     const handleNextClick = async () => {
         if (!distribution.distributionType) {
             Swal.fire({
-                      title: "Select Distribution Type",
-                      text: "Please select a distribution type before proceeding.",
-                      icon: "warning",
-                      confirmButtonColor: "var(--color-will-green)",
-                      customClass: {
-                        popup: "swal-sm",
-                        title: "swal-title",
-                        confirmButton: "swal-confirm-btn",
-                      },
-                    });
+                title: "Select Distribution Type",
+                text: "Please select a distribution type before proceeding.",
+                icon: "warning",
+                confirmButtonColor: "var(--color-will-green)",
+                customClass: {
+                    popup: "swal-sm",
+                    title: "swal-title",
+                    confirmButton: "swal-confirm-btn",
+                },
+            });
             return;
         }
 

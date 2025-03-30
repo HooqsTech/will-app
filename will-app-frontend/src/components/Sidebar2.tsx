@@ -234,7 +234,6 @@ export default function Sidebar2() {
     itemIds: string[],
   ) => {
     setExpandedItems(itemIds);
-    console.log(expandedItems);
   };
 
   const about_you = ['personal_details', 'address_details'];

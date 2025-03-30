@@ -179,9 +179,7 @@ const MyPlan: React.FC = () => {
         return;
       }
 
-      console.log(selectedCategory?.categoryName)
       if (selectedCategory?.categoryName === "NRI Will") {
-        console.log(true)
         setStep(3);
       } else if (selected) {
         setStep(2);
@@ -238,7 +236,6 @@ const MyPlan: React.FC = () => {
       image: "",
       handler: async function (_: any) {
         if (!selectedCategory) {
-          console.log(selectedCategory)
           return;
         }
         const categoryData = {
@@ -264,7 +261,6 @@ const MyPlan: React.FC = () => {
             confirmButtonText: "Okay",
             confirmButtonColor: "var(--color-will-green)",
           });
-          console.log("Payment Cancelled");
         }
       }
     }
@@ -282,7 +278,6 @@ const MyPlan: React.FC = () => {
         setStep(2);
       }
     } else if (step === 2) {
-      console.log(transactionState)
       if (transactionState) {
         navigate("/order_summary");
       } else {

@@ -31,7 +31,6 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
             var age = dayjs().diff(dayjs(item.dateOfBirth), "year");
             setNeedsGuardian(age <= 18)
         }
-        console.log('item.dateOfBirth', item.dateOfBirth)
     }, [])
 
 

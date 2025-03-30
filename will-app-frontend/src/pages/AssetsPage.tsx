@@ -61,8 +61,6 @@ const AssetsPage = () => {
         }
     }
 
-    console.log('selectedAssets', selectedAssets)
-
     return (
         <div className="w-xl h-full">
             <div>

@@ -33,13 +33,8 @@ const OrderSummary = () => {
   };
 
   const handleEdit = () => {
-    console.log(serviceCounts)
     const hasValidService = serviceCounts.some(item => item.serviceCount > 0);
-
-    console.log(hasValidService)
-
     if (hasValidService) {
-      console.log("Redirecting to My Plan - Step 2");
       setPath({ path: "findPlan" });
       navigate("/my_plan?step=2");
     } else {
@@ -58,7 +53,6 @@ const OrderSummary = () => {
   };
 
   const handleFindPlan = () => {
-    console.log("Redirecting to Find Plan");
     setPath({ path: "findPlan" });
     navigate("/my_plan");
   };
@@ -126,19 +120,12 @@ const OrderSummary = () => {
           (t.selectedservices ? (Array.isArray(t.selectedservices) ? t.selectedservices : [t.selectedservices]) : []).map(s => s.serviceId)
         );
 
-        console.log("Normal" + JSON.stringify(normalizedTransactions, null, 2))
-        //console.log("will"+JSON.stringify(willServices, null, 2) )
-        console.log("Selected Category" + selectedCategoryIds)
-        console.log("Selected Servie" + selectedServiceIds)
-
         const formattedData: IFormattedServiceCategory[] = willServices
           .filter(category => selectedCategoryIds.includes(category.categoryId))
           .map(category => ({
             ...category,
             services: category.services.filter(service => !selectedServiceIds.includes(service.serviceId))
           }));
-
-        console.log("Processed Data:", JSON.stringify(formattedData, null, 2));
 
         const serviceCounts = formattedData.map(category => ({
           categoryId: category.categoryId,
