@@ -369,7 +369,7 @@ export const generatePDF = async (req: Request, res: Response) => {
             { text: "", pageBreak: "after" },
             { text: "ATTESTATION BY WITNESSES\n", style: "subheader", alignment: "center" },
             { text: `This last Will and testament, which has been separately signed by ${honorific} ${personalDetails.fullName}, the testator, as on the date indicated below signed and declared by the above-named testator as his last Will and testament in the presence of each of us. We, in the presence of the testator and each other, at the testator's request, under penalty of perjury, hereby subscribe our names as witnesses to the declaration and execution of the last Will and testament by the testator, and we declare that, to the best of our knowledge, said testator is eighteen years of age or older, of sound mind and memory and under no constraint or undue influence.`},
-            { text: "\n\nWITNESSES 1\n\n\n", alignment: "center", bold: true},
+            { text: "\n\n\n\nWITNESSES 1\n\n\n", alignment: "center", bold: true},
             { text: "Full Name of the Witness as per Aadhar/PAN Card:\n\n\n\n", alignment: "left"},
             { text: "Signature of Witness:\n\n\n\n", alignment: "left"},
             { text: "Date:\n\n\n\n", alignment: "left"},
@@ -428,11 +428,11 @@ export const generatePDF = async (req: Request, res: Response) => {
     });
     
 
-      const publicUrl = await uploadFile(userId, fileName, fs.createReadStream(filePath));
+      const urls = await uploadFile(userId, fileName, fs.createReadStream(filePath));
 
-      await upsertPDFVersioning(userId, publicUrl);
+      await upsertPDFVersioning(userId, urls.publicUrl, urls.signedUrl);
 
-      console.log("File uploaded:", publicUrl);
+      console.log("File uploaded:", urls.publicUrl);
 
       res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
       res.setHeader("Content-Type", "application/pdf");
