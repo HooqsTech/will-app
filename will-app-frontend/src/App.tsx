@@ -1,10 +1,15 @@
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router"
-import YourWill from "./pages/YourWill"
-import LoginPage from "./pages/LoginPage"
-import HomePage from "./pages/HomePage"
+import { Modal } from "@mui/material";
+import Lottie from "lottie-react";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router";
+import { useRecoilValue } from "recoil";
 import { getCookie } from "typescript-cookie";
-import MyPlan  from "./pages/MyPlan"
-import OrderConfirmation from "./pages/OrderSummary"
+import { pageLoadingState } from "./atoms/PageLoadingState";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import MyPlan from "./pages/MyPlan";
+import OrderConfirmation from "./pages/OrderSummary";
+import YourWill from "./pages/YourWill";
 
 const isAuthenticated = () => {
   const idToken = getCookie('idToken'); // Adjust 'idToken' to match your cookie name
@@ -16,7 +21,17 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   return isAuthenticated() ? children : <Navigate to="/login" state={{ from: location }} />;
 };
 
+
 function App() {
+  const [animationData, setAnimationData] = useState(null);
+  const isLoading = useRecoilValue(pageLoadingState);
+
+  useEffect(() => {
+    fetch("/assets/loading-lottie.json")
+      .then((response) => response.json())
+      .then((data) => setAnimationData(data));
+  }, []);
+
   return (
     <div className="font-[frank] w-full">
       <BrowserRouter>
@@ -31,6 +46,11 @@ function App() {
           <Route path={"order_summary"} element={<OrderConfirmation />} />
           OrderConfirmation
         </Routes>
+        <Modal className='h-screen flex flex-col items-center justify-center' open={isLoading}>
+          <div className='border-none focus:border-none outline-0'>
+            <Lottie animationData={animationData} />
+          </div>
+        </Modal>
       </BrowserRouter>
     </div>
   )

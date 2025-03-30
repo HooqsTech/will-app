@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { TransactionSummaryState } from "../atoms/TransactionSummaryState";
 import { getPaymentTransactionsByPhoneNumbers } from "../api/payment";
 import Header from "../components/Header";
@@ -15,11 +15,12 @@ import Swal from "sweetalert2";
 import { pathState } from "../atoms/serviceState";
 import { downloadPDFFile } from "../api/pdf";
 import { Button } from "@mui/material";
+import { pageLoadingState } from "../atoms/PageLoadingState";
 
 const OrderSummary = () => {
   const navigate = useNavigate();
   const [payment, setPayment] = useRecoilState(TransactionSummaryState);
-  const [loading, setLoading] = useState(true);
+  const setLoading = useSetRecoilState(pageLoadingState);
   const [userId, setUserId] = useRecoilState(userState);
   const [, setPath] = useRecoilState(pathState);
   const [selectedOrder, setSelectedOrder] = useState<ITransaction | null>(null);
@@ -149,14 +150,6 @@ const OrderSummary = () => {
 
     fetchAndProcessData();
   }, [userId, setPayment]);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <p>Loading...</p>
-      </div>
-    );
-  }
 
   const hasItems = payment?.some(
     (transaction) =>

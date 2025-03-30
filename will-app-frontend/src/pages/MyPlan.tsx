@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { formattedCategoriesState, pathState, selectedCategoryState, selectedServicesState, } from "../atoms/serviceState";
 import { ICategory, IFormattedServiceCategory, IWillService } from "../models/willService";
 import { getWillServices } from "../api/willService";
@@ -14,12 +14,13 @@ import { getUserIdByPhoneNumber } from "../api/user";
 import { getCookie } from "typescript-cookie";
 import { TransactionSummaryState } from "../atoms/TransactionSummaryState";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import { pageLoadingState } from "../atoms/PageLoadingState";
 
 const MyPlan: React.FC = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useRecoilState(formattedCategoriesState);
   const [selectedCategory, setSelectedCategory] = useRecoilState(selectedCategoryState);
-  const [loading, setLoading] = useState(true);
+  const setLoading = useSetRecoilState(pageLoadingState);
   const [params] = useSearchParams();
   const initialStep = Number(params.get("step")) || 1;
   //const initialStep =  1; 
@@ -28,7 +29,7 @@ const MyPlan: React.FC = () => {
     selectedServicesState
   );
   const [step, setStep] = useState<number>(initialStep);
-  const [coupon, setCoupon] = useState("");
+  // const [coupon, setCoupon] = useState("");
   const [infoIndex, setInfoIndex] = useState<string | null>(null);
   const infoRef = useRef<HTMLDivElement | null>(null);
   const transactionState = useRecoilValue(TransactionSummaryState);
@@ -305,12 +306,6 @@ const MyPlan: React.FC = () => {
       <div className="fixed top-0 left-0 w-full bg-[#265e55] z-50">
         <Header />
       </div>
-
-      {loading && (
-        <div className="loading-overlay">
-          <div className="spinner"></div>
-        </div>
-      )}
 
       <div className="mt-24">
         <PaymentStepper currentStep={step} />

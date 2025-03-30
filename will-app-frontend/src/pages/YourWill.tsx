@@ -4,6 +4,9 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { getCookie } from 'typescript-cookie';
 import { getUser } from '../api/user';
 import { addressDetailsState } from '../atoms/AddressDetailsState';
+import { AssetDistributionPercentState } from '../atoms/AssetDistributionPercentState';
+import { AssetDistributionSingleState, IAssetDistributionSingleState } from '../atoms/AssetDistributionSingleState';
+import { AssetDistributionSpecificState, IAssetDistributionSpecificState } from '../atoms/AssetDistributionSpecificState';
 import { bankDetailsState, IBankDetailsState } from '../atoms/BankDetailsState';
 import { beneficiariesState, IBeneficiaryState } from '../atoms/BeneficiariesState';
 import { bondsState, IBondState } from '../atoms/BondsState';
@@ -14,6 +17,8 @@ import { dematAccountsState, IDematAccountState } from '../atoms/DematAccountsSt
 import { digitalAssetsState, IDigitalAssetState } from '../atoms/DigitalAssetsState';
 import { educationLoansState, IEducationLoanState } from '../atoms/EducationsLoanState';
 import { escopsState, IEscopState } from '../atoms/EscopsState';
+import { excludedPersonsState, IExcludedPersonState } from '../atoms/ExcludedPersonsState';
+import { executorState, IExecutorState } from '../atoms/ExecutorState';
 import { fixedDepositsState, IFixedDepositState } from '../atoms/FixedDepositState';
 import { homeLoansState, IHomeLoanState } from '../atoms/HomeLoansState';
 import { IInsurancePolicyState, insurancePoliciesState } from '../atoms/InsurancePoliciesState';
@@ -21,11 +26,14 @@ import { IIntellectualPropertyState, intellectualPropertiesState } from '../atom
 import { IJewelleryState, jewelleriesState } from '../atoms/JewelleriesState';
 import { IMutualFundState, mutualFundsState } from '../atoms/MutualFundsState';
 import { IOtherLiabilityState, otherLiabilitiesState } from '../atoms/OtherLiabilitiesState';
+import { pageLoadingState } from '../atoms/PageLoadingState';
 import { IPensionAccountState, pensionAccountsState } from '../atoms/PensionAccountsState';
 import { personalDetailsState } from '../atoms/PersonalDetailsState';
 import { IPersonalLoanState, personalLoansState } from '../atoms/PersonalLoansState';
 import { IPropertiesState, propertiesState } from '../atoms/PropertiesState';
 import { IProvidentFundState, providentFundsState } from '../atoms/ProvidentFundsState';
+import { residuaryAssetDistributionState } from '../atoms/ResiduaryAssetDistribution';
+import { IResiduaryEstateSingleState, ResiduaryEstateSingleState } from '../atoms/ResiduaryEstateSingleState';
 import { getRouteDataFromSelectedAssets, routesState } from '../atoms/RouteState';
 import { ISafetyDepositBoxState, safetyDepositBoxesState } from '../atoms/SafetyDepositBoxesState';
 import { ISelectedAssetsState, selectedAssetsState } from '../atoms/SelectedAssetsState';
@@ -40,6 +48,8 @@ import { dematAccountValidationState, emptyDematAccountsValidationState } from '
 import { digitalAssetsValidationState, emptyDigitalAssetValidationState } from '../atoms/validationStates/DigitalAssetValidationState';
 import { educationLoanValidationState, emptyEducationLoanValidationState } from '../atoms/validationStates/EducationLoanValidationState';
 import { emptyEscopValidationState, escopsValidationState } from '../atoms/validationStates/EscopsDetailsValidationState';
+import { emptyExcludedPersonValidationState, excludedPersonsValidationState } from '../atoms/validationStates/ExcludedPersonsValidationState';
+import { emptyExecutorValidationState, executorValidationState } from '../atoms/validationStates/ExecutorValidationState';
 import { emptyFixedDepositsValidationState, fixedDepositsValidationState } from '../atoms/validationStates/FixedDepositValidationState';
 import { emptyHomeLoanValidationState, homeLoanValidationState } from '../atoms/validationStates/HomeLoanValidationState';
 import { emptyInsurancePoliciesValidationState, insurancePoliciesValidationState } from '../atoms/validationStates/InsurancePoliciesValidationState';
@@ -56,6 +66,7 @@ import { emptyVehicleloanValidationState, vehicleLoanValdationState } from '../a
 import { emptyVehicleValidationState, vehiclesValidationState } from '../atoms/validationStates/VehicleValidationState';
 import { IVehicleLoanState, vehicleLoansState } from '../atoms/VehicleLoansState';
 import { IVehicleState, vehiclesState } from '../atoms/VehiclesState';
+import { IWillDistributionState, willDistributionState } from '../atoms/WillDistributionState';
 import Header from '../components/Header';
 import Sidebar2 from '../components/Sidebar2';
 import { ASSET_SUBTYPES, ROUTE_PATHS } from '../constants';
@@ -76,6 +87,8 @@ import DematAccountPage from './DematAccountPage';
 import DigitalAssetsPage from './DigitalAssetsPage';
 import EducationLoanPage from './EducationLoanPage';
 import EscopsPage from './EscopsPage';
+import ExcludedPersonsPage from './ExcludedPersonsPage';
+import ExecutorPage from './ExecutorPage';
 import FixedDepositsPage from './FixedDepositsPage';
 import HomeLoanPage from './HomeLoanPage';
 import InsurancePoliciesPage from './InsurancePoliciesPage';
@@ -96,37 +109,15 @@ import ResiduaryEstateSinglePage from './ResiduaryEstateSinglePage';
 import SafetyDepositBoxesPage from './SafetyDepositBoxesPage';
 import VechicleLoanPage from './VehicleLoanPage';
 import VehiclesPage from './VehiclesPage';
-import ExecutorPage from './ExecutorPage';
-import { executorState, IExecutorState } from '../atoms/ExecutorState';
-import { emptyExecutorValidationState, executorValidationState } from '../atoms/validationStates/ExecutorValidationState';
-import ExcludedPersonsPage from './ExcludedPersonsPage';
-import { excludedPersonsState, IExcludedPersonState } from '../atoms/ExcludedPersonsState';
-import { emptyExcludedPersonValidationState, excludedPersonsValidationState } from '../atoms/validationStates/ExcludedPersonsValidationState';
-import { Modal } from '@mui/material';
-import Lottie from 'lottie-react';
-import { IWillDistributionState, willDistributionState } from '../atoms/WillDistributionState';
-import { AssetDistributionSpecificState, IAssetDistributionSpecificState } from '../atoms/AssetDistributionSpecificState';
-import { AssetDistributionSingleState, IAssetDistributionSingleState } from '../atoms/AssetDistributionSingleState';
-import { AssetDistributionPercentState } from '../atoms/AssetDistributionPercentState';
-import { residuaryAssetDistributionState } from '../atoms/ResiduaryAssetDistribution';
-import { IResiduaryEstateSingleState, ResiduaryEstateSingleState } from '../atoms/ResiduaryEstateSingleState';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const setPageLoading = useSetRecoilState(pageLoadingState);
 
     const setUser = useSetRecoilState(userState);
     const setPersonalDetails = useSetRecoilState(personalDetailsState);
     const setAddressDetails = useSetRecoilState(addressDetailsState);
     const setSelectedAssets = useSetRecoilState(selectedAssetsState);
-
-    const [animationData, setAnimationData] = React.useState(null);
-
-    React.useEffect(() => {
-        fetch("/assets/loading-lottie.json")
-            .then((response) => response.json())
-            .then((data) => setAnimationData(data));
-    }, []);
 
     // PROPERTIES
     const setProperties = useSetRecoilState(propertiesState);
@@ -233,12 +224,12 @@ const YourWill: React.FC = () => {
     const setExcludedPersonsValidationState = useSetRecoilState(excludedPersonsValidationState);
 
     //Will distributuion
-     const  setWillDistribution = useSetRecoilState(willDistributionState);
-     const setWillDistributionSpecific = useSetRecoilState(AssetDistributionSpecificState);
-     const setWillDistributionSingle = useSetRecoilState<IAssetDistributionSingleState>(AssetDistributionSingleState);
-     const setWillDistributionPercent = useSetRecoilState(AssetDistributionPercentState);
-     const setWillResiduaryPercent = useSetRecoilState(residuaryAssetDistributionState);
-     const setWillResiduarySingle = useSetRecoilState<IResiduaryEstateSingleState>(ResiduaryEstateSingleState);
+    const setWillDistribution = useSetRecoilState(willDistributionState);
+    const setWillDistributionSpecific = useSetRecoilState(AssetDistributionSpecificState);
+    const setWillDistributionSingle = useSetRecoilState<IAssetDistributionSingleState>(AssetDistributionSingleState);
+    const setWillDistributionPercent = useSetRecoilState(AssetDistributionPercentState);
+    const setWillResiduaryPercent = useSetRecoilState(residuaryAssetDistributionState);
+    const setWillResiduarySingle = useSetRecoilState<IResiduaryEstateSingleState>(ResiduaryEstateSingleState);
 
     const setRouteState = useSetRecoilState(routesState);
 
@@ -247,7 +238,7 @@ const YourWill: React.FC = () => {
     }, [])
 
     const getUserAndSetState = async () => {
-        setIsModalOpen(true);
+        setPageLoading(true);
         const phoneNumber = getCookie('phoneNumber');
         const user = await getUser(phoneNumber ?? "/");
 
@@ -447,14 +438,12 @@ const YourWill: React.FC = () => {
             }
         }
 
-        if(user.will_distribution)
-        {
-            let willDistributiondata: IWillDistributionState = {id: user.will_distribution.id, distributionType: user.will_distribution.distributiontype, residuaryDistributionType: user.will_distribution.residuarydistributiontype, fallbackRule: user.will_distribution.fallbackrule};
+        if (user.will_distribution) {
+            let willDistributiondata: IWillDistributionState = { id: user.will_distribution.id, distributionType: user.will_distribution.distributiontype, residuaryDistributionType: user.will_distribution.residuarydistributiontype, fallbackRule: user.will_distribution.fallbackrule };
             setWillDistribution(willDistributiondata);
         }
 
-        if(user.specific_asset_distribution)
-        {
+        if (user.specific_asset_distribution) {
             let willDistributionspecificdata: IAssetDistributionSpecificState = {
                 id: "",
                 assetSelectionList: user.specific_asset_distribution,
@@ -466,20 +455,18 @@ const YourWill: React.FC = () => {
             }
             setWillDistributionSpecific(willDistributionspecificdata)
         }
-        if(user.single_beneficiary_distribution)
-        {
+        if (user.single_beneficiary_distribution) {
             let singledistributiondata = {
-                    id: "",
-                    primaryBeneficiary: user.single_beneficiary_distribution.primarybeneficiaryid,
-                    secondaryBeneficiary: user.single_beneficiary_distribution.secondarybeneficiaryid,
-                    tertiaryBeneficiary: user.single_beneficiary_distribution.tertiarybeneficiaryid,
-                    step: 1,
-                  }
-            
+                id: "",
+                primaryBeneficiary: user.single_beneficiary_distribution.primarybeneficiaryid,
+                secondaryBeneficiary: user.single_beneficiary_distribution.secondarybeneficiaryid,
+                tertiaryBeneficiary: user.single_beneficiary_distribution.tertiarybeneficiaryid,
+                step: 1,
+            }
+
             setWillDistributionSingle(singledistributiondata);
         }
-        if(user.percentage_distribution)
-        {
+        if (user.percentage_distribution) {
             let percentdistributiondata = {
                 id: "",
                 firstBeneficiary: user.percentage_distribution.firstBeneficiary,
@@ -487,42 +474,40 @@ const YourWill: React.FC = () => {
                 additionalInputs: user.percentage_distribution.additionalInputs,
                 step: 1,
             }
-              
+
             setWillDistributionPercent(percentdistributiondata)
         }
-        
-        if(user.residuary_asset_distribution)
-        {
-            if(user.will_distribution.residuarydistributiontype === "Single")
-            {
+
+        if (user.residuary_asset_distribution) {
+            if (user.will_distribution.residuarydistributiontype === "Single") {
                 setWillResiduarySingle({
                     id: "",
                     primaryBeneficiary: [user.residuary_asset_distribution[0].id],
                     donationItem: [],
                     step: 1,
-                  })
+                })
             }
             else {
                 const additionalInputs: Record<string, string> = {};
 
                 user.residuary_asset_distribution.forEach(item => {
-                additionalInputs[item.id] = item.percentage.toString();
+                    additionalInputs[item.id] = item.percentage.toString();
                 });
                 setWillResiduaryPercent({
-                    
+
                     userId: "",
                     beneficiaries: user.residuary_asset_distribution,
                     firstBeneficiary: user.residuary_asset_distribution.map((res) => res.id),
                     additionalInputs: additionalInputs,
                     primaryDonation: []
-                    
+
                 })
             }
         }
 
         // DYNAMIC ROUTE MAPPING
         generateRouteDataFromSelectedAssets(user.selectedAssets);
-        setIsModalOpen(false);
+        setPageLoading(false);
     }
 
     const generateRouteDataFromSelectedAssets = (selectedAssets: ISelectedAssetsState) => {
@@ -590,11 +575,6 @@ const YourWill: React.FC = () => {
                     </Routes>
                 </div>
             </div>
-            <Modal className='h-screen flex flex-col items-center justify-center' open={isModalOpen}>
-                <div className='border-none focus:border-none outline-0'>
-                    <Lottie animationData={animationData} />
-                </div>
-            </Modal>
         </div>
     )
 }
