@@ -222,5 +222,6 @@ model pdfversioning {
   createdate    DateTime? @default(now()) @db.Timestamp(6)
   updatedate    DateTime? @default(now()) @db.Timestamp(6)
   latestversion Int       @default(1)
-  folderpath    String    @db.VarChar(255)
+  folderpath    String
+  downloadurl   String?
 }

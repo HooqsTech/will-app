@@ -8,7 +8,7 @@ const storage = new Storage({
 
 const BUCKET_NAME = "hamara-will-storage";
 
-const uploadFile = async (userId: string, filename: string, fileStream: Readable): Promise<string> => {
+const uploadFile = async (userId: string, filename: string, fileStream: Readable):  Promise<{ signedUrl: string; publicUrl: string }> => {
   try {
     const destination = `uploads/${userId}/${filename}`;
     const bucket = storage.bucket(BUCKET_NAME);
@@ -26,10 +26,16 @@ const uploadFile = async (userId: string, filename: string, fileStream: Readable
       writeStream.on("error", reject);
     });
 
+    const [signedUrl] = await file.getSignedUrl({
+      action: "read",
+      expires: "01-01-2099",
+    });
+    console.log(signedUrl);
+    console.log("File uploaded:", signedUrl);
     const publicUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${destination}`;
     console.log("File uploaded:", publicUrl);
 
-    return publicUrl;
+    return { signedUrl, publicUrl };
   } catch (error) {
     console.error("Error uploading file:", error);
     throw new Error("File upload failed.");
