@@ -22,7 +22,7 @@ import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
 import { AiOutlineGold } from 'react-icons/ai';
-import { BiLogoCreativeCommons } from 'react-icons/bi';
+import { BiHome, BiLogoCreativeCommons } from 'react-icons/bi';
 import { CiBank, CiBitcoin } from 'react-icons/ci';
 import { FaRegAddressBook, FaRegAddressCard, FaRegUser } from 'react-icons/fa';
 import { LiaMoneyBillWaveSolid, LiaUsersCogSolid, LiaHandHoldingUsdSolid } from 'react-icons/lia';
@@ -494,6 +494,16 @@ export default function Sidebar2() {
           />
         </div>
         <div className='p-6 w-full'>
+          <div className='md:hidden text-white'>
+            <div className='flex items-center'>
+              <BiHome className='text-3xl pr-2' />
+              <StyledTreeItemLabelText>
+                <a href="/home">
+                  Home
+                </a>
+              </StyledTreeItemLabelText>
+            </div>
+          </div>
           <RichTreeView
             apiRef={apiRef}
             multiSelect={false}
