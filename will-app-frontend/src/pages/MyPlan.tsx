@@ -406,7 +406,7 @@ const MyPlan: React.FC = () => {
           <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto translate-x-70">
             <button
               onClick={handleContinue}
-              className="flex items-center bg-[#265e55] text-white px-4 py-2 rounded-none hover:bg-[#1e4a42] transition"
+              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-none hover:bg-[#1e4a42] transition"
             >
               <FaArrowRight className="mr-2" /> Next
             </button>
