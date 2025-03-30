@@ -104,6 +104,12 @@ import { excludedPersonsState, IExcludedPersonState } from '../atoms/ExcludedPer
 import { emptyExcludedPersonValidationState, excludedPersonsValidationState } from '../atoms/validationStates/ExcludedPersonsValidationState';
 import { Modal } from '@mui/material';
 import Lottie from 'lottie-react';
+import { IWillDistributionState, willDistributionState } from '../atoms/WillDistributionState';
+import { AssetDistributionSpecificState, IAssetDistributionSpecificState } from '../atoms/AssetDistributionSpecificState';
+import { AssetDistributionSingleState, IAssetDistributionSingleState } from '../atoms/AssetDistributionSingleState';
+import { AssetDistributionPercentState } from '../atoms/AssetDistributionPercentState';
+import { residuaryAssetDistributionState } from '../atoms/ResiduaryAssetDistribution';
+import { IResiduaryEstateSingleState, ResiduaryEstateSingleState } from '../atoms/ResiduaryEstateSingleState';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -226,6 +232,14 @@ const YourWill: React.FC = () => {
     const setExcludedPersons = useSetRecoilState(excludedPersonsState);
     const setExcludedPersonsValidationState = useSetRecoilState(excludedPersonsValidationState);
 
+    //Will distributuion
+     const  setWillDistribution = useSetRecoilState(willDistributionState);
+     const setWillDistributionSpecific = useSetRecoilState(AssetDistributionSpecificState);
+     const setWillDistributionSingle = useSetRecoilState<IAssetDistributionSingleState>(AssetDistributionSingleState);
+     const setWillDistributionPercent = useSetRecoilState(AssetDistributionPercentState);
+     const setWillResiduaryPercent = useSetRecoilState(residuaryAssetDistributionState);
+     const setWillResiduarySingle = useSetRecoilState<IResiduaryEstateSingleState>(ResiduaryEstateSingleState);
+
     const setRouteState = useSetRecoilState(routesState);
 
     React.useEffect(() => {
@@ -250,161 +264,161 @@ const YourWill: React.FC = () => {
 
         if (user.assets) {
             // SET PROPERTIES
-            var properties: IPropertiesState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PROPERTIES).map((s) => ({ ...s.data, id: s.id }));
+            let properties: IPropertiesState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PROPERTIES).map((s) => ({ ...s.data, id: s.id }));
             if (properties.length > 0) {
                 setProperties(properties)
                 setPropertiesValidationState(properties.map(_ => ({ ...emptyPropertyValidationState })))
             }
 
             // SET BANK ACCOUNTS
-            var bankAccounts: IBankDetailsState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.BANK_ACCOUNTS).map((s) => ({ ...s.data, id: s.id }));
+            let bankAccounts: IBankDetailsState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.BANK_ACCOUNTS).map((s) => ({ ...s.data, id: s.id }));
             if (bankAccounts.length > 0) {
                 setBankAccounts(bankAccounts)
                 setBankAccountsValidationState(bankAccounts.map(_ => ({ ...emptyBankAccountValidationState })))
             }
 
             // SET BANK ACCOUNTS
-            var fixedDeposits: IFixedDepositState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.FIXED_DEPOSITS).map((s) => ({ ...s.data, id: s.id }));
+            let fixedDeposits: IFixedDepositState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.FIXED_DEPOSITS).map((s) => ({ ...s.data, id: s.id }));
             if (fixedDeposits.length > 0) {
                 setFixedDeposits(fixedDeposits)
                 setFixedDepositsValidationState(fixedDeposits.map(_ => ({ ...emptyFixedDepositsValidationState })))
             }
 
             // SET INSURANCE POLICIES
-            var insurancePolicies: IInsurancePolicyState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.INSURANCE_POLICIES).map((s) => ({ ...s.data, id: s.id }));
+            let insurancePolicies: IInsurancePolicyState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.INSURANCE_POLICIES).map((s) => ({ ...s.data, id: s.id }));
             if (insurancePolicies.length > 0) {
                 setInsurancePolicies(insurancePolicies)
                 setInsurancePoliciesValidationState(insurancePolicies.map(_ => ({ ...emptyInsurancePoliciesValidationState })))
             }
 
             // SET SAFETY DEPOSIT BOXES
-            var safetyBoxes: ISafetyDepositBoxState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.SAFETY_DEPOSIT_BOXES).map((s) => ({ ...s.data, id: s.id }));
+            let safetyBoxes: ISafetyDepositBoxState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.SAFETY_DEPOSIT_BOXES).map((s) => ({ ...s.data, id: s.id }));
             if (safetyBoxes.length > 0) {
                 setSafetyDepositBoxes(safetyBoxes)
                 setSafetyDepositBoxesValidationState(safetyBoxes.map(_ => ({ ...emptySafetyDepositBoxesValidationState })))
             }
 
             // SET DEMAT ACCOUNTS
-            var dematAccounts: IDematAccountState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.DEMAT_ACCOUNTS).map((s) => ({ ...s.data, id: s.id }));
+            let dematAccounts: IDematAccountState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.DEMAT_ACCOUNTS).map((s) => ({ ...s.data, id: s.id }));
             if (dematAccounts.length > 0) {
                 setDematAccounts(dematAccounts)
                 setDematAccountsValidationState(dematAccounts.map(_ => ({ ...emptyDematAccountsValidationState })))
             }
 
             // SET MUTUAL FUNDS
-            var mutualFunds: IMutualFundState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.MUTUAL_FUNDS).map((s) => ({ ...s.data, id: s.id }));
+            let mutualFunds: IMutualFundState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.MUTUAL_FUNDS).map((s) => ({ ...s.data, id: s.id }));
             if (mutualFunds.length > 0) {
                 setMutualFunds(mutualFunds)
                 setMutualFundsValidationState(mutualFunds.map(_ => ({ ...emptyMutualFundsValidationState })))
             }
 
             // SET MUTUAL FUNDS
-            var providentFunds: IProvidentFundState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PROVIDENT_FUNDS).map((s) => ({ ...s.data, id: s.id }));
+            let providentFunds: IProvidentFundState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PROVIDENT_FUNDS).map((s) => ({ ...s.data, id: s.id }));
             if (providentFunds.length > 0) {
                 setProvidentFunds(providentFunds)
                 setProvidentFundsValidationState(providentFunds.map(_ => ({ ...emptyProvidentFundValidationState })))
             }
 
             // SET MUTUAL FUNDS
-            var pensionAccounts: IPensionAccountState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PENSION_ACCOUNTS).map((s) => ({ ...s.data, id: s.id }));
+            let pensionAccounts: IPensionAccountState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PENSION_ACCOUNTS).map((s) => ({ ...s.data, id: s.id }));
             if (pensionAccounts.length > 0) {
                 setPensionAccounts(pensionAccounts)
                 setPensionAccountsValidationState(pensionAccounts.map(_ => ({ ...emptyPensionAccountValidationState })))
             }
 
             // SET BUSINESSES
-            var businesses: IBusinessState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.BUSINESSES).map((s) => ({ ...s.data, id: s.id }));
+            let businesses: IBusinessState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.BUSINESSES).map((s) => ({ ...s.data, id: s.id }));
             if (businesses.length > 0) {
                 setBusinessses(businesses)
                 setBusinesssesValidationState(businesses.map(_ => ({ ...emptyBusinessesValidationState })))
             }
 
             // SET BONDS
-            var bonds: IBondState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.BONDS).map((s) => ({ ...s.data, id: s.id }));
+            let bonds: IBondState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.BONDS).map((s) => ({ ...s.data, id: s.id }));
             if (bonds.length > 0) {
                 setBonds(bonds)
                 setBondsValidationState(bonds.map(_ => ({ ...emptyBondValidationState })))
             }
 
             // SET DEBENTURES
-            var debentures: IDebentureState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.DEBENTURES).map((s) => ({ ...s.data, id: s.id }));
+            let debentures: IDebentureState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.DEBENTURES).map((s) => ({ ...s.data, id: s.id }));
             if (debentures.length > 0) {
                 setDebentures(debentures)
                 setDebenturesValidationState(debentures.map(_ => ({ ...emptyDebentureValidationState })))
             }
 
             // SET ESCOPS
-            var escops: IEscopState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.ESCOPS).map((s) => ({ ...s.data, id: s.id }));
+            let escops: IEscopState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.ESCOPS).map((s) => ({ ...s.data, id: s.id }));
             if (escops.length > 0) {
                 setEscops(escops)
                 setEscopsValidationState(escops.map(_ => ({ ...emptyEscopValidationState })))
             }
 
             // SET VEHICLES
-            var vehicles: IVehicleState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.VEHICLES).map((s) => ({ ...s.data, id: s.id }));
+            let vehicles: IVehicleState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.VEHICLES).map((s) => ({ ...s.data, id: s.id }));
             if (vehicles.length > 0) {
                 setVehicles(vehicles)
                 setVehiclesValidationState(vehicles.map(_ => ({ ...emptyVehicleValidationState })))
             }
 
             // SET JEWELLERIES
-            var jewelleries: IJewelleryState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.JEWELLERIES).map((s) => ({ ...s.data, id: s.id }));
+            let jewelleries: IJewelleryState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.JEWELLERIES).map((s) => ({ ...s.data, id: s.id }));
             if (jewelleries.length > 0) {
                 setJewelleries(jewelleries)
                 setJewelleriesValidationState(jewelleries.map(_ => ({ ...emptyJewelleryValidationState })))
             }
 
             // SET DIGITAL ASSETS
-            var digitalAssets: IDigitalAssetState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.DIGITAL_ASSETS).map((s) => ({ ...s.data, id: s.id }));
+            let digitalAssets: IDigitalAssetState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.DIGITAL_ASSETS).map((s) => ({ ...s.data, id: s.id }));
             if (digitalAssets.length > 0) {
                 setDigitalAssets(digitalAssets)
                 setDigitalAssetsValidationState(digitalAssets.map(_ => ({ ...emptyDigitalAssetValidationState })))
             }
 
             // SET INTELLECTUAL PROPERTIES
-            var intellectualProperties: IIntellectualPropertyState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.INTELLECTUAL_PROPERTY).map((s) => ({ ...s.data, id: s.id }));
+            let intellectualProperties: IIntellectualPropertyState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.INTELLECTUAL_PROPERTY).map((s) => ({ ...s.data, id: s.id }));
             if (intellectualProperties.length > 0) {
                 setIntellectualProperties(intellectualProperties)
                 setIntellectualPropertiesValidationState(intellectualProperties.map(_ => ({ ...emptyIntellectualPropertyValidationState })))
             }
 
             // SET CUSTOM ASSETS
-            var customAssets: ICustomAssetState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.CUSTOM_ASSETS).map((s) => ({ ...s.data, id: s.id }));
+            let customAssets: ICustomAssetState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.CUSTOM_ASSETS).map((s) => ({ ...s.data, id: s.id }));
             if (customAssets.length > 0) {
                 setCustomAssets(customAssets)
                 setCustomAssetsValidationState(customAssets.map(_ => ({ ...emptyCustomAssetValidationState })))
             }
 
             // SET HOME LOANS
-            var homeLoans: IHomeLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.HOME_LOAN).map((s) => ({ ...s.data, id: s.id }));
+            let homeLoans: IHomeLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.HOME_LOAN).map((s) => ({ ...s.data, id: s.id }));
             if (homeLoans.length > 0) {
                 setHomeLoans(homeLoans)
                 setHomeLoansValidationState(homeLoans.map(_ => ({ ...emptyHomeLoanValidationState })))
             }
 
             // SET PERSONAL LOANS
-            var personalLoans: IPersonalLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PERSONAL_LOAN).map((s) => ({ ...s.data, id: s.id }));
+            let personalLoans: IPersonalLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PERSONAL_LOAN).map((s) => ({ ...s.data, id: s.id }));
             if (personalLoans.length > 0) {
                 setPersonalLoans(personalLoans)
                 setPersonalLoansValidationState(personalLoans.map(_ => ({ ...emptyPersonalLoanValidationState })))
             }
 
             // SET VEHICLE LOANS
-            var vehcileLoans: IVehicleLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.VECHICLE_LOAN).map((s) => ({ ...s.data, id: s.id }));
+            let vehcileLoans: IVehicleLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.VECHICLE_LOAN).map((s) => ({ ...s.data, id: s.id }));
             if (vehcileLoans.length > 0) {
                 setVehicleLoans(vehcileLoans)
                 setVehicleLoansValidationState(vehcileLoans.map(_ => ({ ...emptyVehicleloanValidationState })))
             }
 
             // SET EDUCATION LOANS
-            var educationLoans: IEducationLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.EDUCATION_LOAN).map((s) => ({ ...s.data, id: s.id }));
+            let educationLoans: IEducationLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.EDUCATION_LOAN).map((s) => ({ ...s.data, id: s.id }));
             if (educationLoans.length > 0) {
                 setEducationLoans(educationLoans)
                 setEducationLoansValidationState(educationLoans.map(_ => ({ ...emptyEducationLoanValidationState })))
             }
 
             // SET OTHER LIABILITIES
-            var otherLiabilities: IOtherLiabilityState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.OTHER_LIABILITIES).map((s) => ({ ...s.data, id: s.id }));
+            let otherLiabilities: IOtherLiabilityState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.OTHER_LIABILITIES).map((s) => ({ ...s.data, id: s.id }));
             if (otherLiabilities.length > 0) {
                 setOtherLiabilities(otherLiabilities)
                 setOtherLiabilitiesValidationState(otherLiabilities.map(_ => ({ ...emptyOtherLiabilitiesValidationState })))
@@ -412,24 +426,97 @@ const YourWill: React.FC = () => {
         }
 
         if (user.executors) {
-            var executors: IExecutorState[] = user.executors.map((s) => ({ ...s.data, id: s.id }));
+            let executors: IExecutorState[] = user.executors.map((s) => ({ ...s.data, id: s.id }));
             if (executors.length > 0) {
                 setExecutors(executors)
                 setExecutorsValidationState(executors.map(_ => ({ ...emptyExecutorValidationState })))
             }
         }
         if (user.beneficiaries) {
-            var beneficiaries: IBeneficiaryState[] = user.beneficiaries.map((s) => ({ ...s.data, id: s.id }));
+            let beneficiaries: IBeneficiaryState[] = user.beneficiaries.map((s) => ({ ...s.data, id: s.id }));
             if (beneficiaries.length > 0) {
                 setBeneficiaries(beneficiaries)
                 setBeneficiariesValidationState(beneficiaries.map(_ => ({ ...emptyBeneficiariesValidationState })))
             }
         }
         if (user.excludedPersons) {
-            var excludedPersons: IExcludedPersonState[] = user.excludedPersons.map((s) => ({ ...s.data, id: s.id }));
+            let excludedPersons: IExcludedPersonState[] = user.excludedPersons.map((s) => ({ ...s.data, id: s.id }));
             if (excludedPersons.length > 0) {
                 setExcludedPersons(excludedPersons)
                 setExcludedPersonsValidationState(excludedPersons.map(_ => ({ ...emptyExcludedPersonValidationState })))
+            }
+        }
+
+        if(user.will_distribution)
+        {
+            let willDistributiondata: IWillDistributionState = {id: user.will_distribution.id, distributionType: user.will_distribution.distributiontype, residuaryDistributionType: user.will_distribution.residuarydistributiontype, fallbackRule: user.will_distribution.fallbackrule};
+            setWillDistribution(willDistributiondata);
+        }
+
+        if(user.specific_asset_distribution)
+        {
+            let willDistributionspecificdata: IAssetDistributionSpecificState = {
+                id: "",
+                assetSelectionList: user.specific_asset_distribution,
+                selectedAssets: [],
+                selectedBeneficiary: [],
+                backupBeneficiary: [],
+                additionalInputs: {},
+                step: 1,
+            }
+            setWillDistributionSpecific(willDistributionspecificdata)
+        }
+        if(user.single_beneficiary_distribution)
+        {
+            let singledistributiondata = {
+                    id: "",
+                    primaryBeneficiary: user.single_beneficiary_distribution.primarybeneficiaryid,
+                    secondaryBeneficiary: user.single_beneficiary_distribution.secondarybeneficiaryid,
+                    tertiaryBeneficiary: user.single_beneficiary_distribution.tertiarybeneficiaryid,
+                    step: 1,
+                  }
+            
+            setWillDistributionSingle(singledistributiondata);
+        }
+        if(user.percentage_distribution)
+        {
+            let percentdistributiondata = {
+                id: "",
+                firstBeneficiary: user.percentage_distribution.firstBeneficiary,
+                backupBeneficiary: user.percentage_distribution.backupBeneficiary,
+                additionalInputs: user.percentage_distribution.additionalInputs,
+                step: 1,
+            }
+              
+            setWillDistributionPercent(percentdistributiondata)
+        }
+        
+        if(user.residuary_asset_distribution)
+        {
+            if(user.will_distribution.residuarydistributiontype === "Single")
+            {
+                setWillResiduarySingle({
+                    id: "",
+                    primaryBeneficiary: [user.residuary_asset_distribution[0].id],
+                    donationItem: [],
+                    step: 1,
+                  })
+            }
+            else {
+                const additionalInputs: Record<string, string> = {};
+
+                user.residuary_asset_distribution.forEach(item => {
+                additionalInputs[item.id] = item.percentage.toString();
+                });
+                setWillResiduaryPercent({
+                    
+                    userId: "",
+                    beneficiaries: user.residuary_asset_distribution,
+                    firstBeneficiary: user.residuary_asset_distribution.map((res) => res.id),
+                    additionalInputs: additionalInputs,
+                    primaryDonation: []
+                    
+                })
             }
         }
 

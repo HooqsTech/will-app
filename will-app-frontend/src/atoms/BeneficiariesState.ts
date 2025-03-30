@@ -20,20 +20,5 @@ export interface IBeneficiaryState {
 
 export const beneficiariesState = atom<IBeneficiaryState[]>({
     key: 'beneficiariesState',
-    default: [{
-        id: "",
-        type: "",
-        fullName: "",
-        gender: "",
-        dateOfBirth: "",
-        email: "",
-        phone: "",
-        relationship: "",
-        charityType: "",
-        organization: "",
-        otherOrganization: "",
-        isGuardian: undefined,
-        guardian: undefined,
-        donationAmount: null,
-    }]
+    default: []
 });

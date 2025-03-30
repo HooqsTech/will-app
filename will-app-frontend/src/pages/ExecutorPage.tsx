@@ -108,7 +108,6 @@ const ExecutorPage = () => {
 
     const handleNextClick = async () => {
         if (!validate()) return;
-        console.log(formState.length)
         if(formState.length >= 1)
         {
             setError(false);

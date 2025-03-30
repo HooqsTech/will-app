@@ -19,8 +19,8 @@ const ResiduaryEstateSinglePage = () => {
     const [step, setStep] = useState(1);
 
     // State for selected beneficiary and donation choice
-    const [primaryBeneficiary, setPrimaryBeneficiary] = useState<string | null>(distribution.primaryBeneficiary || null);
-    const [primaryDonation, setPrimaryDonation] = useState<string | null>(distribution.donationItem || null);
+    // const [primaryBeneficiary, setPrimaryBeneficiary] = useState<string | null>(distribution.primaryBeneficiary || null);
+    // const [primaryDonation, setPrimaryDonation] = useState<string | null>(distribution.donationItem || null);
 
     const getFilteredOptions = () =>
         beneficiaryState.map(beneficiary => ({
@@ -36,25 +36,26 @@ const ResiduaryEstateSinglePage = () => {
 
     // Handle selections
     const handleSelectChange = (value: string) => {
-        setPrimaryBeneficiary(value);
+        setDistribution((prev) => ({
+            ...prev,
+            primaryBeneficiary: [value]
+          }));
     };
 
     const handleSelectDonationChange = (value: string) => {
-        setPrimaryDonation(value);
+        setDistribution((prev) => ({
+            ...prev,
+            donationItem: [value]
+          }));
     };
 
     const saveWillDistributionAsync = async () => {
         try {
-            if (!primaryBeneficiary) return;
+            if (distribution.primaryBeneficiary.length == 0) return;
 
             const userId = user.userId;
-            await saveResiduaryAssetDistributionAPI(userId, [{ id: primaryBeneficiary, percentage: 100 }]);
+            await saveResiduaryAssetDistributionAPI(userId, [{ id: distribution.primaryBeneficiary[0], percentage: 100 }]);
 
-            setDistribution(prev => ({
-                ...prev,
-                primaryBeneficiary: primaryBeneficiary || null,
-                donationItem: primaryDonation || null
-            }));
         } catch (error) {
             console.error("Error saving beneficiary distribution:", error);
         }
@@ -62,7 +63,7 @@ const ResiduaryEstateSinglePage = () => {
 
     const handleNextStep = async () => {
         if (step === 1) {
-            if (!primaryBeneficiary) {
+            if (distribution.primaryBeneficiary.length == 0) {
                 return;
             }
             setStep(2);
@@ -83,7 +84,7 @@ const ResiduaryEstateSinglePage = () => {
                             options={getFilteredOptions()}
                             onSelectChange={handleSelectChange}
                             multiple={false}
-                            selectedOptions={primaryBeneficiary ? [primaryBeneficiary] : []}
+                            selectedOptions={distribution.primaryBeneficiary}
                         />
                         <DistributionBeneficiary />
                     </div>
@@ -97,7 +98,7 @@ const ResiduaryEstateSinglePage = () => {
                         options={donationOptions}
                         onSelectChange={handleSelectDonationChange}
                         multiple={false}
-                        selectedOptions={primaryDonation ? [primaryDonation] : []}
+                        selectedOptions={distribution.donationItem}
                     />
                     <NextButton onClick={handleNextStep} label="Save & Continue" />
                 </>

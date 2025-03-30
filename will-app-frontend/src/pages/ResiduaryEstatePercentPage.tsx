@@ -12,12 +12,10 @@ import DistributionBeneficiary from "../components/DistributionBeneficiary";
 
 const ResiduaryEstatePercentPage = () => {
   const beneficiaryState = useRecoilValue<IBeneficiaryState[]>(beneficiariesState);
-  const [firstBeneficiary, setFirstBeneficiary] = useState<string[]>([]);
-  const [additionalInputs, setAdditionalInputs] = useState<Record<string, string>>({});
+  
   const [step, setStep] = useState(1);
   const user = useRecoilValue(userState);
-  const [primaryDonation, setPrimaryDonation] = useState<string[]>([]);
-  const [_, setResiduaryDistribution] = useRecoilState(residuaryAssetDistributionState);
+  const [residuaryDistribution, setResiduaryDistribution] = useRecoilState(residuaryAssetDistributionState);
   const [loading, setLoading] = useState(false);
   const [error,setError] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -28,22 +26,29 @@ const ResiduaryEstatePercentPage = () => {
   }));
 
   const handleFirstSelectChange = (value: string) => {
-    setFirstBeneficiary((prevSelected) =>
-      prevSelected.includes(value)
-        ? prevSelected.filter((option) => option !== value)
-        : [...prevSelected, value]
-    );
+    setResiduaryDistribution((prev) => ({
+      ...prev,
+      firstBeneficiary: prev.firstBeneficiary.includes(value)
+        ? prev.firstBeneficiary.filter((option) => option !== value)
+        : [...prev.firstBeneficiary, value],
+    }));
   };
 
   const handleInputChange = (value: string, input: string) => {
-    setAdditionalInputs((prevInputs) => ({
-      ...prevInputs,
-      [value]: input,
+    setResiduaryDistribution((prev) => ({
+      ...prev,
+      additionalInputs: {
+        ...prev.additionalInputs,
+        [value]: input,
+      },
     }));
   };
 
   const handleSelectDonationChange = (value: string) => {
-    setPrimaryDonation([value]);
+    setResiduaryDistribution((prev) => ({
+      ...prev,
+      primaryDonation: [value]
+    }));
   };
 
   const donationOptions = [
@@ -55,10 +60,10 @@ const ResiduaryEstatePercentPage = () => {
   const handleNextStep = async () => {
     if (step === 1) {
       let toatlamount = 0;
-      for (let key in additionalInputs) {
-        toatlamount += parseInt(additionalInputs[key]);
+      for (let key in residuaryDistribution.additionalInputs) {
+        toatlamount += parseInt(residuaryDistribution.additionalInputs[key]);
       }
-      if(toatlamount!= 100 && firstBeneficiary.length > 1)
+      if(toatlamount!= 100 && residuaryDistribution.firstBeneficiary.length > 1)
       {
         setError(true);
       }
@@ -71,17 +76,23 @@ const ResiduaryEstatePercentPage = () => {
       try {
         setLoading(true);
         const userId = user.userId;
-
-        // Prepare the beneficiary list with percentages
-        const beneficiariesWithPercentage = firstBeneficiary.map((id) => ({
+       let beneficiaryDistributionitem = [];
+      if (Object.keys(residuaryDistribution.additionalInputs).length === 0 || residuaryDistribution.firstBeneficiary.length === 1) {
+          beneficiaryDistributionitem = [
+              {
+                  id : residuaryDistribution.firstBeneficiary[0],
+                  percentage: 100
+              }
+          ];
+      } else {
+        beneficiaryDistributionitem = residuaryDistribution.firstBeneficiary.map((id) => ({
           id,
-          percentage: Number(additionalInputs[id] || 0),
+          percentage: Number(residuaryDistribution.additionalInputs[id] || 0),
         }));
+      }
 
-        const updatedData = await saveResiduaryAssetDistributionAPI(userId, beneficiariesWithPercentage);
 
-        // Update Recoil state with API response
-        setResiduaryDistribution(updatedData);
+      await saveResiduaryAssetDistributionAPI(userId, beneficiaryDistributionitem);
 
         navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECLUDED_PERSONS);
       } catch (error) {
@@ -105,9 +116,9 @@ const ResiduaryEstatePercentPage = () => {
               onSelectChange={handleFirstSelectChange}
               onInputChange={handleInputChange}
               multiple={true}
-              selectedOptions={firstBeneficiary}
+              selectedOptions={residuaryDistribution.firstBeneficiary}
               showAdditionalInput={true}
-              onPercentageInput={additionalInputs}
+              onPercentageInput={residuaryDistribution.additionalInputs}
             />
             <DistributionBeneficiary />
           </div>
@@ -127,7 +138,7 @@ const ResiduaryEstatePercentPage = () => {
             options={donationOptions}
             onSelectChange={(value) => handleSelectDonationChange(value)}
             multiple={false}
-            selectedOptions={primaryDonation}
+            selectedOptions={residuaryDistribution.primaryDonation}
           />
           <NextButton onClick={handleNextStep} label={loading ? "Saving..." : "Save & Continue"} />
         </>

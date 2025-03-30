@@ -3,6 +3,9 @@ import { atom } from "recoil";
 export interface IResiduaryAssetDistribution {
   userId: string;
   beneficiaries: { id: string; percentage: number }[];
+  firstBeneficiary: string[];
+  additionalInputs: Record<string, string>;
+  primaryDonation: string[]
 }
 
 export const residuaryAssetDistributionState = atom<IResiduaryAssetDistribution>({
@@ -10,5 +13,8 @@ export const residuaryAssetDistributionState = atom<IResiduaryAssetDistribution>
   default: {
     userId: "",
     beneficiaries: [],
+    firstBeneficiary: [],
+    additionalInputs: {},
+    primaryDonation: []
   },
 });

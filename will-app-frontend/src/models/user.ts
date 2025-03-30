@@ -1,3 +1,5 @@
+import { IAssetDistributionPercentState } from "../atoms/AssetDistributionPercentState";
+import { IAssetSelectionState } from "../atoms/AssetDistributionSpecificState";
 import { ISelectedAssets } from "./asset"
 
 export interface IPersonalDetails {
@@ -19,7 +21,36 @@ export interface IUserDetails {
   beneficiaries: IBeneficiaryDetails[],
   executors: IExecutorDetails[],
   assets: IAssetDetails[],
-  excludedPersons: IExcludedPersonDetails[]
+  excludedPersons: IExcludedPersonDetails[],
+  will_distribution: IWillDistributionDetails,
+  specific_asset_distribution: IAssetSelectionState[],
+  single_beneficiary_distribution: IsingleAssetDistributionDetail,
+  percentage_distribution: IAssetDistributionPercentDetail,
+  residuary_asset_distribution: IResiduaryDistributionDetail[],
+}
+
+export interface IResiduaryDistributionDetail {
+  id: string,
+  percentage: number
+}
+export interface IAssetDistributionPercentDetail {
+  firstBeneficiary: string[];
+  backupBeneficiary: string[];
+  additionalInputs: Record<string, string>;
+}
+
+export interface IsingleAssetDistributionDetail {
+  
+    primarybeneficiaryid: string,
+    secondarybeneficiaryid: string,
+    tertiarybeneficiaryid: string,
+}
+
+export interface IWillDistributionDetails {
+  id:string,
+  distributiontype: "Single" | "Specific" | "Percentage";
+  residuarydistributiontype?: string;
+  fallbackrule?: string;
 }
 
 export interface IBeneficiaryDetails {

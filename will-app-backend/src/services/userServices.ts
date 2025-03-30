@@ -186,13 +186,17 @@ export const getUserDetailsByPhone = async (phoneNumber: string) => {
       selectedassets: true,
       will_distribution: true,
       executors: true,
+      specific_asset_distribution: true,
+      single_beneficiary_distribution: true,
+      percentage_distribution: true,
+      residuary_asset_distribution: true
     },
   });
 
   if (!user) {
     throw new Error("User not found");
   }
-
+console.log(user);
   return formatUserResponse(user);
 };
 
@@ -237,4 +241,8 @@ const formatUserResponse = (user: any) => ({
   pets: Array.isArray(user.pets) ? user.pets?.map((pet: any) => pet.data) : [],
   selectedAssets: user.selectedassets?.data || {},
   will_distribution: user.will_distribution || {},
+  specific_asset_distribution: user.specific_asset_distribution?.assets || [],
+  single_beneficiary_distribution: user.single_beneficiary_distribution || {},
+  percentage_distribution: user.percentage_distribution?.beneficiaries || {},
+  residuary_asset_distribution: user.residuary_asset_distribution?.beneficiaries || {}
 });
