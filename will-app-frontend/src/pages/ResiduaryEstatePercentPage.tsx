@@ -19,6 +19,7 @@ const ResiduaryEstatePercentPage = () => {
   const [primaryDonation, setPrimaryDonation] = useState<string[]>([]);
   const [_, setResiduaryDistribution] = useRecoilState(residuaryAssetDistributionState);
   const [loading, setLoading] = useState(false);
+  const [error,setError] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const beneficiaryOptionsFirst = beneficiaryState.map((beneficiary) => ({
@@ -53,7 +54,19 @@ const ResiduaryEstatePercentPage = () => {
 
   const handleNextStep = async () => {
     if (step === 1) {
-      setStep(2);
+      let toatlamount = 0;
+      for (let key in additionalInputs) {
+        toatlamount += parseInt(additionalInputs[key]);
+      }
+      if(toatlamount!= 100 && firstBeneficiary.length > 1)
+      {
+        setError(true);
+      }
+      else
+      {
+        setStep(2);
+      }
+      
     } else {
       try {
         setLoading(true);
@@ -98,6 +111,7 @@ const ResiduaryEstatePercentPage = () => {
             />
             <DistributionBeneficiary />
           </div>
+          {error && <p className="mt-3  text-red-500">Please make sure the sum of percentages add up to 100%</p>}
           <div className="justify-between flex mt-10">
             <NextButton
               onClick={handleNextStep}

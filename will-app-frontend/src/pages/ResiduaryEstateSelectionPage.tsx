@@ -24,35 +24,32 @@ const ResiduaryEstateSelectionPage = () => {
     // Handle Distribution Type Change
 
     const handleSelectChange = (value: string) => {
-        setDistribution((prevState) => {
-            if (value !== null && value !== prevState.residuaryDistributionType) {
-                Swal.fire({
-                    title: "Confirm Edit",
-                    text: "Are you sure you want to change the residuary distribution type?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "var(--color-will-green)",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes",
-                    cancelButtonText: "No",
-                    customClass: {
-                        popup: "swal-sm",
-                        title: "swal-title",
-                        confirmButton: "swal-confirm-btn",
-                    },
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        if (["Single", "Percentage"].includes(value)) {
-                            setDistribution({
-                                ...prevState,
-                                residuaryDistributionType: value as "Single" | "Percentage",
-                            });
-                        }
+        if (value !== null && value !== distribution.residuaryDistributionType) {
+            Swal.fire({
+                title: "Confirm Edit",
+                text: "Are you sure you want to change the residuary distribution type?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "var(--color-will-green)",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                customClass: {
+                    popup: "swal-sm",
+                    title: "swal-title",
+                    confirmButton: "swal-confirm-btn",
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (["Single", "Percentage"].includes(value)) {
+                        setDistribution((prevState) => ({
+                            ...prevState,
+                            residuaryDistributionType: value as "Single" | "Percentage",
+                        }));
                     }
-                });
-            }
-            return prevState;
-        });
+                }
+            });
+        }
     };
 
     // Handle Next Button Click
