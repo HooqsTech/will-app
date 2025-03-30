@@ -38,7 +38,7 @@ const EscopForm: React.FC<IEscopFormProps> = ({ index }) => {
                 value={item.noOfUnitGraged}
                 onChange={(e) => handleChange(index, "noOfUnitGraged", e)}
                 required
-                label="Number of Unit Graged"
+                label="Number of Unit Granted"
                 restrictAlphabets
                 type="text" />
             <CustomTextBox
@@ -46,7 +46,7 @@ const EscopForm: React.FC<IEscopFormProps> = ({ index }) => {
                 required
                 value={item.noOfVestedEscops}
                 onChange={(e) => handleChange(index, "noOfVestedEscops", e)}
-                label="Number of Vested ESCOPs"
+                label="Number of Vested ESOPs"
                 restrictAlphabets
                 type="text" />
             <CustomTextBox
@@ -54,7 +54,7 @@ const EscopForm: React.FC<IEscopFormProps> = ({ index }) => {
                 required
                 value={item.noOfUnVestedEscops}
                 onChange={(e) => handleChange(index, "noOfUnVestedEscops", e)}
-                label="Number of UnVested ESCOPs"
+                label="Number of UnVested ESOPs"
                 restrictAlphabets
                 type="text" />
         </CustomFormContainer>
