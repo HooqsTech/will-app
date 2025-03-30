@@ -504,7 +504,7 @@ const YourWill: React.FC = () => {
                 </div>
             </div>
             <Modal className='h-screen flex flex-col items-center justify-center' open={isModalOpen}>
-                <div>
+                <div className='border-none focus:border-none outline-0'>
                     <Lottie animationData={animationData} />
                 </div>
             </Modal>
