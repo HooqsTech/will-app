@@ -163,12 +163,12 @@ const LoginPage = () => {
     return (
         <div className="p-4 h-screen bg-white sm:p-6 md:p-8">
             <div className="flex-col m-2 grid grid-cols-2 h-full w-full bg-white rounded-lg md:flex-row max-w-none">
-                <div className="flex col-span-2 lg:col-span-1 flex-col items-center p-4 w-full">
-                    <div className="flex items-center mt-8 space-x-3">
-                        <img src="/assets/hamara-logo-icon.png" className="h-10" alt="Flowbite Logo" />
+                <div className="flex col-span-2 md:col-span-1 flex-col items-center p-4 w-full">
+                    <div className="flex flex-col md:flex-row items-center mt-8 space-x-3">
+                        <img src="/assets/hamara-logo-icon.png" className="h-10" alt="Hamara Logo" />
                         <span className="self-center text-5xl text-will-green whitespace-nowrap uppercase">Hamara Will</span>
                     </div>
-                    <p className="text-2xl mt-2 text-will-green">Create your Will with India's most trusted professionals</p>
+                    <p className="text-2xl mt-2 text-center text-will-green">Create your Will with India's most trusted professionals</p>
                     <p className="text-3xl mt-16 font-bold text-will-green uppercase">login</p>
                     {!formState.showOTP && <div className='flex flex-col items-center'>
                         <p className="text-2xl mt-4 text-will-green uppercase">Welcome !</p>
