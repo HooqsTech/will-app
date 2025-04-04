@@ -144,6 +144,11 @@ const LoginPage = () => {
             setShowAlert(true);
             setAlertMessage("OTP Verified Sucessfully!");
             setAlertType("success");
+            setFormState((prevState) => ({
+                ...prevState,
+                showOTP: false,
+                otp: ""
+            }));
             navigate(location.state?.from?.pathname || '/home');
 
         } catch (error) {
