@@ -23,10 +23,14 @@ const ResiduaryEstateSinglePage = () => {
     // const [primaryDonation, setPrimaryDonation] = useState<string | null>(distribution.donationItem || null);
 
     const getFilteredOptions = () =>
-        beneficiaryState.map(beneficiary => ({
+        beneficiaryState
+            .filter(beneficiary => !beneficiary.isGuardian)
+            .map(beneficiary => ({
             value: beneficiary.id,
-            label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization
-        }));
+            label: beneficiary.type === "Person"
+                ? beneficiary.fullName
+                : beneficiary.organization,
+            }));
 
     const donationOptions = [
         { value: "already_pledged", label: "Already Pledged" },

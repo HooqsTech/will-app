@@ -14,6 +14,7 @@ import { ROUTE_PATHS } from '../constants';
 import { IExcludedPerson, IExcludedPersonDeleteRequest } from '../models/excludedPerson';
 import { IsEmptyString } from '../utils';
 import { excludedPersonsState, IExcludedPersonState } from '../atoms/ExcludedPersonsState';
+import Swal from 'sweetalert2';
 
 const ExcludedPersonsPage = () => {
     const [formState, setFormState] = useRecoilState<IExcludedPersonState[]>(excludedPersonsState);
@@ -90,7 +91,29 @@ const ExcludedPersonsPage = () => {
             await saveExcludedPersonAsync(person, index);
         });
 
-        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECUTOR);
+        Swal.fire({
+                    title: "Are you sure Proceed to Executor",
+                    text: "Ready to move to Executor Section? Click No to Add more excluded person",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "var(--color-will-green)",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, go to Executor",
+                    cancelButtonText: "No",
+                    customClass: {
+                    popup: "swal-sm",
+                    title: "swal-title",
+                    confirmButton: "swal-confirm-btn",
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                    navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECUTOR);
+                    }
+                    else
+                    {
+                     return
+                    }
+                });
     };
 
     const addDigitalAsset = () => {
