@@ -131,7 +131,7 @@ const BeneficiariesPage = () => {
                 setBeneficiaryValidationState(index, "aadhaarNumber", "aadhaar number is required");
                 isValid = false;
             }
-            if (isValidAadhaar(prop.aadhaarNumber)) {
+            if (!isValidAadhaar(prop.aadhaarNumber)) {
                 setBeneficiaryValidationState(index, "aadhaarNumber", "aadhaar number is invalid");
                 isValid = false;
             }
