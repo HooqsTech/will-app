@@ -25,21 +25,20 @@ import { AiOutlineGold } from 'react-icons/ai';
 import { BiHome, BiLogoCreativeCommons } from 'react-icons/bi';
 import { CiBank, CiBitcoin } from 'react-icons/ci';
 import { FaRegAddressBook, FaRegAddressCard, FaRegUser } from 'react-icons/fa';
-import { LiaMoneyBillWaveSolid, LiaUsersCogSolid, LiaHandHoldingUsdSolid } from 'react-icons/lia';
 import { GiReceiveMoney, GiThreeFriends, } from 'react-icons/gi';
+import { HiOutlineChartPie } from 'react-icons/hi2';
 import { IoBusinessOutline, IoDocumentTextOutline } from 'react-icons/io5';
+import { LiaHandHoldingUsdSolid, LiaMoneyBillWaveSolid, LiaUsersCogSolid } from 'react-icons/lia';
 import { IconType } from 'react-icons/lib';
-import { MdOutlineAddHomeWork, MdOutlineHealthAndSafety, MdLockOutline, MdOutlineAccountBalance, MdOutlineDirectionsCar } from 'react-icons/md';
-import { TbFriendsOff } from 'react-icons/tb';
-import { PiHandWithdraw,PiGavelLight } from 'react-icons/pi';
+import { MdLockOutline, MdOutlineAccountBalance, MdOutlineAddHomeWork, MdOutlineDirectionsCar, MdOutlineHealthAndSafety, MdOutlinePets } from 'react-icons/md';
+import { PiGavelLight, PiHandWithdraw, PiPiggyBank } from 'react-icons/pi';
 import { SiAltiumdesigner } from 'react-icons/si';
+import { TbFriendsOff } from 'react-icons/tb';
 import { useNavigate } from 'react-router';
 import { useRecoilValue } from 'recoil';
 import { removeCookie } from 'typescript-cookie';
 import { routesState } from '../atoms/RouteState';
 import { ASSET_TYPES, ROUTE_PATHS } from '../constants';
-import { HiOutlineChartPie } from 'react-icons/hi2'
-import { PiPiggyBank } from 'react-icons/pi'
 
 type ExtendedTreeItemProps = {
   icon?: IconType;
@@ -327,6 +326,8 @@ export default function Sidebar2() {
           return PiHandWithdraw
         case ROUTE_PATHS.OTHER_LIABILITIES:
           return PiHandWithdraw
+        case ROUTE_PATHS.PETS:
+          return MdOutlinePets
         default:
           break;
       }

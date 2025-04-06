@@ -31,4 +31,5 @@ export interface ISelectedAssets {
     educationLoans: boolean
     personalLoans: boolean
     otherLiabilities: boolean
+    pets: boolean
 }

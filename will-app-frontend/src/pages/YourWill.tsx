@@ -110,6 +110,9 @@ import SafetyDepositBoxesPage from './SafetyDepositBoxesPage';
 import VechicleLoanPage from './VehicleLoanPage';
 import VehiclesPage from './VehiclesPage';
 import { IsEmptyString } from '../utils';
+import PetsPage from './PetsPage';
+import { IPetState, petsState } from '../atoms/petsState';
+import { emptyPetValidationState, petsValidationState } from '../atoms/validationStates/PetsValidationState';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -191,6 +194,10 @@ const YourWill: React.FC = () => {
     // CUSTOM ASSETS
     const setCustomAssets = useSetRecoilState(customAssetsState);
     const setCustomAssetsValidationState = useSetRecoilState(customAssetsValidationState);
+
+    // PETS
+    const setPets = useSetRecoilState(petsState);
+    const setPetsValidationState = useSetRecoilState(petsValidationState);
 
     // HOME LOANS
     const setHomeLoans = useSetRecoilState(homeLoansState);
@@ -387,6 +394,13 @@ const YourWill: React.FC = () => {
                 setCustomAssetsValidationState(customAssets.map(_ => ({ ...emptyCustomAssetValidationState })))
             }
 
+            // SET PETS
+            let pets: IPetState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.PETS).map((s) => ({ ...s.data, id: s.id }));
+            if (pets.length > 0) {
+                setPets(pets)
+                setPetsValidationState(pets.map(_ => ({ ...emptyPetValidationState })))
+            }
+
             // SET HOME LOANS
             let homeLoans: IHomeLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.HOME_LOAN).map((s) => ({ ...s.data, id: s.id }));
             if (homeLoans.length > 0) {
@@ -444,12 +458,10 @@ const YourWill: React.FC = () => {
                 setExcludedPersonsValidationState(excludedPersons.map(_ => ({ ...emptyExcludedPersonValidationState })))
             }
         }
-
         if (user.will_distribution) {
             let willDistributiondata: IWillDistributionState = { id: user.will_distribution.id, distributionType: user.will_distribution.distributiontype, residuaryDistributionType: user.will_distribution.residuarydistributiontype, fallbackRule: user.will_distribution.fallbackrule };
             setWillDistribution(willDistributiondata);
         }
-
         if (user.specific_asset_distribution) {
             let willDistributionspecificdata: IAssetDistributionSpecificState = {
                 id: "",
@@ -558,6 +570,7 @@ const YourWill: React.FC = () => {
                         {routeState.find(s => s.currentPath == ROUTE_PATHS.OTHER_INVESTMENTS) && <Route path={ROUTE_PATHS.OTHER_INVESTMENTS} element={<OtherInvestmentPage />} />}
                         {routeState.find(s => s.currentPath == ROUTE_PATHS.BONDS) && <Route path={ROUTE_PATHS.BONDS} element={<BondsPage />} />}
                         {routeState.find(s => s.currentPath == ROUTE_PATHS.BUSINESS) && <Route path={ROUTE_PATHS.BUSINESS} element={<BusinessesPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.PETS) && <Route path={ROUTE_PATHS.PETS} element={<PetsPage />} />}
                         {/* ASSETS END */}
 
                         {/* LIABILITIES START */}
