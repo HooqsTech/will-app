@@ -478,7 +478,7 @@ const YourWill: React.FC = () => {
             setWillDistributionPercent(percentdistributiondata)
         }
 
-        if (user.residuary_asset_distribution) {
+        if (user.residuary_asset_distribution && Object.keys(user.residuary_asset_distribution).length !== 0) {
             if (user.will_distribution.residuarydistributiontype === "Single") {
                 setWillResiduarySingle({
                     id: "",
