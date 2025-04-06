@@ -2,11 +2,19 @@ import { useNavigate } from "react-router";
 import Header from "../components/Header";
 import NextButton from "../components/NextButton";
 import { ROUTE_PATHS } from "../constants";
+import { useRecoilValue } from "recoil";
+import { personalDetailsState } from "../atoms/PersonalDetailsState";
 
 const HomePage = () => {
     const navigate = useNavigate();
+    const personalDetails = useRecoilValue(personalDetailsState);
     const handleGetStartedClick = () => {
-        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ABOUT_YOU)
+        if (personalDetails === undefined || personalDetails.fullName === undefined || personalDetails.fullName === "") {
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.PERSONAL_DETAILS)
+        }
+        else {
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ABOUT_YOU)
+        }
     }
 
     return (
