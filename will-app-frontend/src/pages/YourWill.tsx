@@ -462,7 +462,7 @@ const YourWill: React.FC = () => {
             let willDistributiondata: IWillDistributionState = { id: user.will_distribution.id, distributionType: user.will_distribution.distributiontype, residuaryDistributionType: user.will_distribution.residuarydistributiontype, fallbackRule: user.will_distribution.fallbackrule };
             setWillDistribution(willDistributiondata);
         }
-        if (user.specific_asset_distribution) {
+        if (user.specific_asset_distribution  && user.specific_asset_distribution.length > 0) {
             let willDistributionspecificdata: IAssetDistributionSpecificState = {
                 id: "",
                 assetSelectionList: user.specific_asset_distribution,
@@ -474,7 +474,7 @@ const YourWill: React.FC = () => {
             }
             setWillDistributionSpecific(willDistributionspecificdata)
         }
-        if (user.single_beneficiary_distribution) {
+        if (user.single_beneficiary_distribution && Object.keys(user.single_beneficiary_distribution).length > 0) {
             let singledistributiondata = {
                 id: "",
                 primaryBeneficiary: user.single_beneficiary_distribution.primarybeneficiaryid,
@@ -485,7 +485,7 @@ const YourWill: React.FC = () => {
 
             setWillDistributionSingle(singledistributiondata);
         }
-        if (user.percentage_distribution) {
+        if (user.percentage_distribution && Object.keys(user.percentage_distribution).length > 0) {
             let percentdistributiondata = {
                 id: "",
                 firstBeneficiary: user.percentage_distribution.firstBeneficiary,
@@ -508,18 +508,21 @@ const YourWill: React.FC = () => {
             }
             else {
                 const additionalInputs: Record<string, string> = {};
+                
+                const residuaryAssets = Array.isArray(user.residuary_asset_distribution) 
+                        ? user.residuary_asset_distribution 
+                        : [];
 
-                user.residuary_asset_distribution.forEach(item => {
-                    additionalInputs[item.id] = item.percentage.toString();
+                residuaryAssets.forEach(item => {
+                        additionalInputs[item.id] = item.percentage.toString();
                 });
-                setWillResiduaryPercent({
 
+                setWillResiduaryPercent({
                     userId: "",
-                    beneficiaries: user.residuary_asset_distribution,
-                    firstBeneficiary: user.residuary_asset_distribution.map((res) => res.id),
+                    beneficiaries:  residuaryAssets,
+                    firstBeneficiary: residuaryAssets.map((res) => res.id),
                     additionalInputs: additionalInputs,
                     primaryDonation: []
-
                 })
             }
         }

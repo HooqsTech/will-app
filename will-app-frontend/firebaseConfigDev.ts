@@ -12,13 +12,12 @@ declare global {
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyC22WTvfsVCa0LZxc8CrHNeUIQ03eiukVE",
-    authDomain: "hamara-will-207ea.firebaseapp.com",
-    projectId: "hamara-will-207ea",
-    storageBucket: "hamara-will-207ea.firebasestorage.app",
-    messagingSenderId: "170230222445",
-    appId: "1:170230222445:web:aea198c82fef71f68af964",
-    measurementId: "G-QTPBWDSLZ1"
+    apiKey: "AIzaSyDQYul7zD79Lm6MMe_s7fdBPInd6LyiocQ",
+    authDomain: "otp-demo-483d4.firebaseapp.com",
+    projectId: "otp-demo-483d4",
+    storageBucket: "otp-demo-483d4.firebasestorage.app",
+    messagingSenderId: "41320486356",
+    appId: "1:41320486356:web:4552275641759e9f2c7241"
   };
 
 const app = initializeApp(firebaseConfig);

@@ -6,7 +6,8 @@ const storage = new Storage({
   keyFilename: path.join(__dirname, "../haramawill-storage-secret-key.json"),
 });
 
-const BUCKET_NAME = "hamara-will-storage";
+const BUCKET_NAME = process.env.CONTAINER_NAME || "hamara-will-storage";
+console.log(BUCKET_NAME);
 
 const uploadFile = async (userId: string, filename: string, fileStream: Readable):  Promise<{ signedUrl: string; publicUrl: string }> => {
   try {
@@ -30,10 +31,7 @@ const uploadFile = async (userId: string, filename: string, fileStream: Readable
       action: "read",
       expires: "01-01-2099",
     });
-    console.log(signedUrl);
-    console.log("File uploaded:", signedUrl);
     const publicUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${destination}`;
-    console.log("File uploaded:", publicUrl);
 
     return { signedUrl, publicUrl };
   } catch (error) {

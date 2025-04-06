@@ -18,9 +18,18 @@ const AssetDistributionSinglePage = () => {
 
     const getFilteredOptions = (excludedIds: string[]) =>
         beneficiaryState
-            .filter(beneficiary => !excludedIds.includes(beneficiary.id))
-            .map(beneficiary => ({ value: beneficiary.id, label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization }));
-
+          .filter(
+            beneficiary => 
+              !excludedIds.includes(beneficiary.id) && 
+              !beneficiary.isGuardian
+          )
+          .map(beneficiary => ({
+            value: beneficiary.id,
+            label: beneficiary.type === "Person" 
+              ? beneficiary.fullName 
+              : beneficiary.organization,
+          }));
+          
     const handleSelectChange = (field: keyof IAssetDistributionSingleState, value: string) => {
         setDistribution(prev => ({ ...prev, [field]: value }));
     };

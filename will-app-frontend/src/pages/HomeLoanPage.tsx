@@ -16,6 +16,7 @@ import ConfirmDelete from "../components/ConfirmDelete";
 import { emptyHomeLoanValidationState, homeLoanValidationState, IHomeLoanValidationState } from '../atoms/validationStates/HomeLoanValidationState';
 import { homeLoansState, IHomeLoanState } from '../atoms/HomeLoansState';
 import HomeLoanForm from '../components/Forms/HomeLoanForm';
+import Swal from 'sweetalert2';
 
 const HomeLoanPage = () => {
     const [formState, setFormState] = useRecoilState<IHomeLoanState[]>(homeLoansState);
@@ -90,7 +91,33 @@ const HomeLoanPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         let routeValue = routeState.find(s => location.pathname.includes(s.currentPath));
-        navigate(ROUTE_PATHS.YOUR_WILL + (routeValue?.nextPath ?? ROUTE_PATHS.BENEFICIARIES));
+        if (!routeValue?.nextPath) {
+                                    Swal.fire({
+                                      title: "Are you sure Proceed to Beneficiaries",
+                                      text: "Ready to move to Beneficiaries Section? Click No to add more Liabilities",
+                                      icon: "warning",
+                                      showCancelButton: true,
+                                      confirmButtonColor: "var(--color-will-green)",
+                                      cancelButtonColor: "#d33",
+                                      confirmButtonText: "Yes, go to Beneficiaries",
+                                      cancelButtonText: "No",
+                                      customClass: {
+                                        popup: "swal-sm",
+                                        title: "swal-title",
+                                        confirmButton: "swal-confirm-btn",
+                                      },
+                                    }).then((result) => {
+                                      if (result.isConfirmed) {
+                                        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.BENEFICIARIES);
+                                      }
+                                      else
+                                      {
+                                        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.LIABILITIES)
+                                      }
+                                    });
+                                  } else {
+                                    navigate(ROUTE_PATHS.YOUR_WILL + routeValue.nextPath);
+                                  }
     }
 
 

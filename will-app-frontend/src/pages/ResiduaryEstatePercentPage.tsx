@@ -20,9 +20,11 @@ const ResiduaryEstatePercentPage = () => {
   const [error,setError] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const beneficiaryOptionsFirst = beneficiaryState.map((beneficiary) => ({
+  const beneficiaryOptionsFirst = beneficiaryState
+  .filter(beneficiary => !beneficiary.isGuardian)
+  .map(beneficiary => ({
     value: beneficiary.id,
-    label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization,
+    label: beneficiary.type === "Person" ? beneficiary.fullName : beneficiary.organization,
   }));
 
   const handleFirstSelectChange = (value: string) => {

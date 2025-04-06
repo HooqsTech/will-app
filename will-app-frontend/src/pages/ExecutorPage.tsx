@@ -15,6 +15,7 @@ import { ROUTE_PATHS } from '../constants';
 import { IExecutor, IExecutorDeleteRequest } from '../models/executor';
 import { IsEmptyString, isValidAadhaar, IsValidEmail, IsValidPhoneNumber } from '../utils';
 import CustomAccordion from '../components/CustomAccordion';
+import Swal from 'sweetalert2';
 
 const ExecutorPage = () => {
     const [formState, setFormState] = useRecoilState<IExecutorState[]>(executorState);
@@ -133,7 +134,29 @@ const ExecutorPage = () => {
             formState.forEach(async (person, index) => {
                 await saveExecutorAsync(person, index);
             });
-            navigate(ROUTE_PATHS.ORDER_SUMMARY);
+            Swal.fire({
+                title: "Are you sure Proceed to Order Summary",
+                text: "Ready to move to Order Summary Section? Click No to Add more executor",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "var(--color-will-green)",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, go to Order Summary",
+                cancelButtonText: "No",
+                customClass: {
+                popup: "swal-sm",
+                title: "swal-title",
+                confirmButton: "swal-confirm-btn",
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                navigate(ROUTE_PATHS.ORDER_SUMMARY);
+                }
+                else
+                {
+                 return
+                }
+            });
         }
         else {
             setError(true);

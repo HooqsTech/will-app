@@ -73,9 +73,11 @@ const AssetDistributionSpecificPage = () => {
         getAssetDetails();
     }, [])
     
-    const beneficiaryOptionsFirst = beneficiaryState.map((beneficiary) => ({
-        value: beneficiary.id,
-        label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization,
+    const beneficiaryOptionsFirst = beneficiaryState
+    .filter(beneficiary => !beneficiary.isGuardian)
+    .map(beneficiary => ({
+      value: beneficiary.id,
+      label: beneficiary.type === "Person" ? beneficiary.fullName : beneficiary.organization,
     }));
 
     const backupBeneficiaryOptions = [
@@ -87,138 +89,193 @@ const AssetDistributionSpecificPage = () => {
     const getAssetDetails = () => {
         let propertiesList = properties.filter((data: IPropertiesState) => data.id !== "")
             .map((data: IPropertiesState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Property ${index + 1}`,
                     assetId: data.id,
                     firstline: data.address?.trim() || "",
                     secondline: [data.city?.trim(), data.pincode?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist ?? null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed ?? false
                 }
             });
         let bankAccountsList = bankAccounts.filter((data: IBankDetailsState) => data.id !== "")
             .map((data: IBankDetailsState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Bank Accounts ${index + 1}`,
                     assetId: data.id,
                     firstline: data.bankName?.trim() || "",
                     secondline: [data.accountType?.trim(), data.accountNumber?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
         let fixedDepositsList = fixedDeposits.filter((data: IFixedDepositState) => data.id !== "")
             .map((data: IFixedDepositState, index: number) => {
+
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Fixed Deposits ${index + 1}`,
                     assetId: data.id,
                     firstline: [data.bankName?.trim(), data.accountNumber?.trim()].filter(Boolean).join(" - "),
                     secondline: [data.branch?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
         let insurancePoliciesList = insurancePolicies.filter((data: IInsurancePolicyState) => data.id !== "")
             .map((data: IInsurancePolicyState, index: number) => {
+
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Insurance Policies ${index + 1}`,
                     assetId: data.id,
                     firstline: data.insuranceType?.trim() || "",
                     secondline: data.insuranceProvider.trim() || "",
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
-                }
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false                }
             });
         let safetyDepositBoxesList = safetyDepositBoxes.filter((data: ISafetyDepositBoxState) => data.id !== "")
             .map((data: ISafetyDepositBoxState, index: number) => {
+
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Safety Deposit Boxes ${index + 1}`,
                     assetId: data.id,
                     firstline: data.depositBoxType?.trim() || "",
                     secondline: [data.bankName?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
-                }
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false                   }
             });
         let dematAccountsList = dematAccounts.filter((data: IDematAccountState) => data.id !== "")
             .map((data: IDematAccountState, index: number) => {
+
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+                  
                 return {
                     type: `Demat Account ${index + 1}`,
                     assetId: data.id,
                     firstline: data.accountNumber?.trim() || "",
                     secondline: [data.brokerName?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false                   
                 }
             });
         let mutualFundsList = mutualFunds.filter((data: IMutualFundState) => data.id !== "")
             .map((data: IMutualFundState, index: number) => {
+
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Mutual Fund ${index + 1}`,
                     assetId: data.id,
                     firstline: [data.fundName?.trim(), data.noOfHolders?.trim()].filter(Boolean).join(" - "),
                     secondline: "",
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false                   
                 }
             });
         let providentFundsList = providentFunds.filter((data: IProvidentFundState) => data.id !== "")
             .map((data: IProvidentFundState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Provident Fund ${index + 1}`,
                     assetId: data.id,
                     firstline: data.type?.trim() || "",
                     secondline: [data.bankName?.trim(), data.branch?.trim(), data.city?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false     
                 }
             });
         let pensionAccountsList = pensionAccounts.filter((data: IPensionAccountState) => data.id !== "")
             .map((data: IPensionAccountState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Pension Account ${index + 1}`,
                     assetId: data.id,
                     firstline: data.bankName?.trim() || "",
                     secondline: [data.schemeName?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false  
                 }
             });
         let businesssesList = businessses.filter((data: IBusinessState) => data.id !== "")
             .map((data: IBusinessState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Business ${index + 1}`,
                     assetId: data.id,
                     firstline: [data.type?.trim(), data.holdingPercentage?.trim()].filter(Boolean).join(" - "),
                     secondline: [data.companyName?.trim(), data.address?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false 
                 }
             });
         let bondsList = bonds.filter((data: IBondState) => data.id !== "")
             .map((data: IBondState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Bond ${index + 1}`,
                     assetId: data.id,
                     firstline: data.type?.trim() || "",
                     secondline: [data.financialServiceProviderName?.trim(), data.certificateNumber?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
         let debenturesList = debentures.filter((data: IDebentureState) => data.id !== "")
             .map((data: IDebentureState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Pension Account ${index + 1}`,
                     assetId: data.id,
                     firstline: data.type?.trim() || "",
                     secondline: [data.financialServiceProviderName?.trim(), data.certificateNumber?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
         let escopsList = escops.filter((data: IEscopState) => data.id !== "")
             .map((data: IEscopState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `ESOP ${index + 1}`,
                     assetId: data.id,
@@ -228,63 +285,83 @@ const AssetDistributionSpecificPage = () => {
                         data.noOfVestedEscops ? `Vested: ${data.noOfVestedEscops}` : "",
                         data.noOfUnVestedEscops ? `Unvested: ${data.noOfUnVestedEscops}` : ""
                     ].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
         let jewelleriesList = jewelleries.filter((data: IJewelleryState) => data.id !== "")
             .map((data: IJewelleryState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Jewellery ${index + 1}`,
                     assetId: data.id,
                     firstline: data.description?.trim() || "",
                     secondline: "",
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
         let vehiclesList = vehicles.filter((data: IVehicleState) => data.id !== "")
             .map((data: IVehicleState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Vechicle ${index + 1}`,
                     assetId: data.id,
                     firstline: data.brandOrModel?.trim() || "",
                     secondline: data.registrationNumber?.trim() || "",
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
         let digitalAssetsList = digitalAssets.filter((data: IDigitalAssetState) => data.id !== "")
             .map((data: IDigitalAssetState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Digital Asset ${index + 1}`,
                     assetId: data.id,
                     firstline: data.type?.trim() || "",
                     secondline: data.walletAddress?.trim() || "",
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
         let intellectualPropertiesList = intellectualProperties.filter((data: IIntellectualPropertyState) => data.id !== "")
             .map((data: IIntellectualPropertyState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Intellectual Property ${index + 1}`,
                     assetId: data.id,
                     firstline: data.type?.trim() || "",
                     secondline: [data.identificationNumber?.trim(), data.description?.trim()].filter(Boolean).join(" - "),
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
         let customAssetsList = customAssets.filter((data: ICustomAssetState) => data.id !== "")
             .map((data: ICustomAssetState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
                 return {
                     type: `Custom Asset ${index + 1}`,
                     assetId: data.id,
                     firstline: data.description?.trim() || "",
                     secondline: "",
-                    beneficiarieslist: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].beneficiarieslist || null,
-                    isAssetDistributed: assetDistribution.assetSelectionList.filter((asset) => asset.assetId == data.id)[0].isAssetDistributed || false
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
         setAssetDistribution((prev) => ({

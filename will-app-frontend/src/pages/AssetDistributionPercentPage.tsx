@@ -16,14 +16,14 @@ const AssetDistributionPercentPage = () => {
   const [assetDistribution, setAssetDistribution] = useRecoilState(AssetDistributionPercentState);
   const [error,setError] = useState<boolean>(false);
   const navigate = useNavigate();
-
+  console.log(assetDistribution);
   const backupBeneficiaryOptions = [
     { value: "spouse_children", label: "Their spouse and/or children" },
     { value: "equal_split", label: "Split between remaining beneficiaries equally" },
     { value: "percentage_split", label: "Split between remaining beneficiaries according to their previously mentioned percentages" },
   ];
 
-  const beneficiaryOptionsFirst = beneficiaryState.map((beneficiary) => ({
+  const beneficiaryOptionsFirst = beneficiaryState.filter(beneficiary => !beneficiary.isGuardian).map((beneficiary) => ({
     value: beneficiary.id,
     label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization,
   }));

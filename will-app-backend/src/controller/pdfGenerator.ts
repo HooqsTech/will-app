@@ -14,6 +14,7 @@ import { getExecutorsByUserIdService } from "../services/executorService";
 import { IExecutor, parseExecutors } from "../models/executorDetails";
 import { getPDFVersioningByUserId, upsertPDFVersioning } from "../services/pdfVersioningService";
 import { uploadFile } from "../services/uploadService";
+import { IExcludedPerson, parseExcludedPersons } from "../models/excludedPersonDetails";
 
 const prisma = new PrismaClient();
 
@@ -48,7 +49,7 @@ export const generatePDF = async (req: Request, res: Response) => {
         var addressDetails : IAddressDetails = safeParse(userDetails?.addressDetails);
         var executor : IExecutor[] = parseExecutors(await getExecutorsByUserIdService(userId));
         var petDetails = userDetails?.pets;
-        var excludedPersons = userDetails?.excludedPersons;
+        var excludedPersons : IExcludedPerson[] = parseExcludedPersons(userDetails?.excludedPersons  || []);
         let distributionDetails: any = null; 
         let residuaryDistributionDetails: any = null;
 
@@ -345,6 +346,32 @@ export const generatePDF = async (req: Request, res: Response) => {
                 
                 }).flat().filter(Boolean)
             ,
+            { text: "\n\nPART-VIII: EXCLUDED PERSONS\n", style: "subheader", alignment: "center" },
+            {
+              text: `The following person(s) are explicitly excluded from benefiting under this Will:`,
+              style: "text",
+            },
+            {
+              table: {
+                headerRows: 1,
+                widths: ["10%", "*", "*", "*"],
+                body: [
+                  [
+                    { text: "S. No.", bold: true },
+                    { text: "Name", bold: true },
+                    { text: "Relationship", bold: true },
+                    { text: "Reason", bold: true }
+                  ],
+                  ...excludedPersons.map((person, index) => [
+                    index + 1,
+                    person.data?.fullName ?? "N/A",
+                    person.data?.relationship ?? "N/A",
+                    person.data?.reason ?? "N/A",
+                  ])
+                ]
+              },
+              style: "table"
+            },
             {text: "\n\n"},
             {text: "IN WITNESS WHEREOF, I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence."},
             {text: "\n\n"},
@@ -431,8 +458,6 @@ export const generatePDF = async (req: Request, res: Response) => {
       const urls = await uploadFile(userId, fileName, fs.createReadStream(filePath));
 
       await upsertPDFVersioning(userId, urls.publicUrl, urls.signedUrl);
-
-      console.log("File uploaded:", urls.publicUrl);
 
       res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
       res.setHeader("Content-Type", "application/pdf");

@@ -16,6 +16,7 @@ import { IsEmptyString, isNumber } from '../utils';
 import { bankDetailsValidationState, emptyBankAccountValidationState, IBankDetailsValidationState } from '../atoms/validationStates/BankDetailsValidationState';
 import AddButton from '../components/AddButton';
 import ConfirmDelete from "../components/ConfirmDelete";
+import Swal from 'sweetalert2';
 
 const BankAccountsPage = () => {
     const [formState, setFormState] = useRecoilState<IBankDetailsState[]>(bankDetailsState);
@@ -129,7 +130,33 @@ const BankAccountsPage = () => {
 
         // NAVIGATE TO NEXT ROUTE
         var routeValue = routeState.find(s => location.pathname.includes(s.currentPath));
-        navigate(ROUTE_PATHS.YOUR_WILL + (routeValue?.nextPath ?? ROUTE_PATHS.LIABILITIES));
+        if (!routeValue?.nextPath) {
+            Swal.fire({
+              title: "Are you sure Proceed to Liabilities",
+              text: "Ready to move to Liabilities Section? Click No to add more Assets",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "var(--color-will-green)",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, go to Liabilities",
+              cancelButtonText: "No",
+              customClass: {
+                popup: "swal-sm",
+                title: "swal-title",
+                confirmButton: "swal-confirm-btn",
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.LIABILITIES);
+              }
+              else
+              {
+                navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.ASSETS)
+              }
+            });
+          } else {
+            navigate(ROUTE_PATHS.YOUR_WILL + routeValue.nextPath);
+          }
     }
 
     const shouldExpandAccordion = (index: number) => {
