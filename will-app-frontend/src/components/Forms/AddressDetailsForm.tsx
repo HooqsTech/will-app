@@ -5,10 +5,17 @@ import CustomTextBox from "../CustomTextBox";
 import { Dayjs } from "dayjs";
 import { addressDetailsValidationState } from "../../atoms/validationStates/AddressDetailsValidationState";
 import CustomCheckbox from "../CustomCheckbox";
+import { useEffect } from "react";
 
 const AddressDetailsForm = () => {
     const [formState, setFormState] = useRecoilState(addressDetailsState);
     const [validationState, setValidationState] = useRecoilState(addressDetailsValidationState);
+
+    useEffect(() => {
+        if (formState.sameAsPresentAddress) {
+            setPermanentAddressFromPresentAddress();
+        }
+    }, [formState.sameAsPresentAddress])
 
     const handleChange = (key: keyof IAddressDetailsState, value: string | Dayjs | null | boolean) => {
         changeState(key, value)
@@ -127,9 +134,6 @@ const AddressDetailsForm = () => {
                 <CustomCheckbox
                     onChange={() => {
                         handleChange("sameAsPresentAddress", !formState.sameAsPresentAddress);
-                        if (!formState.sameAsPresentAddress) {
-                            setPermanentAddressFromPresentAddress();
-                        }
                     }}
                     checked={formState.sameAsPresentAddress ?? false}
                     label="Same as present address?"
