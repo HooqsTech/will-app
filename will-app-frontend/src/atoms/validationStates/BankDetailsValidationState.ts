@@ -5,6 +5,7 @@ export interface IBankDetailsValidationState {
     accountType: string;
     bankName: string;
     accountNumber: string;
+    state: string;
     branch: string;
     city: string;
 }
@@ -15,6 +16,7 @@ export const bankDetailsValidationState = atom<IBankDetailsValidationState[]>({
         id: "",
         accountType: "",
         accountNumber: "",
+        state: "",
         bankName: "",
         branch: "",
         city: ""
@@ -25,6 +27,7 @@ export var emptyBankAccountValidationState: IBankDetailsValidationState = {
     id: "",
     accountType: "",
     accountNumber: "",
+    state: "",
     bankName: "",
     branch: "",
     city: ""

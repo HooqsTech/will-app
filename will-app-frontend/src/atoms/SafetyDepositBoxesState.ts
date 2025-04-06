@@ -5,6 +5,7 @@ export interface ISafetyDepositBoxState {
     depositBoxType: string;
     bankName: string;
     branch: string;
+    state: string;
     city: string;
 }
 
@@ -14,6 +15,7 @@ export const safetyDepositBoxesState = atom<ISafetyDepositBoxState[]>({
         id: "",
         depositBoxType: "",
         bankName: "",
+        state: "",
         branch: "",
         city: ""
     }]

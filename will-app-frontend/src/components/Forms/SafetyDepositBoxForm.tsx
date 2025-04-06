@@ -51,6 +51,13 @@ const SafetyDepositBoxForm: React.FC<ISafetyDepositBoxFormProps> = ({ index }) =
                 label="Branch"
                 type="text" />
             <CustomTextBox
+                value={item.state}
+                helperText={validationStateItem.state}
+                required
+                onChange={(e) => handleChange(index, "state", e)}
+                label="State"
+                type="text" />
+            <CustomTextBox
                 value={item.city}
                 helperText={validationStateItem.city}
                 required

@@ -13,7 +13,7 @@ import { deleteAsset, upsertAsset } from '../api/asset';
 import { userState } from '../atoms/UserDetailsState';
 import { ASSET_SUBTYPES, ASSET_TYPES, ROUTE_PATHS } from '../constants';
 import { emptyPropertyValidationState, IPropertiesValidationState, propertiesValidationState } from '../atoms/validationStates/PropertiesValidationState';
-import { IsEmptyString } from '../utils';
+import { IsEmptyString, isValidPincode } from '../utils';
 import ConfirmDelete from "../components/ConfirmDelete";
 
 const PropertiesPage = () => {
@@ -86,8 +86,18 @@ const PropertiesPage = () => {
                 isValid = false;
             }
 
+            if (!isValidPincode(prop.pincode)) {
+                setPropertyValidationState(index, "pincode", "pincode is invalid");
+                isValid = false;
+            }
+
             if (IsEmptyString(prop.city)) {
                 setPropertyValidationState(index, "city", "city is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(prop.state)) {
+                setPropertyValidationState(index, "state", "state is required");
                 isValid = false;
             }
         });
@@ -117,6 +127,7 @@ const PropertiesPage = () => {
                 propertyType: "",
                 ownershipType: "",
                 address: "",
+                state: "",
                 pincode: "",
                 city: "",
             },

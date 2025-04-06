@@ -59,9 +59,18 @@ const FixedDepositForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
                 label="Branch"
                 type="text" />
             <CustomTextBox
+                value={item.state}
+                helperText={validationItem.state}
+                maxLength={25}
+                required
+                onChange={(e) => handleChange(index, "state", e)}
+                label="State"
+                type="text" />
+            <CustomTextBox
                 value={item.city}
                 helperText={validationItem.city}
                 required
+                maxLength={25}
                 onChange={(e) => handleChange(index, "city", e)}
                 label="City"
                 type="text" />

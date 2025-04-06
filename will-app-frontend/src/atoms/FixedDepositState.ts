@@ -6,6 +6,7 @@ export interface IFixedDepositState {
     bankName: string;
     accountNumber: string;
     branch: string;
+    state: string;
     city: string;
 }
 
@@ -16,6 +17,7 @@ export const fixedDepositsState = atom<IFixedDepositState[]>({
         noOfHolders: "",
         accountNumber: "",
         bankName: "",
+        state: "",
         branch: "",
         city: ""
     }]

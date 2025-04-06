@@ -5,6 +5,7 @@ export interface IFixedDepositValidationState {
     bankName: string;
     accountNumber: string;
     branch: string;
+    state: string;
     city: string;
 }
 
@@ -14,6 +15,7 @@ export const fixedDepositsValidationState = atom<IFixedDepositValidationState[]>
         noOfHolders: "",
         accountNumber: "",
         bankName: "",
+        state: "",
         branch: "",
         city: ""
     }]
@@ -23,6 +25,7 @@ export var emptyFixedDepositsValidationState: IFixedDepositValidationState = {
     noOfHolders: "",
     accountNumber: "",
     bankName: "",
+    state: "",
     branch: "",
     city: ""
 }

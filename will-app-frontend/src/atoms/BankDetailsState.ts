@@ -6,6 +6,7 @@ export interface IBankDetailsState {
     bankName: string;
     accountNumber: string;
     branch: string;
+    state: string;
     city: string;
 }
 
@@ -16,6 +17,7 @@ export const bankDetailsState = atom<IBankDetailsState[]>({
         accountType: "",
         accountNumber: "",
         bankName: "",
+        state: "",
         branch: "",
         city: ""
     }]

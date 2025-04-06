@@ -87,7 +87,7 @@ const ProvidentFundpage = () => {
                 setPropertyValidationState(index, "city", "City is required");
                 isValid = false;
             }
-            if (prop.type == "GPF" && IsEmptyString(prop.state)) {
+            if ((prop.type == "GPF" || prop.type === "PPF") && IsEmptyString(prop.state)) {
                 setPropertyValidationState(index, "state", "State is required");
                 isValid = false;
             }
@@ -174,7 +174,6 @@ const ProvidentFundpage = () => {
                                     <ConfirmDelete onConfirm={() => deleteProvidentFundAsync(index)} />
                                 )
                             }
-
                         </div>
                     ))
                 }

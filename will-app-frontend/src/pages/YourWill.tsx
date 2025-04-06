@@ -109,6 +109,7 @@ import ResiduaryEstateSinglePage from './ResiduaryEstateSinglePage';
 import SafetyDepositBoxesPage from './SafetyDepositBoxesPage';
 import VechicleLoanPage from './VehicleLoanPage';
 import VehiclesPage from './VehiclesPage';
+import { IsEmptyString } from '../utils';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -248,6 +249,12 @@ const YourWill: React.FC = () => {
 
         setPersonalDetails(user.personalDetails);
         setAddressDetails(user.addressDetails);
+        if (user.addressDetails === undefined || IsEmptyString(user.addressDetails.phoneNumber)) {
+            setAddressDetails(prevState => ({
+                ...prevState,
+                phoneNumber: phoneNumber ?? ""
+            }))
+        }
 
         if (user.selectedAssets) {
             setSelectedAssets(user.selectedAssets);

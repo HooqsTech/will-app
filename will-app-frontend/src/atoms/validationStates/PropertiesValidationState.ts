@@ -6,6 +6,7 @@ export interface IPropertiesValidationState {
     ownershipType: string;
     address: string;
     pincode: string;
+    state: string;
     city: string;
 }
 
@@ -17,6 +18,7 @@ export const propertiesValidationState = atom<IPropertiesValidationState[]>({
         ownershipType: "",
         address: "",
         pincode: "",
+        state: "",
         city: ""
     }]
 });
@@ -27,5 +29,6 @@ export var emptyPropertyValidationState: IPropertiesValidationState = {
     ownershipType: "",
     address: "",
     pincode: "",
+    state: "",
     city: ""
 }

@@ -12,9 +12,9 @@ interface IFixedDepositFormProps {
 const ProvidentFundForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
     const [formState, setFormState] = useRecoilState<IProvidentFundState[]>(providentFundsState);
     const [validationState, setValidationState] = useRecoilState<IProvidentFundValidationState[]>(providentFundValidationState);
-        
-        const item = formState[index];
-        const validationStateItem = validationState[index];
+
+    const item = formState[index];
+    const validationStateItem = validationState[index];
 
     const handleChange = (index: number, key: keyof IProvidentFundState, value: string) => {
         setFormState((prevState) =>
@@ -59,6 +59,13 @@ const ProvidentFundForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
                     label="Branch"
                     type="text" />
                 <CustomTextBox
+                    value={item.state}
+                    helperText={validationStateItem.state}
+                    required
+                    onChange={(e) => handleChange(index, "state", e)}
+                    label="State"
+                    type="text" />
+                <CustomTextBox
                     value={item.city}
                     helperText={validationStateItem.city}
                     required
@@ -82,8 +89,8 @@ const ProvidentFundForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
                     label="GPF Number"
                     type="text" />
             </>}
-            
-                
+
+
         </CustomFormContainer>
     )
 }

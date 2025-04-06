@@ -81,6 +81,11 @@ const SafetyDepositBoxesPage = () => {
                 isValid = false;
             }
 
+            if (IsEmptyString(prop.state)) {
+                setSafetyDepositBoxValidationState(index, "state", "state is required");
+                isValid = false;
+            }
+
             if (IsEmptyString(prop.city)) {
                 setSafetyDepositBoxValidationState(index, "city", "city is required");
                 isValid = false;
@@ -111,6 +116,7 @@ const SafetyDepositBoxesPage = () => {
                 id: "",
                 depositBoxType: "",
                 bankName: "",
+                state: "",
                 branch: "",
                 city: ""
             },
@@ -162,7 +168,6 @@ const SafetyDepositBoxesPage = () => {
                                     <ConfirmDelete onConfirm={() => deleteSafetyDepositBoxAsync(index)} />
                                 )
                             }
-
                         </div>
                     ))
                 }

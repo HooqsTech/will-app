@@ -87,6 +87,11 @@ const FixedDepositsPage = () => {
                 isValid = false;
             }
 
+            if (IsEmptyString(prop.state)) {
+                setFixedDepositValidationState(index, "state", "state is required");
+                isValid = false;
+            }
+
             if (IsEmptyString(prop.city)) {
                 setFixedDepositValidationState(index, "city", "city is required");
                 isValid = false;
@@ -118,6 +123,7 @@ const FixedDepositsPage = () => {
                 noOfHolders: "",
                 accountNumber: "",
                 bankName: "",
+                state: "",
                 branch: "",
                 city: ""
             },
@@ -170,7 +176,6 @@ const FixedDepositsPage = () => {
                                     <ConfirmDelete onConfirm={() => deleteFixedDeposit(index)} />
                                 )
                             }
-
                         </div>
                     ))
                 }

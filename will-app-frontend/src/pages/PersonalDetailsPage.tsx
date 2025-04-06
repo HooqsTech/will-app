@@ -8,7 +8,7 @@ import { userState } from "../atoms/UserDetailsState";
 import { IPersonalDetailsValidationState, personalDetailsValidationState } from "../atoms/validationStates/PersonalDetailValidationState";
 import PersonalDetailsForm from "../components/Forms/PersonalDetailsForm";
 import NextButton from "../components/NextButton";
-import { IsEmptyString } from "../utils";
+import { IsEmptyString, isValidAadhaar } from "../utils";
 import { ROUTE_PATHS } from "../constants";
 
 
@@ -42,6 +42,11 @@ const PersonalDetailsPage = () => {
 
         if (IsEmptyString(personalDetails.aadhaarNumber)) {
             handleValidation("aadhaarNumber", "aadhaar number is required");
+            isValid = false;
+        }
+
+        if (!isValidAadhaar(personalDetails.aadhaarNumber)) {
+            handleValidation("aadhaarNumber", "aadhaar number is invalid")
             isValid = false;
         }
 

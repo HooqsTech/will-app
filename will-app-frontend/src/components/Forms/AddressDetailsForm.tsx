@@ -124,6 +124,7 @@ const AddressDetailsForm = () => {
                     restrictAlphabets
                     required
                     maxLength={10}
+                    disabled
                     helperText={validationState.phoneNumber}
                     onChange={(e) => handleChange("phoneNumber", e)}
                     label="Phone Number"

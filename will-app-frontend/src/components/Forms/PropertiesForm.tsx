@@ -52,13 +52,12 @@ const PropertiesForm: React.FC<IPropertiesFormProps> = ({ index }) => {
                 label="Address"
                 type="text" />
             <CustomTextBox
-                value={item.pincode}
-                helperText={validationStateItem.pincode}
+                value={item.state}
                 required
-                onChange={(e) => handleChange(index, "pincode", e)}
-                label="Pincode"
-                maxLength={6}
-                restrictAlphabets
+                helperText={validationStateItem.state}
+                maxLength={25}
+                onChange={(e) => handleChange(index, "state", e)}
+                label="State"
                 type="text" />
             <CustomTextBox
                 value={item.city}
@@ -67,6 +66,15 @@ const PropertiesForm: React.FC<IPropertiesFormProps> = ({ index }) => {
                 maxLength={25}
                 onChange={(e) => handleChange(index, "city", e)}
                 label="City"
+                type="text" />
+            <CustomTextBox
+                value={item.pincode}
+                helperText={validationStateItem.pincode}
+                required
+                onChange={(e) => handleChange(index, "pincode", e)}
+                label="Pincode"
+                maxLength={6}
+                restrictAlphabets
                 type="text" />
         </CustomFormContainer>
     )

@@ -58,8 +58,17 @@ const BankAccountForm: React.FC<IBankAccountFormProps> = ({ index }) => {
                 label="Branch"
                 type="text" />
             <CustomTextBox
+                value={item.state}
+                required
+                maxLength={25}
+                helperText={validationStateItem.state}
+                onChange={(e) => handleChange(index, "state", e)}
+                label="State"
+                type="text" />
+            <CustomTextBox
                 value={item.city}
                 required
+                maxLength={25}
                 helperText={validationStateItem.city}
                 onChange={(e) => handleChange(index, "city", e)}
                 label="City"

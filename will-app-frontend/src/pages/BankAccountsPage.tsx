@@ -12,7 +12,7 @@ import { userState } from '../atoms/UserDetailsState';
 import { deleteAsset, upsertAsset } from '../api/asset';
 import { routesState } from '../atoms/RouteState';
 import { useNavigate } from 'react-router';
-import { IsEmptyString } from '../utils';
+import { IsEmptyString, isNumber } from '../utils';
 import { bankDetailsValidationState, emptyBankAccountValidationState, IBankDetailsValidationState } from '../atoms/validationStates/BankDetailsValidationState';
 import AddButton from '../components/AddButton';
 import ConfirmDelete from "../components/ConfirmDelete";
@@ -35,6 +35,7 @@ const BankAccountsPage = () => {
                 accountNumber: "",
                 bankName: "",
                 branch: "",
+                state: "",
                 city: ""
             },
         ]);
@@ -88,6 +89,11 @@ const BankAccountsPage = () => {
                 isValid = false;
             }
 
+            if (!isNumber(prop.accountNumber)) {
+                setBankAccountValidationState(index, "accountNumber", "account number is invalid");
+                isValid = false;
+            }
+
             if (IsEmptyString(prop.bankName)) {
                 setBankAccountValidationState(index, "bankName", "bank name is required");
                 isValid = false;
@@ -100,6 +106,11 @@ const BankAccountsPage = () => {
 
             if (IsEmptyString(prop.city)) {
                 setBankAccountValidationState(index, "city", "city is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(prop.state)) {
+                setBankAccountValidationState(index, "state", "state is required");
                 isValid = false;
             }
         });

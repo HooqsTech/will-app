@@ -4,6 +4,7 @@ export interface ISafetyDepositBoxValidationState {
     depositBoxType: string;
     bankName: string;
     branch: string;
+    state: string;
     city: string;
 }
 
@@ -13,6 +14,7 @@ export const safetyDepositBoxesValidationState = atom<ISafetyDepositBoxValidatio
         depositBoxType: "",
         bankName: "",
         branch: "",
+        state: "",
         city: ""
     }]
 });
@@ -21,5 +23,6 @@ export var emptySafetyDepositBoxesValidationState: ISafetyDepositBoxValidationSt
     depositBoxType: "",
     bankName: "",
     branch: "",
+    state: "",
     city: ""
 }
