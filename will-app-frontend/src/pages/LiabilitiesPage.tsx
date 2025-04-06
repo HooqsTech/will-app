@@ -33,7 +33,7 @@ const LiabilitiesPage = () => {
         setRouteState(routeData);
 
         if (result.bankAccounts === selectedAssets.bankAccounts) {
-            navigate(ROUTE_PATHS.YOUR_WILL + (routeData.find(s => s.type === ASSET_TYPES.LIABILITIES)?.currentPath ?? ""));
+            navigate(ROUTE_PATHS.YOUR_WILL + (routeData.find(s => s.type === ASSET_TYPES.LIABILITIES)?.currentPath ?? ROUTE_PATHS.BENEFICIARIES));
         }
     }
 
