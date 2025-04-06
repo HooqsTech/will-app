@@ -92,32 +92,31 @@ const HomeLoanPage = () => {
         // NAVIGATE TO NEXT ROUTE
         let routeValue = routeState.find(s => location.pathname.includes(s.currentPath));
         if (!routeValue?.nextPath) {
-                                    Swal.fire({
-                                      title: "Are you sure Proceed to Beneficiaries",
-                                      text: "Ready to move to Beneficiaries Section? Click No to add more Liabilities",
-                                      icon: "warning",
-                                      showCancelButton: true,
-                                      confirmButtonColor: "var(--color-will-green)",
-                                      cancelButtonColor: "#d33",
-                                      confirmButtonText: "Yes, go to Beneficiaries",
-                                      cancelButtonText: "No",
-                                      customClass: {
-                                        popup: "swal-sm",
-                                        title: "swal-title",
-                                        confirmButton: "swal-confirm-btn",
-                                      },
-                                    }).then((result) => {
-                                      if (result.isConfirmed) {
-                                        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.BENEFICIARIES);
-                                      }
-                                      else
-                                      {
-                                        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.LIABILITIES)
-                                      }
-                                    });
-                                  } else {
-                                    navigate(ROUTE_PATHS.YOUR_WILL + routeValue.nextPath);
-                                  }
+            Swal.fire({
+                title: "Are you sure Proceed to Beneficiaries",
+                text: "Ready to move to Beneficiaries Section? Click No to add more Liabilities",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "var(--color-will-green)",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, go to Beneficiaries",
+                cancelButtonText: "No",
+                customClass: {
+                    popup: "swal-sm",
+                    title: "swal-title",
+                    confirmButton: "swal-confirm-btn",
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.BENEFICIARIES);
+                }
+                else {
+                    navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.LIABILITIES)
+                }
+            });
+        } else {
+            navigate(ROUTE_PATHS.YOUR_WILL + routeValue.nextPath);
+        }
     }
 
 
@@ -186,7 +185,7 @@ const HomeLoanPage = () => {
                 <AddButton onClick={addHomeLoan} label={`HOME LOAN ${formState.length + 1}`} />
             </div>
             <div className='justify-between flex mt-10'>
-                <BackButton label='Back'/>
+                <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />
             </div>
         </div>

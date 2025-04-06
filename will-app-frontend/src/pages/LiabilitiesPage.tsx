@@ -9,6 +9,7 @@ import { userState } from '../atoms/UserDetailsState';
 import { getRouteDataFromSelectedAssets, routesState } from '../atoms/RouteState';
 import { useNavigate } from 'react-router';
 import { ASSET_TYPES, ROUTE_PATHS } from '../constants';
+import Swal from 'sweetalert2';
 
 const LiabilitiesPage = () => {
     const [selectedAssets, setSelectedAssets] = useRecoilState(selectedAssetsState);
@@ -35,6 +36,36 @@ const LiabilitiesPage = () => {
         if (result.bankAccounts === selectedAssets.bankAccounts) {
             navigate(ROUTE_PATHS.YOUR_WILL + (routeData.find(s => s.type === ASSET_TYPES.LIABILITIES)?.currentPath ?? ROUTE_PATHS.BENEFICIARIES));
         }
+
+        var liabilityPath = routeData.find(s => s.type === ASSET_TYPES.LIABILITIES)?.currentPath;
+
+        if (!liabilityPath) {
+            Swal.fire({
+                title: "Are you sure Proceed to Beneficiaries",
+                text: "Ready to move to Beneficiaries Section? Click No to add more Liabilities",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "var(--color-will-green)",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, go to Beneficiaries",
+                cancelButtonText: "No",
+                customClass: {
+                    popup: "swal-sm",
+                    title: "swal-title",
+                    confirmButton: "swal-confirm-btn",
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.BENEFICIARIES);
+                }
+                else {
+                    navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.LIABILITIES)
+                }
+            });
+        } else {
+            navigate(ROUTE_PATHS.YOUR_WILL + liabilityPath);
+        }
+
     }
 
     return (
