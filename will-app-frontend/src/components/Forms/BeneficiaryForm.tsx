@@ -70,6 +70,13 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
         }
     }
 
+    const getGuardians = () => {
+        return formState.filter(s => {
+            var age = dayjs().diff(dayjs(s.dateOfBirth), "year");
+            return s.isGuardian || age >= 18
+        })
+    }
+
     return (
         <CustomFormContainer hideBorder>
             {
@@ -105,7 +112,7 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
                         !isGuardian && needsGuardian && (
                             <CustomSelect
                                 label="Guardian"
-                                options={formState.filter(f => f.isGuardian).map(s => s.fullName)}
+                                options={getGuardians().map(s => s.fullName)}
                                 value={item.guardian ?? ""}
                                 helperText={validationStateItem.guardian}
                                 onChange={(e) => handleChange(index, "guardian", e)}
@@ -129,6 +136,14 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
                         label="Phone"
                         restrictAlphabets
                         maxLength={10}
+                        type="text" />
+                    <CustomTextBox
+                        value={item.aadhaarNumber}
+                        onChange={(e) => handleChange(index, "aadhaarNumber", e)}
+                        helperText={validationStateItem.aadhaarNumber}
+                        label="Aadhaar Number"
+                        restrictAlphabets
+                        maxLength={12}
                         type="text" />
                     <CustomSelect
                         label="Relationship"

@@ -14,6 +14,7 @@ export interface IBeneficiaryState {
     organization: string;
     otherOrganization: string;
     donationAmount: number | null;
+    aadhaarNumber: string;
     isGuardian?: boolean
     guardian?: string
 }

@@ -12,6 +12,7 @@ export interface IBeneficiaryValidationState {
     charityType: string;
     organization: string;
     otherOrganization: string;
+    aadhaarNumber: string;
     donationAmount: string;
     guardian: string;
 }
@@ -27,6 +28,7 @@ export const beneficiariesValidationState = atom<IBeneficiaryValidationState[]>(
         email: "",
         phone: "",
         relationship: "",
+        aadhaarNumber: "",
         charityType: "",
         organization: "",
         otherOrganization: "",
@@ -43,6 +45,7 @@ export var emptyBeneficiariesValidationState: IBeneficiaryValidationState = {
     dateOfBirth: "",
     email: "",
     phone: "",
+    aadhaarNumber: "",
     relationship: "",
     charityType: "",
     organization: "",

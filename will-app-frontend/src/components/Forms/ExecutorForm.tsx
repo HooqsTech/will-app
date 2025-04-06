@@ -15,11 +15,9 @@ interface IExecutorFormProps {
 const ExecutorForm: React.FC<IExecutorFormProps> = ({ index }) => {
     const [formState, setFormState] = useRecoilState<IExecutorState[]>(executorState);
     const [validationState, setValidationState] = useRecoilState<IExecutorValidationState[]>(executorValidationState);
-    
+
     const item = formState[index];
     const validationStateItem = validationState[index];
-
-
 
     const handleChange = (index: number, key: keyof IExecutorState, value: string | Dayjs | null) => {
         setFormState((prevState) =>
@@ -30,10 +28,8 @@ const ExecutorForm: React.FC<IExecutorFormProps> = ({ index }) => {
         );
     };
 
-
     return (
         <CustomFormContainer hideBorder>
-            
             <CustomTextBox
                 value={item.fullName}
                 onChange={(e) => handleChange(index, "fullName", e)}
@@ -58,6 +54,13 @@ const ExecutorForm: React.FC<IExecutorFormProps> = ({ index }) => {
                 label={"Email"}
                 type="text" />
             <CustomTextBox
+                value={item.aadhaarNumber}
+                maxLength={12}
+                onChange={(e) => handleChange(index, "aadhaarNumber", e)}
+                helperText={validationStateItem.aadhaarNumber}
+                label={"Aadhaar Number"}
+                type="text" />
+            <CustomTextBox
                 value={item.phoneNumber}
                 onChange={(e) => handleChange(index, "phoneNumber", e)}
                 helperText={validationStateItem.phoneNumber}
@@ -65,8 +68,6 @@ const ExecutorForm: React.FC<IExecutorFormProps> = ({ index }) => {
                 restrictAlphabets
                 maxLength={10}
                 type="text" />
-                    
-            
         </CustomFormContainer>
     )
 }

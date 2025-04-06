@@ -11,7 +11,7 @@ import AddButton from '../components/AddButton';
 import BackButton from '../components/BackButton';
 import NextButton from '../components/NextButton';
 import { BENEFICIARIES, ROUTE_PATHS } from '../constants';
-import { IsEmptyNumber, IsEmptyString, IsValidEmail } from '../utils';
+import { IsEmptyNumber, IsEmptyString, isValidAadhaar, IsValidEmail, IsValidPhoneNumber } from '../utils';
 import { beneficiariesValidationState, emptyBeneficiariesValidationState, IBeneficiaryValidationState } from '../atoms/validationStates/BeneficiariesValidationState';
 import { useLocation, useNavigate } from 'react-router';
 import ConfirmDelete from "../components/ConfirmDelete";
@@ -92,19 +92,19 @@ const BeneficiariesPage = () => {
         }
         if (prop.type === "Person") {
             if (IsEmptyString(prop.fullName)) {
-                setBeneficiaryValidationState(index, "fullName", "Name is required");
+                setBeneficiaryValidationState(index, "fullName", "name is required");
                 isValid = false;
             }
             if (IsEmptyString(prop.gender)) {
-                setBeneficiaryValidationState(index, "gender", "Gender is required");
+                setBeneficiaryValidationState(index, "gender", "gender is required");
                 isValid = false;
             }
             if (IsEmptyString(prop.dateOfBirth)) {
-                setBeneficiaryValidationState(index, "dateOfBirth", "DOB is required");
+                setBeneficiaryValidationState(index, "dateOfBirth", "dob is required");
                 isValid = false;
             }
             if (prop.dateOfBirth !== "" && age <= 18 && prop.isGuardian) {
-                setBeneficiaryValidationState(index, "dateOfBirth", "Guardian age must be greater than 18");
+                setBeneficiaryValidationState(index, "dateOfBirth", "guardian age must be greater than 18");
                 isValid = false;
             }
             if (prop.dateOfBirth !== "" && age <= 18 && IsEmptyString(prop.guardian) && !prop.isGuardian) {
@@ -112,7 +112,7 @@ const BeneficiariesPage = () => {
                 isValid = false;
             }
             if (IsEmptyString(prop.email)) {
-                setBeneficiaryValidationState(index, "email", "Email is required");
+                setBeneficiaryValidationState(index, "email", "email is required");
                 isValid = false;
             }
             if (!IsValidEmail(prop.email)) {
@@ -120,26 +120,37 @@ const BeneficiariesPage = () => {
                 isValid = false;
             }
             if (IsEmptyString(prop.phone)) {
-                setBeneficiaryValidationState(index, "phone", "Phone is required");
+                setBeneficiaryValidationState(index, "phone", "phone is required");
+                isValid = false;
+            }
+            if (!IsValidPhoneNumber(prop.phone)) {
+                setBeneficiaryValidationState(index, "phone", "phone is invalid");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.aadhaarNumber)) {
+                setBeneficiaryValidationState(index, "aadhaarNumber", "aadhaar number is required");
+                isValid = false;
+            }
+            if (isValidAadhaar(prop.aadhaarNumber)) {
+                setBeneficiaryValidationState(index, "aadhaarNumber", "aadhaar number is invalid");
                 isValid = false;
             }
             if (IsEmptyString(prop.relationship)) {
-                setBeneficiaryValidationState(index, "relationship", "Relationship is required");
+                setBeneficiaryValidationState(index, "relationship", "relationship is required");
                 isValid = false;
             }
         }
         if (prop.type === "Charity") {
-
             if (IsEmptyString(prop.charityType)) {
-                setBeneficiaryValidationState(index, "charityType", "Charity Type is required");
+                setBeneficiaryValidationState(index, "charityType", "charity type is required");
                 isValid = false;
             }
             if (IsEmptyString(prop.organization)) {
-                setBeneficiaryValidationState(index, "organization", "Organization is required");
+                setBeneficiaryValidationState(index, "organization", "organization is required");
                 isValid = false;
             }
             if (IsEmptyNumber(prop.donationAmount)) {
-                setBeneficiaryValidationState(index, "donationAmount", "Donation Amount is required");
+                setBeneficiaryValidationState(index, "donationAmount", "donation amount is required");
                 isValid = false;
             }
         }
@@ -184,6 +195,7 @@ const BeneficiariesPage = () => {
                 relationship: "",
                 charityType: "",
                 organization: "",
+                aadhaarNumber: "",
                 otherOrganization: "",
                 donationAmount: null,
                 isGuardian: true
@@ -203,6 +215,7 @@ const BeneficiariesPage = () => {
                 id: "",
                 type: "",
                 fullName: "",
+                aadhaarNumber: "",
                 gender: "",
                 dateOfBirth: "",
                 email: "",

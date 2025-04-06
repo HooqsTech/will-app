@@ -6,6 +6,7 @@ export interface IExecutorValidationState {
     gender: string;
     dob: string;
     email: string;
+    aadhaarNumber: string;
     phoneNumber: string;
 }
 
@@ -16,11 +17,11 @@ export const executorValidationState = atom<IExecutorValidationState[]>({
         fullName: "",
         gender: "",
         dob: "",
+        aadhaarNumber: "",
         email: "",
         phoneNumber: ""
     }]
 });
-
 
 export var emptyExecutorValidationState: IExecutorValidationState = {
     id: "",
@@ -28,5 +29,6 @@ export var emptyExecutorValidationState: IExecutorValidationState = {
     gender: "",
     dob: "",
     email: "",
+    aadhaarNumber: "",
     phoneNumber: ""
 };

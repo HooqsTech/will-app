@@ -13,7 +13,7 @@ import ExecutorForm from '../components/Forms/ExecutorForm';
 import NextButton from '../components/NextButton';
 import { ROUTE_PATHS } from '../constants';
 import { IExecutor, IExecutorDeleteRequest } from '../models/executor';
-import { IsEmptyString, IsValidEmail } from '../utils';
+import { IsEmptyString, isValidAadhaar, IsValidEmail, IsValidPhoneNumber } from '../utils';
 import CustomAccordion from '../components/CustomAccordion';
 
 const ExecutorPage = () => {
@@ -26,9 +26,9 @@ const ExecutorPage = () => {
     const [showErrorBorder, setShowErrorBorder] = useState(false);
 
     useEffect(() => {
-            setCurrentItem(formState.length+1)
-        }, [])
-        
+        setCurrentItem(formState.length + 1)
+    }, [])
+
     const saveExecutorAsync = async (property: IExecutorState, index: number) => {
         let data: IExecutor = {
             id: property.id,
@@ -68,59 +68,76 @@ const ExecutorPage = () => {
         );
     };
 
-
     const validate = () => {
         let isValid: boolean = true;
         formState.forEach((prop, index) => {
-        let age = dayjs().diff(dayjs(prop.dob), "year");
-        if (IsEmptyString(prop.fullName)) {
-            setPropertyValidationState(index, "fullName", "Name is required");
-            isValid = false;
-        }
-        if (IsEmptyString(prop.gender)) {
-            setPropertyValidationState(index, "gender", "Gender is required");
-            isValid = false;
-        }
-        if (IsEmptyString(prop.dob)) {
-            setPropertyValidationState(index, "dob", "DOB is required");
-            isValid = false;
-        }
-        if (prop.dob !== "" && age <= 18) {
-            setPropertyValidationState(index, "dob", "Executor age must be greater than 18");
-            isValid = false;
-        }
-        if (IsEmptyString(prop.email)) {
-            setPropertyValidationState(index, "email", "Email is required");
-            isValid = false;
-        }
-        if (!IsValidEmail(prop.email)) {
-            setPropertyValidationState(index, "email", "Email is invalid");
-            isValid = false;
-        }
-        if (IsEmptyString(prop.phoneNumber)) {
-            setPropertyValidationState(index, "phoneNumber", "Phone is required");
-            isValid = false;
-        }
-    });
+            let age = dayjs().diff(dayjs(prop.dob), "year");
+            if (IsEmptyString(prop.fullName)) {
+                setPropertyValidationState(index, "fullName", "Name is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(prop.gender)) {
+                setPropertyValidationState(index, "gender", "Gender is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(prop.dob)) {
+                setPropertyValidationState(index, "dob", "DOB is required");
+                isValid = false;
+            }
+
+            if (prop.dob !== "" && age <= 18) {
+                setPropertyValidationState(index, "dob", "Executor age must be greater than 18");
+                isValid = false;
+            }
+
+            if (IsEmptyString(prop.email)) {
+                setPropertyValidationState(index, "email", "Email is required");
+                isValid = false;
+            }
+
+            if (IsEmptyString(prop.aadhaarNumber)) {
+                setPropertyValidationState(index, "aadhaarNumber", "Aadhaar number is required");
+                isValid = false;
+            }
+
+            if (!isValidAadhaar(prop.aadhaarNumber)) {
+                setPropertyValidationState(index, "aadhaarNumber", "Aadhaar number is required");
+                isValid = false;
+            }
+
+            if (!IsValidEmail(prop.email)) {
+                setPropertyValidationState(index, "email", "Email is invalid");
+                isValid = false;
+            }
+
+            if (IsEmptyString(prop.phoneNumber)) {
+                setPropertyValidationState(index, "phoneNumber", "Phone is required");
+                isValid = false;
+            }
+
+            if (!IsValidPhoneNumber(prop.phoneNumber)) {
+                setPropertyValidationState(index, "phoneNumber", "Phone is invalid");
+                isValid = false;
+            }
+        });
         setShowErrorBorder(!isValid);
         return isValid;
     }
 
     const handleNextClick = async () => {
         if (!validate()) return;
-        if(formState.length >= 1)
-        {
+        if (formState.length >= 1) {
             setError(false);
             formState.forEach(async (person, index) => {
                 await saveExecutorAsync(person, index);
             });
             navigate(ROUTE_PATHS.ORDER_SUMMARY);
         }
-        else
-        {
+        else {
             setError(true);
         }
-        
     }
 
     const addExecutorItem = () => {
@@ -130,6 +147,7 @@ const ExecutorPage = () => {
                 id: "",
                 fullName: "",
                 gender: "",
+                aadhaarNumber: "",
                 dob: "",
                 email: "",
                 phoneNumber: ""
@@ -142,8 +160,6 @@ const ExecutorPage = () => {
         setCurrentItem(formState.length);
         setError(false);
     };
-
-    
 
     const getSubTitle = (index: number) => {
         const { fullName, email } = formState[index];
@@ -160,7 +176,7 @@ const ExecutorPage = () => {
     };
 
     return (
-        <div className='flex flex-col justify-start text-center h-full space-y-3 w-xl m-auto'>
+        <div className='flex flex-col justify-start h-full space-y-3 w-xl m-auto'>
             <h1 className='text-2xl font-semibold'>Choose Your Will Executors</h1>
             <h2 className="text-md mb-5">
                 Ensure your wishes are followed accurately and minimise the possibility of objections, by choosing the right person to execute your Will.
@@ -189,13 +205,12 @@ const ExecutorPage = () => {
                                     <ConfirmDelete onConfirm={() => deleteExecutorAsync(index)} />
                                 )
                             }
-
                         </div>
                     ))
                 }
                 <AddButton onClick={addExecutorItem} label={`EXECUTOR ${formState.length + 1}`} />
             </div>
-            {error && <p className="mt-3  text-red-500">Please add executor before proceeding to next step.</p>}
+            {error && <p className="mt-3 text-red-500">Please add executor before proceeding to next step.</p>}
             <div className='justify-between flex mt-10'>
                 <BackButton label='Back' />
                 <NextButton onClick={handleNextClick} />

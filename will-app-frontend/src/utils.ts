@@ -18,6 +18,10 @@ export const isValidPincode = (value: string): boolean => {
     return /^[0-9]{6}$/.test(value);
 };
 
+export const IsValidPhoneNumber = (value: string): boolean => {
+    return /^[0-9]{10}$/.test(value);
+};
+
 export const IsValidEmail = (value: string) => {
     var re = /\S+@\S+\.\S+/;
     return re.test(value);
