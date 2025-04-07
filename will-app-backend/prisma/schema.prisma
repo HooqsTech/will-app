@@ -218,7 +218,8 @@ model payment_transactions {
 }
 
 model pdfversioning {
-  userid        String    @id @db.Uuid
+  versionid     String    @id @db.Uuid
+  userid        String    @db.Uuid
   createdate    DateTime? @default(now()) @db.Timestamp(6)
   updatedate    DateTime? @default(now()) @db.Timestamp(6)
   latestversion Int       @default(1)
