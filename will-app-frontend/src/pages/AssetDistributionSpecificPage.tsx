@@ -28,6 +28,8 @@ import { saveSpecificAssetDistributionApi } from "../api/assetDistribution";
 import { useNavigate } from "react-router";
 import { ROUTE_PATHS } from "../constants";
 import DistributionBeneficiary from "../components/DistributionBeneficiary";
+import Swal from "sweetalert2";
+import { IPetState, petsState } from "../atoms/petsState";
 
 export interface IBeneficiaryDistribution {
     beneficiaryId: string;
@@ -68,6 +70,7 @@ const AssetDistributionSpecificPage = () => {
     const digitalAssets = useRecoilValue(digitalAssetsState);
     const intellectualProperties = useRecoilValue(intellectualPropertiesState);
     const customAssets = useRecoilValue(customAssetsState);
+    const pets = useRecoilValue(petsState);
 
     React.useEffect(() => {
         getAssetDetails();
@@ -364,11 +367,26 @@ const AssetDistributionSpecificPage = () => {
                     isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
+        let petList = pets.filter((data: IPetState) => data.id !== "")
+            .map((data: IPetState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
+                return {
+                    type: `Pets ${index + 1}`,
+                    assetId: data.id,
+                    firstline : data.petName?.trim() || "",
+                    secondline : data.animalBreed?.trim(),
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
+                }
+            });
         setAssetDistribution((prev) => ({
             ...prev,
             assetSelectionList: [...propertiesList, ...bankAccountsList, ...fixedDepositsList, ...insurancePoliciesList, ...safetyDepositBoxesList,
             ...dematAccountsList, ...mutualFundsList, ...providentFundsList, ...pensionAccountsList, ...businesssesList, ...bondsList,
-            ...debenturesList, ...escopsList, ...jewelleriesList, ...vehiclesList, ...digitalAssetsList, ...intellectualPropertiesList, ...customAssetsList
+            ...debenturesList, ...escopsList, ...jewelleriesList, ...vehiclesList, ...digitalAssetsList, ...intellectualPropertiesList, ...customAssetsList, ...petList
             ]
         }));
     }
@@ -429,7 +447,23 @@ const AssetDistributionSpecificPage = () => {
                     step: 3
                 }));
 
-            } else {
+            }
+            else if (assetDistribution.selectedAssets.length === 0)
+            {
+                Swal.fire({
+                            title: "Warning!!",
+                            text: "Please select atleast one asset",
+                            icon: "warning",
+                            confirmButtonColor: "var(--color-will-green)",
+                            customClass: {
+                            popup: "swal-sm",
+                            title: "swal-title",
+                            confirmButton: "swal-confirm-btn",
+                            },
+                        });
+                return;
+            }
+            else {
                 setAssetDistribution((prev) => ({
                     ...prev,
                     step: 2
@@ -437,6 +471,22 @@ const AssetDistributionSpecificPage = () => {
             }
         }
         else if (assetDistribution.step === 2) {
+            if (assetDistribution.selectedBeneficiary.length === 0)
+            {
+                Swal.fire({
+                            title: "Warning!!",
+                            text: "Please select atleast one beneficiary to proceed",
+                            icon: "warning",
+                            confirmButtonColor: "var(--color-will-green)",
+                            customClass: {
+                            popup: "swal-sm",
+                            title: "swal-title",
+                            confirmButton: "swal-confirm-btn",
+                            },
+                        });
+                return;
+            }
+
             let toatlamount = 0;
             for (let key in assetDistribution.additionalInputs) {
                 toatlamount += parseInt(assetDistribution.additionalInputs[key]);
@@ -483,6 +533,7 @@ const AssetDistributionSpecificPage = () => {
         else if (assetDistribution.step === 3) {
             const userId = user.userId;
             await saveSpecificAssetDistributionApi(userId, assetDistribution.assetSelectionList);
+
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.RESIDUARY_SELECTION);
             // save logic
             setAssetDistribution((prev) => ({
