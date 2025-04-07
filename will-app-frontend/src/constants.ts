@@ -58,6 +58,7 @@ export const ROUTE_PATHS = {
     MY_PLAN: "/my_plan",
     EXECUTOR: "/executor",
     EXECLUDED_PERSONS: "/excluded_persons",
+    LIABLITY_DISTRIBUTION: "/liability_distributrion"
 }
 
 export const BENEFICIARIES = "beneficiaries"

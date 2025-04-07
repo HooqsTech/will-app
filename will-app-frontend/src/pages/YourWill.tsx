@@ -113,6 +113,7 @@ import { IsEmptyString } from '../utils';
 import PetsPage from './PetsPage';
 import { IPetState, petsState } from '../atoms/petsState';
 import { emptyPetValidationState, petsValidationState } from '../atoms/validationStates/PetsValidationState';
+import LiabilityDistributionSpecificPage from './LiabilityDistributionSpecificPage';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -595,6 +596,7 @@ const YourWill: React.FC = () => {
                         <Route path={ROUTE_PATHS.RESIDUARY_SELECTION_PERCENT} element={<ResiduaryEstatePercentPage />} />
                         <Route path={ROUTE_PATHS.EXECUTOR} element={<ExecutorPage />} />
                         <Route path={ROUTE_PATHS.EXECLUDED_PERSONS} element={<ExcludedPersonsPage />} />
+                        <Route path={ROUTE_PATHS.LIABLITY_DISTRIBUTION} element={<LiabilityDistributionSpecificPage />} />
                     </Routes>
                 </div>
             </div>

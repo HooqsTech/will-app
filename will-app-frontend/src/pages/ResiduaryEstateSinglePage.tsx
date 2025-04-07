@@ -73,7 +73,7 @@ const ResiduaryEstateSinglePage = () => {
             setStep(2);
         } else if (step === 2) {
             await saveWillDistributionAsync();
-            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECLUDED_PERSONS);
+            navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.LIABLITY_DISTRIBUTION);
 
         }
     };
