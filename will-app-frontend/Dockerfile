@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Set environment variable
-ENV VITE_API_URL=https://backend-170230222445.asia-south2.run.app
+ENV VITE_API_URL=https://backend-170230222445.us-central1.run.app
 
 # Install dependencies & build the project
 RUN npm install && npm run build

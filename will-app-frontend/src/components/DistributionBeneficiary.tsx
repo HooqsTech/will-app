@@ -37,7 +37,8 @@ const DistributionBeneficiary = () => {
                 organization: "",
                 otherOrganization: "",
                 donationAmount: null,
-                isGuardian: false
+                isGuardian: false,
+                aadhaarNumber:""
             },
         ]);
         setBeneficiaryValidationState((prevState) => [
@@ -64,7 +65,8 @@ const DistributionBeneficiary = () => {
                 organization: "",
                 otherOrganization: "",
                 donationAmount: null,
-                isGuardian: true
+                isGuardian: true,
+                aadhaarNumber:""
             },
         ]);
         setBeneficiaryValidationState((prevState) => [
