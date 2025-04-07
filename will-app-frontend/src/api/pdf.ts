@@ -1,3 +1,24 @@
+import { IPdfVersion } from "../models/pdf";
+
+export const getPDFVersions = async (userId: string): Promise<IPdfVersion[]> => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pdfversionByUserId`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            userId: userId
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch pdf versions");
+    }
+
+    const asset: IPdfVersion[] = await response.json();
+    return asset;
+};
+
 export const generatePdfFile = async (userId: string) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/generatePDF`, {
@@ -30,15 +51,16 @@ export const generatePdfFile = async (userId: string) => {
     }
 };
 
-export const downloadPdfFile = async (userId: string) => {
+export const downloadPdfFile = async (userId: string, versionId: string, fileName: string) => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/downloadPDF`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/downloadPdfByUserIdAndVersionId`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/JSON",
             },
             body: JSON.stringify({
-                userId: userId
+                userId: userId,
+                versionId: versionId
             })
         });
 
@@ -51,7 +73,7 @@ export const downloadPdfFile = async (userId: string) => {
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = userId + ".pdf"; // Change filename as needed
+        a.download = fileName; // Change filename as needed
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

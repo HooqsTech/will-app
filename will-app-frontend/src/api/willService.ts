@@ -1,10 +1,8 @@
-import { IWillService, IServiceCategory ,IFormattedServiceCategory} from "../models/willService";
+import { IWillService, IServiceCategory, IFormattedServiceCategory } from "../models/willService";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const getWillServices = async (): Promise<IFormattedServiceCategory[]> => {
-  console.log("Fetching all Will Services");
-
   const response = await fetch(`${API_URL}/api/willService`, {
     method: "GET",
   });
@@ -25,14 +23,10 @@ export const getWillServices = async (): Promise<IFormattedServiceCategory[]> =>
       serviceDiscountPrice: service.serviceDiscountPrice ? Number(service.serviceDiscountPrice) : null,
     })),
   }));
-
-  console.log("Parsed Categories:", parsedCategories);
   return parsedCategories;
 };
 
 export const getWillService = async (serviceId: string): Promise<IWillService> => {
-  console.log("Fetching Will Service with ID:", serviceId);
-
   const response = await fetch(`${API_URL}/api/willService/getById/${serviceId}`, {
     method: "GET",
   });

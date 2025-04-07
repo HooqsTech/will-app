@@ -1,21 +1,24 @@
+import { Button, Modal } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { TransactionSummaryState } from "../atoms/TransactionSummaryState";
-import { getPaymentTransactionsByPhoneNumbers } from "../api/payment";
-import Header from "../components/Header";
-import { userState } from "../atoms/UserDetailsState";
-import { getUserIdByPhoneNumber } from "../api/user";
-import { getCookie } from "typescript-cookie";
 import { FaDownload, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { ITransaction } from "../models/willService";
-import { IFormattedServiceCategory } from "../models/willService";
-import { getWillServices } from "../api/willService";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import Swal from "sweetalert2";
-import { pathState } from "../atoms/serviceState";
-import { downloadPdfFile, generatePdfFile } from "../api/pdf";
-import { Button } from "@mui/material";
+import { getCookie } from "typescript-cookie";
+import { getPaymentTransactionsByPhoneNumbers } from "../api/payment";
+import { downloadPdfFile, generatePdfFile, getPDFVersions } from "../api/pdf";
+import { getUserIdByPhoneNumber } from "../api/user";
+import { getWillServices } from "../api/willService";
 import { pageLoadingState } from "../atoms/PageLoadingState";
+import { IPdfVersionState, pdfVersionsState } from "../atoms/PdfVersioningState";
+import { pathState } from "../atoms/serviceState";
+import { TransactionSummaryState } from "../atoms/TransactionSummaryState";
+import { userState } from "../atoms/UserDetailsState";
+import CustomButton from "../components/CustomButton";
+import CustomSelect from "../components/CustomSelect";
+import Header from "../components/Header";
+import { IFormattedServiceCategory, ITransaction } from "../models/willService";
+import { IsEmptyString } from "../utils";
 
 const OrderSummary = () => {
   const navigate = useNavigate();
@@ -31,6 +34,10 @@ const OrderSummary = () => {
   >([]);
   const [isPdfDownloading, setIsPdfDownloading] = useState(false);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+  const [pdfVersions, setPdfVersions] = useRecoilState(pdfVersionsState);
+  const [currentPdfVersion, setcurrentPdfVersion] = useState("");
+  const [openPdfDownloadModal, setOpenPdfDownloadModal] = useState(false);
+  const [isValid, setIsValid] = useState(true);
 
   const handleGenerate = async () => {
     setIsPdfGenerating(true);
@@ -39,18 +46,33 @@ const OrderSummary = () => {
   };
 
   const handleDownload = async () => {
+    setIsValid(true);
+    if (IsEmptyString(currentPdfVersion)) {
+      setIsValid(false);
+      return;
+    }
     setIsPdfDownloading(true);
-    await downloadPdfFile(userId.userId);
+    var versionId = pdfVersions.find(s => s.folderpath.includes(currentPdfVersion) == true)?.versionid
+    await downloadPdfFile(userId.userId, versionId ?? "", currentPdfVersion);
     setIsPdfDownloading(false);
   };
+
+  const fetchPdfVersions = async () => {
+    if (userId.userId) {
+      let response: IPdfVersionState[] = await getPDFVersions(userId.userId);
+      setPdfVersions(response)
+    }
+  }
+
+  useEffect(() => {
+    fetchPdfVersions()
+  }, [userId.userId])
 
   const totalAmount =
     payment?.reduce(
       (total, order) => total + (Number(order.totalprice) || 0),
       0
     ) ?? 0;
-
-  console.log(totalAmount);
 
   const handleEdit = () => {
     const hasValidService = serviceCounts.some((item) => item.serviceCount > 0);
@@ -104,11 +126,9 @@ const OrderSummary = () => {
 
   useEffect(() => {
     if (!userId?.userId) return;
-
     const fetchAndProcessData = async () => {
       try {
         setLoading(true);
-
         // Fetch transactions
         const transactions = await getPaymentTransactionsByPhoneNumbers(
           userId.userId
@@ -284,7 +304,9 @@ const OrderSummary = () => {
               </Button>
 
               <Button
-                onClick={handleDownload}
+                onClick={() => {
+                  setOpenPdfDownloadModal(true)
+                }}
                 sx={{
                   borderRadius: 0,
                 }}
@@ -307,6 +329,24 @@ const OrderSummary = () => {
           </>
         )}
       </div>
+
+      <Modal
+        className='flex flex-col justify-center w-full items-center'
+        open={openPdfDownloadModal}
+        onClose={() => { setOpenPdfDownloadModal(false) }}
+      >
+        <div className='bg-white p-6 max-w-lg flex flex-col w-full'>
+          <p className='pb-4'>Download PDF</p>
+          <CustomSelect
+            options={pdfVersions.map(s => decodeURIComponent(s.folderpath.substring(s.folderpath.lastIndexOf('/') + 1)))}
+            value={currentPdfVersion}
+            helperText={!isValid ? "required" : ""}
+            onChange={(e) => { setcurrentPdfVersion(e) }}
+            label="Pdf Versions"
+          />
+          <CustomButton label='Download' onClick={handleDownload} />
+        </div>
+      </Modal>
     </div>
   );
 };

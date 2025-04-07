@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { validUser } from "../services/userServices";
-import { getPDFVersioningByUserId, getPDFVersioningByUserIdAndVersionId , getAllPDFVersioningByUserId} from "../services/pdfVersioningService";
+import { getPDFVersioningByUserId, getPDFVersioningByUserIdAndVersionId, getAllPDFVersioningByUserId } from "../services/pdfVersioningService";
 import axios from "axios";
 
 export const downloadPDF = async (req: Request, res: Response) => {
@@ -46,7 +46,7 @@ export const getPdfVersionByUserId = async (req: Request, res: Response) => {
             return res.status(404).json({ error: "No PDF found for this user" });
         }
 
-        return res.status(201).json({ pdfverisoning: pdfDetails });
+        return res.status(201).json(pdfDetails);
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
@@ -55,7 +55,7 @@ export const getPdfVersionByUserId = async (req: Request, res: Response) => {
 
 export const downloadPDFByuserIdAndVersionId = async (req: Request, res: Response) => {
     try {
-        const { userId , versioId} = req.body;
+        const { userId, versioId } = req.body;
         if (!userId) {
             return res.status(400).json({ error: "UserId is required" });
         }
