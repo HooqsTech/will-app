@@ -104,7 +104,7 @@ const ExecutorPage = () => {
             }
 
             if (!isValidAadhaar(prop.aadhaarNumber)) {
-                setPropertyValidationState(index, "aadhaarNumber", "Aadhaar number is required");
+                setPropertyValidationState(index, "aadhaarNumber", "Aadhaar number is invalid");
                 isValid = false;
             }
 
@@ -144,17 +144,16 @@ const ExecutorPage = () => {
                 confirmButtonText: "Yes, go to Order Summary",
                 cancelButtonText: "No",
                 customClass: {
-                popup: "swal-sm",
-                title: "swal-title",
-                confirmButton: "swal-confirm-btn",
+                    popup: "swal-sm",
+                    title: "swal-title",
+                    confirmButton: "swal-confirm-btn",
                 },
             }).then((result) => {
                 if (result.isConfirmed) {
-                navigate(ROUTE_PATHS.ORDER_SUMMARY);
+                    navigate(ROUTE_PATHS.ORDER_SUMMARY);
                 }
-                else
-                {
-                 return
+                else {
+                    return
                 }
             });
         }

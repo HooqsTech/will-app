@@ -23,7 +23,7 @@ const OrderSummary = () => {
   const setLoading = useSetRecoilState(pageLoadingState);
   const [userId, setUserId] = useRecoilState(userState);
   const [, setPath] = useRecoilState(pathState);
-  const [selectedOrder, setSelectedOrder] = useState<ITransaction | null>(null);
+  const [_, setSelectedOrder] = useState<ITransaction | null>(null);
   const [serviceCounts, setServiceCounts] = useState<{ categoryId: string; categoryName: string; serviceCount: number }[]>([]);
   const [isPdfDownloading, setIsPdfDownloading] = useState(false);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
@@ -41,9 +41,7 @@ const OrderSummary = () => {
   }
 
   const totalAmount =
-  payment?.reduce((total, order) => total + (Number(order.totalprice) || 0), 0) ?? 0;
-
-  console.log(totalAmount)
+    payment?.reduce((total, order) => total + (Number(order.totalprice) || 0), 0) ?? 0;
 
   const handleEdit = () => {
     const hasValidService = serviceCounts.some(item => item.serviceCount > 0);
@@ -171,108 +169,108 @@ const OrderSummary = () => {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100">
-  <div className="fixed top-0 left-0 w-full bg-[#265e55] z-50 shadow-md">
-    <Header />
-  </div>
-
-  <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-2xl mt-40">
-    {!hasItems ? (
-      <div className="flex flex-col items-center justify-center text-center min-h-96">
-        <p className="text-lg font-semibold text-gray-700 mb-4">
-          No active plans found.
-        </p>
-        <button
-          onClick={handleFindPlan}
-          className="bg-[#265e55] text-white px-6 py-3 rounded-md hover:bg-[#1f4a43] transition"
-        >
-          Find Plan
-        </button>
+      <div className="fixed top-0 left-0 w-full bg-[#265e55] z-50 shadow-md">
+        <Header />
       </div>
-    ) : (
-      <>
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">Summary!</h2>
 
-        <div className="text-center mb-6">
-          <h3 className="text-lg font-semibold text-gray-700">
-            All Orders Service Summary
-          </h3>
-        </div>
+      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-2xl mt-40">
+        {!hasItems ? (
+          <div className="flex flex-col items-center justify-center text-center min-h-96">
+            <p className="text-lg font-semibold text-gray-700 mb-4">
+              No active plans found.
+            </p>
+            <button
+              onClick={handleFindPlan}
+              className="bg-[#265e55] text-white px-6 py-3 rounded-md hover:bg-[#1f4a43] transition"
+            >
+              Find Plan
+            </button>
+          </div>
+        ) : (
+          <>
+            <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">Summary!</h2>
 
-        <div className="border-t border-b divide-y divide-gray-200">
-          {payment?.flatMap((order) => {
-            const categories = Array.isArray(order.selectedcategories)
-              ? order.selectedcategories
-              : order.selectedcategories
-              ? [order.selectedcategories]
-              : [];
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-semibold text-gray-700">
+                All Orders Service Summary
+              </h3>
+            </div>
 
-            const services = order.selectedservices || [];
+            <div className="border-t border-b divide-y divide-gray-200">
+              {payment?.flatMap((order) => {
+                const categories = Array.isArray(order.selectedcategories)
+                  ? order.selectedcategories
+                  : order.selectedcategories
+                    ? [order.selectedcategories]
+                    : [];
 
-            return [
-              ...categories.map((category) => (
-                <div
-                  key={`cat-${order.orderid}-${category.categoryId}`}
-                  className="flex justify-between items-center py-4"
-                >
-                  <span className="text-gray-700 font-medium text-base">
-                    {category.categoryName}
-                  </span>
-                  <span className="text-[#265e55] font-semibold text-base">
-                    ₹{category.categoryDiscountPrice ?? category.categoryStandardPrice}
-                  </span>
-                </div>
-              )),
-              ...services.map((service) => (
-                <div
-                  key={`serv-${order.orderid}-${service.serviceId}`}
-                  className="flex justify-between items-center py-4"
-                >
-                  <span className="text-gray-700 font-medium text-base">
-                    {service.serviceName}
-                  </span>
-                  <span className="text-[#265e55] font-semibold text-base">
-                    ₹{service.serviceDiscountPrice ?? service.serviceStandardPrice}
-                  </span>
-                </div>
-              )),
-            ];
-          })}
-        </div>
+                const services = order.selectedservices || [];
 
-        <div className="flex justify-end items-center mt-6">
-          <span className="text-lg font-semibold text-gray-800">
-            Total: ₹{totalAmount}
-          </span>
-        </div>
+                return [
+                  ...categories.map((category) => (
+                    <div
+                      key={`cat-${order.orderid}-${category.categoryId}`}
+                      className="flex justify-between items-center py-4"
+                    >
+                      <span className="text-gray-700 font-medium text-base">
+                        {category.categoryName}
+                      </span>
+                      <span className="text-[#265e55] font-semibold text-base">
+                        ₹{category.categoryDiscountPrice ?? category.categoryStandardPrice}
+                      </span>
+                    </div>
+                  )),
+                  ...services.map((service) => (
+                    <div
+                      key={`serv-${order.orderid}-${service.serviceId}`}
+                      className="flex justify-between items-center py-4"
+                    >
+                      <span className="text-gray-700 font-medium text-base">
+                        {service.serviceName}
+                      </span>
+                      <span className="text-[#265e55] font-semibold text-base">
+                        ₹{service.serviceDiscountPrice ?? service.serviceStandardPrice}
+                      </span>
+                    </div>
+                  )),
+                ];
+              })}
+            </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-          <Button
-            onClick={handleGenerate}
-            loading={isPdfGenerating}
-            className="flex items-center justify-center gap-2 !bg-[#265e55] !text-white px-6 py-3 rounded-md hover:bg-[#1f4a43]"
-          >
-            <FaDownload /> Generate
-          </Button>
+            <div className="flex justify-end items-center mt-6">
+              <span className="text-lg font-semibold text-gray-800">
+                Total: ₹{totalAmount}
+              </span>
+            </div>
 
-          <Button
-            onClick={handleDownload}
-            loading={isPdfDownloading}
-            className="flex items-center justify-center gap-2 !bg-[#265e55] !text-white px-6 py-3 rounded-md hover:bg-[#1f4a43]"
-          >
-            <FaDownload /> Download
-          </Button>
+            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+              <Button
+                onClick={handleGenerate}
+                loading={isPdfGenerating}
+                className="flex items-center justify-center gap-2 !bg-[#265e55] !text-white px-6 py-3 rounded-md hover:bg-[#1f4a43]"
+              >
+                <FaDownload /> Generate
+              </Button>
 
-          <Button
-            onClick={handleEdit}
-            className="flex items-center justify-center gap-2 !bg-[#265e55] !text-white px-6 py-3 rounded-md hover:bg-[#1f4a43]"
-          >
-            <FaEdit /> Edit
-          </Button>
-        </div>
-      </>
-    )}
-  </div>
-</div>
+              <Button
+                onClick={handleDownload}
+                loading={isPdfDownloading}
+                className="flex items-center justify-center gap-2 !bg-[#265e55] !text-white px-6 py-3 rounded-md hover:bg-[#1f4a43]"
+              >
+                <FaDownload /> Download
+              </Button>
+
+              <Button
+                onClick={handleEdit}
+                className="flex items-center justify-center gap-2 !bg-[#265e55] !text-white px-6 py-3 rounded-md hover:bg-[#1f4a43]"
+              >
+                <FaEdit /> Edit
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
 
   );
 };

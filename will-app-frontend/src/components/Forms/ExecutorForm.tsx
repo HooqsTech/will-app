@@ -58,6 +58,7 @@ const ExecutorForm: React.FC<IExecutorFormProps> = ({ index }) => {
                 maxLength={12}
                 onChange={(e) => handleChange(index, "aadhaarNumber", e)}
                 helperText={validationStateItem.aadhaarNumber}
+                restrictAlphabets
                 label={"Aadhaar Number"}
                 type="text" />
             <CustomTextBox

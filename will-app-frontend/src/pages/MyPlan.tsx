@@ -15,6 +15,7 @@ import { getCookie } from "typescript-cookie";
 import { TransactionSummaryState } from "../atoms/TransactionSummaryState";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { pageLoadingState } from "../atoms/PageLoadingState";
+import { Button } from "@mui/material";
 
 const MyPlan: React.FC = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const MyPlan: React.FC = () => {
   const infoRef = useRef<HTMLDivElement | null>(null);
   const transactionState = useRecoilValue(TransactionSummaryState);
   const pathStateValue = useRecoilValue(pathState);
+  const [isLoading, setIsLoading] = useState(false);
 
   // useEffect(() => {
   //       navigate(`/my_plan?step=${step}`, { replace: true });
@@ -208,6 +210,7 @@ const MyPlan: React.FC = () => {
   };
 
   const payNow = async () => {
+    setIsLoading(true);
     let res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
 
     if (!res) {
@@ -266,6 +269,7 @@ const MyPlan: React.FC = () => {
       }
     }
 
+    setIsLoading(false);
     const _window = window as any
     const paymentObject = _window.Razorpay(options)
     paymentObject.open()
@@ -576,12 +580,16 @@ const MyPlan: React.FC = () => {
               <FaArrowLeft className="mr-2" /> Previous
             </button>
 
-            <button
+            <Button
               onClick={handleContinue}
-              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-none hover:bg-[#1e4a42] transition"
+              loading={isLoading}
+              sx={{
+                borderRadius: 0
+              }}
+              className="flex items-center cursor-pointer !bg-[#265e55] !text-white !px-4 !py-2 rounded-none hover:bg-[#1e4a42] transition"
             >
               <FaArrowRight className="mr-2" /> Pay Now
-            </button>
+            </Button>
           </div>
         </div>
       )}

@@ -63,6 +63,8 @@ const BusinessForm: React.FC<IBankAccountFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.holdingPercentage}
                 helperText={validationStateItem.holdingPercentage}
+                restrictAlphabets
+                maxLength={4}
                 required
                 onChange={(e) => handleChange(index, "holdingPercentage", e)}
                 label={item.natureOfHolding == "No of Securities" ? "Number of Securities" : "Holding Percentage"}
