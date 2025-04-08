@@ -12,6 +12,7 @@ import pdfGeneratorRoutes from "./routes/pdfGeneratorRoutes";
 import willRoutes from "./routes/willRoutes";
 import executorRoutes from "./routes/executorRoutes";
 import excludedPersonsRoutes from "./routes/excludedPersonsRoutes";
+import liabilityDistributionRoutes from "./routes/liabilityDistributionRoutes";
 
 // Initialize Firebase Admin SDK
 const serviceAccount = require(path.join(__dirname, "../serviceAccountKey.json"));
@@ -35,6 +36,8 @@ app.use("/api", paymentRoutes)
 app.use("/api", willRoutes);
 app.use("/api", executorRoutes)
 app.use("/api", excludedPersonsRoutes)
+app.use("/api", liabilityDistributionRoutes)
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
