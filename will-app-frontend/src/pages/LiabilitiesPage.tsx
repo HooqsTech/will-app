@@ -10,6 +10,11 @@ import { getRouteDataFromSelectedAssets, routesState } from '../atoms/RouteState
 import { useNavigate } from 'react-router';
 import { ASSET_TYPES, ROUTE_PATHS } from '../constants';
 import Swal from 'sweetalert2';
+import { homeLoansState, IHomeLoanState } from '../atoms/HomeLoansState';
+import { IPersonalLoanState, personalLoansState } from '../atoms/PersonalLoansState';
+import { IVehicleLoanState, vehicleLoansState } from '../atoms/VehicleLoansState';
+import { educationLoansState, IEducationLoanState } from '../atoms/EducationsLoanState';
+import { IOtherLiabilityState, otherLiabilitiesState } from '../atoms/OtherLiabilitiesState';
 
 const LiabilitiesPage = () => {
     const [selectedAssets, setSelectedAssets] = useRecoilState(selectedAssetsState);
@@ -17,6 +22,11 @@ const LiabilitiesPage = () => {
     const user = useRecoilValue(userState);
     const setRouteState = useSetRecoilState(routesState);
     const navigate = useNavigate();
+    const homeLoanState = useRecoilValue<IHomeLoanState[]>(homeLoansState);
+    const personalLoanState = useRecoilValue<IPersonalLoanState[]>(personalLoansState);
+    const vehicleLoanState = useRecoilValue<IVehicleLoanState[]>(vehicleLoansState);
+    const educationLoanState = useRecoilValue<IEducationLoanState[]>(educationLoansState);
+    const otherLiablitiesState = useRecoilValue<IOtherLiabilityState[]>(otherLiabilitiesState);
 
     const handleChange = (key: keyof ISelectedAssetsState) => {
         setSelectedAssets((prevState) => ({
@@ -73,11 +83,11 @@ const LiabilitiesPage = () => {
             <div>
                 <CustomAccordion defaultExpanded label="Liabilities">
                     <div className="flex flex-col gap-2">
-                        <CheckboxContainer checked={selectedAssets?.homeLoans ?? false} label="Home Loans" onChange={() => handleChange("homeLoans")} />
-                        <CheckboxContainer checked={selectedAssets?.personalLoans ?? false} label="Personal Loans" onChange={() => handleChange("personalLoans")} />
-                        <CheckboxContainer checked={selectedAssets?.vehicleLoans ?? false} label="Vehicle Loans" onChange={() => handleChange("vehicleLoans")} />
-                        <CheckboxContainer checked={selectedAssets?.educationLoans ?? false} label="Education Loans" onChange={() => handleChange("educationLoans")} />
-                        <CheckboxContainer checked={selectedAssets?.otherLiabilities ?? false} label="Other Liabilities" onChange={() => handleChange("otherLiabilities")} />
+                        <CheckboxContainer disabled={homeLoanState.filter(s=>s.id != "").length > 0} checked={selectedAssets?.homeLoans ?? false} label="Home Loans" onChange={() => handleChange("homeLoans")} />
+                        <CheckboxContainer disabled={personalLoanState.filter(s=>s.id != "").length > 0} checked={selectedAssets?.personalLoans ?? false} label="Personal Loans" onChange={() => handleChange("personalLoans")} />
+                        <CheckboxContainer disabled={vehicleLoanState.filter(s=>s.id != "").length > 0} checked={selectedAssets?.vehicleLoans ?? false} label="Vehicle Loans" onChange={() => handleChange("vehicleLoans")} />
+                        <CheckboxContainer disabled={educationLoanState.filter(s=>s.id != "").length > 0} checked={selectedAssets?.educationLoans ?? false} label="Education Loans" onChange={() => handleChange("educationLoans")} />
+                        <CheckboxContainer disabled={otherLiablitiesState.filter(s=>s.id != "").length > 0} checked={selectedAssets?.otherLiabilities ?? false} label="Other Liabilities" onChange={() => handleChange("otherLiabilities")} />
                     </div>
                 </CustomAccordion>
             </div>
