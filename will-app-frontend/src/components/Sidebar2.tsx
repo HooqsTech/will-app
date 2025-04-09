@@ -241,6 +241,11 @@ export default function Sidebar2() {
   const business_assets = ['business_assets', 'business', 'bonds', 'debentures', 'esops', 'other_investments'];
   const other_assets = ['other_assets', 'vehicles', 'jewelleries', 'digital_assets', 'intellectual_property', 'custom_assets'];
   const liabilities = ['liabilities', 'home_loans', 'personal_loans', 'vehicle_loans', 'education_loans', 'other_liabilities'];
+  const beneficiaries = ['beneficiaries'];
+  const asset_distributrion = ['asset_distributrion'];
+  const liability_distributrion = ['liability_distributrion'];
+  const excluded_persons = ['excluded_persons'];
+  const executor = ['executor'];
 
   React.useEffect(() => {
     let nav = location.pathname.split('/').pop() ?? "";
@@ -266,6 +271,21 @@ export default function Sidebar2() {
     }
     else if (liabilities.includes(nav)) {
       setExpandedItems(['liabilities']);
+    }
+    else if (beneficiaries.includes(nav)) {
+      setExpandedItems(['beneficiaries']);
+    }
+    else if (asset_distributrion.includes(nav)) {
+      setExpandedItems(['asset_distributrion']);
+    }
+    else if (liability_distributrion.includes(nav)) {
+      setExpandedItems(['liability_distributrion']);
+    }
+    else if (excluded_persons.includes(nav)) {
+      setExpandedItems(['excluded_persons']);
+    }
+    else if (executor.includes(nav)) {
+      setExpandedItems(['executor']);
     }
 
   }, [location.pathname]);
@@ -369,6 +389,12 @@ export default function Sidebar2() {
         label: 'Asset Distribution',
         icon: MdOutlineAccountBalance,
         routePath: ROUTE_PATHS.ASSET_DISTRIBUTION
+      },
+      {
+        id: 'liabilityDistribution',
+        label: 'Liability Distribution',
+        icon: MdOutlineAccountBalance,
+        routePath: ROUTE_PATHS.LIABLITY_DISTRIBUTION
       },
       {
         id: 'excludedPersons',

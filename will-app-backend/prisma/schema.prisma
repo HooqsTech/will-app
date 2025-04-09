@@ -226,3 +226,10 @@ model pdfversioning {
   folderpath    String
   downloadurl   String?
 }
+
+model liabilitydistribution {
+  userid        String    @id @db.Uuid
+  beneficiaries Json?
+  createdate    DateTime? @default(now()) @db.Timestamp(6)
+  updatedate    DateTime? @default(now()) @db.Timestamp(6)
+}

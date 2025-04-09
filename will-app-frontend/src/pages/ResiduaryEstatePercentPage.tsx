@@ -96,7 +96,7 @@ const ResiduaryEstatePercentPage = () => {
 
       await saveResiduaryAssetDistributionAPI(userId, beneficiaryDistributionitem);
 
-        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECLUDED_PERSONS);
+        navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.LIABLITY_DISTRIBUTION);
       } catch (error) {
         console.error("Failed to save residuary distribution.");
       } finally {
