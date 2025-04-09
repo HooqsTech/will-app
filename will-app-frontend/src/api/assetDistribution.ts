@@ -81,6 +81,28 @@ export const saveSpecificAssetDistributionApi = async (
 };
 
 
+export const saveLiablitiyDistributionApi = async (
+  userId: string,
+  liabilityData: any
+) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/api/liabilityDistribution/upsert`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, liabilityData }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to save specific asset distribution");
+  }
+
+  return await response.json();
+};
+
 export const saveResiduaryAssetDistributionAPI = async (userId: string, beneficiaries: { id: string; percentage: number }[]) => {
   try {
     const response = await fetch(

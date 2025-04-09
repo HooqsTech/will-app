@@ -189,7 +189,8 @@ export const getUserDetailsByPhone = async (phoneNumber: string) => {
       specific_asset_distribution: true,
       single_beneficiary_distribution: true,
       percentage_distribution: true,
-      residuary_asset_distribution: true
+      residuary_asset_distribution: true,
+      liabilitydistribution: true
     },
   });
 
@@ -244,5 +245,6 @@ const formatUserResponse = (user: any) => ({
   specific_asset_distribution: user.specific_asset_distribution?.assets || [],
   single_beneficiary_distribution: user.single_beneficiary_distribution || {},
   percentage_distribution: user.percentage_distribution?.beneficiaries || {},
-  residuary_asset_distribution: user.residuary_asset_distribution?.beneficiaries || {}
+  residuary_asset_distribution: user.residuary_asset_distribution?.beneficiaries || {},
+  liabilitydistribution: user.liabilitydistribution?.beneficiaries || []
 });

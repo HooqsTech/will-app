@@ -26,6 +26,7 @@ export interface IUserDetails {
   single_beneficiary_distribution: IsingleAssetDistributionDetail,
   percentage_distribution: IAssetDistributionPercentDetail,
   residuary_asset_distribution: IResiduaryDistributionDetail[],
+  liabilitydistribution: IAssetSelectionState[]
 }
 
 export interface IResiduaryDistributionDetail {

@@ -61,6 +61,7 @@ model users {
   excludedpersons                 excludedpersons[]
   executors                       executors[]
   liabilities                     liabilities[]
+  liabilitydistribution           liabilitydistribution?
   paymentorders                   paymentorders[]
   percentage_distribution         percentage_distribution?
   personaldetails                 personaldetails?
@@ -232,4 +233,5 @@ model liabilitydistribution {
   beneficiaries Json?
   createdate    DateTime? @default(now()) @db.Timestamp(6)
   updatedate    DateTime? @default(now()) @db.Timestamp(6)
+  users         users     @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
 }

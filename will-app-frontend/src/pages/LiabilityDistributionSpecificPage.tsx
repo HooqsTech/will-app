@@ -5,7 +5,7 @@ import NextButton from "../components/NextButton";
 import CustomSelectBar from "../components/CustomSelectBar";
 import { beneficiariesState, IBeneficiaryState } from "../atoms/BeneficiariesState";
 import { userState } from "../atoms/UserDetailsState";
-import { saveSpecificAssetDistributionApi } from "../api/assetDistribution";
+import { saveLiablitiyDistributionApi } from "../api/assetDistribution";
 import { useNavigate } from "react-router";
 import { ROUTE_PATHS } from "../constants";
 import DistributionBeneficiary from "../components/DistributionBeneficiary";
@@ -60,8 +60,7 @@ const LiabilityDistributionSpecificPage = () => {
         { value: "equal_split", label: "Split between remaining beneficiaries equally" },
         { value: "percentage_split", label: "Split between remaining beneficiaries according to their previously mentioned percentages" },
     ];
-    console.log(homeLoans)
-console.log(liabilityDistribution.LiabilitySelectionList)
+    
     const getAssetDetails = () => {
         let homeLoansList = homeLoans.filter((data: IHomeLoanState) => data.id !== "")
             .map((data: IHomeLoanState, index: number) => {
@@ -254,7 +253,8 @@ console.log(liabilityDistribution.LiabilitySelectionList)
         }
         else if (liabilityDistribution.step === 3) {
             const userId = user.userId;
-            await saveSpecificAssetDistributionApi(userId, liabilityDistribution.LiabilitySelectionList);
+            console.log(liabilityDistribution.LiabilitySelectionList);
+            await saveLiablitiyDistributionApi(userId, liabilityDistribution.LiabilitySelectionList);
 
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECLUDED_PERSONS);
             // save logic

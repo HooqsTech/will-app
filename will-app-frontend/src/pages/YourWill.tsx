@@ -114,6 +114,7 @@ import PetsPage from './PetsPage';
 import { IPetState, petsState } from '../atoms/petsState';
 import { emptyPetValidationState, petsValidationState } from '../atoms/validationStates/PetsValidationState';
 import LiabilityDistributionSpecificPage from './LiabilityDistributionSpecificPage';
+import { ILiabilityDistributionSpecificState, LiabilityDistributionSpecificState } from '../atoms/LiabilityDistributionSpecificState';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -239,6 +240,7 @@ const YourWill: React.FC = () => {
     const setWillDistributionPercent = useSetRecoilState(AssetDistributionPercentState);
     const setWillResiduaryPercent = useSetRecoilState(residuaryAssetDistributionState);
     const setWillResiduarySingle = useSetRecoilState<IResiduaryEstateSingleState>(ResiduaryEstateSingleState);
+    const setLiabilityDistribution = useSetRecoilState<ILiabilityDistributionSpecificState>(LiabilityDistributionSpecificState);
 
     const setRouteState = useSetRecoilState(routesState);
 
@@ -526,6 +528,17 @@ const YourWill: React.FC = () => {
                     primaryDonation: []
                 })
             }
+        }
+        if (user.liabilitydistribution  && user.liabilitydistribution.length > 0) {
+            let willDistributionspecificdata: ILiabilityDistributionSpecificState = {
+                id: "",
+                LiabilitySelectionList: user.liabilitydistribution,
+                selectedLiability: [],
+                selectedBeneficiary: [],
+                backupBeneficiary: [],
+                step: 1,
+            }
+            setLiabilityDistribution(willDistributionspecificdata)
         }
 
         // DYNAMIC ROUTE MAPPING
