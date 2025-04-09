@@ -5,12 +5,13 @@ interface ICustomCheckboxProps {
     onChange: () => void
     label: string
     checked: boolean
+    disabled?: boolean
 }
 
-const CustomCheckbox: React.FC<ICustomCheckboxProps> = ({ onChange, label, checked }) => {
+const CustomCheckbox: React.FC<ICustomCheckboxProps> = ({ onChange, label, checked,disabled }) => {
     return (
         <div className='flex items-center gap-4'>
-            <FormControlLabel control={<Checkbox checked={checked} onChange={() => onChange()} />} label={label} />
+            <FormControlLabel control={<Checkbox disabled={disabled ?? false} checked={checked} onChange={() => onChange()} />} label={label} />
         </div>
     )
 }

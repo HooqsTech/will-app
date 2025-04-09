@@ -71,10 +71,10 @@ const AssetDistributionSpecificPage = () => {
     const intellectualProperties = useRecoilValue(intellectualPropertiesState);
     const customAssets = useRecoilValue(customAssetsState);
     const pets = useRecoilValue(petsState);
-
+    
     React.useEffect(() => {
         getAssetDetails();
-    }, [])
+    }, [properties,bankAccounts,fixedDeposits,insurancePolicies,safetyDepositBoxes,dematAccounts,mutualFunds,providentFunds,pensionAccounts,businessses,bonds,debentures,escops,jewelleries,vehicles,digitalAssets,intellectualProperties,customAssets,pets])
     
     const beneficiaryOptionsFirst = beneficiaryState
     .filter(beneficiary => !beneficiary.isGuardian)
