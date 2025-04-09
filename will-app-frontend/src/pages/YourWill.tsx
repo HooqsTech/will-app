@@ -115,6 +115,9 @@ import { IPetState, petsState } from '../atoms/petsState';
 import { emptyPetValidationState, petsValidationState } from '../atoms/validationStates/PetsValidationState';
 import LiabilityDistributionSpecificPage from './LiabilityDistributionSpecificPage';
 import { ILiabilityDistributionSpecificState, LiabilityDistributionSpecificState } from '../atoms/LiabilityDistributionSpecificState';
+import ArtWorksPage from './ArtWorkPage';
+import { artWorksState, IArtWorkState } from '../atoms/ArtWorksState';
+import { artWorksValidationState, emptyArtWorkValidationState } from '../atoms/validationStates/ArtWorksValidationState';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -200,6 +203,10 @@ const YourWill: React.FC = () => {
     // PETS
     const setPets = useSetRecoilState(petsState);
     const setPetsValidationState = useSetRecoilState(petsValidationState);
+
+    // ART WORKS
+    const setArtWorks = useSetRecoilState(artWorksState);
+    const setArtWorksValidationState = useSetRecoilState(artWorksValidationState);
 
     // HOME LOANS
     const setHomeLoans = useSetRecoilState(homeLoansState);
@@ -404,6 +411,13 @@ const YourWill: React.FC = () => {
                 setPetsValidationState(pets.map(_ => ({ ...emptyPetValidationState })))
             }
 
+            // SET ART WORKS
+            let artWorks: IArtWorkState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.ART_WORKS).map((s) => ({ ...s.data, id: s.id }));
+            if (artWorks.length > 0) {
+                setArtWorks(artWorks)
+                setArtWorksValidationState(artWorks.map(_ => ({ ...emptyArtWorkValidationState })))
+            }
+
             // SET HOME LOANS
             let homeLoans: IHomeLoanState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.HOME_LOAN).map((s) => ({ ...s.data, id: s.id }));
             if (homeLoans.length > 0) {
@@ -465,7 +479,7 @@ const YourWill: React.FC = () => {
             let willDistributiondata: IWillDistributionState = { id: user.will_distribution.id, distributionType: user.will_distribution.distributiontype, residuaryDistributionType: user.will_distribution.residuarydistributiontype, fallbackRule: user.will_distribution.fallbackrule };
             setWillDistribution(willDistributiondata);
         }
-        if (user.specific_asset_distribution  && user.specific_asset_distribution.length > 0) {
+        if (user.specific_asset_distribution && user.specific_asset_distribution.length > 0) {
             let willDistributionspecificdata: IAssetDistributionSpecificState = {
                 id: "",
                 assetSelectionList: user.specific_asset_distribution,
@@ -511,25 +525,25 @@ const YourWill: React.FC = () => {
             }
             else {
                 const additionalInputs: Record<string, string> = {};
-                
-                const residuaryAssets = Array.isArray(user.residuary_asset_distribution) 
-                        ? user.residuary_asset_distribution 
-                        : [];
+
+                const residuaryAssets = Array.isArray(user.residuary_asset_distribution)
+                    ? user.residuary_asset_distribution
+                    : [];
 
                 residuaryAssets.forEach(item => {
-                        additionalInputs[item.id] = item.percentage.toString();
+                    additionalInputs[item.id] = item.percentage.toString();
                 });
 
                 setWillResiduaryPercent({
                     userId: "",
-                    beneficiaries:  residuaryAssets,
+                    beneficiaries: residuaryAssets,
                     firstBeneficiary: residuaryAssets.map((res) => res.id),
                     additionalInputs: additionalInputs,
                     primaryDonation: []
                 })
             }
         }
-        if (user.liabilitydistribution  && user.liabilitydistribution.length > 0) {
+        if (user.liabilitydistribution && user.liabilitydistribution.length > 0) {
             let willDistributionspecificdata: ILiabilityDistributionSpecificState = {
                 id: "",
                 LiabilitySelectionList: user.liabilitydistribution,
@@ -588,6 +602,7 @@ const YourWill: React.FC = () => {
                         {routeState.find(s => s.currentPath == ROUTE_PATHS.BONDS) && <Route path={ROUTE_PATHS.BONDS} element={<BondsPage />} />}
                         {routeState.find(s => s.currentPath == ROUTE_PATHS.BUSINESS) && <Route path={ROUTE_PATHS.BUSINESS} element={<BusinessesPage />} />}
                         {routeState.find(s => s.currentPath == ROUTE_PATHS.PETS) && <Route path={ROUTE_PATHS.PETS} element={<PetsPage />} />}
+                        {routeState.find(s => s.currentPath == ROUTE_PATHS.ART_WORKS) && <Route path={ROUTE_PATHS.ART_WORKS} element={<ArtWorksPage />} />}
                         {/* ASSETS END */}
 
                         {/* LIABILITIES START */}

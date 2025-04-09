@@ -96,6 +96,7 @@ const AssetsPage = () => {
                         <CheckboxContainer checked={selectedAssets?.intellectualProperties} label="Intellectual Properties" onChange={() => handleChange("intellectualProperties")} />
                         <CheckboxContainer checked={selectedAssets?.customAssets} label="Custom Assets" onChange={() => handleChange("customAssets")} />
                         <CheckboxContainer checked={selectedAssets?.pets} label="Pets" onChange={() => handleChange("pets")} />
+                        <CheckboxContainer checked={selectedAssets?.artWorks} label="Art Works" onChange={() => handleChange("artWorks")} />
                     </div>
                 </CustomAccordion>
             </div>

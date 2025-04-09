@@ -27,6 +27,7 @@ export interface ISelectedAssetsState {
   educationLoans: boolean
   otherLiabilities: boolean
   pets: boolean
+  artWorks: boolean
 }
 
 interface IRoutePathWithOrder {
@@ -181,36 +182,43 @@ export const assetRoutesMap: Record<keyof ISelectedAssetsState, IRoutePathWithOr
     id: "pets",
     label: "pets"
   },
-  homeLoans: {
+  artWorks: {
     order: 21,
+    routePath: ROUTE_PATHS.ART_WORKS,
+    type: ASSET_TYPES.OTHER_ASSETS,
+    id: "art_works",
+    label: "Art Works"
+  },
+  homeLoans: {
+    order: 22,
     routePath: ROUTE_PATHS.HOME_LOANS,
     type: ASSET_TYPES.LIABILITIES,
     id: "home_loans",
     label: "Home Loans"
   },
   personalLoans: {
-    order: 22,
+    order: 23,
     routePath: ROUTE_PATHS.PERSONAL_LOANS,
     type: ASSET_TYPES.LIABILITIES,
     id: "personal_loans",
     label: "Personal Loans"
   },
   vehicleLoans: {
-    order: 23,
+    order: 24,
     routePath: ROUTE_PATHS.VEHICLE_LOANS,
     type: ASSET_TYPES.LIABILITIES,
     id: "vehicle_loans",
     label: "Vehicle Loans"
   },
   educationLoans: {
-    order: 24,
+    order: 25,
     routePath: ROUTE_PATHS.EDUCATION_LOANS,
     type: ASSET_TYPES.LIABILITIES,
     id: "education_loans",
     label: "Education Loans"
   },
   otherLiabilities: {
-    order: 25,
+    order: 26,
     routePath: ROUTE_PATHS.OTHER_LIABILITIES,
     type: ASSET_TYPES.LIABILITIES,
     id: "other_liabilities",
@@ -245,6 +253,7 @@ export const selectedAssetsState = atom<ISelectedAssetsState>({
     educationLoans: false,
     personalLoans: false,
     otherLiabilities: false,
-    pets: false
+    pets: false,
+    artWorks: false
   }
 });

@@ -30,7 +30,7 @@ import { HiOutlineChartPie } from 'react-icons/hi2';
 import { IoBusinessOutline, IoDocumentTextOutline } from 'react-icons/io5';
 import { LiaHandHoldingUsdSolid, LiaMoneyBillWaveSolid, LiaUsersCogSolid } from 'react-icons/lia';
 import { IconType } from 'react-icons/lib';
-import { MdLockOutline, MdOutlineAccountBalance, MdOutlineAddHomeWork, MdOutlineDirectionsCar, MdOutlineHealthAndSafety, MdOutlinePets } from 'react-icons/md';
+import { MdArtTrack, MdLockOutline, MdOutlineAccountBalance, MdOutlineAddHomeWork, MdOutlineDirectionsCar, MdOutlineHealthAndSafety, MdOutlinePets } from 'react-icons/md';
 import { PiGavelLight, PiHandWithdraw, PiPiggyBank } from 'react-icons/pi';
 import { SiAltiumdesigner } from 'react-icons/si';
 import { TbFriendsOff } from 'react-icons/tb';
@@ -348,6 +348,8 @@ export default function Sidebar2() {
           return PiHandWithdraw
         case ROUTE_PATHS.PETS:
           return MdOutlinePets
+        case ROUTE_PATHS.ART_WORKS:
+          return MdArtTrack
         default:
           break;
       }

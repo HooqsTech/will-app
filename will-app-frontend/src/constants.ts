@@ -44,6 +44,7 @@ export const ROUTE_PATHS = {
     BONDS: "/bonds",
     BUSINESS: "/business",
     PETS: "/pets",
+    ART_WORKS: "/art_works",
     IMMOVABLE_ASSETS: "/immovable_assets",
     FINANCIAL_ASSETS: "/financial_assets",
     BUSINESS_ASSETS: "/business_assets",
@@ -72,6 +73,7 @@ export const ASSET_TYPES = {
 }
 
 export const ASSET_SUBTYPES = {
+    ART_WORKS: "art_works",
     PETS: "pets",
     PROPERTIES: "properties",
     BANK_ACCOUNTS: "bank_accounts",
