@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 COPY haramawill-storage-secret-key.json ./dist/
 
-ENV DATABASE_URL="postgresql://postgres:admin123456@34.131.189.161:5432/hamara-will-db?schema=public"
+ENV DATABASE_URL="postgresql://postgres:admin123456@34.136.88.3:5432/hamara-will-db?schema=public"
 ENV RAZORPAY_WEBHOOK_SECRET="VUP6tvw_nbq7tvt9fwg"
 ENV RAZOR_PAY_ID=rzp_test_6O84cWnqInEa8T
 ENV RAZOR_PAY_SECRET=6mgeEdeNi9fN6qpk2qT13ZgF

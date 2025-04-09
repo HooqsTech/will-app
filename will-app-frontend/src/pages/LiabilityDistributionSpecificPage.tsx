@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import CustomAssetSelectBar from "../components/CustomAssetSelectBar";
 import NextButton from "../components/NextButton";

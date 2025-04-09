@@ -26,9 +26,12 @@ export const upsertPDFVersioning = async (userId: string, folderPath: string, do
 
 export const getPDFVersioningByUserId = async (userId: string) => {
     return await prisma.pdfversioning.findFirst({
-        where: { userid: userId },
+      where: { userid: userId },
+      orderBy: {
+        createdate: 'desc',
+      },
     });
-};
+  };
 
 export const getAllPDFVersioningByUserId = async (userId: string) => {
     return await prisma.pdfversioning.findMany({

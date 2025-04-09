@@ -7,7 +7,7 @@ import { getWillServices } from "../api/willService";
 import Header from "../components/Header";
 import PaymentStepper from "../components/PaymentStepper";
 import { motion } from "framer-motion";
-import { FaCheck, FaPlus, FaTrash, FaInfoCircle } from "react-icons/fa";
+import { FaCheck, FaPlus, FaTrash } from "react-icons/fa";
 import { createPaymentOrder, createOrUpdatePaymentTransaction } from "../api/payment";
 import Swal from "sweetalert2";
 import { getUserIdByPhoneNumber } from "../api/user";
@@ -316,107 +316,93 @@ const MyPlan: React.FC = () => {
       </div>
 
       {step === 1 && (
-        <div className="flex flex-col items-center w-full text-center mt-8">
-          <h2 className="text-xl font-semibold text-[#265e55]">Choose a Category</h2>
-          <p className="text-[#265e55] mt-2 max-w-md">
-            Select a category to explore its services.
-          </p>
+  <div className="flex flex-col items-center w-full text-center mt-8">
+    <h2 className="text-xl font-semibold text-[#265e55]">Choose a Category</h2>
+    <p className="text-[#265e55] mt-2 max-w-md">
+      Select a category to explore its services.
+    </p>
 
-          {/* Categories Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl mt-10 relative">
-            {categories.length > 0 ? (
-              categories.map((category) => (
-                <div key={category.categoryId} className="relative w-full">
-                  {/* Info Panel (Appears Above the Info Button) */}
-                  {infoIndex === category.categoryId && (
-                    <motion.div
-                      ref={infoRef}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute bottom-0 mb-3 -right-[100px] md:-right-[380px] transform -translate-x-1/2 w-64 bg-white rounded-none p-4 border border-gray-600 z-40">
-                      <h4 className="text-md font-semibold text-[#265e55]">
-                        {category.categoryName}
-                      </h4>
-                      <ul className="text-sm text-gray-400 list-disc pl-6 mt-2">
-                        {category.categoryDescription
-                          .split('.')
-                          .filter((point) => point.trim() !== '')
-                          .map((point, index) => (
-                            <li key={index}>{point.trim()}</li>
-                          ))}
-                      </ul>
-                      <button
-                        className="mt-3 text-[#265e55] text-sm hover:text-blue-300"
-                        onClick={() => setInfoIndex(null)}
-                      >
-                        Close
-                      </button>
-                    </motion.div>
-                  )}
+    <div className="flex flex-col gap-6 w-full max-w-3xl mt-10">
+      {categories.length > 0 ? (
+        categories.map((category) => (
+          <div
+            key={category.categoryId}
+            className="relative w-full"
+            onMouseEnter={() => setInfoIndex(category.categoryId)}
+            onMouseLeave={() => setInfoIndex(null)}
+          >
+            {/* Category Card */}
+            <motion.div
+              className={`relative p-6 rounded-none transition-all duration-300 border cursor-pointer flex justify-between items-center ${
+                selected === category.categoryId
+                  ? "border-green-500 bg-[#265e55]"
+                  : "border-gray-600 bg-[#265e55] hover:shadow-lg"
+              }`}
+              onClick={() => handleSelectCategory(category)}
+              whileHover={{ transition: { duration: 0.2 } }}
+            >
+              <div className="text-left">
+  <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+    {category.categoryName}
+    {selected === category.categoryId && (
+      <span className="bg-green-500 text-white p-1 rounded-full">
+        <FaCheck size={14} />
+      </span>
+    )}
+  </h3>
+  <p className="text-sm text-white mt-1">One time Cost</p>
+</div>
 
-                  {/* Category Card */}
-                  <motion.div
-                    className={`relative p-6 rounded-none transition-all duration-300 border cursor-pointer ${selected === category.categoryId
-                      ? "border-green-500 bg-[#265e55] scale-105"
-                      : "border-gray-600 bg-[#265e55] hover:shadow-lg hover:scale-105"
-                      }`}
-                    onClick={() => handleSelectCategory(category)}
-                    whileHover={{ transition: { duration: 0.2 } }}
-                  >
-                    {selected === category.categoryId && (
-                      <div className="absolute top-2 right-2 bg-green-500 text-white p-2 rounded-full">
-                        <FaCheck size={14} />
-                      </div>
-                    )}
+              <div className="text-right">
+                {category.categoryDiscountPrice && (
+                  <p className="text-gray-300 line-through text-sm">
+                    ₹{category.categoryStandardPrice}
+                  </p>
+                )}
+                <p className="text-2xl font-bold text-white">
+                  ₹{category.categoryDiscountPrice || category.categoryStandardPrice}
+                </p>
+              </div>
+            </motion.div>
 
-                    <h3 className="text-xl font-semibold">
-                      {category.categoryName}
-                    </h3>
-                    {category.categoryDiscountPrice && (
-                      <p className="text-gray-400 line-through">
-                        ₹{category.categoryStandardPrice}
-                      </p>
-                    )}
-                    <p className="text-2xl font-bold text-green-400">
-                      ₹
-                      {category.categoryDiscountPrice ||
-                        category.categoryStandardPrice}
-                    </p>
-                    <p className="text-gray-400 text-sm">One-time cost</p>
-
-                    {/* Info Button (Triggers Panel) */}
-                    <button
-                      className="absolute bottom-3 right-3 text-gray-400 hover:text-white"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setInfoIndex(
-                          infoIndex === category.categoryId
-                            ? null
-                            : category.categoryId
-                        );
-                      }}
-                    >
-                      <FaInfoCircle size={18} />
-                    </button>
-
-                  </motion.div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-400 text-center">Loading plans...</p>
+            {/* Hover Panel - shown only on hover */}
+            {infoIndex === category.categoryId && (
+              <motion.div
+                  initial={{ opacity: 0, scaleY: 0 }}
+                  animate={{ opacity: 1, scaleY: 1 }}
+                  exit={{ opacity: 0, scaleY: 0 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  style={{ transformOrigin: "top" }}
+                  className="w-full bg-[#043028c0] text-white text-left p-6 border-t border-gray-500 origin-top"
+                >
+                <ul className="list-disc pl-6 space-y-2 text-sm">
+                  {category.categoryDescription
+                    .split('.')
+                    .filter((point) => point.trim() !== '')
+                    .map((point, index) => (
+                      <li key={index}>{point.trim()}</li>
+                    ))}
+                </ul>
+              </motion.div>
             )}
           </div>
-          <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto translate-x-70">
-            <button
-              onClick={handleContinue}
-              className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-none hover:bg-[#1e4a42] transition"
-            >
-              <FaArrowRight className="mr-2" /> Next
-            </button>
-          </div>
-        </div>
+        ))
+      ) : (
+        <p className="text-gray-400 text-center">Loading plans...</p>
       )}
+    </div>
+
+    {/* Next Button */}
+    <div className="left-0 w-full bg-dark pt-10 flex justify-between max-w-2xl mx-auto translate-x-70">
+      <button
+        onClick={handleContinue}
+        className="flex items-center cursor-pointer bg-[#265e55] text-white px-4 py-2 rounded-none hover:bg-[#1e4a42] transition"
+      >
+        <FaArrowRight className="mr-2" /> Next
+      </button>
+    </div>
+  </div>
+)}
 
       {/* Step 2: Select Premium Services */}
       {step === 2 && (
