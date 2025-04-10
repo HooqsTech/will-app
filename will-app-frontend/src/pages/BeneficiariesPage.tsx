@@ -139,6 +139,10 @@ const BeneficiariesPage = () => {
                 setBeneficiaryValidationState(index, "relationship", "relationship is required");
                 isValid = false;
             }
+            if(formState.filter(s => s.aadhaarNumber == prop.aadhaarNumber).length > 1){
+                setBeneficiaryValidationState(index, "aadhaarNumber", "aadhaar number is already exist");
+                isValid = false;
+            }
         }
         if (prop.type === "Charity") {
             if (IsEmptyString(prop.charityType)) {
