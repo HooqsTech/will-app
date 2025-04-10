@@ -31,4 +31,4 @@ export const IsValidEmail = (value: string) => {
     return re.test(value);
 }
 
-export const RELATIONSHIP = ['Son ', 'Daughter ', 'Spouse ', 'Mother ', 'Father ', 'Brother ', 'Sister ', 'Nephew ', 'Niece ', 'Grand-Son ', 'Grand-Daughter ', 'Daughter-In-Law ', 'Son-In-Law ', 'Step-Son ', 'Step-Daughter ']
+export const RELATIONSHIP = ['Son', 'Daughter', 'Spouse', 'Mother', 'Father', 'Brother', 'Sister', 'Nephew', 'Niece', 'Grand-Son', 'Grand-Daughter', 'Daughter-In-Law', 'Son-In-Law', 'Step-Son', 'Step-Daughter']
