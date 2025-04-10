@@ -118,6 +118,8 @@ import { ILiabilityDistributionSpecificState, LiabilityDistributionSpecificState
 import ArtWorksPage from './ArtWorkPage';
 import { artWorksState, IArtWorkState } from '../atoms/ArtWorksState';
 import { artWorksValidationState, emptyArtWorkValidationState } from '../atoms/validationStates/ArtWorksValidationState';
+import { IOtherInvestmentState, otherInvestmentState } from '../atoms/OtherInvestmentsState';
+import { emptyOtherInvestmentValidationState, otherInvestmentValidationState } from '../atoms/validationStates/OtherInvestmentValidationState';
 
 const YourWill: React.FC = () => {
     const routeState = useRecoilValue(routesState);
@@ -183,6 +185,10 @@ const YourWill: React.FC = () => {
     // JEWELLERIES 
     const setJewelleries = useSetRecoilState(jewelleriesState);
     const setJewelleriesValidationState = useSetRecoilState(jewelleriesValidationState);
+
+    //Other investments
+    const setOtherInvestments = useSetRecoilState(otherInvestmentState);
+    const setOtherInvestmentsValidationState = useSetRecoilState(otherInvestmentValidationState);
 
     // VEHICLES 
     const setVehicles = useSetRecoilState(vehiclesState);
@@ -367,6 +373,13 @@ const YourWill: React.FC = () => {
             if (escops.length > 0) {
                 setEscops(escops)
                 setEscopsValidationState(escops.map(_ => ({ ...emptyEscopValidationState })))
+            }
+
+            // SET OTHER INVESTMENTS
+            let otherinvestments: IOtherInvestmentState[] = user.assets.filter(s => s.subtype == ASSET_SUBTYPES.OTHER_INVESTMENTS).map((s) => ({ ...s.data, id: s.id }));
+            if (otherinvestments.length > 0) {
+                setOtherInvestments(otherinvestments)
+                setOtherInvestmentsValidationState(otherinvestments.map(_ => ({ ...emptyOtherInvestmentValidationState })))
             }
 
             // SET VEHICLES
