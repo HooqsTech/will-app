@@ -30,6 +30,7 @@ import { ROUTE_PATHS } from "../constants";
 import DistributionBeneficiary from "../components/DistributionBeneficiary";
 import Swal from "sweetalert2";
 import { IPetState, petsState } from "../atoms/petsState";
+import { artWorksState, IArtWorkState } from "../atoms/ArtWorksState";
 
 export interface IBeneficiaryDistribution {
     beneficiaryId: string;
@@ -71,10 +72,11 @@ const AssetDistributionSpecificPage = () => {
     const intellectualProperties = useRecoilValue(intellectualPropertiesState);
     const customAssets = useRecoilValue(customAssetsState);
     const pets = useRecoilValue(petsState);
+    const arts = useRecoilValue(artWorksState);
     
     React.useEffect(() => {
         getAssetDetails();
-    }, [properties,bankAccounts,fixedDeposits,insurancePolicies,safetyDepositBoxes,dematAccounts,mutualFunds,providentFunds,pensionAccounts,businessses,bonds,debentures,escops,jewelleries,vehicles,digitalAssets,intellectualProperties,customAssets,pets])
+    }, [properties,bankAccounts,fixedDeposits,insurancePolicies,safetyDepositBoxes,dematAccounts,mutualFunds,providentFunds,pensionAccounts,businessses,bonds,debentures,escops,jewelleries,vehicles,digitalAssets,intellectualProperties,customAssets,pets,arts])
     
     const beneficiaryOptionsFirst = beneficiaryState
     .filter(beneficiary => !beneficiary.isGuardian)
@@ -382,11 +384,26 @@ const AssetDistributionSpecificPage = () => {
                     isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
+            let artList = arts.filter((data: IArtWorkState) => data.id !== "")
+            .map((data: IArtWorkState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
+                return {
+                    type: `Art Work ${index + 1}`,
+                    assetId: data.id,
+                    firstline : data.name?.trim() || "",
+                    secondline : data.description?.trim(),
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
+                }
+            });
         setAssetDistribution((prev) => ({
             ...prev,
             assetSelectionList: [...propertiesList, ...bankAccountsList, ...fixedDepositsList, ...insurancePoliciesList, ...safetyDepositBoxesList,
             ...dematAccountsList, ...mutualFundsList, ...providentFundsList, ...pensionAccountsList, ...businesssesList, ...bondsList,
-            ...debenturesList, ...escopsList, ...jewelleriesList, ...vehiclesList, ...digitalAssetsList, ...intellectualPropertiesList, ...customAssetsList, ...petList
+            ...debenturesList, ...escopsList, ...jewelleriesList, ...vehiclesList, ...digitalAssetsList, ...intellectualPropertiesList, ...customAssetsList, ...petList,...artList
             ]
         }));
     }
