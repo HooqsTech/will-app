@@ -17,12 +17,40 @@ const ProvidentFundForm: React.FC<IFixedDepositFormProps> = ({ index }) => {
     const validationStateItem = validationState[index];
 
     const handleChange = (index: number, key: keyof IProvidentFundState, value: string) => {
-        setFormState((prevState) =>
-            prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
-        );
-        setValidationState((prevState) =>
-            prevState.map((item, i) => (i === index ? { ...item, [key]: "" } : item))
-        );
+        if(key == "type")
+        {
+            setFormState((prevState) =>
+                prevState.map((item, i) => (i === index ? {
+                     ...item, 
+                    type: value,
+                    bankName: "",
+                    branch: "",
+                    city: "",
+                    uanNumber: "",
+                    state: "",
+                    gpfNumber: "" } : item))
+            );
+            setValidationState((prevState) =>
+                prevState.map((item, i) => (i === index ? { ...item,  
+                    type: "",
+                    bankName: "",
+                    branch: "",
+                    city: "",
+                    uanNumber: "",
+                    state: "",
+                    gpfNumber: "" 
+                } : item))
+            );
+        }
+        else {
+            setFormState((prevState) =>
+                prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
+            );
+            setValidationState((prevState) =>
+                prevState.map((item, i) => (i === index ? { ...item, [key]: "" } : item))
+            );
+        }
+        
     };
 
     return (
