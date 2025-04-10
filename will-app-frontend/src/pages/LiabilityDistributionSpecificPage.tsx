@@ -253,7 +253,7 @@ const LiabilityDistributionSpecificPage = () => {
         }
         else if (liabilityDistribution.step === 3) {
             const userId = user.userId;
-            console.log(liabilityDistribution.LiabilitySelectionList);
+            
             await saveLiablitiyDistributionApi(userId, liabilityDistribution.LiabilitySelectionList);
 
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECLUDED_PERSONS);

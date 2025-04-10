@@ -36,13 +36,57 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
 
 
     const handleChange = (index: number, key: keyof IBeneficiaryState, value: string | Dayjs | null) => {
-        setFormState((prevState) =>
-            prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
-        );
-        setValidationState((prevState) =>
-            prevState.map((item, i) => (i === index ? { ...item, [key]: "" } : item))
-        );
-
+        if(key === 'type')
+        {
+            setFormState((prevState) =>
+                prevState.map((item, i) => (i === index ? { 
+                    ...item,
+                    type: value?.toString() ?? "",
+                    fullName:  "",
+                    gender:  "",
+                    dateOfBirth:  "",
+                    email:  "",
+                    phone:  "",
+                    relationship:  "",
+                    charityType:  "",
+                    organization:  "",
+                    otherOrganization:  "",
+                    donationAmount:  null,
+                    aadhaarNumber: "",
+                    isGuardian: false,
+                    guardian: ""
+                 } : item))
+            );
+            setValidationState((prevState) =>
+                prevState.map((item, i) => (i === index ? { 
+                    ...item,
+                    type: "",
+                    fullName:  "",
+                    gender:  "",
+                    dateOfBirth:  "",
+                    email:  "",
+                    phone:  "",
+                    relationship:  "",
+                    charityType:  "",
+                    organization:  "",
+                    otherOrganization:  "",
+                    donationAmount:  "",
+                    aadhaarNumber: "",
+                    isGuardian: "",
+                    guardian: ""
+                 } : item))
+            );
+        }
+        else
+        {
+            setFormState((prevState) =>
+                prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
+            );
+            setValidationState((prevState) =>
+                prevState.map((item, i) => (i === index ? { ...item, [key]: "" } : item))
+            );
+        }
+        
         if (key === "dateOfBirth") {
             var age = dayjs().diff(dayjs(value), "year");
             if (!item.isGuardian) {
