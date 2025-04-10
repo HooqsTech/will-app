@@ -92,7 +92,8 @@ export interface ProvidentFundAsset {
     type: string;
     branch: string;
     bankName: string;
-    accountNumber: string;
+    uanNumber: string;
+    gpfNumber: string;
 }
 
 export interface PensionAccountAsset {
@@ -132,7 +133,6 @@ export interface ESOPAsset {
 
 export interface VehicleAsset {
     id: number;
-    type: string;
     brandOrModel: string;
     registrationNumber: string;
 }
@@ -141,7 +141,7 @@ export interface JewelryAsset {
     id: number;
     type: string;
     description: string;
-    weightInGrams: number;
+    preciousMetalInWeight: number;
 }
 
 export interface DigitalAsset {
@@ -155,6 +155,19 @@ export interface IntellectualPropertyAsset {
     type: string;
     description: string;
     identificationNumber: string;
+}
+
+export interface PetAsset {
+    id: number;
+    animalBreed: string;
+    petName: string;
+    amount: number;
+}
+
+export interface ArtworkAsset {
+    id: number;
+    name: string;
+    description: string;
 }
 
 export interface CustomAsset {
@@ -249,6 +262,8 @@ function parseAssetData(subtype: string, data: any): any {
         case "educationLoan": return data as EducationLoanAsset[];
         case "personalLoan": return data as PersonalLoanAsset[];
         case "otherLiabilities": return data as OtherLiabilityAsset[];
+        case "pets": return data as PetAsset;
+        case "artWorks": return data as ArtworkAsset;
         default: return data;
     }
 }

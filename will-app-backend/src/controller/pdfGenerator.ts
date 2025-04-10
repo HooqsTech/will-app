@@ -48,7 +48,6 @@ export const generatePDF = async (req: Request, res: Response) => {
         var assetDistributionDetails : IAssetDistributionDetails = parseAssetDistributionDetails(userDetails?.will_distribution || []);
         var addressDetails : IAddressDetails = safeParse(userDetails?.addressDetails);
         var executor : IExecutor[] = parseExecutors(await getExecutorsByUserIdService(userId));
-        var petDetails = userDetails?.pets;
         var excludedPersons : IExcludedPerson[] = parseExcludedPersons(userDetails?.excludedPersons  || []);
         let distributionDetails: any = null; 
         let residuaryDistributionDetails: any = null;
@@ -121,7 +120,7 @@ export const generatePDF = async (req: Request, res: Response) => {
             { text: "\n\nPART-II: FAMILY\n", style: "subheader", alignment: "center" },
             {
             text: `At the time of writing this Will, I am married to ${
-                beneficiaryDetails?.find((b) => b.data.relationship === "Wife")?.data.fullName ?? "None"
+                beneficiaryDetails?.find((b) => b.data.relationship.toLocaleLowerCase() === "spouse")?.data.fullName ?? "None"
             }, and I have following members in my family, whose details are as follows:`,
             style: "text",
             },
@@ -178,6 +177,8 @@ export const generatePDF = async (req: Request, res: Response) => {
             "jewelleries",
             "digital_assets",
             "intellectual_property",
+            "pets",
+            "art_works",
             "custom_assets"
             ].map((subtype) => {
             // Filter the assets for the current subtype
@@ -346,32 +347,47 @@ export const generatePDF = async (req: Request, res: Response) => {
                 
                 }).flat().filter(Boolean)
             ,
-            { text: "\n\nPART-VIII: EXCLUDED PERSONS\n", style: "subheader", alignment: "center" },
-            {
-              text: `The following person(s) are explicitly excluded from benefiting under this Will:`,
-              style: "text",
-            },
-            {
-              table: {
-                headerRows: 1,
-                widths: ["10%", "*", "*", "*"],
-                body: [
-                  [
-                    { text: "S. No.", bold: true },
-                    { text: "Name", bold: true },
-                    { text: "Relationship", bold: true },
-                    { text: "Reason", bold: true }
-                  ],
-                  ...excludedPersons.map((person, index) => [
-                    index + 1,
-                    person.data?.fullName ?? "N/A",
-                    person.data?.relationship ?? "N/A",
-                    person.data?.reason ?? "N/A",
-                  ])
-                ]
+            [
+              {
+                text: "\n\nPART-VIII: EXCLUDED PERSONS\n",
+                style: "subheader",
+                alignment: "center"
               },
-              style: "table"
-            },
+              ...(excludedPersons.length !== 0
+                ? [
+                    {
+                      text: `The following person(s) are explicitly excluded from benefiting under this Will:`,
+                      style: "text"
+                    },
+                    {
+                      table: {
+                        headerRows: 1,
+                        widths: ["10%", "*", "*", "*"],
+                        body: [
+                          [
+                            { text: "S. No.", bold: true },
+                            { text: "Name", bold: true },
+                            { text: "Relationship", bold: true },
+                            { text: "Reason", bold: true }
+                          ],
+                          ...excludedPersons.map((person, index) => [
+                            index + 1,
+                            person.data?.fullName ?? "N/A",
+                            person.data?.relationship ?? "N/A",
+                            person.data?.reason ?? "N/A"
+                          ])
+                        ]
+                      },
+                      style: "table"
+                    }
+                  ]
+                : [
+                    {
+                      text: `There are no person(s) explicitly excluded from benefiting under this Will.`,
+                      style: "text"
+                    }
+                  ])
+            ],
             {text: "\n\n"},
             {text: "IN WITNESS WHEREOF, I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence."},
             {text: "\n\n"},
@@ -455,9 +471,11 @@ export const generatePDF = async (req: Request, res: Response) => {
     });
     
 
-      const urls = await uploadFile(userId, fileName, fs.createReadStream(filePath));
+      //const urls = await uploadFile(userId, fileName, fs.createReadStream(filePath));
 
-      await upsertPDFVersioning(userId, urls.publicUrl, urls.signedUrl);
+      //await upsertPDFVersioning(userId, urls.publicUrl, urls.signedUrl);
+      await upsertPDFVersioning(userId, "", "");
+
 
       res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
       res.setHeader("Content-Type", "application/pdf");
@@ -505,6 +523,8 @@ function getHeadersForSubtype(subtype: string): string[] {
       personal_loan: ["S. No", "Name of Bank", "Amount", "Description"],
       education_loan: ["S. No", "Name of Bank", "Amount"],
       other_liabilities: ["S. No", "Amount", "Description"],
+      pets: ["S. No", "Name", "Type/Breed", "Amount Allocated"],
+      art_works: ["S. No", "Name", "Description"],
       default: ["S. No", "Category", "Details"]
     };
   
@@ -530,14 +550,14 @@ function getHeadersForSubtype(subtype: string): string[] {
       case "vehicles":
         return [
           index + 1,
-          asset.data.type || "N/A",
-          `${asset.data.brandOrModel} with Registration Number: ${asset.data.registrationNumber}`,
+          asset.data.brandOrModel || "N/A",
+          `Registration Number: ${asset.data.registrationNumber}`,
         ];
       case "jewelleries":
         return [
           index + 1,
           asset.data.type || "N/A",
-          asset.data.weightInGrams || "N/A",
+          asset.data.preciousMetalInWeight || "N/A",
           asset.data.description || "N/A",
         ];
       case "insurance_policies":
@@ -624,7 +644,19 @@ function getHeadersForSubtype(subtype: string): string[] {
           asset.data.type || "N/A",
           `ID: ${asset.data.identificationNumber},\nDescription: ${asset.data.description}`,
         ];
-
+      case "art_works":
+        return [
+          index + 1,
+          asset.data.name || "N/A",
+          asset.data.description || "N/A",
+        ];
+      case "pets":
+        return [
+          index + 1,
+          asset.data.petName || "N/A",
+          asset.data.animalBreed || "N/A",
+          asset.data.amount || "N/A",
+        ];
     case "custom_assets":
         return [index + 1, asset.data.description || "N/A"];
         case "personal_loan":
