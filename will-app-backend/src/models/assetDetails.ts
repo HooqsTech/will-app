@@ -24,6 +24,8 @@ export type AssetSubtype =
     | "jewelleries"
     | "digital_assets"
     | "intellectual_property"
+    | "pets"
+    | "art_works"
     | "custom_assets"
     | "home_loan"
     | "vehicle_loan"

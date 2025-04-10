@@ -15,6 +15,7 @@ import { IExecutor, parseExecutors } from "../models/executorDetails";
 import { getPDFVersioningByUserId, upsertPDFVersioning } from "../services/pdfVersioningService";
 import { uploadFile } from "../services/uploadService";
 import { IExcludedPerson, parseExcludedPersons } from "../models/excludedPersonDetails";
+import { getLiabilityDistributionService } from "../services/liabilityDistributionService";
 
 const prisma = new PrismaClient();
 
@@ -50,7 +51,8 @@ export const generatePDF = async (req: Request, res: Response) => {
         var executor : IExecutor[] = parseExecutors(await getExecutorsByUserIdService(userId));
         var excludedPersons : IExcludedPerson[] = parseExcludedPersons(userDetails?.excludedPersons  || []);
         let distributionDetails: any = null; 
-        let residuaryDistributionDetails: any = null;
+        let residuaryDistributionDetails: any = null; 
+        let liabilityDistributionDetails = await getLiabilityDistributionService(userId);
 
         switch (assetDistributionDetails?.distributionType) {
           case DistributionType.SINGLE:
@@ -120,7 +122,7 @@ export const generatePDF = async (req: Request, res: Response) => {
             { text: "\n\nPART-II: FAMILY\n", style: "subheader", alignment: "center" },
             {
             text: `At the time of writing this Will, I am married to ${
-                beneficiaryDetails?.find((b) => b.data.relationship.toLocaleLowerCase() === "spouse")?.data.fullName ?? "None"
+                beneficiaryDetails?.find((b) => b.data.relationship.toLowerCase().trim() === "spouse")?.data.fullName ?? "None"
             }, and I have following members in my family, whose details are as follows:`,
             style: "text",
             },
@@ -187,7 +189,7 @@ export const generatePDF = async (req: Request, res: Response) => {
             if (filteredAssets.length === 0) return null; // Skip if no assets for this subtype
             // Get headers and row generation logic for the subtype
             const headers = getHeadersForSubtype(subtype).map(header => ({ text: header, bold: true })); 
-            const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index));
+            const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index, liabilityDistributionDetails, beneficiaryDetails));
 
             return [
                 { text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`, style: "tableTitle", alignment: "center" },
@@ -263,7 +265,7 @@ export const generatePDF = async (req: Request, res: Response) => {
               } else if (distributionType === "Specific") {
                 const headers = [
                   { text: "Sl. No.", bold: true }, 
-                  { text: "Beneficiary Name", bold: true }, 
+                  { text: "Asset", bold: true }, 
                   { text: "Percentage Share", bold: true }
               ];
                 const rows = getRowsForSpecificDistribution(distributionDetails, assetDetails, beneficiaryDetails);
@@ -324,9 +326,8 @@ export const generatePDF = async (req: Request, res: Response) => {
                         const filteredAssets = assetDetails.filter((a) => a.subtype === subtype);
                             
                         if (filteredAssets.length === 0) return null;
-
                         const headers = getHeadersForSubtype(subtype).map(header => ({ text: header, bold: true })); 
-                        const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index));
+                        const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index, liabilityDistributionDetails, beneficiaryDetails));
 
                         return [
                             { text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`, style: "tableTitle", alignment: "center" },
@@ -388,7 +389,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                     }
                   ])
             ],
-            {text: "\n\n"},
+            { text: "", pageBreak: "after" },
             {text: "IN WITNESS WHEREOF, I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence."},
             {text: "\n\n"},
             {
@@ -471,11 +472,9 @@ export const generatePDF = async (req: Request, res: Response) => {
     });
     
 
-      //const urls = await uploadFile(userId, fileName, fs.createReadStream(filePath));
+      const urls = await uploadFile(userId, fileName, fs.createReadStream(filePath));
 
-      //await upsertPDFVersioning(userId, urls.publicUrl, urls.signedUrl);
-      await upsertPDFVersioning(userId, "", "");
-
+      await upsertPDFVersioning(userId, urls.publicUrl, urls.signedUrl);
 
       res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
       res.setHeader("Content-Type", "application/pdf");
@@ -518,11 +517,11 @@ function getHeadersForSubtype(subtype: string): string[] {
       properties: ["S. No", "Type Of Property", "Address"],
       jewelleries: ["S. No", "Type", "Quantity", "Description"],
       custom_assets: ["S. No", "Description"],
-      home_loan: ["S. No", "Name of Bank", "Amount", "Description"],
-      vechicle_loan: ["S. No", "Name of Bank", "Amount", "Description"],
-      personal_loan: ["S. No", "Name of Bank", "Amount", "Description"],
-      education_loan: ["S. No", "Name of Bank", "Amount"],
-      other_liabilities: ["S. No", "Amount", "Description"],
+      home_loan: ["S. No", "Name of Bank", "Amount", "Description", "Liable Person"],
+      vechicle_loan: ["S. No", "Name of Bank", "Amount", "Description", "Liable Person"],
+      personal_loan: ["S. No", "Name of Bank", "Amount", "Description", "Liable Person"],
+      education_loan: ["S. No", "Name of Bank", "Amount", "Liable Person"],
+      other_liabilities: ["S. No", "Amount", "Description", "Liable Person"],
       pets: ["S. No", "Name", "Type/Breed", "Amount Allocated"],
       art_works: ["S. No", "Name", "Description"],
       default: ["S. No", "Category", "Details"]
@@ -533,7 +532,7 @@ function getHeadersForSubtype(subtype: string): string[] {
   
   
   // Returns the table row for each subtype
-  function getRowForSubtype(subtype: string, asset: any, index: number): any[] {
+  function getRowForSubtype(subtype: string, asset: any, index: number, liabilityDistribution: any, beneficiaries: any): any[] {
     switch (subtype) {
       case "bank_accounts":
         return [
@@ -659,38 +658,103 @@ function getHeadersForSubtype(subtype: string): string[] {
         ];
     case "custom_assets":
         return [index + 1, asset.data.description || "N/A"];
-        case "personal_loan":
-            return [
-                index + 1, 
-                asset.data.nameOfBank || "N/A",
-                asset.data.loanAmount || "N/A",
-                `Account Number: ${asset.data.description}` || "N/A",
-            ];
+    case "personal_loan":
+      var assetSplitDetails = liabilityDistribution.beneficiaries.find(
+        (distAsset: { asset_id: any; }) => distAsset.asset_id === asset.id
+      );
+      var beneficiaryDetails = assetSplitDetails?.beneficiarieslist
+        .map((splitDetail: { beneficiaryId: any; percentage: any; }) => {
+          const beneficiary = beneficiaries.find((b: { id: any; }) => b.id === splitDetail.beneficiaryId);
+          return beneficiary
+            ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
+            : "Unknown Beneficiary";
+        })
+        .join(", ") || "No Beneficiaries Assigned";
+
+        return [
+            index + 1, 
+            asset.data.nameOfBank || "N/A",
+            asset.data.loanAmount || "N/A",
+            `Account Number: ${asset.data.description}` || "N/A",
+            beneficiaryDetails
+        ];
     case "home_loan":
+      var assetSplitDetails = liabilityDistribution.beneficiaries.find(
+        (distAsset: { asset_id: any; }) => distAsset.asset_id === asset.id
+      );
+      var beneficiaryDetails = assetSplitDetails?.beneficiarieslist
+        .map((splitDetail: { beneficiaryId: any; percentage: any; }) => {
+          const beneficiary = beneficiaries.find((b: { id: any; }) => b.id === splitDetail.beneficiaryId);
+          return beneficiary
+            ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
+            : "Unknown Beneficiary";
+        })
+        .join(", ") || "No Beneficiaries Assigned";
+
       return [
           index + 1, 
           asset.data.nameOfBank || "N/A",
           asset.data.loanAmount || "N/A",
           `Account Number: ${asset.data.accountNumber}` || "N/A",
+          beneficiaryDetails
       ];
     case "vechicle_loan":
+      assetSplitDetails = liabilityDistribution.beneficiaries.find(
+        (distAsset: { asset_id: any; }) => distAsset.asset_id === asset.id
+      );
+
+      beneficiaryDetails = assetSplitDetails?.beneficiarieslist
+        .map((splitDetail: { beneficiaryId: any; percentage: any; }) => {
+          const beneficiary = beneficiaries.find((b: { id: any; }) => b.id === splitDetail.beneficiaryId);
+          return beneficiary
+            ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
+            : "Unknown Beneficiary";
+        })
+        .join(", ") || "No Beneficiaries Assigned";
         return [
             index + 1, 
             asset.data.nameOfBank || "N/A",
             asset.data.loanAmount || "N/A",
             `Account Number: ${asset.data.accountNumber}` || "N/A",
+            beneficiaryDetails
         ];
     case "education_loan":
+      assetSplitDetails = liabilityDistribution.beneficiaries.find(
+        (distAsset: { asset_id: any; }) => distAsset.asset_id === asset.id
+      );
+
+      beneficiaryDetails = assetSplitDetails?.beneficiarieslist
+        .map((splitDetail: { beneficiaryId: any; percentage: any; }) => {
+          const beneficiary = beneficiaries.find((b: { id: any; }) => b.id === splitDetail.beneficiaryId);
+          return beneficiary
+            ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
+            : "Unknown Beneficiary";
+        })
+        .join(", ") || "No Beneficiaries Assigned";
         return [
             index + 1, 
             asset.data.nameOfBank || "N/A",
-            `Account Number: ${asset.data.loanAmount}` || "N/A"
+            `Account Number: ${asset.data.loanAmount}` || "N/A",
+            beneficiaryDetails
         ];
     case "other_liabilities":
+      assetSplitDetails = liabilityDistribution.beneficiaries.find(
+        (distAsset: { asset_id: any; }) => distAsset.asset_id === asset.id
+      );
+
+      beneficiaryDetails = assetSplitDetails?.beneficiarieslist
+        .map((splitDetail: { beneficiaryId: any; percentage: any; }) => {
+          const beneficiary = beneficiaries.find((b: { id: any; }) => b.id === splitDetail.beneficiaryId);
+          return beneficiary
+            ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
+            : "Unknown Beneficiary";
+        })
+        .join(", ") || "No Beneficiaries Assigned";
         return [
             index + 1, 
             asset.data.loanAmount || "N/A",
             `Lender Name: ${asset.data.nameOfBank} Account Number: ${asset.data.loanAmount}\n ${asset.data.description}`  || "N/A",
+            beneficiaryDetails
         ];
 
       default:
@@ -794,7 +858,15 @@ function getHeadersForSubtype(subtype: string): string[] {
           case "intellectual_property":
             assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
             break;
-        
+
+          case "pets":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.petName || "N/A"}, ${asset.data.animalBreed || "N/A"}`;
+            break;
+
+          case "art_works":
+            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.name || "N/A"}, ${asset.data.description || "N/A"}`;
+            break;
+
           case "custom_assets":
             assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.description || "N/A"}`;
             break;

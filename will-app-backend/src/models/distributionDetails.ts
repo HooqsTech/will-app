@@ -50,14 +50,21 @@ export interface IUserResiduaryAssets {
     updatedat: Date | null;
 }
 
-  export interface IUserAssetsSingle {
-    userid: string;
-    primarybeneficiaryid: string | null;
-    secondarybeneficiaryid: string | null;
-    tertiarybeneficiaryid: string | null;
-    createdat: Date | null; 
-    updatedat: Date | null; 
-  }
+export interface ILiabilityDistribution {
+  userid: string;
+  beneficiaries: IAsset[];
+  createdat: Date | null;
+  updatedat: Date | null;
+}
+
+export interface IUserAssetsSingle {
+  userid: string;
+  primarybeneficiaryid: string | null;
+  secondarybeneficiaryid: string | null;
+  tertiarybeneficiaryid: string | null;
+  createdat: Date | null; 
+  updatedat: Date | null; 
+}
 
 
 
@@ -79,6 +86,29 @@ export interface IUserResiduaryAssets {
       };
   
       return userAssets;
+    } catch (error) {
+      throw new Error(`Failed to parse JSON: ${error}`);
+    }
+  }
+
+  export function parseLiabilitiyDistribution(jsonString: string): ILiabilityDistribution {
+    try {
+      const parsedObject = JSON.parse(jsonString);
+  
+      const liabilityDistribution: ILiabilityDistribution = {
+        userid: parsedObject.userid,
+        beneficiaries: parsedObject.assets.map((asset: any) => ({
+          asset_id: asset.asset_id,
+          split: asset.split.map((split: any) => ({
+            percentage: split.percentage,
+            beneficiary_id: split.beneficiary_id,
+          })),
+        })),
+        createdat: parsedObject.createdat,
+        updatedat: parsedObject.updatedat,
+      };
+  
+      return liabilityDistribution;
     } catch (error) {
       throw new Error(`Failed to parse JSON: ${error}`);
     }
