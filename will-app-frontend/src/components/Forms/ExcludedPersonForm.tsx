@@ -4,12 +4,11 @@ import { excludedPersonsValidationState, IExcludedPersonValidationState } from "
 import CustomFormContainer from "../CustomFormContainer";
 import CustomTextBox from "../CustomTextBox";
 import CustomSelect from "../CustomSelect";
+import { RELATIONSHIP } from "../../utils";
 
 interface IExcludedPersonFormProps {
     index: number
 }
-
-const RELATIONSHIP = ['son ', 'daughter ', 'spouse ', 'mother ', 'father ', 'brother ', 'sister ', 'nephew ', 'niece ', 'grand-son ', 'grand-daughter ', 'daughter-in-law ', 'son-in-law ', 'step-son ', 'step-daughter ']
 
 const ExcludedPersonForm: React.FC<IExcludedPersonFormProps> = ({ index }) => {
     const [formState, setFormState] = useRecoilState<IExcludedPersonState[]>(excludedPersonsState);

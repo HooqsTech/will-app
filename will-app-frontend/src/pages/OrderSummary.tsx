@@ -42,6 +42,7 @@ const OrderSummary = () => {
   const handleGenerate = async () => {
     setIsPdfGenerating(true);
     await generatePdfFile(userId.userId);
+    await fetchPdfVersions();
     setIsPdfGenerating(false);
   };
 

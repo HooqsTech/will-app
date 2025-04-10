@@ -10,14 +10,13 @@ import { beneficiariesValidationState, IBeneficiaryValidationState } from "../..
 import AddButton from "../AddButton";
 import "dayjs/plugin/relativeTime";
 import { useEffect, useState } from "react";
+import { RELATIONSHIP } from "../../utils";
 
 interface IBankAccountFormProps {
     index: number,
     isGuardian?: boolean,
     addGuardian?: () => void
 }
-
-const RELATIONSHIP = ['son ', 'daughter ', 'spouse ', 'mother ', 'father ', 'brother ', 'sister ', 'nephew ', 'niece ', 'grand-son ', 'grand-daughter ', 'daughter-in-law ', 'son-in-law ', 'step-son ', 'step-daughter ']
 
 const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, addGuardian }) => {
     const [formState, setFormState] = useRecoilState<IBeneficiaryState[]>(beneficiariesState);
