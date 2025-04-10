@@ -16,7 +16,7 @@ const AssetDistributionPercentPage = () => {
   const [assetDistribution, setAssetDistribution] = useRecoilState(AssetDistributionPercentState);
   const [error,setError] = useState<boolean>(false);
   const navigate = useNavigate();
-  console.log(assetDistribution);
+  
   const backupBeneficiaryOptions = [
     { value: "spouse_children", label: "Their spouse and/or children" },
     { value: "equal_split", label: "Split between remaining beneficiaries equally" },
