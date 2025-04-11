@@ -15,8 +15,6 @@ export const recordPaymentEvent = async (req: Request, res: Response) => {
         shasum.update(JSON.stringify(body))
         const digest = shasum.digest('hex')
 
-        console.log('body', JSON.stringify(body))
-
         if (digest !== req.headers["x-razorpay-signature"]) {
             return res.status(401).json("Un authorized");
         }

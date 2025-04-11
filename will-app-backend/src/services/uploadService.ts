@@ -7,7 +7,6 @@ const storage = new Storage({
 });
 
 const BUCKET_NAME = process.env.CONTAINER_NAME || "hamara-will-storage";
-console.log(BUCKET_NAME);
 
 const uploadFile = async (userId: string, filename: string, fileStream: Readable):  Promise<{ signedUrl: string; publicUrl: string }> => {
   try {

@@ -45,7 +45,8 @@ export const generatePDF = async (req: Request, res: Response) => {
         var userDetails = await getUserByUserId(userId);
         const personalDetails : IPersonalDetails = safeParse(userDetails?.personalDetails);
         const assetDetails: IAsset[] = parseAssets(userDetails?.assets || []);
-        var beneficiaryDetails : IBeneficiary[] = parseBeneficiaries(userDetails?.beneficiaries || []);
+        const { beneficiaryDetails, charityBeneficiaries } = parseBeneficiaries(userDetails?.beneficiaries || []);
+
         var assetDistributionDetails : IAssetDistributionDetails = parseAssetDistributionDetails(userDetails?.will_distribution || []);
         var addressDetails : IAddressDetails = safeParse(userDetails?.addressDetails);
         var executor : IExecutor[] = parseExecutors(await getExecutorsByUserIdService(userId));
@@ -119,88 +120,150 @@ export const generatePDF = async (req: Request, res: Response) => {
             style: "text",
             },
             { text: "This Will shall be governed by the laws of India.", style: "text" },
-            { text: "\n\nPART-II: FAMILY\n", style: "subheader", alignment: "center" },
-            {
-            text: `At the time of writing this Will, I am married to ${
-                beneficiaryDetails?.find((b) => b.data.relationship.toLowerCase().trim() === "spouse")?.data.fullName ?? "None"
-            }, and I have following members in my family, whose details are as follows:`,
-            style: "text",
-            },
-            {
-              table: {
-                headerRows: 1,
-                widths: ["10%", "*", "*", "*"], // Adjust column widths as needed
-                body: [
-                  // Headers with bold styling
-                  [
-                    { text: "S. No.", bold: true },
-                    { text: "Name", bold: true },
-                    { text: "Relationship", bold: true },
-                    { text: "Date of Birth", bold: true }
-                  ],
-                  
-                  ...beneficiaryDetails.map((b, index) => [
-                    index + 1, 
-                    b.data.fullName,
-                    b.data.relationship,
-                    new Date(b.data.dateOfBirth).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    }),
-                  ]),
-                ],
+            { text: "\n\nPART-II: BENERFICIARIES\n", style: "subheader", alignment: "center" },
+            [
+              {
+                text: `At the time of writing this Will, I am married to ${
+                  beneficiaryDetails.find((b) =>
+                    b.data.relationship.toLowerCase().trim() === "spouse"
+                  )?.data.fullName ?? "None"
+                }, and I have the following members in my beneficiary section, whose details are as follows:`,
+                style: "text",
               },
-              style: "table",
-            },
-            { text: "\n\nPART-III: APPOINTMENT OF EXECUTOR\n", style: "subheader", alignment: "center" },
+            
+              {
+                text: "\n\nBENEFICIARY DETAILS\n",
+                style: "subheader",
+                alignment: "center",
+              },
+              {
+                table: {
+                  headerRows: 1,
+                  widths: ["10%", "*", "*", "*"],
+                  body: [
+                    [
+                      { text: "S. No.", bold: true },
+                      { text: "Name", bold: true },
+                      { text: "Relationship", bold: true },
+                      { text: "Date of Birth", bold: true },
+                    ],
+                    ...beneficiaryDetails.map((b, index) => [
+                      index + 1,
+                      b.data.fullName || "N/A",
+                      b.data.relationship || "N/A",
+                      b.data.dateOfBirth
+                        ? new Date(b.data.dateOfBirth).toLocaleDateString("en-US", {
+                            month: "long",
+                            day: "numeric",
+                            year: "numeric",
+                          })
+                        : "N/A",
+                    ]),
+                  ],
+                },
+                style: "table",
+              },
+            
+              ...(charityBeneficiaries.length > 0
+                ? [
+                    {
+                      text: "\n\nCHARITY DETAILS\n",
+                      style: "subheader",
+                      alignment: "center",
+                    },
+                    {
+                      table: {
+                        headerRows: 1,
+                        widths: ["10%", "*", "*", "*"],
+                        body: [
+                          [
+                            { text: "S. No.", bold: true },
+                            { text: "Organization", bold: true },
+                            { text: "Charity Type", bold: true },
+                            { text: "Donation Amount", bold: true },
+                          ],
+                          ...charityBeneficiaries.map((b, index) => [
+                            index + 1,
+                            b.data.organization || b.data.otherOrganization || "N/A",
+                            b.data.charityType || "N/A",
+                            b.data.donationAmount?.toLocaleString("en-IN", {
+                              style: "currency",
+                              currency: "INR",
+                            }) ?? "N/A",
+                          ]),
+                        ],
+                      },
+                      style: "table",
+                    },
+                  ]
+                : []),
+            ],
             {
-            text: `The powers and elective rights conferred by law or by any other provision of this Will and by me be exercised as often as required and without application to or approval by any court. I hereby appoint ${executor[0].data.gender == "Male"? "Mr.": "Mrs."} ${executor[0].data.fullName} as my Primary Executor for all means and purposes with regards to the Will. He has his Mobile No. as ${executor[0].data.phoneNumber} and Email ID as ${executor[0].data.email}.`,
-            style: "text",
+              text: "\n\nPART-III: APPOINTMENT OF EXECUTOR\n",
+              style: "subheader",
+              alignment: "center",
+              pageBreak: 'before',
+            },
+            {
+              text: [
+                `The powers and elective rights conferred by law or by any other provision of this Will and by me be exercised as often as required and without application to or approval by any court. I hereby appoint `,
+                { text: `${executor[0].data.gender === "Male" ? "Mr." : "Mrs."} ${executor[0].data.fullName}`, bold: true },
+                ` as my Primary Executor for all means and purposes with regards to the Will. `,
+                `He has his Mobile No. as `,
+                { text: `${executor[0].data.phoneNumber}`, italics: true },
+                ` and Email ID as `,
+                { text: `${executor[0].data.email}`, italics: true },
+                `.`
+              ],
+              style: "text",
             },
             { text: "\n\nPART-IV: MOVABLE & IMMOVABLE ASSET DETAILS\n", style: "subheader", alignment: "center" },
 
-            ...[
-            "properties",
-            "bank_accounts",
-            "fixed_deposits",
-            "insurance_policies",
-            "safety_deposit_boxes",
-            "demat_accounts",
-            "mutual_funds",
-            "provident_funds",
-            "pension_accounts",
-            "businesses",
-            "bonds",
-            "debentures",
-            "esops",
-            "other_investments",
-            "vehicles",
-            "jewelleries",
-            "digital_assets",
-            "intellectual_property",
-            "pets",
-            "art_works",
-            "custom_assets"
-            ].map((subtype) => {
-            // Filter the assets for the current subtype
-            const filteredAssets = assetDetails.filter((a) => a.subtype === subtype);
-
-            if (filteredAssets.length === 0) return null; // Skip if no assets for this subtype
-            // Get headers and row generation logic for the subtype
-            const headers = getHeadersForSubtype(subtype).map(header => ({ text: header, bold: true })); 
-            const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index, liabilityDistributionDetails, beneficiaryDetails));
-
-            return [
-                { text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`, style: "tableTitle", alignment: "center" },
-                {
-                table: {
-                    headerRows: 1,
-                    widths: ["10%", ...headers.slice(1).map(() => "*")],
-                    body: [headers, ...rows],
-                },
-                style: "table",
-                },
+                ...[
+                  "properties",
+                  "bank_accounts",
+                  "fixed_deposits",
+                  "insurance_policies",
+                  "safety_deposit_boxes",
+                  "demat_accounts",
+                  "mutual_funds",
+                  "provident_funds",
+                  "pension_accounts",
+                  "businesses",
+                  "bonds",
+                  "debentures",
+                  "esops",
+                  "other_investments",
+                  "vehicles",
+                  "jewelleries",
+                  "digital_assets",
+                  "intellectual_property",
+                  "pets",
+                  "art_works",
+                  "custom_assets"
+                ].map((subtype) => {
+                  const filteredAssets = assetDetails.filter((a) => a.subtype === subtype);
+                  if (filteredAssets.length === 0) return null;
+              
+                  const headers = getHeadersForSubtype(subtype).map(header => ({ text: header, bold: true }));
+                  const rows = filteredAssets.map((a, index) =>
+                    getRowForSubtype(subtype, a, index, liabilityDistributionDetails, beneficiaryDetails)
+                  );
+              
+                  return  [
+                      {
+                        text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`,
+                        style: "tableTitle",
+                        alignment: "center",
+                      },
+                      {
+                        table: {
+                          headerRows: 1,
+                          widths: ["10%", ...headers.slice(1).map(() => "*")],
+                          body: [headers, ...rows],
+                        },
+                        style: "table",
+                      },
             ];
             }).flat().filter(Boolean) // Flatten and filter out nulls
 
@@ -268,8 +331,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                   { text: "Asset", bold: true }, 
                   { text: "Percentage Share", bold: true }
               ];
-                const rows = getRowsForSpecificDistribution(distributionDetails, assetDetails, beneficiaryDetails);
-            
+                const rows = getRowsForSpecificDistribution(distributionDetails, assetDetails, beneficiaryDetails, charityBeneficiaries);
                 return [
                   {
                     table: {
@@ -287,10 +349,26 @@ export const generatePDF = async (req: Request, res: Response) => {
               .flat()
               .filter(Boolean)
                   ,
-            { text: "\n\nPART-VI: PRIMARY REMAINDER BENEFICIARIES\n", style: "subheader", alignment: "center" },
-            { text: "I, hereby, bequeath to the persons my residue and the remainder of my property and estate, tangible and intangible, immovable and movable, real, personal and mixed, of whatever nature and wherever situated, including all property. ", style: "text" },
-            { text: "\nOr, I may acquire or receive or inherit any assets in future after writing this Will, shall be bequeathed in the following manner and proportions:", style: "text" },
-            { text : "\n"},
+                  {
+                    unbreakable: true,
+                    stack: [
+                      { 
+                        text: "\n\nPART-VI: PRIMARY REMAINDER BENEFICIARIES\n", 
+                        style: "subheader", 
+                        alignment: "center" 
+                      },
+                      { 
+                        text: "I, hereby, bequeath to the persons my residue and the remainder of my property and estate, tangible and intangible, immovable and movable, real, personal and mixed, of whatever nature and wherever situated, including all property.", 
+                        style: "text",
+                        margin: [0, 10, 0, 0]
+                      },
+                      { 
+                        text: "Or, I may acquire or receive or inherit any assets in future after writing this Will, shall be bequeathed in the following manner and proportions:", 
+                        style: "text",
+                        margin: [0, 10, 0, 10]
+                      }
+                    ],
+                  },
             (() => {
               const headers = [
                 { text: "Sl. No.", bold: true }, 
@@ -350,16 +428,25 @@ export const generatePDF = async (req: Request, res: Response) => {
             ,
             [
               {
-                text: "\n\nPART-VIII: EXCLUDED PERSONS\n",
-                style: "subheader",
-                alignment: "center"
+                unbreak: 'before',
+                stack: [
+                  {
+                    text: "PART-VIII: EXCLUDED PERSONS",
+                    style: "subheader",
+                    alignment: "center",
+                    margin: [0, 20, 0, 10]
+                  },
+                  {
+                    text: excludedPersons.length !== 0
+                      ? "The following person(s) are explicitly excluded from benefiting under this Will:"
+                      : "There are no person(s) explicitly excluded from benefiting under this Will.",
+                    style: "text",
+                    margin: [0, 0, 0, 10]
+                  }
+                ]
               },
               ...(excludedPersons.length !== 0
                 ? [
-                    {
-                      text: `The following person(s) are explicitly excluded from benefiting under this Will:`,
-                      style: "text"
-                    },
                     {
                       table: {
                         headerRows: 1,
@@ -382,12 +469,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                       style: "table"
                     }
                   ]
-                : [
-                    {
-                      text: `There are no person(s) explicitly excluded from benefiting under this Will.`,
-                      style: "text"
-                    }
-                  ])
+                : [])
             ],
             { text: "", pageBreak: "after" },
             {text: "IN WITNESS WHEREOF, I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence."},
@@ -429,17 +511,17 @@ export const generatePDF = async (req: Request, res: Response) => {
         const docDefinition: TDocumentDefinitions = {
             content,
 
-        styles: {
-            header: { fontSize: 18, bold: true },
-            title: { fontSize: 20, bold: true },
-            subheader: { fontSize: 16, bold: true, margin: [0, 10, 0, 10] },
-            tableTitle: { fontSize: 14, bold: true, margin: [0, 10, 0, 10] },
-            text: { fontSize: 12 },
-            table: { margin: [0, 5, 0, 15] }
-        },
-        defaultStyle: {
-            font: "Times",
-        },
+            styles: {
+              header: { fontSize: 18, bold: true, lineHeight: 1 },
+              title: { fontSize: 20, bold: true, lineHeight: 1 },
+              subheader: { fontSize: 16, bold: true, margin: [0, 10, 0, 10], lineHeight: 1 },
+              tableTitle: { fontSize: 14, bold: true, margin: [0, 10, 0, 10], lineHeight: 2 },
+              text: { fontSize: 12, lineHeight: 2 },
+              table: { margin: [0, 5, 0, 15], lineHeight: 2 }
+          },
+            defaultStyle: {
+                font: "Times",
+            },
         footer: function (currentPage, pageCount) {
           return {
             text: `Page ${currentPage} of ${pageCount}`,
@@ -584,11 +666,22 @@ function getHeadersForSubtype(subtype: string): string[] {
           `Wallet: ${asset.data.walletAddress}`,
         ];
       case "provident_funds":
-        return [
-          index + 1,
-          asset.data.type || "N/A",
-          `Account Number: ${asset.data.accountNumber}\nBranch Address: ${asset.data.bankName},${asset.data.branch},${asset.data.city}`,
-        ];
+          const { type, bankName, branch, city, uanNumber, gpfNumber } = asset.data;
+        
+          let accountInfo = "";
+          if (type === "EPF") {
+            accountInfo = `UAN Number: ${uanNumber || "N/A"}`;
+          } else if (type === "GPF") {
+            accountInfo = `GPF Number: ${gpfNumber || "N/A"}`;
+          } else if (type === "PPF") {
+            accountInfo = `Bank: ${bankName || "N/A"}\nBranch: ${branch || "N/A"}\nCity: ${city || "N/A"}`;
+          }
+        
+          return [
+            index + 1,
+            type || "N/A",
+            accountInfo,
+          ];
       case "fixed_deposits":
         return [
           index + 1,
@@ -765,119 +858,126 @@ function getHeadersForSubtype(subtype: string): string[] {
   function getRowsForSpecificDistribution(
     distributionDetails: IUserAssetsSpecific,
     assets: IAsset[],
-    beneficiaries: IBeneficiary[]
-  ): (string | number)[][] {
+    beneficiaries: IBeneficiary[],
+    charityBeneficiaries: IBeneficiary[]
+  ): (string | number | { text: string; bold?: boolean })[][] {
     if (!assets || !distributionDetails) {
       return [];
     }
   
     return assets
-      .filter((asset) => asset.type !== "liabilities") // Exclude liabilities
+      .filter((asset) => asset.type !== "liabilities")
       .map((asset, index) => {
-        // Find the split details for the current asset
         const assetSplitDetails = distributionDetails.assets.find(
           (distAsset) => distAsset.asset_id === asset.id
         );
-
-        const beneficiaryDetails = assetSplitDetails?.beneficiarieslist
-          .map((splitDetail) => {
-            const beneficiary = beneficiaries.find((b) => b.id === splitDetail.beneficiaryId);
-            return beneficiary
-              ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
-              : "Unknown Beneficiary";
-          })
-          .join(", ") || "No Beneficiaries Assigned";
   
-        // Handle asset data based on subtype
-        let assetDetails: string;
-        switch (asset.subtype) {
-          case "properties":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.propertyType || "N/A"}`;
-            break;
-        
-          case "vehicles":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
-            break;
-        
-          case "jewelleries":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
-            break;
-        
-          case "insurance_policies":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
-            break;
-        
-          case "mutual_funds":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.fundName || "N/A"}`;
-            break;
-        
-          case "demat_accounts":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.brokerName || "N/A"}`;
-            break;
-        
-          case "digital_assets":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
-            break;
-        
-          case "provident_funds":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
-            break;
-        
-          case "fixed_deposits":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.bankName || "N/A"}`;
-            break;
-        
-          case "safety_deposit_boxes":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.depositBoxType || "N/A"}`;
-            break;
-        
-          case "pension_accounts":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.bankName || "N/A"}`;
-            break;
-        
-          case "businesses":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
-            break;
-        
-          case "bonds":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.financialServiceProviderName || "N/A"}`;
-            break;
-        
-          case "debentures":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
-            break;
-        
-          case "esops":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.companyName || "N/A"}`;
-            break;
-        
-          case "other_investments":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
-            break;
-        
-          case "intellectual_property":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.type || "N/A"}`;
-            break;
-
-          case "pets":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.petName || "N/A"}, ${asset.data.animalBreed || "N/A"}`;
-            break;
-
-          case "art_works":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.name || "N/A"}, ${asset.data.description || "N/A"}`;
-            break;
-
-          case "custom_assets":
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: ${asset.data.description || "N/A"}`;
-            break;
-        
-          default:
-            assetDetails = `${asset.subtype.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}: N/A`;
-            break;
-        }
-        // Construct the row
-        return [index + 1, assetDetails, beneficiaryDetails];
+        const beneficiaryDetails = assetSplitDetails?.beneficiarieslist?.length
+          ? assetSplitDetails.beneficiarieslist
+              .map((splitDetail) => {
+                // Look in individual beneficiaries first, then charity ones
+                const beneficiary =
+                  beneficiaries.find(
+                    (b) => b.id === splitDetail.beneficiaryId
+                  ) ||
+                  charityBeneficiaries.find(
+                    (b) => b.id === splitDetail.beneficiaryId
+                  );
+  
+                if (!beneficiary) {
+                  console.warn(
+                    `Beneficiary not found for ID: ${splitDetail.beneficiaryId}`
+                  );
+                  return `Unknown (${splitDetail.percentage}%)`;
+                }
+  
+                const fullName = beneficiary?.data?.fullName || "Unknown";
+                const organization = beneficiary?.data?.organization || "";
+                const isCharity = beneficiary?.data?.donationAmount !== null;
+  
+                // Use organization name if it's a charity
+                const displayName = isCharity
+                  ? `${organization || fullName || "Unnamed Charity"}`
+                  : fullName;
+  
+                return `${displayName} (${splitDetail.percentage}%)`;
+              })
+              .join(", ")
+          : "No Beneficiaries Assigned";
+  
+        const description = getAssetDescription(asset.subtype, asset);
+        const formattedSubtype = asset.subtype.replace(/_/g, " ").toUpperCase();
+  
+        return [
+          index + 1,
+          {
+            text: [
+              { text: `${formattedSubtype}:\n`, bold: true },
+              { text: description },
+            ],
+          } as any,
+          beneficiaryDetails,
+        ];
       });
   }
-  
 
+  function getAssetDescription(subtype: string, asset: any): string {
+    switch (subtype) {
+      case "bank_accounts":
+        return `${asset.data.accountType} Account, Account Number: ${maskAccountNumber(asset.data.accountNumber)}; Branch Address: ${asset.data.branch}, ${asset.data.city}`;
+      case "properties":
+        return asset.data.address || "N/A";
+      case "vehicles":
+        return `Registration Number: ${asset.data.registrationNumber}`;
+      case "jewelleries":
+        return `${asset.data.preciousMetalInWeight || "N/A"}, ${asset.data.description || "N/A"}`;
+      case "insurance_policies":
+        return `Company: ${asset.data.insuranceProvider}, Policy Number: ${maskAccountNumber(asset.data.policyNumber)}`;
+      case "mutual_funds":
+        return `${asset.data.noOfHolders} Holder(s)`;
+      case "demat_accounts":
+        return `Account Number: ${asset.data.accountNumber}`;
+      case "digital_assets":
+        return `Wallet: ${asset.data.walletAddress}`;
+        case "provident_funds": {
+      const { type, bankName, branch, city, uanNumber, gpfNumber } = asset.data;
+        
+          let detail = "";
+          if (type === "EPF") {
+            detail = `Type: EPF; UAN Number: ${uanNumber || "N/A"}`;
+          } else if (type === "GPF") {
+            detail = `Type: GPF; GPF Number: ${gpfNumber || "N/A"}; State: ${asset.data.state || "N/A"}`;
+          } else if (type === "PPF") {
+            detail = `Type: PPF; Bank: ${bankName || "N/A"}; Branch: ${branch || "N/A"}; City: ${city || "N/A"}`;
+          } else {
+            detail = `Type: ${type || "Unknown"}`;
+          }
+        
+          return detail;
+        }
+      case "fixed_deposits":
+        return `${asset.data.noOfHolders} Holder(s), Account number: ${maskAccountNumber(asset.data.accountNumber)}; Branch Address: ${asset.data.branch}, ${asset.data.city}`;
+      case "safety_deposit_boxes":
+        return `${asset.data.bankName}, Branch Address: ${asset.data.branch}, ${asset.data.city}`;
+      case "pension_accounts":
+        return `Scheme Name: ${asset.data.schemeName}`;
+      case "businesses":
+        return `Company Name: ${asset.data.companyName}, Address: ${asset.data.address}`;
+      case "bonds":
+      case "debentures":
+      case "other_investments":
+        return `Financial Provider: ${asset.data.financialServiceProviderName}, Folio Number: ${asset.data.certificateNumber}`;
+      case "esops":
+        return `Vested: ${asset.data.noOfVestedEscops}, Unvested: ${asset.data.noOfUnVestedEscops}, Units Granted: ${asset.data.noOfUnitGranted}`;
+      case "intellectual_property":
+        return `ID: ${asset.data.identificationNumber}, Description: ${asset.data.description}`;
+      case "art_works":
+        return asset.data.description || "N/A";
+      case "pets":
+        return `Breed: ${asset.data.animalBreed}, Amount: ${asset.data.amount}`;
+      case "custom_assets":
+        return asset.data.description || "N/A";
+      default:
+        return "N/A";
+    }
+  }

@@ -149,9 +149,6 @@ export const getPercentageAssetDistributionService = async (
 
     let beneficiarieslist: ISplit[] = [];
     if (result.beneficiaries && typeof result.beneficiaries === "object") {
-        console.log("Inside array");
-        console.log("result.beneficiaries: ", JSON.stringify(result.beneficiaries));
-
         const additionalInputs = (result.beneficiaries as any).additionalInputs;
 
         if (additionalInputs && typeof additionalInputs === "object") {

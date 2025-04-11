@@ -23,30 +23,25 @@ export const saveDistributionType = async (request: Request, response: Response)
             switch (existingDistribution.distributiontype) {
                 case DistributionType.SINGLE:
                     await deleteSingleBeneficiaryDistributionService(userId);
-                    console.log("Deleted data stored for single beneficiary");
                     break;
             
                 case DistributionType.SPECIFIC:
                     await deleteSpecificAssetDistributionService(userId);                    
-                    console.log("Deleted data stored for specific asset based beneficiaries");
                     break;
             
                 case DistributionType.PERCENTAGE:
                     await deletePercentageDistributionService(userId);
-                    console.log("Deleted data stored for percentage based beneficiaries");
                     break;
             
                 default:
                     throw new Error("Invalid distribution type");
             }
             await deleteResiduaryAssetDistributionService(userId);
-            console.log("Deleted data stored for residuary distribution");
         }
 
         //Delete current residuary distribution data if the user is changing the type of residuary distribution
         if(existingDistribution?.residuarydistributiontype !== residuaryDistributionType){
             await deleteResiduaryAssetDistributionService(userId);
-            console.log("Deleted data stored for percentage based beneficiaries");
         }
 
         let distributionDetails;

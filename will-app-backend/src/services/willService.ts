@@ -146,16 +146,12 @@ export const calculateTotalPrice = async (
     serviceIds?: string[], 
     isNewTransaction?: boolean
   ) => {
-      console.log("Received Category ID:", categoryId);
-  
       let categoryTotal = 0; // Initialize categoryTotal
   
       // Ensure categoryId is a string (avoid treating an array as an ID)
       if (Array.isArray(categoryId)) {
           categoryId = categoryId[0];
       }
-  
-      console.log("Processed Category ID:", categoryId);
   
       // If categoryId is not null, fetch the category price
       if (categoryId) {
@@ -165,17 +161,12 @@ export const calculateTotalPrice = async (
           });
   
           const categoryPrice = category?.discountedprice?.toNumber() ?? category?.standardprice?.toNumber() ?? 0;
-          console.log("Category Price:", categoryPrice);
-  
           categoryTotal = isNewTransaction ? categoryPrice : 0;
-          console.log("Category Total:", categoryTotal);
       }
       
       if (!serviceIds || serviceIds.length === 0) {
           return categoryTotal;
       }
-  
-      console.log("Service IDs:", serviceIds);
   
       // Fetch all service prices
       const services = await prisma.services.findMany({
@@ -188,7 +179,6 @@ export const calculateTotalPrice = async (
       });
   
       if (!services.length) {
-          console.log("No valid services found.");
           return categoryTotal;
       }
   
@@ -198,6 +188,5 @@ export const calculateTotalPrice = async (
       // Calculate final total price (service total + category discount)
       const totalPrice = totalServicePrice + categoryTotal;
   
-      console.log("Total Price:", totalPrice);
       return totalPrice;
   };

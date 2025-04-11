@@ -10,7 +10,10 @@ import { downloadPdfFile, generatePdfFile, getPDFVersions } from "../api/pdf";
 import { getUserIdByPhoneNumber } from "../api/user";
 import { getWillServices } from "../api/willService";
 import { pageLoadingState } from "../atoms/PageLoadingState";
-import { IPdfVersionState, pdfVersionsState } from "../atoms/PdfVersioningState";
+import {
+  IPdfVersionState,
+  pdfVersionsState,
+} from "../atoms/PdfVersioningState";
 import { pathState } from "../atoms/serviceState";
 import { TransactionSummaryState } from "../atoms/TransactionSummaryState";
 import { userState } from "../atoms/UserDetailsState";
@@ -33,41 +36,53 @@ const OrderSummary = () => {
     { categoryId: string; categoryName: string; serviceCount: number }[]
   >([]);
   const [isPdfDownloading, setIsPdfDownloading] = useState(false);
-  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+  const [isPdfGenerating] = useState(false);
   const [pdfVersions, setPdfVersions] = useRecoilState(pdfVersionsState);
   const [currentPdfVersion, setcurrentPdfVersion] = useState("");
   const [openPdfDownloadModal, setOpenPdfDownloadModal] = useState(false);
   const [isValid, setIsValid] = useState(true);
+  const setPageLoading = useSetRecoilState(pageLoadingState);
 
   const handleGenerate = async () => {
-    setIsPdfGenerating(true);
-    await generatePdfFile(userId.userId);
-    await fetchPdfVersions();
-    setIsPdfGenerating(false);
+    setPageLoading(true);
+    try {
+      await generatePdfFile(userId.userId);
+      await fetchPdfVersions();
+    } catch (error) {}
+
+    setPageLoading(false);
   };
 
   const handleDownload = async () => {
-    setIsValid(true);
-    if (IsEmptyString(currentPdfVersion)) {
-      setIsValid(false);
-      return;
+    setPageLoading(true);
+    try 
+    {
+      setIsValid(true);
+      if (IsEmptyString(currentPdfVersion)) {
+        setIsValid(false);
+        return;
+      }
+      setIsPdfDownloading(true);
+      var versionId = pdfVersions.find(
+        (s) => s.folderpath.includes(currentPdfVersion) == true
+      )?.versionid;
+      await downloadPdfFile(userId.userId, versionId ?? "", currentPdfVersion);
+      setIsPdfDownloading(false);
     }
-    setIsPdfDownloading(true);
-    var versionId = pdfVersions.find(s => s.folderpath.includes(currentPdfVersion) == true)?.versionid
-    await downloadPdfFile(userId.userId, versionId ?? "", currentPdfVersion);
-    setIsPdfDownloading(false);
+    catch (error) {}
+    setPageLoading(false);
   };
 
   const fetchPdfVersions = async () => {
     if (userId.userId) {
       let response: IPdfVersionState[] = await getPDFVersions(userId.userId);
-      setPdfVersions(response)
+      setPdfVersions(response);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchPdfVersions()
-  }, [userId.userId])
+    fetchPdfVersions();
+  }, [userId.userId]);
 
   const totalAmount =
     payment?.reduce(
@@ -246,8 +261,8 @@ const OrderSummary = () => {
                 const categories = Array.isArray(order.selectedcategories)
                   ? order.selectedcategories
                   : order.selectedcategories
-                    ? [order.selectedcategories]
-                    : [];
+                  ? [order.selectedcategories]
+                  : [];
 
                 const services = order.selectedservices || [];
 
@@ -306,7 +321,7 @@ const OrderSummary = () => {
 
               <Button
                 onClick={() => {
-                  setOpenPdfDownloadModal(true)
+                  setOpenPdfDownloadModal(true);
                 }}
                 sx={{
                   borderRadius: 0,
@@ -332,20 +347,28 @@ const OrderSummary = () => {
       </div>
 
       <Modal
-        className='flex flex-col justify-center w-full items-center'
+        className="flex flex-col justify-center w-full items-center"
         open={openPdfDownloadModal}
-        onClose={() => { setOpenPdfDownloadModal(false) }}
+        onClose={() => {
+          setOpenPdfDownloadModal(false);
+        }}
       >
-        <div className='bg-white p-6 max-w-lg flex flex-col w-full'>
-          <p className='pb-4'>Download PDF</p>
+        <div className="bg-white p-6 max-w-lg flex flex-col w-full">
+          <p className="pb-4">Download PDF</p>
           <CustomSelect
-            options={pdfVersions.map(s => decodeURIComponent(s.folderpath.substring(s.folderpath.lastIndexOf('/') + 1)))}
+            options={pdfVersions.map((s) =>
+              decodeURIComponent(
+                s.folderpath.substring(s.folderpath.lastIndexOf("/") + 1)
+              )
+            )}
             value={currentPdfVersion}
             helperText={!isValid ? "required" : ""}
-            onChange={(e) => { setcurrentPdfVersion(e) }}
+            onChange={(e) => {
+              setcurrentPdfVersion(e);
+            }}
             label="Pdf Versions"
           />
-          <CustomButton label='Download' onClick={handleDownload} />
+          <CustomButton label="Download" onClick={handleDownload} />
         </div>
       </Modal>
     </div>

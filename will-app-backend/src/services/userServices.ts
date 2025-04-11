@@ -197,7 +197,6 @@ export const getUserDetailsByPhone = async (phoneNumber: string) => {
   if (!user) {
     throw new Error("User not found");
   }
-console.log(user);
   return formatUserResponse(user);
 };
 
