@@ -30,7 +30,7 @@ const ProvidentFundpage = () => {
 
     const saveProvidentFundAsync = async (property: IProvidentFundState, index: number) => {
         let data: IAsset = {
-            id: "",
+            id: property.id,
             type: ASSET_TYPES.FINANCIAL_ASSETS,
             subtype: ASSET_SUBTYPES.PROVIDENT_FUNDS,
             userId: user.userId,

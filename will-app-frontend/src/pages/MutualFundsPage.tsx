@@ -30,7 +30,7 @@ const MutualFundsPage = () => {
 
     const saveMutualFundAsync = async (property: IMutualFundState, index: number) => {
         let data: IAsset = {
-            id: "",
+            id: property.id,
             type: ASSET_TYPES.FINANCIAL_ASSETS,
             subtype: ASSET_SUBTYPES.MUTUAL_FUNDS,
             userId: user.userId,

@@ -30,7 +30,7 @@ const OtherInvestmentPage = () => {
 
     const saveOtherInvestmentsAsync = async (property: IOtherInvestmentState, index: number) => {
         let data: IAsset = {
-            id: "",
+            id: property.id,
             type: ASSET_TYPES.BUSINESS_ASSETS,
             subtype: ASSET_SUBTYPES.OTHER_INVESTMENTS,
             userId: user.userId,
