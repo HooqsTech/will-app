@@ -31,7 +31,7 @@ const VechicleLoanPage = () => {
 
     const saveVehicleLoanAsync = async (property: IVehicleLoanState, index: number) => {
         let data: IAsset = {
-            id: "",
+            id: property.id,
             type: ASSET_TYPES.LIABILITIES,
             subtype: ASSET_SUBTYPES.VECHICLE_LOAN,
             userId: user.userId,

@@ -31,7 +31,7 @@ const HomeLoanPage = () => {
 
     const saveHomeLoanAsync = async (property: IHomeLoanState, index: number) => {
         let data: IAsset = {
-            id: "",
+            id: property.id,
             type: ASSET_TYPES.LIABILITIES,
             subtype: ASSET_SUBTYPES.HOME_LOAN,
             userId: user.userId,

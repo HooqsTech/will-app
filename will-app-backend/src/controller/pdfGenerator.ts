@@ -132,7 +132,7 @@ export const generatePDF = async (req: Request, res: Response) => {
               },
             
               {
-                text: "\n\nBENEFICIARY DETAILS\n",
+                text: "\n\FAMILY\n",
                 style: "subheader",
                 alignment: "center",
               },
@@ -232,7 +232,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                   "businesses",
                   "bonds",
                   "debentures",
-                  "esops",
+                  "escops",
                   "other_investments",
                   "vehicles",
                   "jewelleries",
@@ -252,7 +252,7 @@ export const generatePDF = async (req: Request, res: Response) => {
               
                   return  [
                       {
-                        text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`,
+                        text: `\n${subtype === 'escops' ? 'ESOPS' : subtype.replace(/_/g, " ").toUpperCase()}\n`,
                         style: "tableTitle",
                         alignment: "center",
                       },
@@ -382,14 +382,18 @@ export const generatePDF = async (req: Request, res: Response) => {
               ]);
           
               return [
-                  {
-                      table: {
-                          headerRows: 1,
-                          widths: ["10%", "50%", "40%"],
-                          body: [headers, ...rows],
-                      },
-                      style: "table",
+                {
+                  table: {
+                    headerRows: 1,
+                    widths: ["10%", "50%", "40%"],
+                    body: [headers, ...rows],
                   },
+                  style: "table",
+                  layout: {
+                    keepWithHeaderRows: 1,
+                    dontBreakRows: true 
+                  }
+                }
               ];
           })(),
             { text: "\n\nPART-VII: LIABILITIES\n", style: "subheader", alignment: "center" },
@@ -472,6 +476,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                 : [])
             ],
             { text: "", pageBreak: "after" },
+            { text: "ATTESTATION BY TESTATOR\n", style: "subheader", alignment: "center" },
             {text: "IN WITNESS WHEREOF, I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence."},
             {text: "\n\n"},
             {
@@ -642,9 +647,10 @@ function getHeadersForSubtype(subtype: string): string[] {
           asset.data.description || "N/A",
         ];
       case "insurance_policies":
+        console.log(asset)
         return [
           index + 1,
-          asset.data.type || "N/A",
+          asset.data.insuranceType || "N/A",
           `Company: ${asset.data.insuranceProvider}, Policy Number: ${maskAccountNumber(asset.data.policyNumber)}`,
         ];
       case "mutual_funds":
@@ -657,7 +663,7 @@ function getHeadersForSubtype(subtype: string): string[] {
         return [
           index + 1,
           asset.data.brokerName || "N/A",
-          `Account Number: ${asset.data.accountNumber}`,
+          `Account Number: ${maskAccountNumber(asset.data.accountNumber)}`,
         ];
       case "digital_assets":
         return [
@@ -718,7 +724,7 @@ function getHeadersForSubtype(subtype: string): string[] {
           asset.data.type || "N/A",
           `Financial Provider: ${asset.data.financialServiceProviderName},\nFolio Number: ${asset.data.certificateNumber}`,
         ];
-      case "esops":
+      case "escops":
         return [
           index + 1,
           asset.data.companyName || "N/A",
@@ -752,6 +758,7 @@ function getHeadersForSubtype(subtype: string): string[] {
     case "custom_assets":
         return [index + 1, asset.data.description || "N/A"];
     case "personal_loan":
+
       var assetSplitDetails = liabilityDistribution.beneficiaries.find(
         (distAsset: { asset_id: any; }) => distAsset.asset_id === asset.id
       );
@@ -768,7 +775,7 @@ function getHeadersForSubtype(subtype: string): string[] {
             index + 1, 
             asset.data.nameOfBank || "N/A",
             asset.data.loanAmount || "N/A",
-            `Account Number: ${asset.data.description}` || "N/A",
+            `Account Number: ${maskAccountNumber(asset.data.accountNumber)}` || "N/A",
             beneficiaryDetails
         ];
     case "home_loan":
@@ -788,7 +795,7 @@ function getHeadersForSubtype(subtype: string): string[] {
           index + 1, 
           asset.data.nameOfBank || "N/A",
           asset.data.loanAmount || "N/A",
-          `Account Number: ${asset.data.accountNumber}` || "N/A",
+          `Account Number: ${maskAccountNumber(asset.data.accountNumber)}` || "N/A",
           beneficiaryDetails
       ];
     case "vechicle_loan":
@@ -808,7 +815,7 @@ function getHeadersForSubtype(subtype: string): string[] {
             index + 1, 
             asset.data.nameOfBank || "N/A",
             asset.data.loanAmount || "N/A",
-            `Account Number: ${asset.data.accountNumber}` || "N/A",
+            `Account Number: ${maskAccountNumber(asset.data.accountNumber)}` || "N/A",
             beneficiaryDetails
         ];
     case "education_loan":
@@ -827,7 +834,7 @@ function getHeadersForSubtype(subtype: string): string[] {
         return [
             index + 1, 
             asset.data.nameOfBank || "N/A",
-            `Account Number: ${asset.data.loanAmount}` || "N/A",
+            `Loan Amount: ${asset.data.loanAmount}` || "N/A",
             beneficiaryDetails
         ];
     case "other_liabilities":
@@ -846,7 +853,12 @@ function getHeadersForSubtype(subtype: string): string[] {
         return [
             index + 1, 
             asset.data.loanAmount || "N/A",
-            `Lender Name: ${asset.data.nameOfBank} Account Number: ${asset.data.loanAmount}\n ${asset.data.description}`  || "N/A",
+            [
+              asset.data.Lender ? `Lender Name: ${asset.data.Lender}` : null,
+              asset.data.accountNumber ? `Account Number: ${maskAccountNumber(asset.data.accountNumber)}` : null,
+              asset.data.remainingAmount ? `Remaining Amount: ${asset.data.remainingAmount}` : null,
+              asset.data.description ? `Description: ${asset.data.description}` : null,
+            ].filter(Boolean).join("\n") || "N/A",
             beneficiaryDetails
         ];
 
@@ -906,8 +918,11 @@ function getHeadersForSubtype(subtype: string): string[] {
           : "No Beneficiaries Assigned";
   
         const description = getAssetDescription(asset.subtype, asset);
-        const formattedSubtype = asset.subtype.replace(/_/g, " ").toUpperCase();
-  
+        const formattedSubtype =
+        asset.subtype.toLowerCase() === 'escops'
+          ? 'ESOPS'
+          : asset.subtype.replace(/_/g, ' ').toUpperCase();
+
         return [
           index + 1,
           {
@@ -936,7 +951,7 @@ function getHeadersForSubtype(subtype: string): string[] {
       case "mutual_funds":
         return `${asset.data.noOfHolders} Holder(s)`;
       case "demat_accounts":
-        return `Account Number: ${asset.data.accountNumber}`;
+        return `Account Number: ${maskAccountNumber(asset.data.accountNumber)}`;
       case "digital_assets":
         return `Wallet: ${asset.data.walletAddress}`;
         case "provident_funds": {
@@ -967,8 +982,9 @@ function getHeadersForSubtype(subtype: string): string[] {
       case "debentures":
       case "other_investments":
         return `Financial Provider: ${asset.data.financialServiceProviderName}, Folio Number: ${asset.data.certificateNumber}`;
-      case "esops":
-        return `Vested: ${asset.data.noOfVestedEscops}, Unvested: ${asset.data.noOfUnVestedEscops}, Units Granted: ${asset.data.noOfUnitGranted}`;
+      case "escops":
+        console.log(asset.data)
+        return `Vested: ${asset.data.noOfVestedEscops}, Unvested: ${asset.data.noOfUnVestedEscops}, Units Graged: ${asset.data.noOfUnitGraged}`;
       case "intellectual_property":
         return `ID: ${asset.data.identificationNumber}, Description: ${asset.data.description}`;
       case "art_works":

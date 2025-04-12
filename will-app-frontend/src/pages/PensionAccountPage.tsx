@@ -30,7 +30,7 @@ const PensionAccountPage = () => {
 
     const saveProvidentFundAsync = async (property: IPensionAccountState, index: number) => {
         let data: IAsset = {
-            id: "",
+            id: property.id,
             type: ASSET_TYPES.FINANCIAL_ASSETS,
             subtype: ASSET_SUBTYPES.PENSION_ACCOUNTS,
             userId: user.userId,

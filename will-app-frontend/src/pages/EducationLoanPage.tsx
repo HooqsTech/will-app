@@ -31,7 +31,7 @@ const EducationLoanPage = () => {
 
     const saveEducationLoanAsync = async (property: IEducationLoanState, index: number) => {
         let data: IAsset = {
-            id: "",
+            id: property.id,
             type: ASSET_TYPES.LIABILITIES,
             subtype: ASSET_SUBTYPES.EDUCATION_LOAN,
             userId: user.userId,

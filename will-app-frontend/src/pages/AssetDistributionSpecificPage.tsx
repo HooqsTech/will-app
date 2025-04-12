@@ -31,6 +31,7 @@ import DistributionBeneficiary from "../components/DistributionBeneficiary";
 import Swal from "sweetalert2";
 import { IPetState, petsState } from "../atoms/petsState";
 import { artWorksState, IArtWorkState } from "../atoms/ArtWorksState";
+import { otherInvestmentState, IOtherInvestmentState } from "../atoms/OtherInvestmentsState";
 
 export interface IBeneficiaryDistribution {
     beneficiaryId: string;
@@ -73,10 +74,11 @@ const AssetDistributionSpecificPage = () => {
     const customAssets = useRecoilValue(customAssetsState);
     const pets = useRecoilValue(petsState);
     const arts = useRecoilValue(artWorksState);
+    const otherinvestments = useRecoilValue(otherInvestmentState);
     
     React.useEffect(() => {
         getAssetDetails();
-    }, [properties,bankAccounts,fixedDeposits,insurancePolicies,safetyDepositBoxes,dematAccounts,mutualFunds,providentFunds,pensionAccounts,businessses,bonds,debentures,escops,jewelleries,vehicles,digitalAssets,intellectualProperties,customAssets,pets,arts])
+    }, [properties,bankAccounts,fixedDeposits,insurancePolicies,safetyDepositBoxes,dematAccounts,mutualFunds,providentFunds,pensionAccounts,businessses,bonds,debentures,escops,jewelleries,vehicles,digitalAssets,intellectualProperties,customAssets,pets,arts,otherinvestments])
     
     const beneficiaryOptionsFirst = beneficiaryState
     .filter(beneficiary => !beneficiary.isGuardian)
@@ -399,11 +401,26 @@ const AssetDistributionSpecificPage = () => {
                     isAssetDistributed: selectedAsset?.isAssetDistributed || false
                 }
             });
+            let otherInvestmentList = otherinvestments.filter((data: IOtherInvestmentState) => data.id !== "")
+            .map((data: IOtherInvestmentState, index: number) => {
+                const selectedAsset = assetDistribution?.assetSelectionList?.find(
+                    asset => asset?.assetId === data.id
+                  );
+
+                return {
+                    type: `Other Investment ${index + 1}`,
+                    assetId: data.id,
+                    firstline : data.certificateNumber?.trim() || "",
+                    secondline : data.financialServiceProviderName?.trim(),
+                    beneficiarieslist: selectedAsset?.beneficiarieslist || null,
+                    isAssetDistributed: selectedAsset?.isAssetDistributed || false
+                }
+            });
         setAssetDistribution((prev) => ({
             ...prev,
             assetSelectionList: [...propertiesList, ...bankAccountsList, ...fixedDepositsList, ...insurancePoliciesList, ...safetyDepositBoxesList,
             ...dematAccountsList, ...mutualFundsList, ...providentFundsList, ...pensionAccountsList, ...businesssesList, ...bondsList,
-            ...debenturesList, ...escopsList, ...jewelleriesList, ...vehiclesList, ...digitalAssetsList, ...intellectualPropertiesList, ...customAssetsList, ...petList,...artList
+            ...debenturesList, ...escopsList, ...jewelleriesList, ...vehiclesList, ...digitalAssetsList, ...intellectualPropertiesList, ...customAssetsList, ...petList,...artList, ...otherInvestmentList
             ]
         }));
     }

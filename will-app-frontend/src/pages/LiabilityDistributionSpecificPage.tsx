@@ -183,7 +183,7 @@ const LiabilityDistributionSpecificPage = () => {
     const handleNextStep = async () => {
         if (liabilityDistribution.step === 1) {
             let areAllLiabilityDistributed = liabilityDistribution.LiabilitySelectionList.every(liability => liability.isAssetDistributed);
-            if (liabilityDistribution.selectedLiability.length === 0)
+            if (liabilityDistribution.selectedLiability.length === 0 && !areAllLiabilityDistributed)
                 {
                     Swal.fire({
                                 title: "Warning!!",

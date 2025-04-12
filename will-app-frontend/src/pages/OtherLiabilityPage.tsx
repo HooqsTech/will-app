@@ -31,7 +31,7 @@ const OtherLiabilityPage = () => {
 
     const saveOtherLiabilitiesAsync = async (property: IOtherLiabilityState, index: number) => {
         let data: IAsset = {
-            id: "",
+            id: property.id,
             type: ASSET_TYPES.LIABILITIES,
             subtype: ASSET_SUBTYPES.OTHER_LIABILITIES,
             userId: user.userId,
