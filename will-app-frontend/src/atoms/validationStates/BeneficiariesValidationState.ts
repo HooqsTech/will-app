@@ -3,7 +3,8 @@ import { atom } from 'recoil';
 export interface IBeneficiaryValidationState {
     id: string;
     type: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
     gender: string;
     dateOfBirth: string;
     email: string;
@@ -15,6 +16,7 @@ export interface IBeneficiaryValidationState {
     aadhaarNumber: string;
     donationAmount: string;
     guardian: string;
+    title: string
 }
 
 export const beneficiariesValidationState = atom<IBeneficiaryValidationState[]>({
@@ -22,7 +24,8 @@ export const beneficiariesValidationState = atom<IBeneficiaryValidationState[]>(
     default: [{
         id: "",
         type: "",
-        fullName: "",
+        firstName: "",
+        lastName: "",
         gender: "",
         dateOfBirth: "",
         email: "",
@@ -33,14 +36,16 @@ export const beneficiariesValidationState = atom<IBeneficiaryValidationState[]>(
         organization: "",
         otherOrganization: "",
         donationAmount: "",
-        guardian: ""
+        guardian: "",
+        title: ""
     }]
 });
 
 export var emptyBeneficiariesValidationState: IBeneficiaryValidationState = {
     id: "",
     type: "",
-    fullName: "",
+    firstName: "",
+    lastName: "",
     gender: "",
     dateOfBirth: "",
     email: "",
@@ -51,5 +56,6 @@ export var emptyBeneficiariesValidationState: IBeneficiaryValidationState = {
     organization: "",
     otherOrganization: "",
     donationAmount: "",
-    guardian: ""
+    guardian: "",
+    title: ""
 };

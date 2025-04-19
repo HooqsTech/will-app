@@ -67,8 +67,16 @@ const ExcludedPersonsPage = () => {
     const validate = () => {
         var isValid: boolean = true;
         formState.forEach((asset, index) => {
-            if (IsEmptyString(asset.fullName)) {
-                setExcludedPersonValidationState(index, "fullName", "Full name is required");
+            if (IsEmptyString(asset.firstName)) {
+                setExcludedPersonValidationState(index, "firstName", "first name is required");
+                isValid = false;
+            }
+            if (IsEmptyString(asset.lastName)) {
+                setExcludedPersonValidationState(index, "lastName", "last name is required");
+                isValid = false;
+            }
+            if (IsEmptyString(asset.title)) {
+                setExcludedPersonValidationState(index, "title", "title is required");
                 isValid = false;
             }
             if (IsEmptyString(asset.relationship)) {
@@ -92,28 +100,27 @@ const ExcludedPersonsPage = () => {
         });
 
         Swal.fire({
-                    title: "Are you sure Proceed to Executor",
-                    text: "Ready to move to Executor Section? Click No to Add more excluded person",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "var(--color-will-green)",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, go to Executor",
-                    cancelButtonText: "No",
-                    customClass: {
-                    popup: "swal-sm",
-                    title: "swal-title",
-                    confirmButton: "swal-confirm-btn",
-                    },
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                    navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECUTOR);
-                    }
-                    else
-                    {
-                     return
-                    }
-                });
+            title: "Are you sure Proceed to Executor",
+            text: "Ready to move to Executor Section? Click No to Add more excluded person",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "var(--color-will-green)",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, go to Executor",
+            cancelButtonText: "No",
+            customClass: {
+                popup: "swal-sm",
+                title: "swal-title",
+                confirmButton: "swal-confirm-btn",
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.EXECUTOR);
+            }
+            else {
+                return
+            }
+        });
     };
 
     const addDigitalAsset = () => {
@@ -121,7 +128,9 @@ const ExcludedPersonsPage = () => {
             ...prevState,
             {
                 id: "",
-                fullName: "",
+                firstName: "",
+                lastName: "",
+                title: "",
                 relationship: "",
                 reason: ""
             },
@@ -134,8 +143,8 @@ const ExcludedPersonsPage = () => {
     };
 
     const getSubTitle = (index: number) => {
-        const { fullName, relationship } = formState[index];
-        return [fullName?.trim(), relationship?.trim()].filter(Boolean).join(" - ");
+        const { firstName, lastName, relationship } = formState[index];
+        return [firstName?.trim(), lastName.trim(), relationship?.trim()].filter(Boolean).join(" - ");
     };
 
     const shouldExpandAccordion = (index: number) => {

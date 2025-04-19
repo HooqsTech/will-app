@@ -2,7 +2,9 @@ import { atom } from 'recoil';
 
 export interface IExecutorValidationState {
     id: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    title: string;
     gender: string;
     dob: string;
     email: string;
@@ -14,7 +16,9 @@ export const executorValidationState = atom<IExecutorValidationState[]>({
     key: 'executorValidationState',
     default: [{
         id: "",
-        fullName: "",
+        firstName: "",
+        lastName: "",
+        title: "",
         gender: "",
         dob: "",
         aadhaarNumber: "",
@@ -25,7 +29,9 @@ export const executorValidationState = atom<IExecutorValidationState[]>({
 
 export var emptyExecutorValidationState: IExecutorValidationState = {
     id: "",
-    fullName: "",
+    firstName: "",
+    lastName: "",
+    title: "",
     gender: "",
     dob: "",
     email: "",

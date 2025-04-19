@@ -1,7 +1,9 @@
 import { atom } from 'recoil';
 
 export interface IExcludedPersonValidationState {
-    fullName: "",
+    firstName: "",
+    lastName: "",
+    title: "",
     relationship: "",
     reason: ""
 }
@@ -9,7 +11,9 @@ export interface IExcludedPersonValidationState {
 export const excludedPersonsValidationState = atom<IExcludedPersonValidationState[]>({
     key: 'excludedPersonsValidationState',
     default: [{
-        fullName: "",
+        firstName: "",
+        lastName: "",
+        title: "",
         relationship: "",
         reason: ""
     }]
@@ -17,7 +21,9 @@ export const excludedPersonsValidationState = atom<IExcludedPersonValidationStat
 
 
 export var emptyExcludedPersonValidationState: IExcludedPersonValidationState = {
-    fullName: "",
+    firstName: "",
+    lastName: "",
+    title: "",
     relationship: "",
     reason: ""
 };

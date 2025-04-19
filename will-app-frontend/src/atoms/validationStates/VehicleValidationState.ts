@@ -4,6 +4,7 @@ export interface IVehicleValidationState {
     id: string;
     brandOrModel: string;
     registrationNumber: string;
+    type: string
 }
 
 export const vehiclesValidationState = atom<IVehicleValidationState[]>({
@@ -11,12 +12,14 @@ export const vehiclesValidationState = atom<IVehicleValidationState[]>({
     default: [{
         id: "",
         brandOrModel: "",
-        registrationNumber: ""
+        registrationNumber: "",
+        type: ""
     }]
 });
 
 export var emptyVehicleValidationState: IVehicleValidationState = {
     id: "",
     brandOrModel: "",
-    registrationNumber: ""
+    registrationNumber: "",
+    type: ""
 };

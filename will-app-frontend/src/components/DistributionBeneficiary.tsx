@@ -27,7 +27,8 @@ const DistributionBeneficiary = () => {
             {
                 id: "",
                 type: "",
-                fullName: "",
+                firstName: "",
+                lastName: "",
                 gender: "",
                 dateOfBirth: "",
                 email: "",
@@ -38,7 +39,8 @@ const DistributionBeneficiary = () => {
                 otherOrganization: "",
                 donationAmount: null,
                 isGuardian: false,
-                aadhaarNumber:""
+                aadhaarNumber: "",
+                title: ""
             },
         ]);
         setBeneficiaryValidationState((prevState) => [
@@ -55,7 +57,8 @@ const DistributionBeneficiary = () => {
             {
                 id: "",
                 type: "Person",
-                fullName: "",
+                firstName: "",
+                lastName: "",
                 gender: "",
                 dateOfBirth: "",
                 email: "",
@@ -66,7 +69,8 @@ const DistributionBeneficiary = () => {
                 otherOrganization: "",
                 donationAmount: null,
                 isGuardian: true,
-                aadhaarNumber:""
+                aadhaarNumber: "",
+                title: ""
             },
         ]);
         setBeneficiaryValidationState((prevState) => [
@@ -90,12 +94,24 @@ const DistributionBeneficiary = () => {
             setValidationState(index, "type", "Beneficiary Type is required");
             isValid = false;
         }
-        if (prop.type == "Person" && IsEmptyString(prop.fullName)) {
-            setValidationState(index, "fullName", "Name is required");
+        if (prop.type == "Person" && IsEmptyString(prop.firstName)) {
+            setValidationState(index, "firstName", "First name is required");
+            isValid = false;
+        }
+        if (prop.type == "Person" && IsEmptyString(prop.lastName)) {
+            setValidationState(index, "lastName", "Last name is required");
+            isValid = false;
+        }
+        if (prop.type == "Person" && IsEmptyString(prop.title)) {
+            setValidationState(index, "title", "Title is required");
             isValid = false;
         }
         if (prop.type == "Person" && IsEmptyString(prop.gender)) {
             setValidationState(index, "gender", "Gender is required");
+            isValid = false;
+        }
+        if (prop.type == "Person" && IsEmptyString(prop.aadhaarNumber)) {
+            setValidationState(index, "aadhaarNumber", "Aadhaar number is required");
             isValid = false;
         }
         if (prop.type == "Person" && IsEmptyString(prop.dateOfBirth)) {
@@ -183,11 +199,11 @@ const DistributionBeneficiary = () => {
                 </div>
             </Modal>
             <Modal
-                className='flex flex-col justify-center w-full items-center'
+                className='flex flex-col justify-center overflow-scroll w-full items-center'
                 open={isGuardianModalOpen}
                 onClose={() => { setIsGuardianModalOpen(false); removeLastBeneficiary() }}
             >
-                <div className='bg-white p-6 max-w-lg flex flex-col w-full'>
+                <div className='bg-white overflow-scroll p-6 max-w-lg flex flex-col w-full'>
                     <p className='pb-4'>Add Guardian</p>
                     <BeneficiaryForm isGuardian index={beneficiaryState.length - 1} />
                     <CustomButton label='Save Guardian' onClick={() => saveBeneficiaryorGuardianAsync(beneficiaryState.length - 1)} />

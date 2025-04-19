@@ -30,11 +30,24 @@ const ExecutorForm: React.FC<IExecutorFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer hideBorder>
+            <CustomSelect
+                label="Title"
+                required
+                options={["Mr", "Ms", "Mrs"]}
+                helperText={validationStateItem.title}
+                value={item.title}
+                onChange={(e) => handleChange(index, "title", e)} />
             <CustomTextBox
-                value={item.fullName}
-                onChange={(e) => handleChange(index, "fullName", e)}
-                label="Full Name"
-                helperText={validationStateItem.fullName}
+                value={item.firstName}
+                onChange={(e) => handleChange(index, "firstName", e)}
+                label="First Name"
+                helperText={validationStateItem.firstName}
+                type="text" />
+            <CustomTextBox
+                value={item.lastName}
+                onChange={(e) => handleChange(index, "lastName", e)}
+                label="Last Name"
+                helperText={validationStateItem.lastName}
                 type="text" />
             <CustomSelect
                 label="Gender"

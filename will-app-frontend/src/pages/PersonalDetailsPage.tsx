@@ -20,8 +20,18 @@ const PersonalDetailsPage = () => {
 
     const validate = (): boolean => {
         var isValid: boolean = true;
-        if (IsEmptyString(personalDetails.fullName)) {
-            handleValidation("fullName", "full name is required");
+        if (IsEmptyString(personalDetails.firstName)) {
+            handleValidation("firstName", "first name is required");
+            isValid = false;
+        }
+
+        if (IsEmptyString(personalDetails.lastName)) {
+            handleValidation("lastName", "last name is required");
+            isValid = false;
+        }
+
+        if (IsEmptyString(personalDetails.title)) {
+            handleValidation("title", "title is required");
             isValid = false;
         }
 

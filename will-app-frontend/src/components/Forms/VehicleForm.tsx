@@ -3,6 +3,7 @@ import CustomFormContainer from "../CustomFormContainer"
 import CustomTextBox from "../CustomTextBox"
 import { IVehicleState, vehiclesState } from "../../atoms/VehiclesState";
 import { IVehicleValidationState, vehiclesValidationState } from "../../atoms/validationStates/VehicleValidationState";
+import CustomSelect from "../CustomSelect";
 
 interface IVehicleFormProps {
     index: number
@@ -26,6 +27,13 @@ const VehicleForm: React.FC<IVehicleFormProps> = ({ index }) => {
 
     return (
         <CustomFormContainer hideBorder>
+            <CustomSelect
+                label="Type"
+                required
+                options={["Two Wheeler", "Four Wheeler"]}
+                helperText={validationStateItem.type}
+                value={item.type}
+                onChange={(e) => handleChange(index, "type", e)} />
             <CustomTextBox
                 helperText={validationStateItem.brandOrModel}
                 value={item.brandOrModel}

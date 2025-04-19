@@ -25,13 +25,28 @@ const PersonalDetailsForm = () => {
 
     return (
         <CustomFormContainer formLabel="Personal Details">
+            <CustomSelect
+                label="Title"
+                required
+                options={["Mr", "Ms", "Mrs"]}
+                helperText={validationState.title}
+                value={formState.title}
+                onChange={(e) => handleChange("title", e)} />
             <CustomTextBox
                 required
-                value={formState.fullName}
-                onChange={(e) => handleChange("fullName", e)}
-                label="Full Name"
+                value={formState.firstName}
+                onChange={(e) => handleChange("firstName", e)}
+                label="First Name"
                 maxLength={50}
-                helperText={validationState.fullName}
+                helperText={validationState.firstName}
+                type="text" />
+            <CustomTextBox
+                required
+                value={formState.lastName}
+                onChange={(e) => handleChange("lastName", e)}
+                label="Last Name"
+                maxLength={50}
+                helperText={validationState.lastName}
                 type="text" />
             <CustomTextBox
                 required

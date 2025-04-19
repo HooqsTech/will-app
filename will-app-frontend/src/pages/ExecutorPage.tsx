@@ -73,11 +73,18 @@ const ExecutorPage = () => {
         let isValid: boolean = true;
         formState.forEach((prop, index) => {
             let age = dayjs().diff(dayjs(prop.dob), "year");
-            if (IsEmptyString(prop.fullName)) {
-                setPropertyValidationState(index, "fullName", "Name is required");
+            if (IsEmptyString(prop.firstName)) {
+                setPropertyValidationState(index, "firstName", "First Name is required");
                 isValid = false;
             }
-
+            if (IsEmptyString(prop.lastName)) {
+                setPropertyValidationState(index, "lastName", "Last Name is required");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.title)) {
+                setPropertyValidationState(index, "title", "Title is required");
+                isValid = false;
+            }
             if (IsEmptyString(prop.gender)) {
                 setPropertyValidationState(index, "gender", "Gender is required");
                 isValid = false;
@@ -167,7 +174,9 @@ const ExecutorPage = () => {
             ...prevState,
             {
                 id: "",
-                fullName: "",
+                firstName: "",
+                lastName: "",
+                title: "",
                 gender: "",
                 aadhaarNumber: "",
                 dob: "",
@@ -184,8 +193,8 @@ const ExecutorPage = () => {
     };
 
     const getSubTitle = (index: number) => {
-        const { fullName, email } = formState[index];
-        return [fullName?.trim(), email?.trim()].filter(Boolean).join(" - ");
+        const { firstName, lastName, email } = formState[index];
+        return [firstName?.trim(), lastName.trim(), email?.trim()].filter(Boolean).join(" - ");
     };
 
     const shouldExpandAccordion = (index: number) => {

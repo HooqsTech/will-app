@@ -4,7 +4,8 @@ import { atom } from 'recoil';
 export interface IBeneficiaryState {
     id: string;
     type: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
     gender: string;
     dateOfBirth: string;
     email: string;
@@ -16,7 +17,8 @@ export interface IBeneficiaryState {
     donationAmount: number | null;
     aadhaarNumber: string;
     isGuardian?: boolean
-    guardian?: string
+    guardian?: string,
+    title: string
 }
 
 export const beneficiariesState = atom<IBeneficiaryState[]>({

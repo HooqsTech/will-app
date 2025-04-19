@@ -2,7 +2,8 @@ import { IAssetSelectionState } from "../atoms/AssetDistributionSpecificState";
 import { ISelectedAssets } from "./asset";
 
 export interface IPersonalDetails {
-  fullName: string,
+  firstName: string,
+  lastName: string,
   fatherName: string,
   userName: string,
   password: string,

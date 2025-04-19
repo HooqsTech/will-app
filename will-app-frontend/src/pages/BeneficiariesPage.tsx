@@ -91,8 +91,16 @@ const BeneficiariesPage = () => {
             isValid = false;
         }
         if (prop.type === "Person") {
-            if (IsEmptyString(prop.fullName)) {
-                setBeneficiaryValidationState(index, "fullName", "name is required");
+            if (IsEmptyString(prop.firstName)) {
+                setBeneficiaryValidationState(index, "firstName", "first name is required");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.lastName)) {
+                setBeneficiaryValidationState(index, "lastName", "last name is required");
+                isValid = false;
+            }
+            if (IsEmptyString(prop.title)) {
+                setBeneficiaryValidationState(index, "title", "title is required");
                 isValid = false;
             }
             if (IsEmptyString(prop.gender)) {
@@ -139,7 +147,7 @@ const BeneficiariesPage = () => {
                 setBeneficiaryValidationState(index, "relationship", "relationship is required");
                 isValid = false;
             }
-            if(formState.filter(s => s.aadhaarNumber == prop.aadhaarNumber).length > 1){
+            if (formState.filter(s => s.aadhaarNumber == prop.aadhaarNumber).length > 1) {
                 setBeneficiaryValidationState(index, "aadhaarNumber", "aadhaar number is already exist");
                 isValid = false;
             }
@@ -191,7 +199,8 @@ const BeneficiariesPage = () => {
             {
                 id: "",
                 type: "Person",
-                fullName: "",
+                firstName: "",
+                lastName: "",
                 gender: "",
                 dateOfBirth: "",
                 email: "",
@@ -202,7 +211,8 @@ const BeneficiariesPage = () => {
                 aadhaarNumber: "",
                 otherOrganization: "",
                 donationAmount: null,
-                isGuardian: true
+                isGuardian: true,
+                title: ""
             },
         ]);
         setValidationState((prevState) => [
@@ -218,7 +228,8 @@ const BeneficiariesPage = () => {
             {
                 id: "",
                 type: "",
-                fullName: "",
+                firstName: "",
+                lastName: "",
                 aadhaarNumber: "",
                 gender: "",
                 dateOfBirth: "",
@@ -229,7 +240,8 @@ const BeneficiariesPage = () => {
                 organization: "",
                 otherOrganization: "",
                 donationAmount: null,
-                isGuardian: false
+                isGuardian: false,
+                title: ""
             },
         ]);
         setValidationState((prevState) => [
@@ -245,9 +257,9 @@ const BeneficiariesPage = () => {
     }
 
     const getSubTitle = (index: number) => {
-        const { type, fullName, email, relationship, charityType, organization } = formState[index];
+        const { type, firstName, lastName, email, relationship, charityType, organization } = formState[index];
         if (type == "Person") {
-            let firstLine = [type?.trim(), fullName.trim()].filter(Boolean).join(" - ");
+            let firstLine = [type?.trim(), firstName.trim(), lastName.trim()].filter(Boolean).join(" - ");
             let secondLine = [relationship?.trim(), email?.trim()].filter(Boolean).join(" - ");
             return [firstLine, secondLine].filter(Boolean).join("\n");
         }

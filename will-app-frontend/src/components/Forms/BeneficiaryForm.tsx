@@ -36,49 +36,47 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
 
 
     const handleChange = (index: number, key: keyof IBeneficiaryState, value: string | Dayjs | null) => {
-        if(key === 'type')
-        {
+        if (key === 'type') {
             setFormState((prevState) =>
-                prevState.map((item, i) => (i === index ? { 
+                prevState.map((item, i) => (i === index ? {
                     ...item,
                     type: value?.toString() ?? "",
-                    fullName:  "",
-                    gender:  "",
-                    dateOfBirth:  "",
-                    email:  "",
-                    phone:  "",
-                    relationship:  "",
-                    charityType:  "",
-                    organization:  "",
-                    otherOrganization:  "",
-                    donationAmount:  null,
+                    fullName: "",
+                    gender: "",
+                    dateOfBirth: "",
+                    email: "",
+                    phone: "",
+                    relationship: "",
+                    charityType: "",
+                    organization: "",
+                    otherOrganization: "",
+                    donationAmount: null,
                     aadhaarNumber: "",
                     isGuardian: false,
                     guardian: ""
-                 } : item))
+                } : item))
             );
             setValidationState((prevState) =>
-                prevState.map((item, i) => (i === index ? { 
+                prevState.map((item, i) => (i === index ? {
                     ...item,
                     type: "",
-                    fullName:  "",
-                    gender:  "",
-                    dateOfBirth:  "",
-                    email:  "",
-                    phone:  "",
-                    relationship:  "",
-                    charityType:  "",
-                    organization:  "",
-                    otherOrganization:  "",
-                    donationAmount:  "",
+                    fullName: "",
+                    gender: "",
+                    dateOfBirth: "",
+                    email: "",
+                    phone: "",
+                    relationship: "",
+                    charityType: "",
+                    organization: "",
+                    otherOrganization: "",
+                    donationAmount: "",
                     aadhaarNumber: "",
                     isGuardian: "",
                     guardian: ""
-                 } : item))
+                } : item))
             );
         }
-        else
-        {
+        else {
             setFormState((prevState) =>
                 prevState.map((item, i) => (i === index ? { ...item, [key]: value } : item))
             );
@@ -86,7 +84,7 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
                 prevState.map((item, i) => (i === index ? { ...item, [key]: "" } : item))
             );
         }
-        
+
         if (key === "dateOfBirth") {
             var age = dayjs().diff(dayjs(value), "year");
             if (!item.isGuardian) {
@@ -134,11 +132,24 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
             {
                 item.type === "Person" &&
                 <>
+                    <CustomSelect
+                        label="Title"
+                        required
+                        options={["Mr", "Ms", "Mrs"]}
+                        helperText={validationStateItem.title}
+                        value={item.title}
+                        onChange={(e) => handleChange(index, "title", e)} />
                     <CustomTextBox
-                        value={item.fullName}
-                        onChange={(e) => handleChange(index, "fullName", e)}
-                        label="Full Name"
-                        helperText={validationStateItem.fullName}
+                        value={item.firstName}
+                        onChange={(e) => handleChange(index, "firstName", e)}
+                        label="First Name"
+                        helperText={validationStateItem.firstName}
+                        type="text" />
+                    <CustomTextBox
+                        value={item.lastName}
+                        onChange={(e) => handleChange(index, "lastName", e)}
+                        label="Last Name"
+                        helperText={validationStateItem.lastName}
                         type="text" />
                     <CustomSelect
                         label="Gender"
@@ -155,7 +166,7 @@ const BeneficiaryForm: React.FC<IBankAccountFormProps> = ({ index, isGuardian, a
                         !isGuardian && needsGuardian && (
                             <CustomSelect
                                 label="Guardian"
-                                options={getGuardians().map(s => s.fullName)}
+                                options={getGuardians().map(s => s.firstName + " " + s.lastName)}
                                 value={item.guardian ?? ""}
                                 helperText={validationStateItem.guardian}
                                 onChange={(e) => handleChange(index, "guardian", e)}

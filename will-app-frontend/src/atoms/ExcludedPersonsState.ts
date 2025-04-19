@@ -2,7 +2,9 @@ import { atom } from 'recoil';
 
 export interface IExcludedPersonState {
     id: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    title: string;
     relationship: string;
     reason: string
 }
