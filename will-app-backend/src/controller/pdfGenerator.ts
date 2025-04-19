@@ -45,7 +45,7 @@ export const generatePDF = async (req: Request, res: Response) => {
         var userDetails = await getUserByUserId(userId);
         const personalDetails : IPersonalDetails = safeParse(userDetails?.personalDetails);
         const assetDetails: IAsset[] = parseAssets(userDetails?.assets || []);
-        const { beneficiaryDetails, charityBeneficiaries } = parseBeneficiaries(userDetails?.beneficiaries || []);
+        const beneficiaryDetails: IBeneficiary[] = parseBeneficiaries(userDetails?.beneficiaries || []);
 
         var assetDistributionDetails : IAssetDistributionDetails = parseAssetDistributionDetails(userDetails?.will_distribution || []);
         var addressDetails : IAddressDetails = safeParse(userDetails?.addressDetails);
@@ -111,21 +111,24 @@ export const generatePDF = async (req: Request, res: Response) => {
                 "en-US",
                 { month: "long" }
             )} ${dob.getDate()}, ${dob.getFullYear()}, holding Aadhaar Number as ${
-                personalDetails?.aadhaarNumber
+              addSpaceEveryNChars(personalDetails?.aadhaarNumber, 4)
             }, Mobile Number as ${
                 addressDetails?.phoneNumber
             } and currently residing at ${addressDetails?.address1}, ${addressDetails?.address2}, ${
                 addressDetails?.city
             }, ${addressDetails?.state}, ${addressDetails?.pincode}, being of sound mind and memory, do hereby make, publish, and declare this to be my LAST WILL AND TESTAMENT for my assets in India and thereby revoking and making null and void any and all other last Will and Testaments and/or codicils to last Will and testaments heretofore made by me.`,
             style: "text",
-            },
-            { text: "This Will shall be governed by the laws of India.", style: "text" },
+                        },
+            { text: "This Will shall be governed by the laws of India.", style: "text",
+              },
+            { text: "All references herein to \"this Will\" refer only to this last Will and testament.", style: "text",
+               },
             { text: "\n\nPART-II: BENERFICIARIES\n", style: "subheader", alignment: "center" },
             [
               {
                 text: `At the time of writing this Will, I am married to ${
                   beneficiaryDetails.find((b) =>
-                    b.data.relationship.toLowerCase().trim() === "spouse"
+                    b.data?.relationship.toLowerCase().trim() === "spouse"
                   )?.data.fullName ?? "None"
                 }, and I have the following members in my beneficiary section, whose details are as follows:`,
                 style: "text",
@@ -147,7 +150,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                       { text: "Relationship", bold: true },
                       { text: "Date of Birth", bold: true },
                     ],
-                    ...beneficiaryDetails.map((b, index) => [
+                    ...beneficiaryDetails.filter(b => b.data?.type === "Person").map((b, index) => [
                       index + 1,
                       b.data.fullName || "N/A",
                       b.data.relationship || "N/A",
@@ -164,7 +167,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                 style: "table",
               },
             
-              ...(charityBeneficiaries.length > 0
+              ...(beneficiaryDetails.filter(b => b.data?.type === "Charity").length > 0
                 ? [
                     {
                       text: "\n\nCHARITY DETAILS\n",
@@ -182,7 +185,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                             { text: "Charity Type", bold: true },
                             { text: "Donation Amount", bold: true },
                           ],
-                          ...charityBeneficiaries.map((b, index) => [
+                          ...beneficiaryDetails.filter(b => b.data?.type === "Charity").map((b, index) => [
                             index + 1,
                             b.data.organization || b.data.otherOrganization || "N/A",
                             b.data.charityType || "N/A",
@@ -202,7 +205,6 @@ export const generatePDF = async (req: Request, res: Response) => {
               text: "\n\nPART-III: APPOINTMENT OF EXECUTOR\n",
               style: "subheader",
               alignment: "center",
-              pageBreak: 'before',
             },
             {
               text: [
@@ -216,7 +218,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                 `.`
               ],
               style: "text",
-            },
+                          },
             { text: "\n\nPART-IV: MOVABLE & IMMOVABLE ASSET DETAILS\n", style: "subheader", alignment: "center" },
 
                 ...[
@@ -252,7 +254,7 @@ export const generatePDF = async (req: Request, res: Response) => {
               
                   return  [
                       {
-                        text: `\n${subtype === 'escops' ? 'ESOPS' : subtype.replace(/_/g, " ").toUpperCase()}\n`,
+                        text: `\n${getTitleForSubtype(subtype)}\n`,
                         style: "tableTitle",
                         alignment: "center",
                       },
@@ -281,23 +283,41 @@ export const generatePDF = async (req: Request, res: Response) => {
               if (distributionType === "Single") {
                 return [
                   {
-                    text: `All the mentioned assets are assigned to ${beneficiaryDetails.find(
-                      (b) => b.id === distributionDetails.primarybeneficiaryid
-                    )?.data.fullName || "Unknown"} (100%).`,
+                    text: `All the mentioned assets are assigned to ${
+                      (() => {
+                        const b = beneficiaryDetails.find(
+                          (b) => b.id === distributionDetails.primarybeneficiaryid
+                        );
+                        if (!b) return "Unknown";
+                        return b.data?.type === "Charity" ? b.data?.organization : b.data?.fullName || "Unknown";
+                      })()
+                    } (100%).`,
                     style: "text",
-                  },
+                                      },
                   {
-                    text: `In case the above nominee is deceased, all the mentioned assets are assigned to ${beneficiaryDetails.find(
-                      (b) => b.id === distributionDetails.secondarybeneficiaryid
-                    )?.data.fullName || "Unknown"} (100%).`,
+                    text: `In case the above nominee is deceased, all the mentioned assets are assigned to ${
+                      (() => {
+                        const b = beneficiaryDetails.find(
+                          (b) => b.id === distributionDetails.primarybeneficiaryid
+                        );
+                        if (!b) return "Unknown";
+                        return b.data?.type === "Charity" ? b.data?.organization : b.data?.fullName || "Unknown";
+                      })()
+                    } (100%).`,
                     style: "text",
-                  },
+                                      },
                   {
-                    text: `In case the above nominee is deceased, all the mentioned assets are assigned to ${beneficiaryDetails.find(
-                      (b) => b.id === distributionDetails.tertiarybeneficiaryid
-                    )?.data.fullName || "Unknown"} (100%).`,
+                    text: `In case the above nominee is deceased, all the mentioned assets are assigned to ${
+                      (() => {
+                        const b = beneficiaryDetails.find(
+                          (b) => b.id === distributionDetails.primarybeneficiaryid
+                        );
+                        if (!b) return "Unknown";
+                        return b.data?.type === "Charity" ? b.data?.organization : b.data?.fullName || "Unknown";
+                      })()
+                    } (100%).`,
                     style: "text",
-                  },
+                                      },
                 ];
               } else if (distributionType === "Percentage") {
                 
@@ -306,16 +326,24 @@ export const generatePDF = async (req: Request, res: Response) => {
                   { text: "Beneficiary Name", bold: true }, 
                   { text: "Percentage Share", bold: true }
               ];
-                const rows = distributionDetails.split.map((split: ISplit, index: number) => [
+              const rows = distributionDetails.split.map((split: ISplit, index: number) => {
+                const beneficiary = beneficiaryDetails.find((b) => b.id === split.beneficiaryId);
+                const name =
+                  beneficiary?.data?.type === "Charity"
+                    ? beneficiary.data?.organization
+                    : beneficiary?.data?.fullName || "Unknown";
+              
+                return [
                   index + 1,
-                  beneficiaryDetails.find((b) => b.id === split.beneficiaryId)?.data.fullName || "Unknown",
+                  name,
                   `${split.percentage} %`,
-                ]);
+                ];
+              });
 
                 return [
                   {
                     text :  `All the above mentioned assets will be assigned to the following beneficiaries in the mentioned percentage of distribution.`
-                  },
+                                      },
                   {
                     table: {
                       headerRows: 1,
@@ -331,7 +359,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                   { text: "Asset", bold: true }, 
                   { text: "Percentage Share", bold: true }
               ];
-                const rows = getRowsForSpecificDistribution(distributionDetails, assetDetails, beneficiaryDetails, charityBeneficiaries);
+                const rows = getRowsForSpecificDistribution(distributionDetails, assetDetails, beneficiaryDetails);
                 return [
                   {
                     table: {
@@ -360,12 +388,12 @@ export const generatePDF = async (req: Request, res: Response) => {
                       { 
                         text: "I, hereby, bequeath to the persons my residue and the remainder of my property and estate, tangible and intangible, immovable and movable, real, personal and mixed, of whatever nature and wherever situated, including all property.", 
                         style: "text",
-                        margin: [0, 10, 0, 0]
+                                                margin: [0, 10, 0, 0]
                       },
                       { 
                         text: "Or, I may acquire or receive or inherit any assets in future after writing this Will, shall be bequeathed in the following manner and proportions:", 
                         style: "text",
-                        margin: [0, 10, 0, 10]
+                                                margin: [0, 10, 0, 10]
                       }
                     ],
                   },
@@ -375,11 +403,19 @@ export const generatePDF = async (req: Request, res: Response) => {
                 { text: "Beneficiary Name", bold: true }, 
                 { text: "Percentage Share", bold: true }
             ];              
-              const rows = residuaryDistributionDetails.split.map((split: ISplit, index: number) => [
-                  index + 1,
-                  beneficiaryDetails.find((b) => b.id === split.beneficiaryId)?.data.fullName || "Unknown",
-                  `${split.percentage} %`,
-              ]);
+            const rows = residuaryDistributionDetails.split.map((split: ISplit, index: number) => {
+              const beneficiary = beneficiaryDetails.find((b) => b.id === split.beneficiaryId);
+              const name =
+                beneficiary?.data?.type === "Charity"
+                  ? beneficiary.data?.organization
+                  : beneficiary?.data?.fullName || "Unknown";
+            
+              return [
+                index + 1,
+                name,
+                `${split.percentage} %`,
+              ];
+            });
           
               return [
                 {
@@ -412,7 +448,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                         const rows = filteredAssets.map((a, index) => getRowForSubtype(subtype, a, index, liabilityDistributionDetails, beneficiaryDetails));
 
                         return [
-                            { text: `\n${subtype.replace(/_/g, " ").toUpperCase()}\n`, style: "tableTitle", alignment: "center" },
+                            { text: `\n${getTitleForSubtype(subtype)}`, style: "tableTitle", alignment: "center" },
                             {
                             table: {
                                 headerRows: 1,
@@ -421,6 +457,10 @@ export const generatePDF = async (req: Request, res: Response) => {
                             },
                             style: "table",
                             },
+                            { 
+                              text: `The above-mentioned loan(s) is(are) being taken by me during my lifetime and now, through this Will, I transfer my liabilities and duties to pay off the debts, in the manner mentioned in the table.`, 
+                              style: "text"
+                            },                            
                         ];
                     }
                     catch(error){
@@ -477,13 +517,15 @@ export const generatePDF = async (req: Request, res: Response) => {
             ],
             { text: "", pageBreak: "after" },
             { text: "ATTESTATION BY TESTATOR\n", style: "subheader", alignment: "center" },
-            {text: "IN WITNESS WHEREOF, I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence."},
+            {text: "IN WITNESS WHEREOF, I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence.",
+               style: "text"
+            },
             {text: "\n\n"},
             {
             text: "______________________________",
             margin: [250, 20, 0, 0],
             alignment: "left",
-            },
+            style: "text"},
             { text: "Signature", margin: [250, 5, 0, 0], alignment: "left", style: "text" },
             { text: `(${honorific} ${personalDetails?.fullName})`, margin: [250, 5, 0, 0], alignment: "left", style: "text" },
 
@@ -491,37 +533,46 @@ export const generatePDF = async (req: Request, res: Response) => {
                 text: "Date: ______________________",
                 margin: [250, 20, 0, 0],
                 alignment: "left",
-                },
+                style: "text"},
             {
                 text: "Place: ______________________",
                 margin: [250, 20, 0, 0],
                 alignment: "left",
-                },
+                style: "text"},
             { text: "", pageBreak: "after" },
             { text: "ATTESTATION BY WITNESSES\n", style: "subheader", alignment: "center" },
-            { text: `This last Will and testament, which has been separately signed by ${honorific} ${personalDetails.fullName}, the testator, as on the date indicated below signed and declared by the above-named testator as his last Will and testament in the presence of each of us. We, in the presence of the testator and each other, at the testator's request, under penalty of perjury, hereby subscribe our names as witnesses to the declaration and execution of the last Will and testament by the testator, and we declare that, to the best of our knowledge, said testator is eighteen years of age or older, of sound mind and memory and under no constraint or undue influence.`},
-            { text: "\n\n\n\nWITNESSES 1\n\n\n", alignment: "center", bold: true},
-            { text: "Full Name of the Witness as per Aadhar/PAN Card:\n\n\n\n", alignment: "left"},
-            { text: "Signature of Witness:\n\n\n\n", alignment: "left"},
-            { text: "Date:\n\n\n\n", alignment: "left"},
-            { text: "Address:\n\n\n\n", alignment: "left"},
+            { text: `This last Will and testament, which has been separately signed by ${honorific} ${personalDetails.fullName}, the testator, as on the date indicated below signed and declared by the above-named testator as his last Will and testament in the presence of each of us. We, in the presence of the testator and each other, at the testator's request, under penalty of perjury, hereby subscribe our names as witnesses to the declaration and execution of the last Will and testament by the testator, and we declare that, to the best of our knowledge, said testator is eighteen years of age or older, of sound mind and memory and under no constraint or undue influence.`,
+            style: "text"},
+            { text: "\n\n\nWITNESSES 1\n\n", alignment: "center", bold: true},
+            { text: "Full Name of the Witness as per Aadhar/PAN Card:\n\n\n", alignment: "left",
+              style: "text"},
+            { text: "Signature of Witness:\n\n\n", alignment: "left",
+              style: "text"},
+            { text: "Date:\n\n\n", alignment: "left",
+              style: "text"},
+            { text: "Address:\n\n\n", alignment: "left",
+              style: "text"},
 
-            { text: "\n\n\nWITNESSES 2\n\n\n", alignment: "center", bold: true},   
-            { text: "Full Name of the Witness as per Aadhar/PAN Card:\n\n\n\n", alignment: "left"},
-            { text: "Signature of Witness:\n\n\n\n", alignment: "left"},
-            { text: "Date:\n\n\n\n", alignment: "left"},
-            { text: "Address:\n\n\n\n", alignment: "left"},
+            { text: "\n\n\nWITNESSES 2\n\n", alignment: "center", bold: true, style: "text"},   
+            { text: "Full Name of the Witness as per Aadhar/PAN Card:\n\n\n", alignment: "left",
+              style: "text"},
+            { text: "Signature of Witness:\n\n\n", alignment: "left",
+              style: "text"},
+            { text: "Date:\n\n\n", alignment: "left",
+              style: "text"},
+            { text: "Address:\n\n\n", alignment: "left",
+              style: "text"},
         ];
 
         const docDefinition: TDocumentDefinitions = {
             content,
 
             styles: {
-              header: { fontSize: 18, bold: true, lineHeight: 1 },
-              title: { fontSize: 20, bold: true, lineHeight: 1 },
-              subheader: { fontSize: 16, bold: true, margin: [0, 10, 0, 10], lineHeight: 1 },
-              tableTitle: { fontSize: 14, bold: true, margin: [0, 10, 0, 10], lineHeight: 2 },
-              text: { fontSize: 12, lineHeight: 2 },
+              header: { fontSize: 18, bold: true, lineHeight: 1.5 },
+              title: { fontSize: 20, bold: true, lineHeight: 1.5 },
+              subheader: { fontSize: 16, bold: true, margin: [0, 10, 0, 10], lineHeight: 1.5 },
+              tableTitle: { fontSize: 14, bold: true, margin: [0, 10, 0, 10], lineHeight: 1.5 },
+              text: { fontSize: 12, lineHeight: 1.5, alignment: "justify" },
               table: { margin: [0, 5, 0, 15], lineHeight: 2 }
           },
             defaultStyle: {
@@ -631,7 +682,7 @@ function getHeadersForSubtype(subtype: string): string[] {
         return [
           index + 1,
           asset.data.propertyType || "N/A",
-          asset.data.address || "N/A",
+          `${asset.data.address}, ${asset.data.city}, ${asset.data.pincode}\nOwnership Type: ${asset.data.ownershipType}` || "N/A",
         ];
       case "vehicles":
         return [
@@ -643,11 +694,10 @@ function getHeadersForSubtype(subtype: string): string[] {
         return [
           index + 1,
           asset.data.type || "N/A",
-          asset.data.preciousMetalInWeight || "N/A",
+          `${asset.data.preciousMetalInWeight}g` || "N/A",
           asset.data.description || "N/A",
         ];
       case "insurance_policies":
-        console.log(asset)
         return [
           index + 1,
           asset.data.insuranceType || "N/A",
@@ -676,9 +726,9 @@ function getHeadersForSubtype(subtype: string): string[] {
         
           let accountInfo = "";
           if (type === "EPF") {
-            accountInfo = `UAN Number: ${uanNumber || "N/A"}`;
+            accountInfo = `UAN Number: ${maskAccountNumber(uanNumber) || "N/A"}`;
           } else if (type === "GPF") {
-            accountInfo = `GPF Number: ${gpfNumber || "N/A"}`;
+            accountInfo = `GPF Number: ${maskAccountNumber(gpfNumber) || "N/A"}`;
           } else if (type === "PPF") {
             accountInfo = `Bank: ${bankName || "N/A"}\nBranch: ${branch || "N/A"}\nCity: ${city || "N/A"}`;
           }
@@ -728,7 +778,7 @@ function getHeadersForSubtype(subtype: string): string[] {
         return [
           index + 1,
           asset.data.companyName || "N/A",
-          `Vested: ${asset.data.noOfVestedEscops},\nUnvested: ${asset.data.noOfUnVestedEscops}\nUnits Granted: ${asset.data.noOfUnitGranted}`,
+          `Vested: ${asset.data.noOfVestedEscops},\nUnvested: ${asset.data.noOfUnVestedEscops}\nUnits Granted: ${asset.data.noOfUnitGraged}`,
         ];
       case "other_investments":
         return [
@@ -766,8 +816,12 @@ function getHeadersForSubtype(subtype: string): string[] {
         .map((splitDetail: { beneficiaryId: any; percentage: any; }) => {
           const beneficiary = beneficiaries.find((b: { id: any; }) => b.id === splitDetail.beneficiaryId);
           return beneficiary
-            ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
-            : "Unknown Beneficiary";
+          ? `${
+              beneficiary.data?.type === "Charity"
+                ? beneficiary.data?.Organization
+                : beneficiary.data?.fullName || "Unknown"
+            } (${splitDetail.percentage}%)`
+          : "Unknown Beneficiary";
         })
         .join(", ") || "No Beneficiaries Assigned";
 
@@ -786,8 +840,12 @@ function getHeadersForSubtype(subtype: string): string[] {
         .map((splitDetail: { beneficiaryId: any; percentage: any; }) => {
           const beneficiary = beneficiaries.find((b: { id: any; }) => b.id === splitDetail.beneficiaryId);
           return beneficiary
-            ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
-            : "Unknown Beneficiary";
+          ? `${
+              beneficiary.data?.type === "Charity"
+                ? beneficiary.data?.organizationName
+                : beneficiary.data?.fullName || "Unknown"
+            } (${splitDetail.percentage}%)`
+          : "Unknown Beneficiary";
         })
         .join(", ") || "No Beneficiaries Assigned";
 
@@ -807,8 +865,12 @@ function getHeadersForSubtype(subtype: string): string[] {
         .map((splitDetail: { beneficiaryId: any; percentage: any; }) => {
           const beneficiary = beneficiaries.find((b: { id: any; }) => b.id === splitDetail.beneficiaryId);
           return beneficiary
-            ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
-            : "Unknown Beneficiary";
+          ? `${
+              beneficiary.data?.type === "Charity"
+                ? beneficiary.data?.organizationName
+                : beneficiary.data?.fullName || "Unknown"
+            } (${splitDetail.percentage}%)`
+          : "Unknown Beneficiary";
         })
         .join(", ") || "No Beneficiaries Assigned";
         return [
@@ -827,8 +889,12 @@ function getHeadersForSubtype(subtype: string): string[] {
         .map((splitDetail: { beneficiaryId: any; percentage: any; }) => {
           const beneficiary = beneficiaries.find((b: { id: any; }) => b.id === splitDetail.beneficiaryId);
           return beneficiary
-            ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
-            : "Unknown Beneficiary";
+          ? `${
+              beneficiary.data?.type === "Charity"
+                ? beneficiary.data?.organizationName
+                : beneficiary.data?.fullName || "Unknown"
+            } (${splitDetail.percentage}%)`
+          : "Unknown Beneficiary";
         })
         .join(", ") || "No Beneficiaries Assigned";
         return [
@@ -846,8 +912,12 @@ function getHeadersForSubtype(subtype: string): string[] {
         .map((splitDetail: { beneficiaryId: any; percentage: any; }) => {
           const beneficiary = beneficiaries.find((b: { id: any; }) => b.id === splitDetail.beneficiaryId);
           return beneficiary
-            ? `${beneficiary.data.fullName || "Unknown"} (${splitDetail.percentage}%)`
-            : "Unknown Beneficiary";
+          ? `${
+              beneficiary.data?.type === "Charity"
+                ? beneficiary.data?.organizationName
+                : beneficiary.data?.fullName || "Unknown"
+            } (${splitDetail.percentage}%)`
+          : "Unknown Beneficiary";
         })
         .join(", ") || "No Beneficiaries Assigned";
         return [
@@ -870,8 +940,7 @@ function getHeadersForSubtype(subtype: string): string[] {
   function getRowsForSpecificDistribution(
     distributionDetails: IUserAssetsSpecific,
     assets: IAsset[],
-    beneficiaries: IBeneficiary[],
-    charityBeneficiaries: IBeneficiary[]
+    beneficiaries: IBeneficiary[]
   ): (string | number | { text: string; bold?: boolean })[][] {
     if (!assets || !distributionDetails) {
       return [];
@@ -887,14 +956,10 @@ function getHeadersForSubtype(subtype: string): string[] {
         const beneficiaryDetails = assetSplitDetails?.beneficiarieslist?.length
           ? assetSplitDetails.beneficiarieslist
               .map((splitDetail) => {
-                // Look in individual beneficiaries first, then charity ones
                 const beneficiary =
                   beneficiaries.find(
                     (b) => b.id === splitDetail.beneficiaryId
-                  ) ||
-                  charityBeneficiaries.find(
-                    (b) => b.id === splitDetail.beneficiaryId
-                  );
+                  )
   
                 if (!beneficiary) {
                   console.warn(
@@ -905,14 +970,14 @@ function getHeadersForSubtype(subtype: string): string[] {
   
                 const fullName = beneficiary?.data?.fullName || "Unknown";
                 const organization = beneficiary?.data?.organization || "";
-                const isCharity = beneficiary?.data?.donationAmount !== null;
+                const isCharity = beneficiary?.data?.type === "Charity";
   
                 // Use organization name if it's a charity
                 const displayName = isCharity
                   ? `${organization || fullName || "Unnamed Charity"}`
                   : fullName;
   
-                return `${displayName} (${splitDetail.percentage}%)`;
+                return `${displayName.trim()} (${splitDetail.percentage}%)`;
               })
               .join(", ")
           : "No Beneficiaries Assigned";
@@ -941,11 +1006,11 @@ function getHeadersForSubtype(subtype: string): string[] {
       case "bank_accounts":
         return `${asset.data.accountType} Account, Account Number: ${maskAccountNumber(asset.data.accountNumber)}; Branch Address: ${asset.data.branch}, ${asset.data.city}`;
       case "properties":
-        return asset.data.address || "N/A";
+        return `${asset.data.address}, ${asset.data.city}, ${asset.data.pincode}` || "N/A";
       case "vehicles":
         return `Registration Number: ${asset.data.registrationNumber}`;
       case "jewelleries":
-        return `${asset.data.preciousMetalInWeight || "N/A"}, ${asset.data.description || "N/A"}`;
+        return `${asset.data.preciousMetalInWeight || "N/A"} g, ${asset.data.description || "N/A"}`;
       case "insurance_policies":
         return `Company: ${asset.data.insuranceProvider}, Policy Number: ${maskAccountNumber(asset.data.policyNumber)}`;
       case "mutual_funds":
@@ -959,9 +1024,9 @@ function getHeadersForSubtype(subtype: string): string[] {
         
           let detail = "";
           if (type === "EPF") {
-            detail = `Type: EPF; UAN Number: ${uanNumber || "N/A"}`;
+            detail = `Type: EPF; UAN Number: ${maskAccountNumber(uanNumber) || "N/A"}`;
           } else if (type === "GPF") {
-            detail = `Type: GPF; GPF Number: ${gpfNumber || "N/A"}; State: ${asset.data.state || "N/A"}`;
+            detail = `Type: GPF; GPF Number: ${maskAccountNumber(gpfNumber) || "N/A"}; State: ${asset.data.state || "N/A"}`;
           } else if (type === "PPF") {
             detail = `Type: PPF; Bank: ${bankName || "N/A"}; Branch: ${branch || "N/A"}; City: ${city || "N/A"}`;
           } else {
@@ -983,8 +1048,7 @@ function getHeadersForSubtype(subtype: string): string[] {
       case "other_investments":
         return `Financial Provider: ${asset.data.financialServiceProviderName}, Folio Number: ${asset.data.certificateNumber}`;
       case "escops":
-        console.log(asset.data)
-        return `Vested: ${asset.data.noOfVestedEscops}, Unvested: ${asset.data.noOfUnVestedEscops}, Units Graged: ${asset.data.noOfUnitGraged}`;
+        return `Vested: ${asset.data.noOfVestedEscops}, Unvested: ${asset.data.noOfUnVestedEscops}, Units Granted: ${asset.data.noOfUnitGraged}`;
       case "intellectual_property":
         return `ID: ${asset.data.identificationNumber}, Description: ${asset.data.description}`;
       case "art_works":
@@ -997,3 +1061,69 @@ function getHeadersForSubtype(subtype: string): string[] {
         return "N/A";
     }
   }
+
+  function getTitleForSubtype(subtype: string): string {
+    switch (subtype) {
+      case "properties":
+        return "IMMOVABLE PROPERTIES";
+      case "bank_accounts":
+        return "BANK ACCOUNT DETAILS";
+      case "fixed_deposits":
+        return "FIXED DEPOSIT DETAILS";
+      case "insurance_policies":
+        return "INSURANCE POLICY DETAILS";
+      case "safety_deposit_boxes":
+        return "SAFETY DEPOSIT BOX DETAILS";
+      case "demat_accounts":
+        return "DEMAT ACCOUNT DETAILS";
+      case "mutual_funds":
+        return "MUTUAL FUND DETAILS";
+      case "provident_funds":
+        return "PROVIDENT FUND DETAILS";
+      case "pension_accounts":
+        return "PENSION ACCOUNT DETAILS";
+      case "businesses":
+        return "BUSINESS DETAILS";
+      case "bonds":
+        return "BOND DETAILS";
+      case "debentures":
+        return "DEBENTURE DETAILS";
+      case "escops":
+        return "ESOP DETAILS";
+      case "other_investments":
+        return "OTHER INVESTMENT DETAILS";
+      case "vehicles":
+        return "VEHICLE DETAILS";
+      case "jewelleries":
+        return "JEWELLERY DETAILS";
+      case "digital_assets":
+        return "DIGITAL ASSET DETAILS";
+      case "intellectual_property":
+        return "INTELLECTUAL PROPERTY DETAILS";
+      case "pets":
+        return "PET DETAILS";
+      case "art_works":
+        return "ART WORK DETAILS";
+      case "custom_assets":
+        return "CUSTOM ASSET DETAILS";
+  
+      case "home_loan":
+        return "HOME LOAN DETAILS";
+      case "personal_loan":
+        return "PERSONAL LOAN DETAILS";
+      case "vechicle_loan":
+        return "VECHICLE LOAN DETAILS";
+      case "education_loan":
+        return "EDUCATION LOAN";
+      case "other_liabilities":
+        return "OTHER LIABILITY DETAILS";
+  
+      default:
+        return subtype.replace(/_/g, " ").toUpperCase();
+    }
+
+  }function addSpaceEveryNChars(input: string, groupSize: number): string {
+    const regex = new RegExp(`.{1,${groupSize}}`, 'g');
+    return input.match(regex)?.join(' ') ?? '';
+  }
+  

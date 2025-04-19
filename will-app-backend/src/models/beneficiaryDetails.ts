@@ -1,4 +1,5 @@
 export interface BeneficiaryData {
+    type: "Person" | "Charity";
     email: string;
     phone: string;
     gender: "Male" | "Female" | "Other";
@@ -17,14 +18,8 @@ export interface IBeneficiary {
     data: BeneficiaryData;
 }
 
-export interface ParsedBeneficiaries {
-    beneficiaryDetails: IBeneficiary[];
-    charityBeneficiaries: IBeneficiary[];
-}
-
-export function parseBeneficiaries(beneficiariesData: any[]): ParsedBeneficiaries {
+export function parseBeneficiaries(beneficiariesData: any[]): IBeneficiary[] {
     const beneficiaryDetails: IBeneficiary[] = [];
-    const charityBeneficiaries: IBeneficiary[] = [];
 
     beneficiariesData.forEach((beneficiary: any) => {
         const parsed: IBeneficiary = {
@@ -32,6 +27,7 @@ export function parseBeneficiaries(beneficiariesData: any[]): ParsedBeneficiarie
             type: beneficiary.type,
             data: {
                 email: beneficiary.data?.email || "",
+                type: beneficiary.data?.type || "Person",
                 phone: beneficiary.data?.phone || "",
                 gender: beneficiary.data?.gender || "Other",
                 fullName: beneficiary.data?.fullName || "",
@@ -43,16 +39,9 @@ export function parseBeneficiaries(beneficiariesData: any[]): ParsedBeneficiarie
                 otherOrganization: beneficiary.data?.otherOrganization || "",
             }
         };
-
-        if (parsed.data.donationAmount !== null && parsed.data.donationAmount !== 0) {
-            charityBeneficiaries.push(parsed);
-        } else {
             beneficiaryDetails.push(parsed);
-        }
     });
 
-    return {
-        beneficiaryDetails,
-        charityBeneficiaries
-    };
+    return  beneficiaryDetails;
+    
 }
