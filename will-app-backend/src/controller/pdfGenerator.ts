@@ -55,6 +55,8 @@ export const generatePDF = async (req: Request, res: Response) => {
         let residuaryDistributionDetails: any = null; 
         let liabilityDistributionDetails = await getLiabilityDistributionService(userId);
 
+        const honorific = personalDetails?.gender === "Male" ? "Mr." : "Mrs.";
+
         switch (assetDistributionDetails?.distributionType) {
           case DistributionType.SINGLE:
             const singleResult = await getSingleBeneficiaryByUserIdService(userId);
@@ -99,19 +101,21 @@ export const generatePDF = async (req: Request, res: Response) => {
 
         const printer = new PdfPrinter(fonts);
 
-        const honorific = personalDetails?.gender === "Male" ? "Mr." : "Mrs.";
+        
         const dob = new Date(personalDetails.dob);
-
         const content : any []= [
             { text: "LAST WILL AND TESTAMENT OF\n\n", style: "header", alignment: "center" },
-            { text: personalDetails?.fullName, style: "title", alignment: "center", decoration: "underline" },
+            { text: `${honorific} ${personalDetails?.fullName}`, style: "title", alignment: "center", decoration: "underline" },
             { text: "\n\nPART-I: SELF DECLARATION\n", style: "subheader", alignment: "center" },
             {
-            text: `I, ${honorific} ${personalDetails?.fullName}, S/o Mr. ${personalDetails?.fatherName}, born on ${dob.toLocaleString(
-                "en-US",
-                { month: "long" }
-            )} ${dob.getDate()}, ${dob.getFullYear()}, holding Aadhaar Number as ${
-              addSpaceEveryNChars(personalDetails?.aadhaarNumber, 4)
+            text: `I, ${honorific} ${personalDetails?.fullName}, ${personalDetails?.gender === "Male" ? "S/o" : "D/o"} Mr. ${personalDetails?.fatherName}, born on ${dob.toLocaleString(
+                "en-IN", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+              timeZone: "Asia/Kolkata",
+            })}, holding Aadhaar Number as ${
+                addSpaceEveryNChars(personalDetails?.aadhaarNumber, 4)
             }, Mobile Number as ${
                 addressDetails?.phoneNumber
             } and currently residing at ${addressDetails?.address1}, ${addressDetails?.address2}, ${
@@ -155,10 +159,11 @@ export const generatePDF = async (req: Request, res: Response) => {
                       b.data.fullName || "N/A",
                       b.data.relationship || "N/A",
                       b.data.dateOfBirth
-                        ? new Date(b.data.dateOfBirth).toLocaleDateString("en-US", {
+                        ? new Date(b.data.dateOfBirth).toLocaleDateString("en-IN", {
                             month: "long",
                             day: "numeric",
                             year: "numeric",
+                            timeZone: "Asia/Kolkata",
                           })
                         : "N/A",
                     ]),
@@ -610,9 +615,9 @@ export const generatePDF = async (req: Request, res: Response) => {
     });
     
 
-      const urls = await uploadFile(userId, fileName, fs.createReadStream(filePath));
+      //const urls = await uploadFile(userId, fileName, fs.createReadStream(filePath));
 
-      await upsertPDFVersioning(userId, urls.publicUrl, urls.signedUrl);
+      //await upsertPDFVersioning(userId, urls.publicUrl, urls.signedUrl);
 
       res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
       res.setHeader("Content-Type", "application/pdf");
@@ -628,8 +633,6 @@ export const generatePDF = async (req: Request, res: Response) => {
           console.error("Error reading file:", err);
           fs.unlinkSync(filePath); // Ensure cleanup on error
       });
-
-
 
     } catch (err) {
         console.error("Error generating PDF:", err);
@@ -1010,7 +1013,7 @@ function getHeadersForSubtype(subtype: string): string[] {
       case "vehicles":
         return `Registration Number: ${asset.data.registrationNumber}`;
       case "jewelleries":
-        return `${asset.data.preciousMetalInWeight || "N/A"} g, ${asset.data.description || "N/A"}`;
+        return `${asset.data.preciousMetalInWeight || "N/A "}g, ${asset.data.description || "N/A"}`;
       case "insurance_policies":
         return `Company: ${asset.data.insuranceProvider}, Policy Number: ${maskAccountNumber(asset.data.policyNumber)}`;
       case "mutual_funds":

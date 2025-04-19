@@ -35,7 +35,9 @@ const OrderSummary = () => {
   const [serviceCounts, setServiceCounts] = useState<
     { categoryId: string; categoryName: string; serviceCount: number }[]
   >([]);
-  const [isPdfDownloading, setIsPdfDownloading] = useState(false);
+  // WHEN GOING LIVE
+  const [_isPdfDownloading, setIsPdfDownloading] = useState(false);
+  //const [ setIsPdfDownloading] = useState(false);
   const [isPdfGenerating] = useState(false);
   const [pdfVersions, setPdfVersions] = useRecoilState(pdfVersionsState);
   const [currentPdfVersion, setcurrentPdfVersion] = useState("");
@@ -319,7 +321,7 @@ const OrderSummary = () => {
                 <FaDownload /> Generate
               </Button>
 
-              <Button
+              {/* <Button
                 onClick={() => {
                   setOpenPdfDownloadModal(true);
                 }}
@@ -330,7 +332,7 @@ const OrderSummary = () => {
                 className="flex items-center justify-center gap-2 !bg-[#265e55] !text-white px-6 py-3 rounded-none hover:bg-[#1f4a43]"
               >
                 <FaDownload /> Download
-              </Button>
+              </Button> */}
 
               <Button
                 onClick={handleEdit}
