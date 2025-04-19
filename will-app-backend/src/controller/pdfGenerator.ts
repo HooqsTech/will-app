@@ -615,9 +615,9 @@ export const generatePDF = async (req: Request, res: Response) => {
     });
     
 
-      //const urls = await uploadFile(userId, fileName, fs.createReadStream(filePath));
+      const urls = await uploadFile(userId, fileName, fs.createReadStream(filePath));
 
-      //await upsertPDFVersioning(userId, urls.publicUrl, urls.signedUrl);
+      await upsertPDFVersioning(userId, urls.publicUrl, urls.signedUrl);
 
       res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
       res.setHeader("Content-Type", "application/pdf");
