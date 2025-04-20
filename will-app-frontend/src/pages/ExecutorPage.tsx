@@ -193,8 +193,9 @@ const ExecutorPage = () => {
     };
 
     const getSubTitle = (index: number) => {
-        const { firstName, lastName, email } = formState[index];
-        return [firstName?.trim(), lastName.trim(), email?.trim()].filter(Boolean).join(" - ");
+        const { firstName, title, lastName, email } = formState[index];
+        let fullName = title.trim() + ". " + firstName.trim() + " " + lastName.trim()
+        return [fullName.trim(), email?.trim()].filter(Boolean).join(" - ");
     };
 
     const shouldExpandAccordion = (index: number) => {

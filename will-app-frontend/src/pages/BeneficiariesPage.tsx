@@ -257,9 +257,10 @@ const BeneficiariesPage = () => {
     }
 
     const getSubTitle = (index: number) => {
-        const { type, firstName, lastName, email, relationship, charityType, organization } = formState[index];
+        const { type, firstName, lastName, title, email, relationship, charityType, organization } = formState[index];
         if (type == "Person") {
-            let firstLine = [type?.trim(), firstName.trim(), lastName.trim()].filter(Boolean).join(" - ");
+            let fullName = title.trim() + ". " + firstName.trim() + " " + lastName.trim()
+            let firstLine = [type?.trim(), fullName.trim()].filter(Boolean).join(" - ");
             let secondLine = [relationship?.trim(), email?.trim()].filter(Boolean).join(" - ");
             return [firstLine, secondLine].filter(Boolean).join("\n");
         }

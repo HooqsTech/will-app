@@ -143,8 +143,9 @@ const ExcludedPersonsPage = () => {
     };
 
     const getSubTitle = (index: number) => {
-        const { firstName, lastName, relationship } = formState[index];
-        return [firstName?.trim(), lastName.trim(), relationship?.trim()].filter(Boolean).join(" - ");
+        const { firstName, title, lastName, relationship } = formState[index];
+        let fullName = title.trim() + ". " + firstName.trim() + " " + lastName.trim()
+        return [fullName, relationship?.trim()].filter(Boolean).join(" - ");
     };
 
     const shouldExpandAccordion = (index: number) => {

@@ -60,7 +60,7 @@ const AboutYouPage = () => {
                 </div>
                 <div className='flex w-full flex-col items-center justify-between p-6 text-md 
                 space-y-2 text-wrap'>
-                    <Item label={"Full Name"} text={personalDetails.fullName} />
+                    <Item label={"Full Name"} text={personalDetails.title + ". " + personalDetails.firstName + " " + personalDetails.lastName} />
                     <Item label={"Father Name"} text={personalDetails.fatherName} />
                     <Item label={"Gender"} text={personalDetails.gender} />
                     <Item label={"DOB"} text={personalDetails.dob == null ? "" : dayjs(personalDetails.dob).format("DD-MM-YYYY")} />
