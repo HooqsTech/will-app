@@ -145,7 +145,7 @@ const VehiclesPage = () => {
 
     const getSubTitle = (index: number) => {
         const { brandOrModel, type, registrationNumber } = formState[index];
-        const firstLine = type + " - " + brandOrModel?.trim() || "";
+        const firstLine = type?.trim() + " - " + brandOrModel?.trim() || "";
         const secondLine = registrationNumber?.trim() || "";
         return [firstLine, secondLine].filter(Boolean).join("\n");
     };

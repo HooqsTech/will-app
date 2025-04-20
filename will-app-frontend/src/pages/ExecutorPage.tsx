@@ -194,7 +194,7 @@ const ExecutorPage = () => {
 
     const getSubTitle = (index: number) => {
         const { firstName, title, lastName, email } = formState[index];
-        let fullName = title.trim() + ". " + firstName.trim() + " " + lastName.trim()
+        let fullName = title?.trim() + ". " + firstName?.trim() + " " + lastName?.trim()
         return [fullName.trim(), email?.trim()].filter(Boolean).join(" - ");
     };
 

@@ -144,7 +144,7 @@ const ExcludedPersonsPage = () => {
 
     const getSubTitle = (index: number) => {
         const { firstName, title, lastName, relationship } = formState[index];
-        let fullName = title.trim() + ". " + firstName.trim() + " " + lastName.trim()
+        let fullName = title?.trim() + ". " + firstName?.trim() + " " + lastName?.trim()
         return [fullName, relationship?.trim()].filter(Boolean).join(" - ");
     };
 
