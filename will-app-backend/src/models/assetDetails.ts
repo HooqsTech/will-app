@@ -129,12 +129,13 @@ export interface ESOPAsset {
     id: number;
     companyName: string;
     noOfVestedEscops: number;
-    noOfUnitGranted: number;
+    noOfUnitGraged: number;
     noOfUnVestedEscops: number;
 }
 
 export interface VehicleAsset {
     id: number;
+    type: string;
     brandOrModel: string;
     registrationNumber: string;
 }

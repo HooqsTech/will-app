@@ -1,5 +1,7 @@
 export interface IPersonalDetails {
-    fullName: string ;
+    title: "Mr" | "Mrs" | "Miss";
+    firstName: string ;
+    lastName: string ;
     fatherName: string ;
     gender: string ;
     dob: Date ;

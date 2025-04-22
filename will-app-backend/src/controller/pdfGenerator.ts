@@ -55,8 +55,6 @@ export const generatePDF = async (req: Request, res: Response) => {
         let residuaryDistributionDetails: any = null; 
         let liabilityDistributionDetails = await getLiabilityDistributionService(userId);
 
-        const honorific = personalDetails?.gender === "Male" ? "Mr." : "Mrs.";
-
         switch (assetDistributionDetails?.distributionType) {
           case DistributionType.SINGLE:
             const singleResult = await getSingleBeneficiaryByUserIdService(userId);
@@ -105,10 +103,10 @@ export const generatePDF = async (req: Request, res: Response) => {
         const dob = new Date(personalDetails.dob);
         const content : any []= [
             { text: "LAST WILL AND TESTAMENT OF\n\n", style: "header", alignment: "center" },
-            { text: `${honorific} ${personalDetails?.fullName}`, style: "title", alignment: "center", decoration: "underline" },
+            { text: `${personalDetails?.title}. ${personalDetails?.firstName} ${personalDetails?.lastName}`, style: "title", alignment: "center", decoration: "underline" },
             { text: "\n\nPART-I: SELF DECLARATION\n", style: "subheader", alignment: "center" },
             {
-            text: `I, ${honorific} ${personalDetails?.fullName}, ${personalDetails?.gender === "Male" ? "S/o" : "D/o"} Mr. ${personalDetails?.fatherName}, born on ${dob.toLocaleString(
+            text: `I, ${personalDetails?.firstName} ${personalDetails?.lastName}, ${personalDetails?.gender === "Male" ? "S/o" : "D/o"} Mr. ${personalDetails?.fatherName}, born on ${dob.toLocaleString(
                 "en-IN", {
               month: "long",
               day: "numeric",
@@ -125,7 +123,11 @@ export const generatePDF = async (req: Request, res: Response) => {
                         },
             { text: "This Will shall be governed by the laws of India.", style: "text",
               },
-            { text: "All references herein to \"this Will\" refer only to this last Will and testament.", style: "text",
+            { text: [
+              'All references herein to ',
+              { text: '"this Will"', bold: true },
+              ' refer only to this last Will and testament.'
+            ], style: "text",
                },
             { text: "\n\nPART-II: BENERFICIARIES\n", style: "subheader", alignment: "center" },
             [
@@ -522,8 +524,10 @@ export const generatePDF = async (req: Request, res: Response) => {
             ],
             { text: "", pageBreak: "after" },
             { text: "ATTESTATION BY TESTATOR\n", style: "subheader", alignment: "center" },
-            {text: "IN WITNESS WHEREOF, I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence.",
-               style: "text"
+            {  text: [
+              { text: "IN WITNESS WHEREOF", bold: true },
+              ", I, the undersigned testator, declare that I sign and execute this instrument on the date written below as my last Will and testament. This Will deed shall come into effect post my demise also I reserve the right to revoke/ cancel/ alter this Will deed any time during my lifetime. Further, I declare that I sign it willingly, that I execute it as my free and voluntary act for the purposes expressed in this document, and that I am above 18 years of age, of sound mind and memory, and under no constraint or undue influence."
+            ],style: "text"
             },
             {text: "\n\n"},
             {
@@ -532,7 +536,7 @@ export const generatePDF = async (req: Request, res: Response) => {
             alignment: "left",
             style: "text"},
             { text: "Signature", margin: [250, 5, 0, 0], alignment: "left", style: "text" },
-            { text: `(${honorific} ${personalDetails?.fullName})`, margin: [250, 5, 0, 0], alignment: "left", style: "text" },
+            { text: `( ${personalDetails?.title}. ${personalDetails?.firstName} ${personalDetails?.lastName})`, margin: [250, 5, 0, 0], alignment: "left", style: "text" },
 
             {
                 text: "Date: ______________________",
@@ -546,7 +550,7 @@ export const generatePDF = async (req: Request, res: Response) => {
                 style: "text"},
             { text: "", pageBreak: "after" },
             { text: "ATTESTATION BY WITNESSES\n", style: "subheader", alignment: "center" },
-            { text: `This last Will and testament, which has been separately signed by ${honorific} ${personalDetails.fullName}, the testator, as on the date indicated below signed and declared by the above-named testator as his last Will and testament in the presence of each of us. We, in the presence of the testator and each other, at the testator's request, under penalty of perjury, hereby subscribe our names as witnesses to the declaration and execution of the last Will and testament by the testator, and we declare that, to the best of our knowledge, said testator is eighteen years of age or older, of sound mind and memory and under no constraint or undue influence.`,
+            { text: `This last Will and testament, which has been separately signed by ${personalDetails?.title}. ${personalDetails?.firstName} ${personalDetails?.lastName}, the testator, as on the date indicated below signed and declared by the above-named testator as his last Will and testament in the presence of each of us. We, in the presence of the testator and each other, at the testator's request, under penalty of perjury, hereby subscribe our names as witnesses to the declaration and execution of the last Will and testament by the testator, and we declare that, to the best of our knowledge, said testator is eighteen years of age or older, of sound mind and memory and under no constraint or undue influence.`,
             style: "text"},
             { text: "\n\n\nWITNESSES 1\n\n", alignment: "center", bold: true},
             { text: "Full Name of the Witness as per Aadhar/PAN Card:\n\n\n", alignment: "left",
@@ -575,7 +579,7 @@ export const generatePDF = async (req: Request, res: Response) => {
             styles: {
               header: { fontSize: 18, bold: true, lineHeight: 1.5 },
               title: { fontSize: 20, bold: true, lineHeight: 1.5 },
-              subheader: { fontSize: 16, bold: true, margin: [0, 10, 0, 10], lineHeight: 1.5 },
+              subheader: { fontSize: 16, bold: true, margin: [0, 10, 0, 10], lineHeight: 1.5, decoration: "underline" },
               tableTitle: { fontSize: 14, bold: true, margin: [0, 10, 0, 10], lineHeight: 1.5 },
               text: { fontSize: 12, lineHeight: 1.5, alignment: "justify" },
               table: { margin: [0, 5, 0, 15], lineHeight: 2 }
@@ -600,9 +604,9 @@ export const generatePDF = async (req: Request, res: Response) => {
           currentVersion = pdfVersioning.latestversion + 1; 
       }
 
-      const fileName = `${userDetails?.personalDetails?.fullName}_V${currentVersion}.pdf`;
+      const fileName = `${personalDetails?.firstName} ${personalDetails?.lastName}_V${currentVersion}.pdf`;
       const filePath = `./${fileName}`;
-
+      
       // Write the PDF to a temporary file
       const bufferStream = fs.createWriteStream(filePath);
       pdfDoc.pipe(bufferStream);
@@ -690,8 +694,8 @@ function getHeadersForSubtype(subtype: string): string[] {
       case "vehicles":
         return [
           index + 1,
-          asset.data.brandOrModel || "N/A",
-          `Registration Number: ${asset.data.registrationNumber}`,
+          `Type: ${asset.data?.type}\nBrand/Model:${asset.data?.brandOrModel}` || "N/A",
+          `Registration Number: ${asset.data?.registrationNumber}`,
         ];
       case "jewelleries":
         return [
@@ -982,7 +986,7 @@ function getHeadersForSubtype(subtype: string): string[] {
   
                 return `${displayName.trim()} (${splitDetail.percentage}%)`;
               })
-              .join(", ")
+              .join(",\n ")
           : "No Beneficiaries Assigned";
   
         const description = getAssetDescription(asset.subtype, asset);
