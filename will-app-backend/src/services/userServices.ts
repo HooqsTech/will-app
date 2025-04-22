@@ -61,6 +61,7 @@ export const createUser = async (phoneNumber: string) => {
     data: {
       userid: userId,
       phonenumber: phoneNumber,
+      role: "USER",
       createdat: new Date(),
       updatedat: new Date(),
     },
@@ -202,6 +203,7 @@ export const getUserDetailsByPhone = async (phoneNumber: string) => {
 
 const formatUserResponse = (user: any) => ({
   userId: user.userid,
+  role: user.role,
   personalDetails: user.personaldetails?.details || {},
   addressDetails: user.addressdetails?.address || {},
   assets: Array.isArray(user.assets)

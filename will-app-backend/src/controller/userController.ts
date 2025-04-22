@@ -136,13 +136,13 @@ export const verifyTokenAndInsertPhoneNumber = async (req: Request, res: Respons
 
         if (userExists) {
             const userDetails = await getUserDetailsByPhone(phoneNumber);
-            return res.status(200).json({ user: userDetails });
+            return res.status(200).json(userDetails);
         }
 
         await createUser(phoneNumber);
         const newUserDetails = await getUserDetailsByPhone(phoneNumber);
 
-        return res.status(201).json({ user: newUserDetails });
+        return res.status(201).json(newUserDetails);
     } catch (error: any) {
         let errorMessage = "Invalid token";
 

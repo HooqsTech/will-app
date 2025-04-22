@@ -127,9 +127,17 @@ const LoginPage = () => {
             const userCredential = await formState.confirmationResult.confirm(formState.otp);
 
             const idToken = await userCredential.user.getIdToken();
-            await verifyToken(idToken);
+            const userDetails = await verifyToken(idToken);
+
+            console.log('userDetails', userDetails)
 
             setCookie('idToken', idToken, {
+                expires: 1, // Expires in 1 day
+                secure: true, // HTTPS only
+                sameSite: 'Strict', // Prevent CSRF
+                path: '/', // Available for all routes
+            });
+            setCookie('role', userDetails.role, {
                 expires: 1, // Expires in 1 day
                 secure: true, // HTTPS only
                 sameSite: 'Strict', // Prevent CSRF
@@ -149,8 +157,12 @@ const LoginPage = () => {
                 showOTP: false,
                 otp: ""
             }));
-            navigate(location.state?.from?.pathname || '/home');
-
+            if (userDetails.role !== "ADMIN") {
+                navigate(location.state?.from?.pathname || '/home');
+            }
+            else {
+                navigate('/admin');
+            }
         } catch (error) {
             setFormState((prevState) => ({
                 ...prevState,

@@ -10,11 +10,13 @@ export interface IPersonalDetails {
   gender: string,
   dob: string,
   religion: string,
-  aadhaarNumber: string
+  aadhaarNumber: string,
+  title: string
 }
 
 export interface IUserDetails {
   userId: string,
+  role: string,
   personalDetails: IPersonalDetails,
   addressDetails: IAddressDetails,
   selectedAssets: ISelectedAssets,

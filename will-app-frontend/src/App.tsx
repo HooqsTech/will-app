@@ -10,17 +10,32 @@ import LoginPage from "./pages/LoginPage";
 import MyPlan from "./pages/MyPlan";
 import OrderConfirmation from "./pages/OrderSummary";
 import YourWill from "./pages/YourWill";
+import AdminPage from "./pages/AdminPage";
 
 const isAuthenticated = () => {
   const idToken = getCookie('idToken'); // Adjust 'idToken' to match your cookie name
   return !!idToken; // Returns true if token exists, false otherwise
 };
 
+const isAdmin = () => {
+  const role = getCookie("role");
+  return role === "ADMIN";
+}
+
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const location = useLocation();
-  return isAuthenticated() ? children : <Navigate to="/login" state={{ from: location }} />;
-};
 
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" state={{ from: location }} />
+  }
+
+  if (!isAdmin()) {
+    return children
+  }
+  else {
+    if (location.pathname === "/admin") { return children } else return <Navigate to={"/admin"} state={{ from: location }} />
+  }
+};
 
 function App() {
   const [animationData, setAnimationData] = useState(null);
@@ -36,15 +51,13 @@ function App() {
     <div className="font-[frank] w-full">
       <BrowserRouter>
         <Routes>
-          <Route path="" element={<ProtectedRoute>
-            <Navigate to="/home" />
-          </ProtectedRoute>} />
+          <Route path="" element={<ProtectedRoute><Navigate to="/home" /></ProtectedRoute>} />
           <Route path="your_will/*" element={<ProtectedRoute><YourWill /></ProtectedRoute>} />
           <Route path="home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="login" element={<LoginPage />} />
-          <Route path={"my_plan"} element={<MyPlan />} />
-          <Route path={"order_summary"} element={<OrderConfirmation />} />
-          OrderConfirmation
+          <Route path="my_plan" element={<ProtectedRoute><MyPlan /></ProtectedRoute>} />
+          <Route path="order_summary" element={<ProtectedRoute><OrderConfirmation /></ProtectedRoute>} />
+          <Route path="admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
         </Routes>
         <Modal className='h-screen flex flex-col items-center justify-center' open={isLoading}>
           <div className='border-none focus:border-none outline-0'>

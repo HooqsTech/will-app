@@ -55,6 +55,7 @@ model users {
   phonenumber                     String                           @unique
   createdat                       DateTime?                        @default(now()) @db.Timestamptz(6)
   updatedat                       DateTime?                        @default(now()) @db.Timestamptz(6)
+  role                            String?
   addressdetails                  addressdetails?
   assets                          assets[]
   beneficiaries                   beneficiaries[]

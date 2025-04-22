@@ -266,6 +266,8 @@ const YourWill: React.FC = () => {
         const phoneNumber = getCookie('phoneNumber');
         const user = await getUser(phoneNumber ?? "/");
 
+        console.log('user.role', user.role)
+
         setUser({
             userId: user.userId
         })
