@@ -1,8 +1,11 @@
 export interface BeneficiaryData {
+    title: "Mr" | "Mrs" | "Miss" | "";
     type: "Person" | "Charity";
     email: string;
     phone: string;
     gender: "Male" | "Female" | "Other";
+    firstName: string;
+    lastName: string;
     fullName: string;
     charityType: string;
     dateOfBirth: string;
@@ -26,11 +29,14 @@ export function parseBeneficiaries(beneficiariesData: any[]): IBeneficiary[] {
             id: beneficiary.id || "",
             type: beneficiary.type,
             data: {
+                title: beneficiary.data?.title || "",
                 email: beneficiary.data?.email || "",
                 type: beneficiary.data?.type || "Person",
                 phone: beneficiary.data?.phone || "",
                 gender: beneficiary.data?.gender || "Other",
-                fullName: beneficiary.data?.fullName || "",
+                firstName: beneficiary.data?.firstName || "",
+                lastName: beneficiary.data?.lastName || "",
+                fullName: beneficiary.data?.title + ". " + beneficiary.data?.firstName + " " + beneficiary.data?.lastName || "",
                 charityType: beneficiary.data?.charityType || "",
                 dateOfBirth: beneficiary.data?.dateOfBirth || "",
                 organization: beneficiary.data?.organization || "",
