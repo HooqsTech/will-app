@@ -8,12 +8,14 @@ import {
     createAddressDetailsHandler,
     deleteAddressDetailsHandler,
     verifyTokenAndInsertPhoneNumber,
-    getUserIdByPhoneNumberHandler
+    getUserIdByPhoneNumberHandler,
+    getAllUsersHandler
 } from '../controller/userController';
 
 const router = express.Router();
 
 router.post('/users', createUserHandler);
+router.get('/users', getAllUsersHandler);
 router.get('/users/GetbyPhoneNumber/', getUserDetailsByPhoneHandler);
 router.delete('/users/:phoneNumber', deleteUserByPhoneHandler);
 router.post('/users/createPersonalDetails/:userId', createPersonalDetailsHandler);

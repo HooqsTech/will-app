@@ -26,7 +26,7 @@ const AssetDistributionSinglePage = () => {
           .map(beneficiary => ({
             value: beneficiary.id,
             label: beneficiary.type === "Person" 
-              ? beneficiary.fullName 
+              ? beneficiary.firstName + " " + beneficiary.lastName 
               : beneficiary.organization,
           }));
           
@@ -100,7 +100,7 @@ const AssetDistributionSinglePage = () => {
             )}
             {distribution.step === 2 && (
                 <>
-                    <h2 className="text-xl font-bold mb-5">If {distribution.primaryBeneficiary ? beneficiaryState.find(b => b.id === distribution.primaryBeneficiary)?.fullName : "your primary beneficiary"} passes away, who should inherit?</h2>
+                    <h2 className="text-xl font-bold mb-5">If {distribution.primaryBeneficiary ? beneficiaryState.find(b => b.id === distribution.primaryBeneficiary)?.firstName + " " + beneficiaryState.find(b => b.id === distribution.primaryBeneficiary)?.lastName : "your primary beneficiary"} passes away, who should inherit?</h2>
                     <div className="mb-5">
                         <CustomSelectBar
                             options={getFilteredOptions([distribution.primaryBeneficiary || ""])}

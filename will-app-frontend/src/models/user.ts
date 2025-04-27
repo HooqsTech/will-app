@@ -98,3 +98,73 @@ export interface IAddressDetails {
   permPhoneNumber: string,
   permEmail: string
 }
+
+
+export interface IAdminUserData {
+  userid: string;
+  phonenumber: string;
+  createdat: string;
+  updatedat: string;
+  role: string;
+  personaldetails: {
+    id: string;
+    userid: string;
+    details: {
+      dob: string;
+      title: string;
+      gender: string;
+      lastName: string;
+      religion: string;
+      firstName: string;
+      fatherName: string;
+      aadhaarNumber: string;
+    };
+    createdat: string;
+    updatedat: string;
+  };
+  addressdetails: {
+    id: string;
+    userid: string;
+    address: {
+      city: string;
+      email: string;
+      state: string;
+      pincode: string;
+      address1: string;
+      address2: string;
+      permCity: string;
+      permEmail: string;
+      permState: string;
+      permPincode: string;
+      phoneNumber: string;
+      permAddress1: string;
+      permAddress2: string;
+      permPhoneNumber: string;
+      sameAsPresentAddress: boolean;
+    };
+    createdat: string;
+    updatedat: string;
+  };
+  payment_transactions: Array<{
+    id: string;
+    orderid: string;
+    userid: string;
+    selectedservices: Array<{
+      serviceId: string;
+      serviceName: string;
+      serviceDiscountPrice: number;
+      serviceStandardPrice: number;
+    }>;
+    totalprice: string;
+    selectedcategories: {
+      categoryId: string;
+      categoryName: string;
+      categoryDescription: string;
+      categoryDiscountPrice: number;
+      categoryStandardPrice: number;
+    };
+    createdat: string;
+    updatedat: string;
+  }>;
+  pdfversioning: any[]; // You can replace 'any' if you have a structure later
+}

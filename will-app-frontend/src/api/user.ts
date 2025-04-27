@@ -1,4 +1,4 @@
-import { IAddressDetails, IPersonalDetails, IUserDetails } from "../models/user";
+import { IAddressDetails, IAdminUserData, IPersonalDetails, IUserDetails } from "../models/user";
 
 export const addPersonalDetailsAsync = async (personalDetails: IPersonalDetails, userId: string): Promise<IPersonalDetails> => {
   const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/createPersonalDetails/${userId}`, {
@@ -62,6 +62,19 @@ export const getUserIdByPhoneNumber = async (phoneNumber: string): Promise<strin
 
   const userId: string = await response.json();
   return userId;
+};
+
+export const getAllUsers = async (): Promise<IAdminUserData[]> => {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to get user");
+  }
+
+  var users: IAdminUserData[] = await response.json();
+  return users;
 };
 
 export const getUser = async (phoneNumber: string): Promise<IUserDetails> => {

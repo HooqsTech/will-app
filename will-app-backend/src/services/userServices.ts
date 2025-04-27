@@ -31,6 +31,23 @@ export const getUserByUserId = async (userId: string) => {
   return formatUserResponse(user);
 };
 
+export const getAllUsers = async () => {
+  const users = await prisma.users.findMany({
+    include: {
+      personaldetails: true,
+      addressdetails: true,
+      payment_transactions: true,
+      pdfversioning: true
+    },
+  });
+
+  if (!users) {
+    return null;
+  }
+
+  return users;
+};
+
 export const getUserIdByPhoneNumber = async (phoneNumber: string) => {
   const user = await prisma.users.findUnique({
     where: {

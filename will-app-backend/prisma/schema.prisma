@@ -63,7 +63,9 @@ model users {
   executors                       executors[]
   liabilities                     liabilities[]
   liabilitydistribution           liabilitydistribution?
+  payment_transactions            payment_transactions[]
   paymentorders                   paymentorders[]
+  pdfversioning                   pdfversioning[]
   percentage_distribution         percentage_distribution?
   personaldetails                 personaldetails?
   pets                            pets[]
@@ -217,6 +219,7 @@ model payment_transactions {
   selectedcategories Json?
   createdat          DateTime? @default(now()) @db.Timestamptz(6)
   updatedat          DateTime? @default(now()) @db.Timestamptz(6)
+  users              users     @relation(fields: [userid], references: [userid], onDelete: NoAction, onUpdate: NoAction, map: "fk_userid")
 }
 
 model pdfversioning {
@@ -227,6 +230,7 @@ model pdfversioning {
   latestversion Int       @default(1)
   folderpath    String
   downloadurl   String?
+  users         users     @relation(fields: [userid], references: [userid], onDelete: NoAction, onUpdate: NoAction, map: "fk_userid")
 }
 
 model liabilitydistribution {

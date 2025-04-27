@@ -28,7 +28,7 @@ const ResiduaryEstateSinglePage = () => {
             .map(beneficiary => ({
             value: beneficiary.id,
             label: beneficiary.type === "Person"
-                ? beneficiary.fullName
+                ? beneficiary.firstName + " " + beneficiary.lastName
                 : beneficiary.organization,
             }));
 

@@ -25,7 +25,7 @@ const AssetDistributionPercentPage = () => {
 
   const beneficiaryOptionsFirst = beneficiaryState.filter(beneficiary => !beneficiary.isGuardian).map((beneficiary) => ({
     value: beneficiary.id,
-    label: beneficiary.type == "Person" ? beneficiary.fullName : beneficiary.organization,
+    label: beneficiary.type == "Person" ? beneficiary.firstName + " " + beneficiary.lastName : beneficiary.organization,
   }));
 
   const handleFirstSelectChange = (value: string) => {

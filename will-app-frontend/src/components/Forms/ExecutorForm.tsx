@@ -41,17 +41,20 @@ const ExecutorForm: React.FC<IExecutorFormProps> = ({ index }) => {
                 value={item.firstName}
                 onChange={(e) => handleChange(index, "firstName", e)}
                 label="First Name"
+                required
                 helperText={validationStateItem.firstName}
                 type="text" />
             <CustomTextBox
                 value={item.lastName}
                 onChange={(e) => handleChange(index, "lastName", e)}
                 label="Last Name"
+                required
                 helperText={validationStateItem.lastName}
                 type="text" />
             <CustomSelect
                 label="Gender"
                 options={["Male", "Female", "Others"]}
+                required
                 value={item.gender}
                 helperText={validationStateItem.gender}
                 onChange={(e) => handleChange(index, "gender", e)} />
@@ -59,10 +62,12 @@ const ExecutorForm: React.FC<IExecutorFormProps> = ({ index }) => {
                 onChange={(e) => handleChange(index, "dob", e)}
                 value={item.dob ? dayjs(item.dob) : null}
                 helperText={validationStateItem.dob}
+                required
                 label="DOB" />
             <CustomTextBox
                 value={item.email}
                 onChange={(e) => handleChange(index, "email", e)}
+                required
                 helperText={validationStateItem.email}
                 label={"Email"}
                 type="text" />
@@ -70,6 +75,7 @@ const ExecutorForm: React.FC<IExecutorFormProps> = ({ index }) => {
                 value={item.aadhaarNumber}
                 maxLength={12}
                 onChange={(e) => handleChange(index, "aadhaarNumber", e)}
+                required
                 helperText={validationStateItem.aadhaarNumber}
                 restrictAlphabets
                 label={"Aadhaar Number"}
@@ -77,6 +83,7 @@ const ExecutorForm: React.FC<IExecutorFormProps> = ({ index }) => {
             <CustomTextBox
                 value={item.phoneNumber}
                 onChange={(e) => handleChange(index, "phoneNumber", e)}
+                required
                 helperText={validationStateItem.phoneNumber}
                 label="Phone"
                 restrictAlphabets
