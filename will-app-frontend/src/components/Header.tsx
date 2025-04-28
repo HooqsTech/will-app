@@ -6,6 +6,8 @@ import { removeCookie } from 'typescript-cookie';
 import { drawerState } from "../atoms/drawerState";
 import CustomButton from "./CustomButton";
 import Sidebar2 from "./Sidebar2";
+import { TbMenuOrder } from "react-icons/tb";
+import { MdPayment } from "react-icons/md";
 
 interface IHeaderProps {
     isAdmin?: boolean
@@ -32,6 +34,9 @@ const Header: React.FC<IHeaderProps> = ({ isAdmin }) => {
                 <div className="flex items-center text-gray-500 space-x-3">
                     <a href="/home" className="md:hidden">
                         <BiHome className="text-2xl" />
+                    </a>
+                    <a href="/order_summary" className="md:hidden">
+                        <MdPayment className="text-2xl" />
                     </a>
                     <button onClick={() => setIsDrawerOpen(true)} data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="navbar-default" aria-expanded="false">
                         <span className="sr-only">Open main menu</span>
