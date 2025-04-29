@@ -36,8 +36,8 @@ const OrderSummary = () => {
     { categoryId: string; categoryName: string; serviceCount: number }[]
   >([]);
   // WHEN GOING LIVE
-  const [_isPdfDownloading, setIsPdfDownloading] = useState(false);
-  //const [ setIsPdfDownloading] = useState(false);
+  const [isPdfDownloading, setIsPdfDownloading] = useState(false);
+  // const [ setIsPdfDownloading] = useState(false);
   const [isPdfGenerating] = useState(false);
   const [pdfVersions, setPdfVersions] = useRecoilState(pdfVersionsState);
   const [currentPdfVersion, setcurrentPdfVersion] = useState("");
@@ -50,15 +50,14 @@ const OrderSummary = () => {
     try {
       await generatePdfFile(userId.userId);
       await fetchPdfVersions();
-    } catch (error) {}
+    } catch (error) { }
 
     setPageLoading(false);
   };
 
   const handleDownload = async () => {
     setPageLoading(true);
-    try 
-    {
+    try {
       setIsValid(true);
       if (IsEmptyString(currentPdfVersion)) {
         setIsValid(false);
@@ -71,7 +70,7 @@ const OrderSummary = () => {
       await downloadPdfFile(userId.userId, versionId ?? "", currentPdfVersion);
       setIsPdfDownloading(false);
     }
-    catch (error) {}
+    catch (error) { }
     setPageLoading(false);
   };
 
@@ -263,8 +262,8 @@ const OrderSummary = () => {
                 const categories = Array.isArray(order.selectedcategories)
                   ? order.selectedcategories
                   : order.selectedcategories
-                  ? [order.selectedcategories]
-                  : [];
+                    ? [order.selectedcategories]
+                    : [];
 
                 const services = order.selectedservices || [];
 
@@ -321,7 +320,7 @@ const OrderSummary = () => {
                 <FaDownload /> Generate
               </Button>
 
-              {/* <Button
+              <Button
                 onClick={() => {
                   setOpenPdfDownloadModal(true);
                 }}
@@ -332,7 +331,7 @@ const OrderSummary = () => {
                 className="flex items-center justify-center gap-2 !bg-[#265e55] !text-white px-6 py-3 rounded-none hover:bg-[#1f4a43]"
               >
                 <FaDownload /> Download
-              </Button> */}
+              </Button>
 
               <Button
                 onClick={handleEdit}

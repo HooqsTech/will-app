@@ -38,13 +38,13 @@ const AdminPage = () => {
                     {
                         filterText !== undefined && filterText !== "" ? (
                             filteredUsers.map((user) => (
-                                <div className="py-1">
+                                <div className="py-1" key={user.userid}>
                                     <AdminUserCard user={user} />
                                 </div>
                             ))
                         ) : (
                             users.map((user) => (
-                                <div className="py-1">
+                                <div className="py-1" key={user.userid}>
                                     <AdminUserCard user={user} />
                                 </div>
                             ))

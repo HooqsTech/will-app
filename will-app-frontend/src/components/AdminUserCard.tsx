@@ -53,7 +53,7 @@ const AdminUserCard: React.FC<IAdminUserCardProps> = ({ user }) => {
                 <AccordionSummary expandIcon={<ArrowDropDownIcon />} className="bg-white">
                     <div className="flex flex-col">
                         <Typography variant="h6" className="font-semibold">
-                            {user.personaldetails.details.title} {user.personaldetails.details.firstName} {user.personaldetails.details.lastName}
+                            {user.personaldetails?.details?.title} {user.personaldetails?.details?.firstName} {user.personaldetails?.details?.lastName}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                             {user.role}
@@ -65,15 +65,15 @@ const AdminUserCard: React.FC<IAdminUserCardProps> = ({ user }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6">
                         <div>
                             <p><span className="font-semibold">Phone:</span> {user.phonenumber}</p>
-                            <p><span className="font-semibold">Email:</span> {user.addressdetails.address.email}</p>
-                            <p><span className="font-semibold">City:</span> {user.addressdetails.address.city}</p>
-                            <p><span className="font-semibold">State:</span> {user.addressdetails.address.state}</p>
+                            <p><span className="font-semibold">Email:</span> {user.addressdetails?.address?.email}</p>
+                            <p><span className="font-semibold">City:</span> {user.addressdetails?.address?.city}</p>
+                            <p><span className="font-semibold">State:</span> {user.addressdetails?.address?.state}</p>
                         </div>
                         <div>
-                            <p><span className="font-semibold">Father Name:</span> {user.personaldetails.details.fatherName}</p>
-                            <p><span className="font-semibold">DOB:</span> {new Date(user.personaldetails.details.dob).toLocaleDateString()}</p>
-                            <p><span className="font-semibold">Religion:</span> {user.personaldetails.details.religion}</p>
-                            <p><span className="font-semibold">Aadhaar:</span> {user.personaldetails.details.aadhaarNumber}</p>
+                            <p><span className="font-semibold">Father Name:</span> {user.personaldetails?.details?.fatherName}</p>
+                            <p><span className="font-semibold">DOB:</span> {new Date(user.personaldetails?.details?.dob).toLocaleDateString()}</p>
+                            <p><span className="font-semibold">Religion:</span> {user.personaldetails?.details?.religion}</p>
+                            <p><span className="font-semibold">Aadhaar:</span> {user.personaldetails?.details?.aadhaarNumber}</p>
                         </div>
                     </div>
 

@@ -1,13 +1,12 @@
 import { Drawer } from "@mui/material";
 import { BiHome } from "react-icons/bi";
+import { MdPayment } from "react-icons/md";
 import { useNavigate } from 'react-router';
 import { useRecoilState } from "recoil";
 import { removeCookie } from 'typescript-cookie';
 import { drawerState } from "../atoms/drawerState";
 import CustomButton from "./CustomButton";
 import Sidebar2 from "./Sidebar2";
-import { TbMenuOrder } from "react-icons/tb";
-import { MdPayment } from "react-icons/md";
 
 interface IHeaderProps {
     isAdmin?: boolean
