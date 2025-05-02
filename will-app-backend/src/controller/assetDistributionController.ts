@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 
 export const saveDistributionType = async (request: Request, response: Response) => {
     try {
-        const { userId, distributionType, residuaryDistributionType, fallbackRule } = request.body;
+        const { userId, distributionType, residuaryDistributionType, fallbackRule, residuaryfallbackrule } = request.body;
 
         if(!(await validUser(userId))){
             return response.status(400).json({ error: "Invalid User" });
@@ -48,9 +48,9 @@ export const saveDistributionType = async (request: Request, response: Response)
 
         //Update existing record if it exists, or add new entry
         if (existingDistribution) {
-            distributionDetails = await updateWillDistributionService(userId, distributionType, residuaryDistributionType, fallbackRule);
+            distributionDetails = await updateWillDistributionService(userId, distributionType, residuaryDistributionType, fallbackRule, residuaryfallbackrule);
         } else {
-            distributionDetails = await createWillDistributionService(userId, distributionType, residuaryDistributionType, fallbackRule);
+            distributionDetails = await createWillDistributionService(userId, distributionType, residuaryDistributionType, fallbackRule, residuaryfallbackrule);
         }
         response.status(200).json(distributionDetails);
     } catch (error) {

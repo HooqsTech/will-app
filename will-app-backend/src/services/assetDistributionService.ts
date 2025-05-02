@@ -63,7 +63,8 @@ export const updateWillDistributionService = async (
     userId: string,
     distributionType: string,
     residuaryDistributionType: string | null,
-    fallbackRule: string | null
+    fallbackRule: string | null,
+    residuaryfallbackrule: string | null
 ) => {
     return prisma.will_distribution.update({
         where: { userid: userId },
@@ -71,6 +72,7 @@ export const updateWillDistributionService = async (
             distributiontype: distributionType,
             residuarydistributiontype: residuaryDistributionType,
             fallbackrule: fallbackRule,
+            residuaryfallbackrule: residuaryfallbackrule,
             updatedat: new Date(),
         },
     });
@@ -80,7 +82,9 @@ export const createWillDistributionService = async (
     userId: string,
     distributionType: string,
     residuaryDistributionType: string | null,
-    fallbackRule: string | null
+    fallbackRule: string | null,
+    residuaryfallbackrule: string | null,
+
 ) => {
     return prisma.will_distribution.create({
         data: {
@@ -88,6 +92,7 @@ export const createWillDistributionService = async (
             distributiontype: distributionType,
             residuarydistributiontype: residuaryDistributionType,
             fallbackrule: fallbackRule,
+            residuaryfallbackrule: residuaryfallbackrule,
             createdat: new Date(),
         },
     });
