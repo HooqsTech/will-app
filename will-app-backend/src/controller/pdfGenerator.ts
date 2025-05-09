@@ -349,8 +349,8 @@ export const generatePDF = async (req: Request, res: Response) => {
 
                 return [
                   {
-                    text :  `All the above mentioned assets will be assigned to the following beneficiaries in the mentioned percentage of distribution.`
-                                      },
+                    text :  `All the above mentioned assets will be assigned to the following beneficiaries in the mentioned percentage of distribution.`,
+                    style: "text"},
                   {
                     table: {
                       headerRows: 1,

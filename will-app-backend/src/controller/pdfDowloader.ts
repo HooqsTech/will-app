@@ -55,7 +55,7 @@ export const getPdfVersionByUserId = async (req: Request, res: Response) => {
 
 export const downloadPDFByuserIdAndVersionId = async (req: Request, res: Response) => {
     try {
-        const { userId, versioId } = req.body;
+        const { userId, versionId } = req.body;
         if (!userId) {
             return res.status(400).json({ error: "UserId is required" });
         }
@@ -63,7 +63,7 @@ export const downloadPDFByuserIdAndVersionId = async (req: Request, res: Respons
             return res.status(400).json({ error: "Invalid User" });
         }
 
-        var pdfDetails = await getPDFVersioningByUserIdAndVersionId(userId, versioId);
+        var pdfDetails = await getPDFVersioningByUserIdAndVersionId(userId, versionId);
         if (!pdfDetails || !pdfDetails.downloadurl) {
             return res.status(404).json({ error: "No PDF found for this user" });
         }
