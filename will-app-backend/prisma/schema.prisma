@@ -97,6 +97,7 @@ model will_distribution {
   fallbackrule              String?
   createdat                 DateTime? @default(now()) @db.Timestamptz(6)
   updatedat                 DateTime? @default(now()) @db.Timestamptz(6)
+  residuaryfallbackrule     String?
   users                     users     @relation(fields: [userid], references: [userid], onDelete: Cascade, onUpdate: NoAction)
 }
 

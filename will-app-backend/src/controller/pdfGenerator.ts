@@ -4,7 +4,7 @@ import { Response, Request } from "express";
 import { PrismaClient } from '@prisma/client';
 import { getUserByUserId, validUser } from "../services/userServices";
 import { getPercentageAssetDistributionService, getResiduaryAssetDistributionService, getSingleBeneficiaryByUserIdService, getSpecificAssetDistributionService } from "../services/assetDistributionService";
-import { DistributionType } from "../models/enums";
+import { DistributionType, FallBackType } from "../models/enums";
 import { IAddressDetails, IPersonalDetails } from "../models/userDetails";
 import { IAsset, parseAssets } from "../models/assetDetails";
 import { IBeneficiary, parseBeneficiaries } from "../models/beneficiaryDetails";
@@ -349,8 +349,8 @@ export const generatePDF = async (req: Request, res: Response) => {
 
                 return [
                   {
-                    text :  `All the above mentioned assets will be assigned to the following beneficiaries in the mentioned percentage of distribution.`
-                                      },
+                    text :  `All the above mentioned assets will be assigned to the following beneficiaries in the mentioned percentage of distribution.`,
+                    style: "text"},
                   {
                     table: {
                       headerRows: 1,
@@ -358,6 +358,29 @@ export const generatePDF = async (req: Request, res: Response) => {
                       body: [headers, ...rows],
                     },
                     style: "table",
+                  },
+                  {
+                    text:
+                      (assetDistributionDetails?.distributionType === DistributionType.SPECIFIC ||
+                        assetDistributionDetails?.distributionType === DistributionType.PERCENTAGE) &&
+                      assetDistributionDetails?.fallbackRule
+                        ? (() => {
+                            switch (assetDistributionDetails.fallbackRule) {
+                              case FallBackType.SpouseAndChildren:
+                                return `\nShould a beneficiary predecease me, their entitlement shall vest in their spouse, and if the spouse is also unavailable, to their children in equal shares per stirpes.`;
+                
+                              case FallBackType.SplitEqually:
+                                return `\nShould a beneficiary predecease me, their share shall lapse and be redistributed equally among the residuary beneficiaries then living.`;
+                
+                              case FallBackType.SplitByPercentage:
+                                return `\nShould a beneficiary predecease me, their designated share shall lapse and be redistributed among the surviving beneficiaries in accordance with their existing percentage allocations.`;
+                
+                              default:
+                                return "";
+                            }
+                          })()
+                        : "\n",
+                    style: "text",
                   },
                 ];
               } else if (distributionType === "Specific") {
@@ -436,7 +459,28 @@ export const generatePDF = async (req: Request, res: Response) => {
                     keepWithHeaderRows: 1,
                     dontBreakRows: true 
                   }
-                }
+                },
+                {
+                  text:
+                    assetDistributionDetails?.residuaryFallbackRule
+                      ? (() => {
+                          switch (assetDistributionDetails.residuaryFallbackRule) {
+                            case FallBackType.SpouseAndChildren:
+                              return `\nShould a beneficiary predecease me, their entitlement shall vest in their spouse, and if the spouse is also unavailable, to their children in equal shares per stirpes.`;
+              
+                            case FallBackType.SplitEqually:
+                              return `\nShould a beneficiary predecease me, their share shall lapse and be redistributed equally among the residuary beneficiaries then living.`;
+              
+                            case FallBackType.SplitByPercentage:
+                              return `\nShould a beneficiary predecease me, their designated share shall lapse and be redistributed among the surviving beneficiaries in accordance with their existing percentage allocations.`;
+              
+                            default:
+                              return "";
+                          }
+                        })()
+                      : "\n",
+                  style: "text",
+                },
               ];
           })(),
             { text: "\n\nPART-VII: LIABILITIES\n", style: "subheader", alignment: "center" },
