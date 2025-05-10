@@ -9,6 +9,7 @@ COPY . .
 
 # Set environment variable
 ENV VITE_API_URL=https://backend-170230222445.us-central1.run.app
+ENV VITE_RAZOR_PAY_ID=rzp_live_DuYwZSwyBKIaOM
 
 # Install dependencies & build the project
 RUN npm install && npm run build

@@ -61,6 +61,7 @@ const OrderSummary = () => {
       setIsValid(true);
       if (IsEmptyString(currentPdfVersion)) {
         setIsValid(false);
+        setPageLoading(false);
         return;
       }
       setIsPdfDownloading(true);

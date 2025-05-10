@@ -9,6 +9,7 @@ import { IsEmptyString } from "../utils";
 import { downloadPdfFile, getPDFVersions } from "../api/pdf";
 import CustomSelect from "./CustomSelect";
 import CustomButton from "./CustomButton";
+import Swal from "sweetalert2";
 
 interface IAdminUserCardProps {
     user: IAdminUserData;
@@ -24,6 +25,13 @@ const AdminUserCard: React.FC<IAdminUserCardProps> = ({ user }) => {
     const fetchPdfVersions = async () => {
         if (user.userid) {
             let response: IPdfVersionState[] = await getPDFVersions(user.userid);
+            if (response === undefined || response.length == 0) {
+                return Swal.fire({
+                    title: "No PDF versions found for this user",
+                    confirmButtonText: "Okay",
+                    confirmButtonColor: "var(--color-will-green)",
+                });
+            }
             setPdfVersions(response);
             setOpenPdfDownloadModal(true);
         }
@@ -35,6 +43,7 @@ const AdminUserCard: React.FC<IAdminUserCardProps> = ({ user }) => {
             setIsValid(true);
             if (IsEmptyString(currentPdfVersion)) {
                 setIsValid(false);
+                setPageLoading(false);
                 return;
             }
             var versionId = pdfVersions.find(

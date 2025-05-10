@@ -20,9 +20,8 @@ const AdminPage = () => {
     }
 
     const filterUser = (query: string) => {
-        const fUsers = users.filter(u => u.personaldetails.details.firstName.toLowerCase().includes(query.toLowerCase())
-            || u.personaldetails.details.lastName.toLowerCase().includes(query));
-        console.log('fUsers', fUsers)
+        const fUsers = users.filter(u => u.personaldetails?.details?.firstName?.toLowerCase().includes(query.toLowerCase())
+            || u.personaldetails?.details?.lastName?.toLowerCase().includes(query));
         setFilterText(query);
         setFilteredUsers(fUsers);
     }
