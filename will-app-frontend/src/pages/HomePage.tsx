@@ -9,7 +9,7 @@ const HomePage = () => {
     const navigate = useNavigate();
     const personalDetails = useRecoilValue(personalDetailsState);
     const handleGetStartedClick = () => {
-        if (personalDetails === undefined || personalDetails.fullName === undefined || personalDetails.fullName === "") {
+        if (personalDetails === undefined || personalDetails.firstName === undefined || personalDetails.firstName === "") {
             navigate(ROUTE_PATHS.YOUR_WILL + ROUTE_PATHS.PERSONAL_DETAILS)
         }
         else {
